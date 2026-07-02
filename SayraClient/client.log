@@ -1,0 +1,24 @@
+Using launch settings from /app/SayraClient/Properties/launchSettings.json...
+Building...
+info: SayraClient.Worker[0]
+      Sayra Client Service starting at: 07/02/2026 17:38:45 +00:00
+info: SayraClient.NetworkManager[0]
+      NetworkManager starting...
+info: SayraClient.NetworkManager[0]
+      Attempting to connect to 127.0.0.1:5000...
+info: SayraClient.NetworkManager[0]
+      Connected to server.
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Development
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /app/SayraClient
+info: SayraClient.MessageHandler[0]
+      Handling message type: PING
+info: SayraClient.MessageHandler[0]
+      Sent PONG response.
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: SayraClient.Worker[0]
+      Sayra Client Service stopped at: 07/02/2026 17:38:50 +00:00
