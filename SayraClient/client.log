@@ -1,13 +1,31 @@
 Using launch settings from /app/SayraClient/Properties/launchSettings.json...
 Building...
 info: SayraClient.Worker[0]
-      Sayra Client Service starting at: 07/02/2026 17:38:45 +00:00
+      Sayra Client Service starting at: 07/03/2026 09:06:53 +00:00
 info: SayraClient.NetworkManager[0]
       NetworkManager starting...
 info: SayraClient.NetworkManager[0]
       Attempting to connect to 127.0.0.1:5000...
 info: SayraClient.NetworkManager[0]
       Connected to server.
+info: SayraClient.Services.WatchdogService[0]
+      Watchdog Service starting...
+info: SayraClient.Services.RecoveryManager[0]
+      Recovering system state...
+info: SayraClient.Services.RecoveryManager[0]
+      No active session, ensuring system is unlocked.
+info: SayraClient.Services.KioskManager[0]
+      Disabling Kiosk/Lockdown mode...
+warn: SayraClient.Services.KioskManager[0]
+      Task Manager restriction is only supported on Windows.
+info: SayraClient.Services.RecoveryManager[0]
+      Recovering system state...
+info: SayraClient.Services.RecoveryManager[0]
+      No active session, ensuring system is unlocked.
+info: SayraClient.Services.KioskManager[0]
+      Disabling Kiosk/Lockdown mode...
+warn: SayraClient.Services.KioskManager[0]
+      Task Manager restriction is only supported on Windows.
 info: Microsoft.Hosting.Lifetime[0]
       Application started. Press Ctrl+C to shut down.
 info: Microsoft.Hosting.Lifetime[0]
@@ -15,10 +33,56 @@ info: Microsoft.Hosting.Lifetime[0]
 info: Microsoft.Hosting.Lifetime[0]
       Content root path: /app/SayraClient
 info: SayraClient.MessageHandler[0]
-      Handling message type: PING
+      Handling message type: COMMAND
+info: SayraClient.Commands.SessionCommandHandler[0]
+      Executing session action: START_SESSION
+info: SayraClient.Services.KioskManager[0]
+      Enabling Kiosk/Lockdown mode...
+warn: SayraClient.Services.KioskManager[0]
+      Task Manager restriction is only supported on Windows.
+info: SayraClient.Services.SessionManager[0]
+      Session 123 started for PC PC-01. Duration: 1 min
 info: SayraClient.MessageHandler[0]
-      Sent PONG response.
+      Handling message type: COMMAND
+info: SayraClient.Commands.SessionCommandHandler[0]
+      Executing session action: PAUSE_SESSION
+info: SayraClient.Services.SessionManager[0]
+      Session 123 paused.
+info: SayraClient.MessageHandler[0]
+      Handling message type: COMMAND
+info: SayraClient.Commands.SessionCommandHandler[0]
+      Executing session action: RESUME_SESSION
+info: SayraClient.Services.SessionManager[0]
+      Session 123 resumed.
+info: SayraClient.Services.RecoveryManager[0]
+      Recovering system state...
+info: SayraClient.Services.RecoveryManager[0]
+      Active session detected, reapplying lockdown.
+info: SayraClient.Services.KioskManager[0]
+      Enabling Kiosk/Lockdown mode...
+warn: SayraClient.Services.KioskManager[0]
+      Task Manager restriction is only supported on Windows.
+info: SayraClient.Services.SessionManager[0]
+      Session timeout reached.
+info: SayraClient.Services.KioskManager[0]
+      Disabling Kiosk/Lockdown mode...
+warn: SayraClient.Services.KioskManager[0]
+      Task Manager restriction is only supported on Windows.
+info: SayraClient.Services.SessionManager[0]
+      Session 123 stopped.
+info: SayraClient.Services.RecoveryManager[0]
+      Recovering system state...
+info: SayraClient.Services.RecoveryManager[0]
+      No active session, ensuring system is unlocked.
+info: SayraClient.Services.KioskManager[0]
+      Disabling Kiosk/Lockdown mode...
+warn: SayraClient.Services.KioskManager[0]
+      Task Manager restriction is only supported on Windows.
+info: SayraClient.NetworkManager[0]
+      Server closed the connection.
 info: Microsoft.Hosting.Lifetime[0]
       Application is shutting down...
+warn: SayraClient.NetworkManager[0]
+      Connection lost or failed: A task was canceled.
 info: SayraClient.Worker[0]
-      Sayra Client Service stopped at: 07/02/2026 17:38:50 +00:00
+      Sayra Client Service stopped at: 07/03/2026 09:09:34 +00:00
