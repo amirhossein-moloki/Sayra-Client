@@ -19,11 +19,16 @@ public class ExecutionResult
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public string Message { get; set; } = string.Empty;
 
-    public static ExecutionResult Success(string action, string message = "") => new()
+    [JsonPropertyName("data")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public object? Data { get; set; }
+
+    public static ExecutionResult Success(string action, string message = "", object? data = null) => new()
     {
         Action = action,
         Status = "SUCCESS",
-        Message = message
+        Message = message,
+        Data = data
     };
 
     public static ExecutionResult Error(string action, string message) => new()
