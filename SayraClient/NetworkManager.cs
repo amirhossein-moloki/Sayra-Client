@@ -1,6 +1,7 @@
 using System.Net.Sockets;
 using System.Text;
 using System.Text.Json;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
@@ -12,6 +13,7 @@ public class NetworkManager
     private readonly IConfiguration _configuration;
     private readonly ReconnectManager _reconnectManager;
     private readonly MessageHandler _messageHandler;
+    private readonly IServiceProvider _serviceProvider;
     private TcpClient? _client;
     private NetworkStream? _stream;
     private readonly string _ipAddress;
@@ -22,12 +24,14 @@ public class NetworkManager
         ILogger<NetworkManager> logger,
         IConfiguration configuration,
         ReconnectManager reconnectManager,
-        MessageHandler messageHandler)
+        MessageHandler messageHandler,
+        IServiceProvider serviceProvider)
     {
         _logger = logger;
         _configuration = configuration;
         _reconnectManager = reconnectManager;
         _messageHandler = messageHandler;
+        _serviceProvider = serviceProvider;
 
         _ipAddress = _configuration["ServerConfig:IpAddress"] ?? "127.0.0.1";
         _port = int.Parse(_configuration["ServerConfig:Port"] ?? "5000");
@@ -50,6 +54,9 @@ public class NetworkManager
                     _stream = _client.GetStream();
                     _reconnectManager.Reset();
                     _logger.LogInformation("Connected to server.");
+
+                    // Notify of current state upon reconnection
+                    await SendStateSyncAsync(cancellationToken);
 
                     // Start background tasks for heartbeats and receiving messages
                     using var cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
@@ -99,7 +106,11 @@ public class NetworkManager
     {
         while (!cancellationToken.IsCancellationRequested)
         {
-            var heartbeat = new { type = "HEARTBEAT", timestamp = DateTime.UtcNow };
+            var heartbeat = new
+            {
+                type = "HEARTBEAT",
+                timestamp = DateTime.UtcNow
+            };
             await SendMessageAsync(heartbeat, cancellationToken);
             await Task.Delay(TimeSpan.FromSeconds(_heartbeatIntervalSeconds), cancellationToken);
         }
@@ -119,6 +130,34 @@ public class NetworkManager
 
             _logger.LogDebug("Received: {message}", line);
             await _messageHandler.HandleMessageAsync(line, this, cancellationToken);
+        }
+    }
+
+    private async Task SendStateSyncAsync(CancellationToken cancellationToken)
+    {
+        try
+        {
+            using var scope = _serviceProvider.CreateScope();
+            var sessionManager = scope.ServiceProvider.GetRequiredService<SayraClient.Services.SessionManager>();
+            var currentSession = sessionManager.GetCurrentSession();
+
+            await SendMessageAsync(new {
+                type = "EVENT",
+                @event = "CLIENT_CONNECTED",
+                timestamp = DateTime.UtcNow,
+                session = currentSession
+            }, cancellationToken);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error sending state sync.");
+
+            // Fallback to simple connection event if session manager resolution fails
+            await SendMessageAsync(new {
+                type = "EVENT",
+                @event = "CLIENT_CONNECTED",
+                timestamp = DateTime.UtcNow
+            }, cancellationToken);
         }
     }
 
