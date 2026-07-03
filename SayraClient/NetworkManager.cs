@@ -121,15 +121,27 @@ public class NetworkManager
         using var reader = new StreamReader(_stream!, Encoding.UTF8, leaveOpen: true);
         while (!cancellationToken.IsCancellationRequested)
         {
-            var line = await reader.ReadLineAsync(cancellationToken);
-            if (line == null)
+            try
             {
-                _logger.LogInformation("Server closed the connection.");
-                break;
-            }
+                var line = await reader.ReadLineAsync(cancellationToken);
+                if (line == null)
+                {
+                    _logger.LogInformation("Server closed the connection.");
+                    break;
+                }
 
-            _logger.LogDebug("Received: {message}", line);
-            await _messageHandler.HandleMessageAsync(line, this, cancellationToken);
+                _logger.LogDebug("Received raw message.");
+                await _messageHandler.HandleMessageAsync(line, this, cancellationToken);
+            }
+            catch (Exception ex) when (ex is not OperationCanceledException)
+            {
+                _logger.LogError(ex, "Error receiving or handling message.");
+                // If there's a stream error, we should break and reconnect
+                if (ex is IOException or SocketException)
+                {
+                    break;
+                }
+            }
         }
     }
 
@@ -163,12 +175,19 @@ public class NetworkManager
 
     public async Task SendMessageAsync(object message, CancellationToken cancellationToken)
     {
-        if (_client is { Connected: true } && _stream != null)
+        try
         {
-            string json = JsonSerializer.Serialize(message) + "\n";
-            byte[] data = Encoding.UTF8.GetBytes(json);
-            await _stream.WriteAsync(data, 0, data.Length, cancellationToken);
-            await _stream.FlushAsync(cancellationToken);
+            if (_client is { Connected: true } && _stream != null)
+            {
+                string json = JsonSerializer.Serialize(message) + "\n";
+                byte[] data = Encoding.UTF8.GetBytes(json);
+                await _stream.WriteAsync(data, 0, data.Length, cancellationToken);
+                await _stream.FlushAsync(cancellationToken);
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to send message.");
         }
     }
 }

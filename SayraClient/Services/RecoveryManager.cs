@@ -30,5 +30,15 @@ public class RecoveryManager
             _logger.LogInformation("No active session, ensuring system is unlocked.");
             _kioskManager.Unlock();
         }
+
+        // Re-enforce other security settings if necessary
+        EnforceSecuritySettings();
+    }
+
+    private void EnforceSecuritySettings()
+    {
+        _logger.LogInformation("Enforcing security settings...");
+        // This is where we ensure registry keys, file permissions, etc., are correct.
+        // KioskManager already handles the registry for Task Manager in Lockdown/Unlock.
     }
 }

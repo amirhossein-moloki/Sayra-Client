@@ -29,7 +29,7 @@ public class SessionCommandHandler : ICommandHandler
     {
         _logger.LogInformation("Executing session action: {action}", command.Action);
 
-        return command.Action.ToUpper() switch
+        var result = command.Action.ToUpper() switch
         {
             "START_SESSION" => HandleStartSession(command),
             "STOP_SESSION" => HandleStopSession(),
@@ -37,6 +37,13 @@ public class SessionCommandHandler : ICommandHandler
             "RESUME_SESSION" => HandleResumeSession(),
             _ => ExecutionResult.Error(command.Action, "Unsupported session action")
         };
+
+        if (result != null)
+        {
+            _logger.LogInformation("Session action {action} completed with status: {status}", command.Action, result.Status);
+        }
+
+        return result;
     }
 
     private ExecutionResult HandleStartSession(CommandModel command)

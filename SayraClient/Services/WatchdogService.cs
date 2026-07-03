@@ -7,11 +7,16 @@ public class WatchdogService : BackgroundService
 {
     private readonly ILogger<WatchdogService> _logger;
     private readonly RecoveryManager _recoveryManager;
+    private readonly NetworkManager _networkManager;
 
-    public WatchdogService(ILogger<WatchdogService> logger, RecoveryManager recoveryManager)
+    public WatchdogService(
+        ILogger<WatchdogService> logger,
+        RecoveryManager recoveryManager,
+        NetworkManager networkManager)
     {
         _logger = logger;
         _recoveryManager = recoveryManager;
+        _networkManager = networkManager;
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)

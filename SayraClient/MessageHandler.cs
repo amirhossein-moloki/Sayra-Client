@@ -8,15 +8,18 @@ public class MessageHandler
     private readonly ILogger<MessageHandler> _logger;
     private readonly CommandParser _commandParser;
     private readonly CommandRouter _commandRouter;
+    private readonly Services.SecureMessageValidator _messageValidator;
 
     public MessageHandler(
         ILogger<MessageHandler> logger,
         CommandParser commandParser,
-        CommandRouter commandRouter)
+        CommandRouter commandRouter,
+        Services.SecureMessageValidator messageValidator)
     {
         _logger = logger;
         _commandParser = commandParser;
         _commandRouter = commandRouter;
+        _messageValidator = messageValidator;
     }
 
     public async Task HandleMessageAsync(string messageJson, NetworkManager networkManager, CancellationToken cancellationToken)
@@ -24,13 +27,13 @@ public class MessageHandler
         try
         {
             var command = _commandParser.Parse(messageJson);
-            if (command == null)
+
+            if (!_messageValidator.Validate(command))
             {
-                _logger.LogWarning("Received empty or invalid message: {json}", messageJson);
                 return;
             }
 
-            _logger.LogInformation("Handling message type: {type}", command.Type);
+            _logger.LogInformation("Handling message type: {type}", command!.Type);
 
             switch (command.Type.ToUpper())
             {

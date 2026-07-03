@@ -21,6 +21,7 @@ public class CommandParser
     {
         try
         {
+            if (string.IsNullOrWhiteSpace(json)) return null;
             var command = JsonSerializer.Deserialize<CommandModel>(json, Options);
             if (command == null) return null;
 
