@@ -2,8 +2,23 @@ using SayraClient;
 using SayraClient.Commands;
 using SayraClient.Services;
 using Microsoft.Extensions.Hosting.WindowsServices;
+using Serilog;
 
 var builder = Host.CreateApplicationBuilder(args);
+
+// Configure Serilog
+Log.Logger = new LoggerConfiguration()
+    .MinimumLevel.Information()
+    .Enrich.FromLogContext()
+    .WriteTo.Console()
+    .WriteTo.File(Path.Combine(AppContext.BaseDirectory, "logs", "client-.log"),
+        rollingInterval: RollingInterval.Day,
+        retainedFileCountLimit: 7,
+        outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] {Message:lj}{NewLine}{Exception}")
+    .CreateLogger();
+
+builder.Logging.ClearProviders();
+builder.Services.AddSerilog();
 
 builder.Services.AddWindowsService(options =>
 {
@@ -21,6 +36,8 @@ builder.Services.AddSingleton<ProcessMonitor>();
 builder.Services.AddSingleton<SessionManager>();
 builder.Services.AddSingleton<KioskManager>();
 builder.Services.AddSingleton<RecoveryManager>();
+builder.Services.AddSingleton<SecurityManager>();
+builder.Services.AddSingleton<SecureMessageValidator>();
 
 // Register Command System
 builder.Services.AddSingleton<CommandParser>();
@@ -34,6 +51,7 @@ builder.Services.AddSingleton<MessageHandler>();
 
 builder.Services.AddHostedService<Worker>();
 builder.Services.AddHostedService<WatchdogService>();
+builder.Services.AddHostedService<AntiTamperService>();
 
 var host = builder.Build();
 host.Run();

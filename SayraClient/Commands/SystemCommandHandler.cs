@@ -29,13 +29,20 @@ public class SystemCommandHandler : ICommandHandler
     {
         _logger.LogInformation("Executing action: {action}", command.Action);
 
-        return command.Action.ToUpper() switch
+        var result = command.Action.ToUpper() switch
         {
             "PING" => new ExecutionResult { Type = "PONG", Action = null!, Status = null!, Message = null! },
             "LOCK_PC" => HandleLockPc(),
             "UNLOCK_PC" => HandleUnlockPc(),
             _ => ExecutionResult.Error(command.Action, "Unsupported action")
         };
+
+        if (result != null && result.Type != "PONG")
+        {
+            _logger.LogInformation("System action {action} completed with status: {status}", command.Action, result.Status);
+        }
+
+        return result;
     }
 
     private ExecutionResult HandleLockPc()

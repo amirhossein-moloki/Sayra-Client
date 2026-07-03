@@ -1,7 +1,0 @@
-Mock server listening on 127.0.0.1:5000
-Connected by ('127.0.0.1', 35644)
-Sent PING
-Received from client: {"type":"HEARTBEAT","timestamp":"2026-07-02T17:38:45.5420535Z"}
-Confirmed: Received HEARTBEAT from client!
-Received from client: {"type":"PONG"}
-Confirmed: Received PONG from client!

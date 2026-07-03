@@ -37,13 +37,20 @@ public class AppCommandHandler : ICommandHandler
     {
         _logger.LogInformation("Handling action: {action}", command.Action);
 
-        return command.Action.ToUpper() switch
+        var result = command.Action.ToUpper() switch
         {
             "RUN_APP" => HandleRunApp(command.Payload),
             "KILL_APP" => HandleKillApp(command.Payload),
             "LIST_PROCESSES" => HandleListProcesses(),
             _ => ExecutionResult.Error(command.Action, "Unsupported action")
         };
+
+        if (result != null)
+        {
+            _logger.LogInformation("Action {action} completed with status: {status}", command.Action, result.Status);
+        }
+
+        return result;
     }
 
     private ExecutionResult HandleRunApp(object? payload)
