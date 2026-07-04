@@ -15,7 +15,8 @@ public class SecureMessageValidator
     private static readonly HashSet<string> AllowedActions = new(StringComparer.OrdinalIgnoreCase)
     {
         "LOCK_PC", "UNLOCK_PC", "PING", "RUN_APP", "KILL_APP", "LIST_PROCESSES",
-        "START_SESSION", "STOP_SESSION", "PAUSE_SESSION", "RESUME_SESSION"
+        "START_SESSION", "STOP_SESSION", "PAUSE_SESSION", "RESUME_SESSION",
+        "GET_DIAGNOSTICS", "UPDATE"
     };
 
     public SecureMessageValidator(ILogger<SecureMessageValidator> logger)

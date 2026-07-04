@@ -8,7 +8,7 @@ var builder = Host.CreateApplicationBuilder(args);
 
 // Configure Serilog
 Log.Logger = new LoggerConfiguration()
-    .MinimumLevel.Information()
+    .ReadFrom.Configuration(builder.Configuration)
     .Enrich.FromLogContext()
     .WriteTo.Console()
     .WriteTo.File(Path.Combine(AppContext.BaseDirectory, "logs", "client-.log"),
@@ -38,6 +38,7 @@ builder.Services.AddSingleton<KioskManager>();
 builder.Services.AddSingleton<RecoveryManager>();
 builder.Services.AddSingleton<SecurityManager>();
 builder.Services.AddSingleton<SecureMessageValidator>();
+builder.Services.AddSingleton<DiagnosticsService>();
 
 // Register Security Services
 builder.Services.AddSingleton<SessionKeyManager>();
@@ -59,6 +60,7 @@ builder.Services.AddSingleton<MessageHandler>();
 builder.Services.AddHostedService<Worker>();
 builder.Services.AddHostedService<WatchdogService>();
 builder.Services.AddHostedService<AntiTamperService>();
+builder.Services.AddHostedService<UpdateManager>();
 
 var host = builder.Build();
 host.Run();
