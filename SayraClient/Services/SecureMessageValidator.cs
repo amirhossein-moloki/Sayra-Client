@@ -9,7 +9,7 @@ public class SecureMessageValidator
     private readonly ILogger<SecureMessageValidator> _logger;
     private static readonly HashSet<string> AllowedTypes = new(StringComparer.OrdinalIgnoreCase)
     {
-        "COMMAND", "PING", "HEARTBEAT"
+        "COMMAND", "PING", "HEARTBEAT", "AUTH_CHALLENGE", "AUTH_STATUS"
     };
 
     private static readonly HashSet<string> AllowedActions = new(StringComparer.OrdinalIgnoreCase)

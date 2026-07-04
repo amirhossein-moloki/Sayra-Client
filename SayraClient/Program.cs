@@ -39,6 +39,13 @@ builder.Services.AddSingleton<RecoveryManager>();
 builder.Services.AddSingleton<SecurityManager>();
 builder.Services.AddSingleton<SecureMessageValidator>();
 
+// Register Security Services
+builder.Services.AddSingleton<SessionKeyManager>();
+builder.Services.AddSingleton<EncryptionManager>();
+builder.Services.AddSingleton<IntegrityValidator>();
+builder.Services.AddSingleton<AuthManager>();
+builder.Services.AddSingleton<SecureTransportLayer>();
+
 // Register Command System
 builder.Services.AddSingleton<CommandParser>();
 builder.Services.AddSingleton<CommandRouter>();
