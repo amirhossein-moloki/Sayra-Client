@@ -13,7 +13,10 @@ from Crypto.Random import get_random_bytes
 import os
 
 # Configuration
-MASTER_KEY_BASE64 = os.environ.get("SAYRA_MASTER_KEY", "pvAEDsoJR3h1s5K2CJo9AKFlGT+r1sEcoO/Df8am0MQ=")
+MASTER_KEY_BASE64 = os.environ.get("SAYRA_MASTER_KEY")
+if not MASTER_KEY_BASE64:
+    print("Error: SAYRA_MASTER_KEY environment variable not set.")
+    exit(1)
 MASTER_KEY = base64.b64decode(MASTER_KEY_BASE64)
 
 class SecureServer:
