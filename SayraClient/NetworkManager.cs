@@ -4,6 +4,7 @@ using System.Text.Json;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using SayraClient.Services;
 
 namespace SayraClient;
 
@@ -14,6 +15,9 @@ public class NetworkManager
     private readonly ReconnectManager _reconnectManager;
     private readonly MessageHandler _messageHandler;
     private readonly IServiceProvider _serviceProvider;
+    private readonly SecureTransportLayer _transportLayer;
+    private readonly SessionKeyManager _sessionKeyManager;
+    private readonly AuthManager _authManager;
     private TcpClient? _client;
     private NetworkStream? _stream;
     private readonly string _ipAddress;
@@ -25,13 +29,19 @@ public class NetworkManager
         IConfiguration configuration,
         ReconnectManager reconnectManager,
         MessageHandler messageHandler,
-        IServiceProvider serviceProvider)
+        IServiceProvider serviceProvider,
+        SecureTransportLayer transportLayer,
+        SessionKeyManager sessionKeyManager,
+        AuthManager authManager)
     {
         _logger = logger;
         _configuration = configuration;
         _reconnectManager = reconnectManager;
         _messageHandler = messageHandler;
         _serviceProvider = serviceProvider;
+        _transportLayer = transportLayer;
+        _sessionKeyManager = sessionKeyManager;
+        _authManager = authManager;
 
         _ipAddress = _configuration["ServerConfig:IpAddress"] ?? "127.0.0.1";
         _port = int.Parse(_configuration["ServerConfig:Port"] ?? "5000");
@@ -55,8 +65,10 @@ public class NetworkManager
                     _reconnectManager.Reset();
                     _logger.LogInformation("Connected to server.");
 
-                    // Notify of current state upon reconnection
-                    await SendStateSyncAsync(cancellationToken);
+                    if (_sessionKeyManager.IsAuthenticated)
+                    {
+                        await SendStateSyncAsync(cancellationToken);
+                    }
 
                     // Start background tasks for heartbeats and receiving messages
                     using var cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
@@ -100,6 +112,8 @@ public class NetworkManager
         _stream = null;
         _client?.Dispose();
         _client = null;
+        _sessionKeyManager.ClearSessionKey();
+        _authManager.Reset();
     }
 
     private async Task SendHeartbeatLoopAsync(CancellationToken cancellationToken)
@@ -131,6 +145,7 @@ public class NetworkManager
                 }
 
                 _logger.LogDebug("Received raw message.");
+                if (string.IsNullOrWhiteSpace(line)) continue;
                 await _messageHandler.HandleMessageAsync(line, this, cancellationToken);
             }
             catch (Exception ex) when (ex is not OperationCanceledException)
@@ -145,7 +160,7 @@ public class NetworkManager
         }
     }
 
-    private async Task SendStateSyncAsync(CancellationToken cancellationToken)
+    public async Task SendStateSyncAsync(CancellationToken cancellationToken)
     {
         try
         {
@@ -179,8 +194,8 @@ public class NetworkManager
         {
             if (_client is { Connected: true } && _stream != null)
             {
-                string json = JsonSerializer.Serialize(message) + "\n";
-                byte[] data = Encoding.UTF8.GetBytes(json);
+                string wrappedJson = _transportLayer.Wrap(message) + "\n";
+                byte[] data = Encoding.UTF8.GetBytes(wrappedJson);
                 await _stream.WriteAsync(data, 0, data.Length, cancellationToken);
                 await _stream.FlushAsync(cancellationToken);
             }

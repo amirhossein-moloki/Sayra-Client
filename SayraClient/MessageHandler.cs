@@ -9,24 +9,70 @@ public class MessageHandler
     private readonly CommandParser _commandParser;
     private readonly CommandRouter _commandRouter;
     private readonly Services.SecureMessageValidator _messageValidator;
+    private readonly Services.SecureTransportLayer _transportLayer;
+    private readonly Services.AuthManager _authManager;
 
     public MessageHandler(
         ILogger<MessageHandler> logger,
         CommandParser commandParser,
         CommandRouter commandRouter,
-        Services.SecureMessageValidator messageValidator)
+        Services.SecureMessageValidator messageValidator,
+        Services.SecureTransportLayer transportLayer,
+        Services.AuthManager authManager)
     {
         _logger = logger;
         _commandParser = commandParser;
         _commandRouter = commandRouter;
         _messageValidator = messageValidator;
+        _transportLayer = transportLayer;
+        _authManager = authManager;
     }
 
     public async Task HandleMessageAsync(string messageJson, NetworkManager networkManager, CancellationToken cancellationToken)
     {
         try
         {
-            var command = _commandParser.Parse(messageJson);
+            string? unwrappedJson = _transportLayer.Unwrap(messageJson);
+            if (unwrappedJson == null) return;
+
+            // Check if it's a handshake message first
+            using (var doc = System.Text.Json.JsonDocument.Parse(unwrappedJson))
+            {
+                _logger.LogDebug("Processing unwrapped message: {json}", unwrappedJson);
+                if (doc.RootElement.TryGetProperty("type", out var typeProp))
+                {
+                    string type = typeProp.GetString() ?? "";
+                    if (type.Equals("AUTH_CHALLENGE", StringComparison.OrdinalIgnoreCase))
+                    {
+                        var challenge = System.Text.Json.JsonSerializer.Deserialize<Models.AuthChallengeModel>(unwrappedJson);
+                        if (challenge != null)
+                        {
+                            var response = await _authManager.HandleChallengeAsync(challenge);
+                            if (response != null)
+                            {
+                                await networkManager.SendMessageAsync(response, cancellationToken);
+                            }
+                        }
+                        return;
+                    }
+                    else if (type.Equals("AUTH_STATUS", StringComparison.OrdinalIgnoreCase))
+                    {
+                        var status = System.Text.Json.JsonSerializer.Deserialize<Models.AuthStatusModel>(unwrappedJson);
+                        if (status != null)
+                        {
+                            _authManager.HandleAuthStatus(status);
+                            if (status.Status == "SUCCESS")
+                            {
+                                // Notify of current state upon successful authentication
+                                _ = networkManager.SendStateSyncAsync(cancellationToken);
+                            }
+                        }
+                        return;
+                    }
+                }
+            }
+
+            var command = _commandParser.Parse(unwrappedJson);
 
             if (!_messageValidator.Validate(command))
             {
