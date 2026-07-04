@@ -4,23 +4,27 @@ using SayraClient.Models;
 
 namespace SayraClient.Commands;
 
+using SayraClient.Services;
+
 public class SystemCommandHandler : ICommandHandler
 {
     private readonly ILogger<SystemCommandHandler> _logger;
+    private readonly DiagnosticsService _diagnosticsService;
 
     [DllImport("user32.dll", SetLastError = true)]
     private static extern bool LockWorkStation();
 
-    public SystemCommandHandler(ILogger<SystemCommandHandler> logger)
+    public SystemCommandHandler(ILogger<SystemCommandHandler> logger, DiagnosticsService diagnosticsService)
     {
         _logger = logger;
+        _diagnosticsService = diagnosticsService;
     }
 
     public bool CanHandle(string action)
     {
         return action.ToUpper() switch
         {
-            "LOCK_PC" or "UNLOCK_PC" or "PING" => true,
+            "LOCK_PC" or "UNLOCK_PC" or "PING" or "GET_DIAGNOSTICS" => true,
             _ => false
         };
     }
@@ -32,6 +36,7 @@ public class SystemCommandHandler : ICommandHandler
         var result = command.Action.ToUpper() switch
         {
             "PING" => new ExecutionResult { Type = "PONG", Action = null!, Status = null!, Message = null! },
+            "GET_DIAGNOSTICS" => HandleGetDiagnostics(),
             "LOCK_PC" => HandleLockPc(),
             "UNLOCK_PC" => HandleUnlockPc(),
             _ => ExecutionResult.Error(command.Action, "Unsupported action")
@@ -80,5 +85,25 @@ public class SystemCommandHandler : ICommandHandler
     {
         _logger.LogInformation("UNLOCK_PC received (placeholder)");
         return ExecutionResult.Success("UNLOCK_PC", "PC unlock requested (placeholder)");
+    }
+
+    private ExecutionResult HandleGetDiagnostics()
+    {
+        try
+        {
+            var data = _diagnosticsService.GetDiagnostics();
+            return new ExecutionResult
+            {
+                Type = "EXECUTION_RESULT",
+                Action = "GET_DIAGNOSTICS",
+                Status = "SUCCESS",
+                Data = data
+            };
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error gathering diagnostics");
+            return ExecutionResult.Error("GET_DIAGNOSTICS", ex.Message);
+        }
     }
 }
