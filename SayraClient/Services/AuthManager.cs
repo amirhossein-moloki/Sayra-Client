@@ -27,10 +27,10 @@ public class AuthManager
         _logger.LogInformation("Received auth challenge from server.");
         _currentChallenge = challenge.Challenge;
 
-        string? masterKeyBase64 = _configuration["SecurityConfig:MasterKey"];
-        if (string.IsNullOrEmpty(masterKeyBase64))
+        string? masterKeyBase64 = _configuration["SAYRA_MASTER_KEY"] ?? _configuration["SecurityConfig:MasterKey"];
+        if (string.IsNullOrEmpty(masterKeyBase64) || masterKeyBase64.Contains("PLACEHOLDER"))
         {
-            _logger.LogError("MasterKey not configured in appsettings.json.");
+            _logger.LogError("MasterKey not configured correctly (missing SAYRA_MASTER_KEY env var or valid config value).");
             return null;
         }
 

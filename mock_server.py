@@ -10,8 +10,10 @@ from Crypto.Cipher import AES as Aes
 from Crypto.Util.Padding import pad, unpad
 from Crypto.Random import get_random_bytes
 
+import os
+
 # Configuration
-MASTER_KEY_BASE64 = "pvAEDsoJR3h1s5K2CJo9AKFlGT+r1sEcoO/Df8am0MQ="
+MASTER_KEY_BASE64 = os.environ.get("SAYRA_MASTER_KEY", "pvAEDsoJR3h1s5K2CJo9AKFlGT+r1sEcoO/Df8am0MQ=")
 MASTER_KEY = base64.b64decode(MASTER_KEY_BASE64)
 
 class SecureServer:
