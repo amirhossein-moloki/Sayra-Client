@@ -56,7 +56,7 @@ public class SessionCommandHandler : ICommandHandler
             }
 
             var json = JsonSerializer.Serialize(command.Payload);
-            var session = JsonSerializer.Deserialize<SessionModel>(json);
+            var session = JsonSerializer.Deserialize<SessionModel>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
             if (session == null)
             {
