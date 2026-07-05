@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using System.Threading.Tasks;
+using Sayra.Client.Shared.Ipc;
 
 namespace Sayra.Client.UI.Services
 {
@@ -41,7 +43,7 @@ namespace Sayra.Client.UI.Services
                 _stateSubject.OnNext(new ClientState
                 {
                     Status = ClientStatus.Connected,
-                    SessionState = SessionState.Active,
+                    SessionState = SessionState.InSession,
                     RemainingTime = TimeSpan.FromHours(2),
                     UserName = "ProPlayer99"
                 });
@@ -50,6 +52,8 @@ namespace Sayra.Client.UI.Services
         }
 
         public IObservable<ClientState> SubscribeToStateChanged() => _stateSubject;
+
+        public IObservable<IpcMessageType> SubscribeToEvents() => Observable.Empty<IpcMessageType>();
 
         public Task<IEnumerable<AppModel>> GetApplications() => Task.FromResult<IEnumerable<AppModel>>(_mockApps);
     }

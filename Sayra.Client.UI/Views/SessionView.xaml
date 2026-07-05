@@ -8,21 +8,34 @@
              d:DesignHeight="50" d:DesignWidth="200">
     <Grid>
         <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-            <TextBlock Text="{Binding RemainingTimeStr}" FontSize="18" FontWeight="Bold" VerticalAlignment="Center">
-                <TextBlock.Style>
-                    <Style TargetType="TextBlock">
-                        <Setter Property="Foreground" Value="Cyan"/>
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding IsLowTime}" Value="True">
-                                <Setter Property="Foreground" Value="OrangeRed"/>
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </TextBlock.Style>
-            </TextBlock>
+            <StackPanel Margin="0,0,15,0">
+                <TextBlock Text="REMAINING" FontSize="10" Foreground="#888"/>
+                <TextBlock Text="{Binding RemainingTimeStr}" FontSize="18" FontWeight="Bold">
+                    <TextBlock.Style>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="Foreground" Value="Cyan"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsLowTime}" Value="True">
+                                    <Setter Property="Foreground" Value="OrangeRed"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                </TextBlock>
+            </StackPanel>
+
+            <StackPanel Margin="0,0,15,0">
+                <TextBlock Text="ELAPSED" FontSize="10" Foreground="#888"/>
+                <TextBlock Text="{Binding ElapsedTimeStr}" FontSize="16" Foreground="White"/>
+            </StackPanel>
+
+            <StackPanel>
+                <TextBlock Text="STARTED" FontSize="10" Foreground="#888"/>
+                <TextBlock Text="{Binding StartTimeStr}" FontSize="16" Foreground="White"/>
+            </StackPanel>
 
             <!-- Low Time Warning Icon -->
-            <TextBlock Text="⚠️" Margin="5,0,0,0" VerticalAlignment="Center"
+            <TextBlock Text="⚠️" Margin="10,0,0,0" VerticalAlignment="Center" FontSize="20"
                        Visibility="{Binding IsLowTime, Converter={StaticResource BooleanToVisibilityConverter}}"
                        ToolTip="Low balance! Please top up."/>
         </StackPanel>

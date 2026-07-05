@@ -29,7 +29,8 @@ namespace Sayra.Client.Shared.Ipc
         PROCESS_KILLED,
         CONNECTION_STATUS_CHANGED,
         COMMAND_RESPONSE,
-        APPS_LIST
+        APPS_LIST,
+        BILLING_UPDATE
     }
 
     public class IpcMessage

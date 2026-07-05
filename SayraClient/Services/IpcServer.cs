@@ -212,8 +212,13 @@ public class IpcServer : BackgroundService
             CoreState = (ClientCoreState)_stateManager.CurrentState,
             SessionStatus = Enum.TryParse<SessionStatus>(session?.Status ?? "IDLE", out var status) ? status : SessionStatus.IDLE,
             RemainingTime = session != null ? TimeSpan.FromMinutes(session.Duration) - TimeSpan.FromSeconds(session.ElapsedSeconds) : TimeSpan.Zero,
+            StartTime = session?.StartTime,
+            ElapsedSeconds = session?.ElapsedSeconds ?? 0,
+            TotalDurationMinutes = session?.Duration ?? 0,
+            RatePerHour = session?.RatePerHour ?? 0,
+            CurrentCost = session?.CurrentCost ?? 0,
             UserName = "User", // Mock for now
-            IsKioskLocked = false // Should be retrieved from KioskManager if possible
+            IsKioskLocked = _kioskManager.IsLocked()
         };
     }
 

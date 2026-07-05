@@ -21,12 +21,15 @@ namespace Sayra.Client.UI
         {
             // Services
             services.AddSingleton<IClientBridge, IpcClientBridge>();
+            services.AddSingleton<TimerService>();
+            services.AddSingleton<WarningOverlayService>();
 
             // ViewModels
             services.AddSingleton<ShellViewModel>();
             services.AddTransient<LoginViewModel>();
             services.AddTransient<LauncherViewModel>();
             services.AddTransient<SessionViewModel>();
+            services.AddTransient<BillingViewModel>();
 
             // Windows
             services.AddSingleton<MainWindow>();

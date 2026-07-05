@@ -26,6 +26,11 @@ namespace Sayra.Client.Shared.Models
         public ClientCoreState CoreState { get; set; }
         public SessionStatus SessionStatus { get; set; }
         public TimeSpan RemainingTime { get; set; }
+        public DateTime? StartTime { get; set; }
+        public double ElapsedSeconds { get; set; }
+        public double TotalDurationMinutes { get; set; }
+        public double RatePerHour { get; set; }
+        public double CurrentCost { get; set; }
         public string? UserName { get; set; }
         public bool IsKioskLocked { get; set; }
     }

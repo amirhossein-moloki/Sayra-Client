@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Sayra.Client.UI"
         xmlns:vm="clr-namespace:Sayra.Client.UI.ViewModels"
+        xmlns:v="clr-namespace:Sayra.Client.UI.Views"
         mc:Ignorable="d"
         Title="Sayra Client" Height="720" Width="1280"
         Background="#121212" Foreground="White"
@@ -17,7 +18,17 @@
         </Grid.RowDefinitions>
 
         <!-- Status Bar -->
-        <Border Grid.Row="0" Background="#1E1E1E" Padding="15,10">
+        <Border Grid.Row="0" Padding="15,10">
+            <Border.Style>
+                <Style TargetType="Border">
+                    <Setter Property="Background" Value="#1E1E1E"/>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Warnings.IsSoftWarningVisible}" Value="True">
+                            <Setter Property="Background" Value="#885500"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Border.Style>
             <DockPanel>
                 <StackPanel Orientation="Horizontal" DockPanel.Dock="Left">
                     <Ellipse Width="10" Height="10" Margin="0,0,10,0">
@@ -25,6 +36,9 @@
                             <Style TargetType="Ellipse">
                                 <Setter Property="Fill" Value="Gray"/>
                                 <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Status}" Value="Connecting">
+                                        <Setter Property="Fill" Value="Orange"/>
+                                    </DataTrigger>
                                     <DataTrigger Binding="{Binding Status}" Value="Connected">
                                         <Setter Property="Fill" Value="LimeGreen"/>
                                     </DataTrigger>
@@ -39,17 +53,30 @@
                     <Separator Width="20" Background="Transparent"/>
                     <TextBlock Text="User: " VerticalAlignment="Center" Foreground="#AAA"/>
                     <TextBlock Text="{Binding UserName}" VerticalAlignment="Center" FontWeight="SemiBold"/>
+
+                    <Separator Width="30" Background="Transparent"/>
+                    <ContentControl Content="{Binding Billing}" VerticalAlignment="Center"/>
                 </StackPanel>
 
                 <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
+                    <!-- Soft Warning Text -->
+                    <TextBlock Text="{Binding Warnings.WarningMessage}"
+                               VerticalAlignment="Center" Margin="0,0,20,0"
+                               FontWeight="Bold" Foreground="Yellow"
+                               Visibility="{Binding Warnings.IsSoftWarningVisible, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+
                     <ContentControl Content="{Binding Session}" Margin="0,0,20,0" VerticalAlignment="Center"/>
-                    <TextBlock Text="Session: " VerticalAlignment="Center" Foreground="#AAA"/>
-                    <TextBlock Text="{Binding SessionState}" VerticalAlignment="Center" FontWeight="SemiBold"/>
+                    <TextBlock Text="Status: " VerticalAlignment="Center" Foreground="#AAA"/>
+                    <TextBlock Text="{Binding SessionState}" VerticalAlignment="Center" FontWeight="SemiBold" Width="80"/>
                 </StackPanel>
             </DockPanel>
         </Border>
 
         <!-- Content Area -->
         <ContentControl Grid.Row="1" Content="{Binding CurrentViewModel}"/>
+
+        <!-- Warning Overlay -->
+        <v:WarningOverlay Grid.RowSpan="2"
+                          Visibility="{Binding Warnings.IsWarningVisible, Converter={StaticResource BooleanToVisibilityConverter}}"/>
     </Grid>
 </Window>
