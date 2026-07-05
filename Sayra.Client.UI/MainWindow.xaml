@@ -1,0 +1,55 @@
+<Window x:Class="Sayra.Client.UI.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Sayra.Client.UI"
+        xmlns:vm="clr-namespace:Sayra.Client.UI.ViewModels"
+        mc:Ignorable="d"
+        Title="Sayra Client" Height="720" Width="1280"
+        Background="#121212" Foreground="White"
+        WindowStartupLocation="CenterScreen">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/> <!-- Status Bar -->
+            <RowDefinition Height="*"/>    <!-- Content Area -->
+        </Grid.RowDefinitions>
+
+        <!-- Status Bar -->
+        <Border Grid.Row="0" Background="#1E1E1E" Padding="15,10">
+            <DockPanel>
+                <StackPanel Orientation="Horizontal" DockPanel.Dock="Left">
+                    <Ellipse Width="10" Height="10" Margin="0,0,10,0">
+                        <Ellipse.Style>
+                            <Style TargetType="Ellipse">
+                                <Setter Property="Fill" Value="Gray"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Status}" Value="Connected">
+                                        <Setter Property="Fill" Value="LimeGreen"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Status}" Value="Disconnected">
+                                        <Setter Property="Fill" Value="Red"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Ellipse.Style>
+                    </Ellipse>
+                    <TextBlock Text="{Binding Status}" VerticalAlignment="Center" FontWeight="Bold"/>
+                    <Separator Width="20" Background="Transparent"/>
+                    <TextBlock Text="User: " VerticalAlignment="Center" Foreground="#AAA"/>
+                    <TextBlock Text="{Binding UserName}" VerticalAlignment="Center" FontWeight="SemiBold"/>
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
+                    <ContentControl Content="{Binding Session}" Margin="0,0,20,0" VerticalAlignment="Center"/>
+                    <TextBlock Text="Session: " VerticalAlignment="Center" Foreground="#AAA"/>
+                    <TextBlock Text="{Binding SessionState}" VerticalAlignment="Center" FontWeight="SemiBold"/>
+                </StackPanel>
+            </DockPanel>
+        </Border>
+
+        <!-- Content Area -->
+        <ContentControl Grid.Row="1" Content="{Binding CurrentViewModel}"/>
+    </Grid>
+</Window>
