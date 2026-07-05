@@ -30,7 +30,14 @@ namespace Sayra.Client.Shared.Ipc
         CONNECTION_STATUS_CHANGED,
         COMMAND_RESPONSE,
         APPS_LIST,
-        BILLING_UPDATE
+        BILLING_UPDATE,
+
+        // Security Events
+        SECURITY_BREACH_DETECTED,
+        PROCESS_BLOCKED,
+        KIOSK_POLICY_REAPPLIED,
+        DEBUGGER_DETECTED,
+        SERVICE_TAMPER_ATTEMPT
     }
 
     public class IpcMessage

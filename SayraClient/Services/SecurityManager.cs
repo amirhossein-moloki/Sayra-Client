@@ -16,6 +16,10 @@ public class SecurityManager
     [DllImport("kernel32.dll", SetLastError = true)]
     private static extern bool SetProcessInformation(IntPtr hProcess, int processInformationClass, ref int processInformation, int processInformationSize);
 
+    [DllImport("kernel32.dll", SetLastError = true, ExactSpelling = true)]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    private static extern bool CheckRemoteDebuggerPresent(IntPtr hProcess, [MarshalAs(UnmanagedType.Bool)] ref bool isDebuggerPresent);
+
     private const int ProcessCriticalProcess = 0x1000;
 
     public void ProtectProcess()
@@ -71,10 +75,75 @@ public class SecurityManager
 
     public bool IsSystemSecure()
     {
-        // Add checks for tampering here
-        // For example, checking if the service is being debugged or if registry keys were changed
-        if (Debugger.IsAttached) return false;
+        if (Debugger.IsAttached)
+        {
+            _logger.LogWarning("Managed debugger is attached.");
+            return false;
+        }
+
+        if (IsRemoteDebuggerPresent())
+        {
+            _logger.LogWarning("Remote (native) debugger detected.");
+            return false;
+        }
+
+        if (HasSuspiciousModules())
+        {
+            _logger.LogWarning("Suspicious modules detected in process memory.");
+            return false;
+        }
+
+        if (HasSuspiciousParent())
+        {
+            _logger.LogWarning("Suspicious parent process detected.");
+            return false;
+        }
 
         return true;
+    }
+
+    private bool IsRemoteDebuggerPresent()
+    {
+        if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) return false;
+
+        bool isDebuggerPresent = false;
+        if (CheckRemoteDebuggerPresent(Process.GetCurrentProcess().Handle, ref isDebuggerPresent))
+        {
+            return isDebuggerPresent;
+        }
+        return false;
+    }
+
+    private bool HasSuspiciousParent()
+    {
+        // Heuristic: If we are running as a service, our parent should be 'services'
+        // If we are running as a process (development/kiosk app), it might be different.
+        // For now, we'll skip strict enforcement to avoid breaking development.
+        return false;
+    }
+
+    private bool HasSuspiciousModules()
+    {
+        try
+        {
+            var suspiciousKeywords = new[] { "cheat", "hack", "inject", "hook", "debug" };
+            foreach (ProcessModule module in Process.GetCurrentProcess().Modules)
+            {
+                var moduleName = module.ModuleName?.ToLowerInvariant() ?? "";
+                foreach (var keyword in suspiciousKeywords)
+                {
+                    if (moduleName.Contains(keyword))
+                    {
+                        _logger.LogWarning("Detected suspicious module: {Module}", module.ModuleName);
+                        return true;
+                    }
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error scanning process modules.");
+        }
+        return false;
     }
 }

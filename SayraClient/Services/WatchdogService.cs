@@ -30,8 +30,7 @@ public class WatchdogService : BackgroundService
         {
             try
             {
-                // In a production environment, this could monitor process health,
-                // check for unauthorized changes to system settings, etc.
+                EnsureGuardianRunning();
 
                 _logger.LogDebug("Watchdog performing health check...");
 
@@ -47,5 +46,36 @@ public class WatchdogService : BackgroundService
         }
 
         _logger.LogInformation("Watchdog Service stopping.");
+    }
+
+    private void EnsureGuardianRunning()
+    {
+        try
+        {
+            var processes = System.Diagnostics.Process.GetProcessesByName("Sayra.Client.Guardian");
+            if (processes.Length == 0)
+            {
+                _logger.LogWarning("Sayra Guardian process not found! Restarting...");
+
+                string guardianPath = System.IO.Path.Combine(AppContext.BaseDirectory, "Sayra.Client.Guardian.exe");
+                if (System.IO.File.Exists(guardianPath))
+                {
+                    System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+                    {
+                        FileName = guardianPath,
+                        UseShellExecute = true,
+                        CreateNoWindow = true
+                    });
+                }
+                else
+                {
+                    _logger.LogError("Sayra Guardian executable not found at {Path}", guardianPath);
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error ensuring Guardian is running.");
+        }
     }
 }

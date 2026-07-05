@@ -57,4 +57,33 @@ public class IntegrityValidator
 
         return isValid;
     }
+
+    public bool VerifyFileIntegrity(string filepath, string expectedHash)
+    {
+        try
+        {
+            if (!File.Exists(filepath))
+            {
+                _logger.LogError("Integrity check failed: File not found {Path}", filepath);
+                return false;
+            }
+
+            using var sha256 = SHA256.Create();
+            using var stream = File.OpenRead(filepath);
+            byte[] hashBytes = sha256.ComputeHash(stream);
+            string actualHash = BitConverter.ToString(hashBytes).Replace("-", "").ToLowerInvariant();
+
+            bool isValid = actualHash == expectedHash.ToLowerInvariant();
+            if (!isValid)
+            {
+                _logger.LogWarning("Integrity breach detected for {File}! Actual: {Actual}, Expected: {Expected}", filepath, actualHash, expectedHash);
+            }
+            return isValid;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error verifying integrity of {File}", filepath);
+            return false;
+        }
+    }
 }
