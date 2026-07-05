@@ -1,3 +1,4 @@
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 namespace SayraClient.Services;
@@ -21,9 +22,12 @@ public class ClientStateManager
 
     public event Action<ClientState, ClientState>? StateChanged;
 
-    public ClientStateManager(ILogger<ClientStateManager> logger)
+    private readonly IServiceProvider _serviceProvider;
+
+    public ClientStateManager(ILogger<ClientStateManager> logger, IServiceProvider serviceProvider)
     {
         _logger = logger;
+        _serviceProvider = serviceProvider;
     }
 
     public ClientState CurrentState
@@ -47,6 +51,24 @@ public class ClientStateManager
             _currentState = newState;
             _logger.LogInformation("Client state transition: {oldState} -> {newState}", oldState, newState);
             StateChanged?.Invoke(oldState, newState);
+            _ = NotifyIpcAsync();
+        }
+    }
+
+    private async Task NotifyIpcAsync()
+    {
+        try
+        {
+            using var scope = _serviceProvider.CreateScope();
+            var ipcServer = scope.ServiceProvider.GetService<IpcServer>();
+            if (ipcServer != null)
+            {
+                await ipcServer.BroadcastEventAsync(Sayra.Client.Shared.Ipc.IpcMessageType.STATE_UPDATED);
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(ex, "Failed to notify IPC Server of state change.");
         }
     }
 

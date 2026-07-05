@@ -20,7 +20,7 @@ namespace Sayra.Client.UI
         private void ConfigureServices(IServiceCollection services)
         {
             // Services
-            services.AddSingleton<IClientBridge, MockClientBridge>();
+            services.AddSingleton<IClientBridge, IpcClientBridge>();
 
             // ViewModels
             services.AddSingleton<ShellViewModel>();
