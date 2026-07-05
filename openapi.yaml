@@ -1,0 +1,858 @@
+openapi: 3.0.3
+info:
+  title: Sayra Server Admin API
+  description: >
+    REST API for the Sayra Server - a LAN-based cyber cafe management system.
+    This API provides a control and management layer for Admin Panels, internal tools, and monitoring systems.
+    Real-time client communication is handled via a separate TCP layer and is not covered by this specification.
+  version: 1.0.0
+servers:
+  - url: http://localhost:5000
+    description: Local development server
+tags:
+  - name: Authentication
+    description: Admin login and token management
+  - name: Clients
+    description: Client PC management and status
+  - name: Sessions
+    description: Session lifecycle and history
+  - name: Commands
+    description: Remote command execution on clients
+  - name: Billing
+    description: Billing summaries and invoicing
+  - name: Monitoring
+    description: System health and client telemetry
+  - name: Configuration
+    description: System settings and feature flags
+  - name: Licensing
+    description: License validation and status
+
+paths:
+  /auth/login:
+    post:
+      tags:
+        - Authentication
+      summary: Admin login
+      description: Authenticates an admin user and issues a JWT bearer token.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: Successfully authenticated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthTokenResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+
+  /clients:
+    get:
+      tags:
+        - Clients
+      summary: List all clients
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: A list of clients
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ClientResponse'
+    post:
+      tags:
+        - Clients
+      summary: Register a new client
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterClientRequest'
+      responses:
+        '201':
+          description: Client registered successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClientResponse'
+
+  /clients/{pcId}:
+    get:
+      tags:
+        - Clients
+      summary: Get client details
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: pcId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Client details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClientResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+
+  /clients/{pcId}/disconnect:
+    delete:
+      tags:
+        - Clients
+      summary: Force disconnect a client
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: pcId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Client disconnect command sent
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+
+  /sessions:
+    get:
+      tags:
+        - Sessions
+      summary: Get session history
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: pcId
+          in: query
+          schema:
+            type: string
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 50
+      responses:
+        '200':
+          description: A list of sessions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SessionResponse'
+
+  /sessions/start:
+    post:
+      tags:
+        - Sessions
+      summary: Start a new session
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StartSessionRequest'
+      responses:
+        '201':
+          description: Session started
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SessionResponse'
+
+  /sessions/{sessionId}/stop:
+    post:
+      tags:
+        - Sessions
+      summary: Stop an active session
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: sessionId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Session stopped
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+
+  /sessions/{sessionId}/pause:
+    post:
+      tags:
+        - Sessions
+      summary: Pause an active session
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: sessionId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Session paused
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+
+  /sessions/{sessionId}/resume:
+    post:
+      tags:
+        - Sessions
+      summary: Resume a paused session
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: sessionId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Session resumed
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+
+  /commands/send:
+    post:
+      tags:
+        - Commands
+      summary: Send a command to a client
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SendCommandRequest'
+      responses:
+        '202':
+          description: Command accepted and queued for delivery
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommandResponse'
+
+  /commands/{commandId}:
+    get:
+      tags:
+        - Commands
+      summary: Get command execution result
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: commandId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Command execution status and result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommandResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+
+  /commands/history/{pcId}:
+    get:
+      tags:
+        - Commands
+      summary: Get command history for a PC
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: pcId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: A list of previously sent commands
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CommandResponse'
+
+  /billing/summary/{pcId}:
+    get:
+      tags:
+        - Billing
+      summary: Get billing summary for a client
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: pcId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Billing summary
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BillingSummaryResponse'
+
+  /billing/invoice/{sessionId}:
+    post:
+      tags:
+        - Billing
+      summary: Generate an invoice for a session
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: sessionId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '201':
+          description: Invoice generated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvoiceResponse'
+
+  /billing/report:
+    get:
+      tags:
+        - Billing
+      summary: Export billing report metadata
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: startDate
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: endDate
+          in: query
+          schema:
+            type: string
+            format: date-time
+      responses:
+        '200':
+          description: Billing report metadata
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BillingReportMetadata'
+
+  /monitoring/telemetry/{pcId}:
+    get:
+      tags:
+        - Monitoring
+      summary: Get telemetry for a client
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: pcId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 100
+      responses:
+        '200':
+          description: Telemetry data points
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TelemetryResponse'
+
+  /monitoring/health:
+    get:
+      tags:
+        - Monitoring
+      summary: Get system health overview
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: System health status
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SystemHealthResponse'
+
+  /monitoring/status:
+    get:
+      tags:
+        - Monitoring
+      summary: Get real-time status snapshot
+      description: Polling-based endpoint to get current status of all clients and active sessions.
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Real-time status snapshot
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatusSnapshotResponse'
+
+  /config:
+    get:
+      tags:
+        - Configuration
+      summary: Get current system settings
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Current system configuration
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SayraConfigResponse'
+    put:
+      tags:
+        - Configuration
+      summary: Update system settings
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateSayraConfigRequest'
+      responses:
+        '200':
+          description: Configuration updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SayraConfigResponse'
+
+  /config/features:
+    get:
+      tags:
+        - Configuration
+      summary: Get feature flags
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Available features based on license
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties:
+                  type: boolean
+
+  /license/validate:
+    post:
+      tags:
+        - Licensing
+      summary: Validate a license file
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ValidateLicenseRequest'
+      responses:
+        '200':
+          description: License validation result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LicenseStatusResponse'
+
+  /license/status:
+    get:
+      tags:
+        - Licensing
+      summary: Get current license status
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Current license information
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LicenseStatusResponse'
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    LoginRequest:
+      type: object
+      required:
+        - username
+        - password
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+          format: password
+
+    AuthTokenResponse:
+      type: object
+      properties:
+        accessToken:
+          type: string
+        expiresIn:
+          type: integer
+          description: Expiry time in seconds
+        tokenType:
+          type: string
+          example: Bearer
+
+    ClientResponse:
+      type: object
+      properties:
+        pcId:
+          type: string
+        siteId:
+          type: string
+        macAddress:
+          type: string
+        hostname:
+          type: string
+        ip:
+          type: string
+        status:
+          type: string
+          enum: [Offline, Online, Locked, InUse, Maintenance]
+        lastSeen:
+          type: string
+          format: date-time
+
+    RegisterClientRequest:
+      type: object
+      required:
+        - macAddress
+        - hostname
+      properties:
+        macAddress:
+          type: string
+        hostname:
+          type: string
+        siteId:
+          type: string
+
+    SessionResponse:
+      type: object
+      properties:
+        sessionId:
+          type: string
+        pcId:
+          type: string
+        siteId:
+          type: string
+        startTime:
+          type: string
+          format: date-time
+        endTime:
+          type: string
+          format: date-time
+          nullable: true
+        status:
+          type: string
+        duration:
+          type: number
+        currentCost:
+          type: number
+        ratePerHour:
+          type: number
+
+    StartSessionRequest:
+      type: object
+      required:
+        - pcId
+      properties:
+        pcId:
+          type: string
+        pricePlanId:
+          type: string
+        userId:
+          type: string
+
+    SendCommandRequest:
+      type: object
+      required:
+        - pcId
+        - action
+      properties:
+        pcId:
+          type: string
+        action:
+          type: string
+          example: Shutdown
+        payload:
+          type: object
+          nullable: true
+
+    CommandResponse:
+      type: object
+      properties:
+        commandId:
+          type: string
+        pcId:
+          type: string
+        action:
+          type: string
+        status:
+          type: string
+          enum: [Pending, Sent, Executed, Failed]
+        result:
+          type: string
+        timestamp:
+          type: string
+          format: date-time
+
+    BillingSummaryResponse:
+      type: object
+      properties:
+        pcId:
+          type: string
+        activeSession:
+          $ref: '#/components/schemas/SessionResponse'
+        unpaidSessionsCount:
+          type: integer
+        totalUnpaidAmount:
+          type: number
+
+    InvoiceResponse:
+      type: object
+      properties:
+        invoiceId:
+          type: string
+        sessionId:
+          type: string
+        amount:
+          type: number
+        tax:
+          type: number
+        total:
+          type: number
+        issuedAt:
+          type: string
+          format: date-time
+
+    BillingReportMetadata:
+      type: object
+      properties:
+        reportId:
+          type: string
+        generatedAt:
+          type: string
+          format: date-time
+        totalRevenue:
+          type: number
+        sessionCount:
+          type: integer
+
+    TelemetryResponse:
+      type: object
+      properties:
+        cpu:
+          type: number
+        ram:
+          type: number
+        uptime:
+          type: integer
+        timestamp:
+          type: string
+          format: date-time
+
+    SystemHealthResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: Healthy
+        version:
+          type: string
+        uptime:
+          type: integer
+        dbConnected:
+          type: boolean
+        redisConnected:
+          type: boolean
+
+    StatusSnapshotResponse:
+      type: object
+      properties:
+        timestamp:
+          type: string
+          format: date-time
+        clients:
+          type: array
+          items:
+            $ref: '#/components/schemas/ClientResponse'
+        activeSessions:
+          type: array
+          items:
+            $ref: '#/components/schemas/SessionResponse'
+
+    SayraConfigResponse:
+      type: object
+      properties:
+        heartbeat:
+          $ref: '#/components/schemas/HeartbeatConfig'
+        session:
+          $ref: '#/components/schemas/SessionConfig'
+        security:
+          $ref: '#/components/schemas/SecurityConfig'
+        scaling:
+          $ref: '#/components/schemas/ScalingConfig'
+        backup:
+          $ref: '#/components/schemas/BackupConfig'
+
+    UpdateSayraConfigRequest:
+      $ref: '#/components/schemas/SayraConfigResponse'
+
+    HeartbeatConfig:
+      type: object
+      properties:
+        intervalSeconds:
+          type: integer
+        timeoutSeconds:
+          type: integer
+
+    SessionConfig:
+      type: object
+      properties:
+        maxConcurrentSessionsPerUser:
+          type: integer
+        defaultSessionDurationMinutes:
+          type: integer
+
+    SecurityConfig:
+      type: object
+      properties:
+        maxAuthAttempts:
+          type: integer
+        lockoutDurationMinutes:
+          type: integer
+        enforceSignedUpdates:
+          type: boolean
+
+    ScalingConfig:
+      type: object
+      properties:
+        enableRedis:
+          type: boolean
+        redisConnectionString:
+          type: string
+
+    BackupConfig:
+      type: object
+      properties:
+        backupIntervalHours:
+          type: integer
+        backupPath:
+          type: string
+        retentionDays:
+          type: integer
+
+    ValidateLicenseRequest:
+      type: object
+      required:
+        - licenseKey
+      properties:
+        licenseKey:
+          type: string
+
+    LicenseStatusResponse:
+      type: object
+      properties:
+        isValid:
+          type: boolean
+        tier:
+          type: string
+          enum: [Trial, Standard, Pro, Enterprise]
+        expiryDate:
+          type: string
+          format: date-time
+        hardwareId:
+          type: string
+        siteName:
+          type: string
+        issuedTo:
+          type: string
+
+    ErrorResponse:
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+        details:
+          type: string
+
+  responses:
+    UnauthorizedError:
+      description: Authentication failed or token is missing/invalid
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    ForbiddenError:
+      description: User does not have sufficient permissions
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    NotFoundError:
+      description: The specified resource was not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    InternalServerError:
+      description: An unexpected error occurred on the server
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
