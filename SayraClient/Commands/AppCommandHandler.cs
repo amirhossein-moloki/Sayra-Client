@@ -57,14 +57,36 @@ public class AppCommandHandler : ICommandHandler
     {
         try
         {
-            if (payload is JsonElement element && element.TryGetProperty("path", out var pathProperty))
+            if (payload is JsonElement element)
             {
-                string path = pathProperty.GetString() ?? throw new Exception("Path is null");
-                _gameLauncher.LaunchGame(path);
-                return ExecutionResult.Success("RUN_APP", "Application started");
+                if (element.TryGetProperty("gameId", out var gameIdProp))
+                {
+                    string gameId = gameIdProp.GetString() ?? throw new Exception("gameId is null");
+                    _gameLauncher.LaunchGame(gameId);
+                    return ExecutionResult.Success("RUN_APP", "Application started");
+                }
+
+                if (element.TryGetProperty("path", out var pathProperty))
+                {
+                    // Fallback or legacy support if needed, but registry is preferred
+                    string path = pathProperty.GetString() ?? throw new Exception("Path is null");
+                    // We might want to restrict this for security, but keeping it for now
+                    // if it matches a registered game by path?
+                    // Better to enforce registry.
+                    var registered = _gameLauncher.GetRegisteredGames()
+                        .FirstOrDefault(g => g.ExecutablePath.Equals(path, StringComparison.OrdinalIgnoreCase));
+
+                    if (registered != null)
+                    {
+                        _gameLauncher.LaunchGame(registered.GameId);
+                        return ExecutionResult.Success("RUN_APP", "Application started from registry");
+                    }
+
+                    return ExecutionResult.Error("RUN_APP", "Direct path execution is not allowed. Please use GameId.");
+                }
             }
 
-            return ExecutionResult.Error("RUN_APP", "Invalid payload: missing path");
+            return ExecutionResult.Error("RUN_APP", "Invalid payload: missing gameId or path");
         }
         catch (Exception ex)
         {

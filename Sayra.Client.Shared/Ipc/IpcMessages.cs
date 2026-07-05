@@ -14,6 +14,7 @@ namespace Sayra.Client.Shared.Ipc
         KILL_APP,
         LOCK_PC,
         GET_APPS,
+        GET_RUNNING_GAMES,
 
         // Core -> UI (Events/Responses)
         STATE_UPDATED,
@@ -22,6 +23,10 @@ namespace Sayra.Client.Shared.Ipc
         SESSION_TIME_UPDATED,
         PROCESS_STARTED,
         PROCESS_EXITED,
+        GAME_LAUNCHED,
+        GAME_EXITED,
+        GAME_FAILED,
+        PROCESS_KILLED,
         CONNECTION_STATUS_CHANGED,
         COMMAND_RESPONSE,
         APPS_LIST
@@ -44,11 +49,20 @@ namespace Sayra.Client.Shared.Ipc
 
     public class LaunchAppRequest
     {
-        public string AppId { get; set; } = string.Empty;
+        public string GameId { get; set; } = string.Empty;
+    }
+
+    public class ProcessEventPayload
+    {
+        public int Pid { get; set; }
+        public string GameId { get; set; } = string.Empty;
+        public string Name { get; set; } = string.Empty;
     }
 
     public class KillAppRequest
     {
-        public string ProcessName { get; set; } = string.Empty;
+        public int? Pid { get; set; }
+        public string? GameId { get; set; }
+        public string? ProcessName { get; set; }
     }
 }
