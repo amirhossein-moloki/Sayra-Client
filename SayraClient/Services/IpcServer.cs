@@ -141,25 +141,35 @@ public class IpcServer : BackgroundService
 
                 case IpcMessageType.LAUNCH_APP:
                     var launchReq = JsonSerializer.Deserialize<LaunchAppRequest>(message.Payload ?? "{}");
-                    if (launchReq != null)
+                    if (launchReq != null && !string.IsNullOrEmpty(launchReq.GameId))
                     {
-                        // In a real scenario, appId would be mapped to a path
-                        // For now, if it's "1", "2", "3" we'll simulate success or launch notepad as proof
-                        string path = launchReq.AppId switch
-                        {
-                            "2" => "chrome.exe",
-                            _ => "notepad.exe"
-                        };
-                        _gameLauncher.LaunchGame(path);
+                        _gameLauncher.LaunchGame(launchReq.GameId);
                         return new IpcCommandResponse { Success = true };
                     }
-                    return new IpcCommandResponse { Success = false, ErrorMessage = "Invalid launch request." };
+                    return new IpcCommandResponse { Success = false, ErrorMessage = "Invalid launch request: GameId is required." };
 
                 case IpcMessageType.KILL_APP:
                     var killReq = JsonSerializer.Deserialize<KillAppRequest>(message.Payload ?? "{}");
                     if (killReq != null)
                     {
-                        _processManager.KillProcessByName(killReq.ProcessName);
+                        if (killReq.Pid.HasValue)
+                        {
+                            _processManager.KillProcess(killReq.Pid.Value);
+                        }
+                        else if (!string.IsNullOrEmpty(killReq.GameId))
+                        {
+                            _gameLauncher.KillGame(killReq.GameId);
+                        }
+                        else if (!string.IsNullOrEmpty(killReq.ProcessName))
+                        {
+                            _processManager.KillProcessByName(killReq.ProcessName);
+                        }
+                        else
+                        {
+                            return new IpcCommandResponse { Success = false, ErrorMessage = "Invalid kill request: Pid, GameId, or ProcessName required." };
+                        }
+
+                        await BroadcastEventAsync(IpcMessageType.PROCESS_KILLED, new { killReq.Pid, killReq.GameId, killReq.ProcessName });
                         return new IpcCommandResponse { Success = true };
                     }
                     return new IpcCommandResponse { Success = false, ErrorMessage = "Invalid kill request." };
@@ -169,14 +179,20 @@ public class IpcServer : BackgroundService
                     return new IpcCommandResponse { Success = true };
 
                 case IpcMessageType.GET_APPS:
-                    // Return mock apps for now
-                    var apps = new List<AppDto>
+                    var registeredGames = _gameLauncher.GetRegisteredGames();
+                    var appDtos = registeredGames.Select(g => new AppDto
                     {
-                        new AppDto { Id = "1", Name = "Steam", Category = "Games" },
-                        new AppDto { Id = "2", Name = "Chrome", Category = "Apps" },
-                        new AppDto { Id = "3", Name = "Valorant", Category = "Games" }
-                    };
-                    return new IpcCommandResponse { Success = true, Result = JsonSerializer.Serialize(apps) };
+                        Id = g.GameId,
+                        Name = g.Name,
+                        Category = g.Category,
+                        IconPath = g.IconPath,
+                        IsFavorite = g.IsFavorite
+                    }).ToList();
+                    return new IpcCommandResponse { Success = true, Result = JsonSerializer.Serialize(appDtos) };
+
+                case IpcMessageType.GET_RUNNING_GAMES:
+                    var runningGames = _gameLauncher.GetRunningGames();
+                    return new IpcCommandResponse { Success = true, Result = JsonSerializer.Serialize(runningGames) };
 
                 default:
                     return new IpcCommandResponse { Success = false, ErrorMessage = $"Unknown message type: {message.MessageType}" };
