@@ -64,4 +64,13 @@ namespace Sayra.Client.Shared.Models
         public string IconPath { get; set; } = string.Empty;
         public bool IsFavorite { get; set; }
     }
+
+    public class SecurityEventPayload
+    {
+        public string EventType { get; set; } = string.Empty;
+        public string Severity { get; set; } = "Medium";
+        public string Description { get; set; } = string.Empty;
+        public DateTime Timestamp { get; set; } = DateTime.UtcNow;
+        public string? Details { get; set; }
+    }
 }

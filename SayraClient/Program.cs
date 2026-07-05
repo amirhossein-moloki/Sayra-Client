@@ -25,6 +25,9 @@ builder.Services.AddWindowsService(options =>
     options.ServiceName = "Sayra Client";
 });
 
+// Configure service recovery (this is better done via installer or sc.exe, but we can hint at it)
+// In .NET 8, the WindowsServiceLifetime handles basic lifecycle.
+
 // Register Core Services
 builder.Services.AddSingleton<ReconnectManager>();
 builder.Services.AddSingleton<TcpClientManager>();
@@ -66,6 +69,7 @@ builder.Services.AddHostedService<Worker>();
 builder.Services.AddHostedService<HeartbeatService>();
 builder.Services.AddHostedService<WatchdogService>();
 builder.Services.AddHostedService<AntiTamperService>();
+builder.Services.AddHostedService<WhitelistingService>();
 builder.Services.AddHostedService<UpdateManager>();
 
 var host = builder.Build();

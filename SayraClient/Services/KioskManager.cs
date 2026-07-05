@@ -20,68 +20,102 @@ public class KioskManager
     public void Lockdown()
     {
         _logger.LogInformation("Enabling Kiosk/Lockdown mode...");
-        SetTaskManagerEnabled(false);
+        ApplyRestrictions(true);
         _isLocked = true;
     }
 
     public void Unlock()
     {
         _logger.LogInformation("Disabling Kiosk/Lockdown mode...");
-        SetTaskManagerEnabled(true);
+        ApplyRestrictions(false);
         _isLocked = false;
     }
 
-    private void SetTaskManagerEnabled(bool enabled)
+    public void ReapplyPolicies()
     {
-        if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+        if (_isLocked)
         {
-            _logger.LogWarning("Task Manager restriction is only supported on Windows.");
-            return;
+            _logger.LogDebug("Self-healing: Re-applying kiosk policies...");
+            ApplyRestrictions(true);
         }
+    }
+
+    private void ApplyRestrictions(bool lockDown)
+    {
+        SetTaskManagerDisabled(lockDown);
+        SetRegistryEditorDisabled(lockDown);
+        SetCmdDisabled(lockDown);
+        SetPowerShellDisabled(lockDown);
+    }
+
+    private void SetTaskManagerDisabled(bool disabled)
+    {
+        SetRegistryPolicy(@"Software\Microsoft\Windows\CurrentVersion\Policies\System", "DisableTaskMgr", disabled ? 1 : 0);
+    }
+
+    private void SetRegistryEditorDisabled(bool disabled)
+    {
+        SetRegistryPolicy(@"Software\Microsoft\Windows\CurrentVersion\Policies\System", "DisableRegistryTools", disabled ? 1 : 0);
+    }
+
+    private void SetCmdDisabled(bool disabled)
+    {
+        SetRegistryPolicy(@"Software\Policies\Microsoft\Windows\System", "DisableCMD", disabled ? 1 : 0);
+    }
+
+    private void SetPowerShellDisabled(bool disabled)
+    {
+        if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) return;
+
+        // One way to disable PowerShell via registry is to set execution policy to Restricted or use Software Restriction Policies
+        // For simplicity in this kiosk agent, we'll set the execution policy for the current user
+        try
+        {
+            const string keyPath = @"Software\Microsoft\PowerShell\1\ShellIds\Microsoft.PowerShell";
+            using var key = Registry.CurrentUser.CreateSubKey(keyPath, true);
+            if (disabled)
+            {
+                key.SetValue("ExecutionPolicy", "Restricted", RegistryValueKind.String);
+            }
+            else
+            {
+                key.DeleteValue("ExecutionPolicy", false);
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to set PowerShell execution policy.");
+        }
+    }
+
+    private void SetRegistryPolicy(string keyPath, string valueName, int value)
+    {
+        if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) return;
 
         try
         {
-            const string keyPath = @"Software\Microsoft\Windows\CurrentVersion\Policies\System";
-            const string valueName = "DisableTaskMgr";
-
-            using var key = Registry.CurrentUser.OpenSubKey(keyPath, true);
-
-            // If the key doesn't exist and we want to enable (remove restriction), nothing to do
-            if (key == null && enabled) return;
-
-            // If the key doesn't exist and we want to disable (add restriction), create it
-            if (key == null && !enabled)
+            using var key = Registry.CurrentUser.CreateSubKey(keyPath, true);
+            if (value == 0)
             {
-                using var newKey = Registry.CurrentUser.CreateSubKey(keyPath);
-                newKey.SetValue(valueName, 1, RegistryValueKind.DWord);
-                _logger.LogInformation("Task Manager disabled (created key).");
-                return;
-            }
-
-            if (key != null)
-            {
-                var currentValue = key.GetValue(valueName);
-                if (enabled)
+                if (key.GetValue(valueName) != null)
                 {
-                    if (currentValue != null)
-                    {
-                        key.DeleteValue(valueName);
-                        _logger.LogInformation("Task Manager enabled (removed restriction).");
-                    }
+                    key.DeleteValue(valueName);
+                    _logger.LogInformation("Policy {Policy} removed.", valueName);
                 }
-                else
+            }
+            else
+            {
+                var current = key.GetValue(valueName);
+                if (current == null || (int)current != value)
                 {
-                    if (currentValue == null || (int)currentValue != 1)
-                    {
-                        key.SetValue(valueName, 1, RegistryValueKind.DWord);
-                        _logger.LogInformation("Task Manager disabled (set restriction).");
-                    }
+                    key.SetValue(valueName, value, RegistryValueKind.DWord);
+                    _logger.LogInformation("Policy {Policy} set to {Value}.", valueName, value);
                 }
             }
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Failed to modify Task Manager registry key.");
+            _logger.LogError(ex, "Failed to set registry policy {Policy} in {Path}.", valueName, keyPath);
         }
     }
 }
