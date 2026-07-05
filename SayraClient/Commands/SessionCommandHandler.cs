@@ -32,10 +32,10 @@ public class SessionCommandHandler : ICommandHandler
         var result = command.Action.ToUpper() switch
         {
             "START_SESSION" => HandleStartSession(command),
-            "STOP_SESSION" => HandleStopSession(),
-            "PAUSE_SESSION" => HandlePauseSession(),
-            "RESUME_SESSION" => HandleResumeSession(),
-            _ => ExecutionResult.Error(command.Action, "Unsupported session action")
+            "STOP_SESSION" => HandleStopSession(command.PcId),
+            "PAUSE_SESSION" => HandlePauseSession(command.PcId),
+            "RESUME_SESSION" => HandleResumeSession(command.PcId),
+            _ => ExecutionResult.Error(command.Action, "Unsupported session action", command.PcId)
         };
 
         if (result != null)
@@ -52,7 +52,7 @@ public class SessionCommandHandler : ICommandHandler
         {
             if (command.Payload == null)
             {
-                return ExecutionResult.Error("START_SESSION", "Missing session payload");
+                return ExecutionResult.Error("START_SESSION", "Missing session payload", command.PcId);
             }
 
             var json = JsonSerializer.Serialize(command.Payload);
@@ -60,7 +60,7 @@ public class SessionCommandHandler : ICommandHandler
 
             if (session == null)
             {
-                return ExecutionResult.Error("START_SESSION", "Invalid session payload");
+                return ExecutionResult.Error("START_SESSION", "Invalid session payload", command.PcId);
             }
 
             return _sessionManager.StartSession(session);
@@ -68,22 +68,22 @@ public class SessionCommandHandler : ICommandHandler
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error starting session");
-            return ExecutionResult.Error("START_SESSION", ex.Message);
+            return ExecutionResult.Error("START_SESSION", ex.Message, command.PcId);
         }
     }
 
-    private ExecutionResult HandleStopSession()
+    private ExecutionResult HandleStopSession(string pcId)
     {
-        return _sessionManager.StopSession();
+        return _sessionManager.StopSession(pcId);
     }
 
-    private ExecutionResult HandlePauseSession()
+    private ExecutionResult HandlePauseSession(string pcId)
     {
-        return _sessionManager.PauseSession();
+        return _sessionManager.PauseSession(pcId);
     }
 
-    private ExecutionResult HandleResumeSession()
+    private ExecutionResult HandleResumeSession(string pcId)
     {
-        return _sessionManager.ResumeSession();
+        return _sessionManager.ResumeSession(pcId);
     }
 }

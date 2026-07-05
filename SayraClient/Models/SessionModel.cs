@@ -2,14 +2,9 @@ using System.Text.Json.Serialization;
 
 namespace SayraClient.Models;
 
-public enum SessionStatus
-{
-    IDLE,
-    ACTIVE,
-    PAUSED,
-    ENDED
-}
-
+/// <summary>
+/// Aligned with SessionResponse schema from openapi.yaml
+/// </summary>
 public class SessionModel
 {
     [JsonPropertyName("sessionId")]
@@ -18,16 +13,28 @@ public class SessionModel
     [JsonPropertyName("pcId")]
     public string PcId { get; set; } = string.Empty;
 
-    [JsonPropertyName("startTime")]
-    public DateTime? StartTime { get; set; }
+    [JsonPropertyName("siteId")]
+    public string SiteId { get; set; } = string.Empty;
 
-    [JsonPropertyName("duration")]
-    public int Duration { get; set; } // in minutes
+    [JsonPropertyName("startTime")]
+    public DateTime StartTime { get; set; }
+
+    [JsonPropertyName("endTime")]
+    public DateTime? EndTime { get; set; }
 
     [JsonPropertyName("status")]
-    [JsonConverter(typeof(JsonStringEnumConverter))]
-    public SessionStatus Status { get; set; } = SessionStatus.IDLE;
+    public string Status { get; set; } = "IDLE";
 
-    [JsonPropertyName("elapsedSeconds")]
+    [JsonPropertyName("duration")]
+    public double Duration { get; set; }
+
+    [JsonPropertyName("currentCost")]
+    public double CurrentCost { get; set; }
+
+    [JsonPropertyName("ratePerHour")]
+    public double RatePerHour { get; set; }
+
+    // Internal helper for tracking elapsed time locally, not part of OpenAPI SessionResponse
+    [JsonIgnore]
     public double ElapsedSeconds { get; set; }
 }

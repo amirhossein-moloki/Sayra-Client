@@ -8,9 +8,9 @@ using SayraClient.Services;
 
 namespace SayraClient;
 
-public class NetworkManager
+public class TcpClientManager
 {
-    private readonly ILogger<NetworkManager> _logger;
+    private readonly ILogger<TcpClientManager> _logger;
     private readonly IConfiguration _configuration;
     private readonly ReconnectManager _reconnectManager;
     private readonly MessageHandler _messageHandler;
@@ -18,21 +18,22 @@ public class NetworkManager
     private readonly SecureTransportLayer _transportLayer;
     private readonly SessionKeyManager _sessionKeyManager;
     private readonly AuthManager _authManager;
+    private readonly ClientStateManager _stateManager;
     private TcpClient? _client;
     private NetworkStream? _stream;
     private readonly string _ipAddress;
     private readonly int _port;
-    private readonly int _heartbeatIntervalSeconds;
 
-    public NetworkManager(
-        ILogger<NetworkManager> logger,
+    public TcpClientManager(
+        ILogger<TcpClientManager> logger,
         IConfiguration configuration,
         ReconnectManager reconnectManager,
         MessageHandler messageHandler,
         IServiceProvider serviceProvider,
         SecureTransportLayer transportLayer,
         SessionKeyManager sessionKeyManager,
-        AuthManager authManager)
+        AuthManager authManager,
+        ClientStateManager stateManager)
     {
         _logger = logger;
         _configuration = configuration;
@@ -42,15 +43,15 @@ public class NetworkManager
         _transportLayer = transportLayer;
         _sessionKeyManager = sessionKeyManager;
         _authManager = authManager;
+        _stateManager = stateManager;
 
         _ipAddress = _configuration["ServerConfig:IpAddress"] ?? "127.0.0.1";
         _port = int.Parse(_configuration["ServerConfig:Port"] ?? "5000");
-        _heartbeatIntervalSeconds = int.Parse(_configuration["ServerConfig:HeartbeatIntervalSeconds"] ?? "10");
     }
 
     public async Task StartAsync(CancellationToken cancellationToken)
     {
-        _logger.LogInformation("NetworkManager starting...");
+        _logger.LogInformation("TcpClientManager starting...");
 
         while (!cancellationToken.IsCancellationRequested)
         {
@@ -58,6 +59,7 @@ public class NetworkManager
             {
                 if (_client == null || !_client.Connected)
                 {
+                    _stateManager.TransitionTo(ClientState.CONNECTING);
                     _logger.LogInformation("Attempting to connect to {ip}:{port}...", _ipAddress, _port);
                     _client = new TcpClient();
                     await _client.ConnectAsync(_ipAddress, _port, cancellationToken);
@@ -65,22 +67,18 @@ public class NetworkManager
                     _reconnectManager.Reset();
                     _logger.LogInformation("Connected to server.");
 
-                    if (_sessionKeyManager.IsAuthenticated)
+                    if (!_sessionKeyManager.IsAuthenticated)
                     {
+                        _stateManager.TransitionTo(ClientState.AUTHENTICATING);
+                    }
+                    else
+                    {
+                        _stateManager.TransitionTo(ClientState.READY);
                         await SendStateSyncAsync(cancellationToken);
                     }
 
-                    // Start background tasks for heartbeats and receiving messages
-                    using var cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
-                    var heartbeatTask = SendHeartbeatLoopAsync(cts.Token);
-                    var receiveTask = ReceiveMessagesLoopAsync(cts.Token);
-
-                    // Wait for either the token to be cancelled or one of the tasks to fail
-                    await Task.WhenAny(heartbeatTask, receiveTask);
-
-                    // Signal cancellation to the other task if one of them stopped
-                    cts.Cancel();
-                    await Task.WhenAll(heartbeatTask, receiveTask);
+                    // Start background task for receiving messages
+                    await ReceiveMessagesLoopAsync(cancellationToken);
                 }
             }
             catch (Exception ex) when (ex is SocketException or IOException or OperationCanceledException)
@@ -88,11 +86,13 @@ public class NetworkManager
                 if (!cancellationToken.IsCancellationRequested)
                 {
                     _logger.LogWarning("Connection lost or failed: {message}", ex.Message);
+                    _stateManager.TransitionTo(ClientState.DISCONNECTED);
                 }
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Unexpected error in NetworkManager.");
+                _logger.LogError(ex, "Unexpected error in TcpClientManager.");
+                _stateManager.TransitionTo(ClientState.DISCONNECTED);
             }
             finally
             {
@@ -101,6 +101,7 @@ public class NetworkManager
 
             if (!cancellationToken.IsCancellationRequested)
             {
+                _stateManager.TransitionTo(ClientState.RECOVERING);
                 await _reconnectManager.WaitForNextRetry(cancellationToken);
             }
         }
@@ -112,22 +113,9 @@ public class NetworkManager
         _stream = null;
         _client?.Dispose();
         _client = null;
-        _sessionKeyManager.ClearSessionKey();
-        _authManager.Reset();
-    }
-
-    private async Task SendHeartbeatLoopAsync(CancellationToken cancellationToken)
-    {
-        while (!cancellationToken.IsCancellationRequested)
-        {
-            var heartbeat = new
-            {
-                type = "HEARTBEAT",
-                timestamp = DateTime.UtcNow
-            };
-            await SendMessageAsync(heartbeat, cancellationToken);
-            await Task.Delay(TimeSpan.FromSeconds(_heartbeatIntervalSeconds), cancellationToken);
-        }
+        // Keep session key for now to support reconnection without re-auth if server allows
+        // _sessionKeyManager.ClearSessionKey();
+        // _authManager.Reset();
     }
 
     private async Task ReceiveMessagesLoopAsync(CancellationToken cancellationToken)
@@ -151,7 +139,6 @@ public class NetworkManager
             catch (Exception ex) when (ex is not OperationCanceledException)
             {
                 _logger.LogError(ex, "Error receiving or handling message.");
-                // If there's a stream error, we should break and reconnect
                 if (ex is IOException or SocketException)
                 {
                     break;
@@ -178,13 +165,6 @@ public class NetworkManager
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error sending state sync.");
-
-            // Fallback to simple connection event if session manager resolution fails
-            await SendMessageAsync(new {
-                type = "EVENT",
-                @event = "CLIENT_CONNECTED",
-                timestamp = DateTime.UtcNow
-            }, cancellationToken);
         }
     }
 

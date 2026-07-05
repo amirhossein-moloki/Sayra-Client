@@ -1,5 +1,8 @@
 using Microsoft.Extensions.Logging;
 using SayraClient.Commands;
+using SayraClient.Models;
+using SayraClient.Services;
+using System.Text.Json;
 
 namespace SayraClient;
 
@@ -8,17 +11,19 @@ public class MessageHandler
     private readonly ILogger<MessageHandler> _logger;
     private readonly CommandParser _commandParser;
     private readonly CommandRouter _commandRouter;
-    private readonly Services.SecureMessageValidator _messageValidator;
-    private readonly Services.SecureTransportLayer _transportLayer;
-    private readonly Services.AuthManager _authManager;
+    private readonly SecureMessageValidator _messageValidator;
+    private readonly SecureTransportLayer _transportLayer;
+    private readonly AuthManager _authManager;
+    private readonly ClientStateManager _stateManager;
 
     public MessageHandler(
         ILogger<MessageHandler> logger,
         CommandParser commandParser,
         CommandRouter commandRouter,
-        Services.SecureMessageValidator messageValidator,
-        Services.SecureTransportLayer transportLayer,
-        Services.AuthManager authManager)
+        SecureMessageValidator messageValidator,
+        SecureTransportLayer transportLayer,
+        AuthManager authManager,
+        ClientStateManager stateManager)
     {
         _logger = logger;
         _commandParser = commandParser;
@@ -26,45 +31,49 @@ public class MessageHandler
         _messageValidator = messageValidator;
         _transportLayer = transportLayer;
         _authManager = authManager;
+        _stateManager = stateManager;
     }
 
-    public async Task HandleMessageAsync(string messageJson, NetworkManager networkManager, CancellationToken cancellationToken)
+    public async Task HandleMessageAsync(string messageJson, TcpClientManager tcpClientManager, CancellationToken cancellationToken)
     {
         try
         {
             string? unwrappedJson = _transportLayer.Unwrap(messageJson);
             if (unwrappedJson == null) return;
 
-            // Check if it's a handshake message first
-            using (var doc = System.Text.Json.JsonDocument.Parse(unwrappedJson))
+            using (var doc = JsonDocument.Parse(unwrappedJson))
             {
-                _logger.LogDebug("Processing unwrapped message: {json}", unwrappedJson);
                 if (doc.RootElement.TryGetProperty("type", out var typeProp))
                 {
                     string type = typeProp.GetString() ?? "";
+
                     if (type.Equals("AUTH_CHALLENGE", StringComparison.OrdinalIgnoreCase))
                     {
-                        var challenge = System.Text.Json.JsonSerializer.Deserialize<Models.AuthChallengeModel>(unwrappedJson);
+                        var challenge = JsonSerializer.Deserialize<AuthChallengeModel>(unwrappedJson);
                         if (challenge != null)
                         {
                             var response = await _authManager.HandleChallengeAsync(challenge);
                             if (response != null)
                             {
-                                await networkManager.SendMessageAsync(response, cancellationToken);
+                                await tcpClientManager.SendMessageAsync(response, cancellationToken);
                             }
                         }
                         return;
                     }
                     else if (type.Equals("AUTH_STATUS", StringComparison.OrdinalIgnoreCase))
                     {
-                        var status = System.Text.Json.JsonSerializer.Deserialize<Models.AuthStatusModel>(unwrappedJson);
+                        var status = JsonSerializer.Deserialize<AuthStatusModel>(unwrappedJson);
                         if (status != null)
                         {
                             _authManager.HandleAuthStatus(status);
                             if (status.Status == "SUCCESS")
                             {
-                                // Notify of current state upon successful authentication
-                                _ = networkManager.SendStateSyncAsync(cancellationToken);
+                                _stateManager.TransitionTo(ClientState.READY);
+                                await tcpClientManager.SendStateSyncAsync(cancellationToken);
+                            }
+                            else
+                            {
+                                _stateManager.TransitionTo(ClientState.AUTHENTICATING);
                             }
                         }
                         return;
@@ -72,12 +81,15 @@ public class MessageHandler
                 }
             }
 
-            var command = _commandParser.Parse(unwrappedJson);
-
-            if (!_messageValidator.Validate(command))
+            // For any other message, check if we are in a ready state
+            if (!_stateManager.IsReady())
             {
+                _logger.LogWarning("Received message while not in READY state. Current state: {state}", _stateManager.CurrentState);
                 return;
             }
+
+            var command = _commandParser.Parse(unwrappedJson);
+            if (!_messageValidator.Validate(command)) return;
 
             _logger.LogInformation("Handling message type: {type}", command!.Type);
 
@@ -87,13 +99,14 @@ public class MessageHandler
                     var result = await _commandRouter.RouteAsync(command, cancellationToken);
                     if (result != null)
                     {
-                        await networkManager.SendMessageAsync(result, cancellationToken);
+                        // Ensure result has PC ID and Command ID if possible
+                        result.PcId = command.PcId;
+                        await tcpClientManager.SendMessageAsync(result, cancellationToken);
                     }
                     break;
 
                 case "PING":
-                    await networkManager.SendMessageAsync(new { type = "PONG" }, cancellationToken);
-                    _logger.LogInformation("Sent PONG response to PING type.");
+                    await tcpClientManager.SendMessageAsync(new { type = "PONG" }, cancellationToken);
                     break;
 
                 default:
