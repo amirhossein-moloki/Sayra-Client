@@ -25,15 +25,15 @@ public class CommandParser
             var command = JsonSerializer.Deserialize<CommandModel>(json, Options);
             if (command == null) return null;
 
-            if (string.IsNullOrWhiteSpace(command.Type))
+            // If action is present, it's likely a COMMAND type message aligned with SendCommandRequest
+            if (!string.IsNullOrWhiteSpace(command.Action) && string.IsNullOrWhiteSpace(command.Type))
             {
-                _logger.LogWarning("Command missing 'type' field.");
-                return null;
+                command.Type = "COMMAND";
             }
 
-            if (command.Type.ToUpper() == "COMMAND" && string.IsNullOrWhiteSpace(command.Action))
+            if (string.IsNullOrWhiteSpace(command.Type))
             {
-                _logger.LogWarning("COMMAND message missing 'action' field.");
+                _logger.LogWarning("Command missing 'type' and 'action' field.");
                 return null;
             }
 

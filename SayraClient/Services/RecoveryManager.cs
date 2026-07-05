@@ -20,7 +20,7 @@ public class RecoveryManager
     {
         _logger.LogInformation("Recovering system state...");
 
-        if (_sessionManager.CurrentStatus == SessionStatus.ACTIVE)
+        if (_sessionManager.CurrentStatus == "ACTIVE")
         {
             _logger.LogInformation("Active session detected, reapplying lockdown.");
             _kioskManager.Lockdown();

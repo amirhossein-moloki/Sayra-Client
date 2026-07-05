@@ -6,9 +6,9 @@ namespace SayraClient;
 public class Worker : BackgroundService
 {
     private readonly ILogger<Worker> _logger;
-    private readonly NetworkManager _networkManager;
+    private readonly TcpClientManager _networkManager;
 
-    public Worker(ILogger<Worker> logger, NetworkManager networkManager)
+    public Worker(ILogger<Worker> logger, TcpClientManager networkManager)
     {
         _logger = logger;
         _networkManager = networkManager;

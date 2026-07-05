@@ -7,12 +7,12 @@ public class WatchdogService : BackgroundService
 {
     private readonly ILogger<WatchdogService> _logger;
     private readonly RecoveryManager _recoveryManager;
-    private readonly NetworkManager _networkManager;
+    private readonly TcpClientManager _networkManager;
 
     public WatchdogService(
         ILogger<WatchdogService> logger,
         RecoveryManager recoveryManager,
-        NetworkManager networkManager)
+        TcpClientManager networkManager)
     {
         _logger = logger;
         _recoveryManager = recoveryManager;

@@ -107,7 +107,7 @@ public class AppCommandHandler : ICommandHandler
         try
         {
             var processes = _processMonitor.GetRunningProcesses();
-            return ExecutionResult.Success("LIST_PROCESSES", data: processes);
+            return ExecutionResult.Success("LIST_PROCESSES", result: JsonSerializer.Serialize(processes));
         }
         catch (Exception ex)
         {

@@ -27,7 +27,8 @@ builder.Services.AddWindowsService(options =>
 
 // Register Core Services
 builder.Services.AddSingleton<ReconnectManager>();
-builder.Services.AddSingleton<NetworkManager>();
+builder.Services.AddSingleton<TcpClientManager>();
+builder.Services.AddSingleton<ClientStateManager>();
 
 // Register Application Services
 builder.Services.AddSingleton<ProcessManager>();
@@ -58,6 +59,7 @@ builder.Services.AddSingleton<ICommandHandler, SessionCommandHandler>();
 builder.Services.AddSingleton<MessageHandler>();
 
 builder.Services.AddHostedService<Worker>();
+builder.Services.AddHostedService<HeartbeatService>();
 builder.Services.AddHostedService<WatchdogService>();
 builder.Services.AddHostedService<AntiTamperService>();
 builder.Services.AddHostedService<UpdateManager>();
