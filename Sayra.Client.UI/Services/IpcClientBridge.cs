@@ -16,6 +16,7 @@ public class IpcClientBridge : IClientBridge, IDisposable
 {
     private const string PipeName = "SayraClientIpcPipe";
     private readonly Subject<ClientState> _stateSubject = new();
+    private readonly Subject<IpcMessageType> _eventSubject = new();
     private readonly ConcurrentDictionary<string, TaskCompletionSource<IpcMessage>> _pendingRequests = new();
     private NamedPipeClientStream? _clientStream;
     private StreamWriter? _writer;
@@ -48,6 +49,9 @@ public class IpcClientBridge : IClientBridge, IDisposable
 
                 UpdateStatus(ClientStatus.Connected);
                 _logger_info("Connected to Core IPC.");
+
+                // Immediately sync state upon connection
+                NotifyStateChanged();
 
                 // Start listening for messages
                 while (!ct.IsCancellationRequested && _clientStream.IsConnected)
@@ -97,10 +101,15 @@ public class IpcClientBridge : IClientBridge, IDisposable
         else
         {
             // Event from core
+            _eventSubject.OnNext(message.MessageType);
+
             switch (message.MessageType)
             {
                 case IpcMessageType.STATE_UPDATED:
                 case IpcMessageType.SESSION_TIME_UPDATED:
+                case IpcMessageType.SESSION_STARTED:
+                case IpcMessageType.SESSION_ENDED:
+                case IpcMessageType.BILLING_UPDATE:
                     NotifyStateChanged();
                     break;
             }
@@ -140,20 +149,44 @@ public class IpcClientBridge : IClientBridge, IDisposable
     {
         if (_currentStatus != ClientStatus.Connected)
         {
-            return new ClientState { Status = _currentStatus };
+            return new ClientState
+            {
+                Status = _currentStatus,
+                SessionState = _currentStatus == ClientStatus.Connecting ? SessionState.Connecting : SessionState.Idle
+            };
         }
 
         try
         {
             var response = await SendRequestAsync(IpcMessageType.GET_STATE);
-            var stateDto = JsonSerializer.Deserialize<ClientStateDto>(response.Payload ?? "{}");
+            var stateDto = JsonSerializer.Deserialize<ClientStateDto>(response.ResultFromPayload() ?? "{}");
+
+            var sessionState = MapSessionState(stateDto?.SessionStatus ?? SessionStatus.IDLE);
+            if (sessionState == SessionState.Idle)
+            {
+                if (stateDto?.CoreState == ClientCoreState.AUTHENTICATING || stateDto?.CoreState == ClientCoreState.READY)
+                {
+                    sessionState = SessionState.Authenticated;
+                }
+            }
+
+            if (sessionState == SessionState.InSession && stateDto?.RemainingTime.TotalMinutes < 5)
+            {
+                sessionState = SessionState.SessionEnding;
+            }
 
             return new ClientState
             {
                 Status = _currentStatus,
-                SessionState = MapSessionState(stateDto?.SessionStatus ?? SessionStatus.IDLE),
+                SessionState = sessionState,
                 RemainingTime = stateDto?.RemainingTime ?? TimeSpan.Zero,
-                UserName = stateDto?.UserName
+                StartTime = stateDto?.StartTime,
+                ElapsedSeconds = stateDto?.ElapsedSeconds ?? 0,
+                TotalDurationMinutes = stateDto?.TotalDurationMinutes ?? 0,
+                RatePerHour = stateDto?.RatePerHour ?? 0,
+                CurrentCost = stateDto?.CurrentCost ?? 0,
+                UserName = stateDto?.UserName,
+                IsKioskLocked = stateDto?.IsKioskLocked ?? false
             };
         }
         catch
@@ -167,7 +200,7 @@ public class IpcClientBridge : IClientBridge, IDisposable
         return status switch
         {
             SessionStatus.IDLE => SessionState.Idle,
-            SessionStatus.ACTIVE => SessionState.Active,
+            SessionStatus.ACTIVE => SessionState.InSession,
             SessionStatus.PAUSED => SessionState.Paused,
             SessionStatus.ENDED => SessionState.Ended,
             _ => SessionState.Idle
@@ -199,6 +232,8 @@ public class IpcClientBridge : IClientBridge, IDisposable
     }
 
     public IObservable<ClientState> SubscribeToStateChanged() => _stateSubject.AsObservable();
+
+    public IObservable<IpcMessageType> SubscribeToEvents() => _eventSubject.AsObservable();
 
     public async Task<IEnumerable<AppModel>> GetApplications()
     {

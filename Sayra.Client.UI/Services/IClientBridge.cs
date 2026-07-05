@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Sayra.Client.Shared.Ipc;
 
 namespace Sayra.Client.UI.Services
 {
@@ -16,8 +17,11 @@ namespace Sayra.Client.UI.Services
     public enum SessionState
     {
         Idle,
-        Active,
+        Connecting,
+        Authenticated,
+        InSession,
         Paused,
+        SessionEnding,
         Ended
     }
 
@@ -26,7 +30,13 @@ namespace Sayra.Client.UI.Services
         public ClientStatus Status { get; set; }
         public SessionState SessionState { get; set; }
         public TimeSpan RemainingTime { get; set; }
+        public DateTime? StartTime { get; set; }
+        public double ElapsedSeconds { get; set; }
+        public double TotalDurationMinutes { get; set; }
+        public double RatePerHour { get; set; }
+        public double CurrentCost { get; set; }
         public string? UserName { get; set; }
+        public bool IsKioskLocked { get; set; }
     }
 
     public class AppModel
@@ -44,6 +54,7 @@ namespace Sayra.Client.UI.Services
         Task<ClientState> GetState();
         Task SendCommand(string action, object? parameters = null);
         IObservable<ClientState> SubscribeToStateChanged();
+        IObservable<IpcMessageType> SubscribeToEvents();
         Task<IEnumerable<AppModel>> GetApplications();
     }
 }

@@ -134,12 +134,22 @@ public class SessionManager : IDisposable
                     {
                         SaveSessionState();
                     }
+
+                    // Simple billing update simulation if not handled by server yet
+                    // In a real scenario, the server would push these updates.
+                    // For now, we update it here so the UI has something to show.
+                    _currentSession.CurrentCost = (_currentSession.ElapsedSeconds / 3600.0) * _currentSession.RatePerHour;
                 }
             }
 
             if (sessionToProcess != null)
             {
                 _ = NotifyIpcAsync(Sayra.Client.Shared.Ipc.IpcMessageType.SESSION_TIME_UPDATED);
+
+                if (((int)sessionToProcess.ElapsedSeconds) % 60 == 0)
+                {
+                    _ = NotifyIpcAsync(Sayra.Client.Shared.Ipc.IpcMessageType.BILLING_UPDATE);
+                }
 
                 double totalAllowedSeconds = sessionToProcess.Duration * 60;
                 if (sessionToProcess.ElapsedSeconds >= totalAllowedSeconds)

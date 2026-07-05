@@ -8,21 +8,27 @@ public class KioskManager
 {
     private readonly ILogger<KioskManager> _logger;
 
+    private bool _isLocked;
+
     public KioskManager(ILogger<KioskManager> logger)
     {
         _logger = logger;
     }
 
+    public bool IsLocked() => _isLocked;
+
     public void Lockdown()
     {
         _logger.LogInformation("Enabling Kiosk/Lockdown mode...");
         SetTaskManagerEnabled(false);
+        _isLocked = true;
     }
 
     public void Unlock()
     {
         _logger.LogInformation("Disabling Kiosk/Lockdown mode...");
         SetTaskManagerEnabled(true);
+        _isLocked = false;
     }
 
     private void SetTaskManagerEnabled(bool enabled)
