@@ -50,6 +50,8 @@ public class SessionManager : IDisposable
             _logger.LogInformation("Session {id} started for PC {pcId}. Duration: {duration} min",
                 session.SessionId, session.PcId, session.Duration);
 
+            _ = NotifyIpcAsync(Sayra.Client.Shared.Ipc.IpcMessageType.SESSION_STARTED);
+
             return ExecutionResult.Success("START_SESSION", "Session started", session.PcId);
         }
     }
@@ -70,6 +72,8 @@ public class SessionManager : IDisposable
             SaveSessionState();
 
             _logger.LogInformation("Session {id} stopped.", _currentSession.SessionId);
+
+            _ = NotifyIpcAsync(Sayra.Client.Shared.Ipc.IpcMessageType.SESSION_ENDED);
 
             return ExecutionResult.Success("STOP_SESSION", "Session stopped", pcId);
         }
@@ -135,6 +139,8 @@ public class SessionManager : IDisposable
 
             if (sessionToProcess != null)
             {
+                _ = NotifyIpcAsync(Sayra.Client.Shared.Ipc.IpcMessageType.SESSION_TIME_UPDATED);
+
                 double totalAllowedSeconds = sessionToProcess.Duration * 60;
                 if (sessionToProcess.ElapsedSeconds >= totalAllowedSeconds)
                 {
@@ -220,6 +226,23 @@ public class SessionManager : IDisposable
                 RatePerHour = _currentSession.RatePerHour,
                 ElapsedSeconds = _currentSession.ElapsedSeconds
             };
+        }
+    }
+
+    private async Task NotifyIpcAsync(Sayra.Client.Shared.Ipc.IpcMessageType messageType)
+    {
+        try
+        {
+            using var scope = _serviceProvider.CreateScope();
+            var ipcServer = scope.ServiceProvider.GetService<IpcServer>();
+            if (ipcServer != null)
+            {
+                await ipcServer.BroadcastEventAsync(messageType);
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(ex, "Failed to notify IPC Server of session event.");
         }
     }
 

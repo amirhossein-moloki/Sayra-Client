@@ -55,6 +55,10 @@ builder.Services.AddSingleton<ICommandHandler, SystemCommandHandler>();
 builder.Services.AddSingleton<ICommandHandler, AppCommandHandler>();
 builder.Services.AddSingleton<ICommandHandler, SessionCommandHandler>();
 
+// Register IPC Server
+builder.Services.AddSingleton<IpcServer>();
+builder.Services.AddHostedService(sp => sp.GetRequiredService<IpcServer>());
+
 // MessageHandler depends on Command System
 builder.Services.AddSingleton<MessageHandler>();
 
