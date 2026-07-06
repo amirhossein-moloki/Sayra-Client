@@ -5,6 +5,7 @@ namespace Sayra.Client.Shared.Models
     public enum ClientCoreState
     {
         STARTING,
+        DISCOVERING,
         CONNECTING,
         AUTHENTICATING,
         READY,

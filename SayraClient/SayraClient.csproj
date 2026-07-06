@@ -21,5 +21,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Sayra.Client.Shared\Sayra.Client.Shared.csproj" />
+    <ProjectReference Include="..\Sayra.Client.Discovery\Sayra.Client.Discovery.csproj" />
   </ItemGroup>
 </Project>
