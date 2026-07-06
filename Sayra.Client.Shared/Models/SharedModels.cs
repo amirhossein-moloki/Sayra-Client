@@ -73,4 +73,22 @@ namespace Sayra.Client.Shared.Models
         public DateTime Timestamp { get; set; } = DateTime.UtcNow;
         public string? Details { get; set; }
     }
+
+    public class UpdateManifest
+    {
+        public string Version { get; set; } = string.Empty;
+        public string ReleaseNotes { get; set; } = string.Empty;
+        public string PackageUrl { get; set; } = string.Empty;
+        public string Checksum { get; set; } = string.Empty; // SHA256
+        public string Signature { get; set; } = string.Empty; // RSA Signature of the checksum or manifest
+        public bool IsCritical { get; set; }
+        public DateTime ReleaseDate { get; set; }
+    }
+
+    public class UpdateProgressPayload
+    {
+        public string Version { get; set; } = string.Empty;
+        public double ProgressPercentage { get; set; }
+        public string CurrentAction { get; set; } = string.Empty;
+    }
 }

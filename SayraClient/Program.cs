@@ -51,6 +51,10 @@ builder.Services.AddSingleton<IntegrityValidator>();
 builder.Services.AddSingleton<AuthManager>();
 builder.Services.AddSingleton<SecureTransportLayer>();
 
+// Register Update Services
+builder.Services.AddSingleton<UpdateVerificationService>();
+builder.Services.AddSingleton<BackupService>();
+
 // Register Command System
 builder.Services.AddSingleton<CommandParser>();
 builder.Services.AddSingleton<CommandRouter>();

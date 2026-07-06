@@ -32,6 +32,14 @@ namespace Sayra.Client.Shared.Ipc
         APPS_LIST,
         BILLING_UPDATE,
 
+        // Update Events
+        UPDATE_AVAILABLE,
+        UPDATE_STARTED,
+        UPDATE_PROGRESS,
+        UPDATE_SUCCESS,
+        UPDATE_FAILED,
+        UPDATE_ROLLBACK,
+
         // Security Events
         SECURITY_BREACH_DETECTED,
         PROCESS_BLOCKED,
