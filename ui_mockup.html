@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sayra Client UI Mockup</title>
+    <style>
+        :root {
+            --background: #121212;
+            --surface: #1E1E1E;
+            --accent: #00FFFF;
+            --text: #FFFFFF;
+            --muted: #888888;
+            --error: #FF0000;
+            --success: #4CAF50;
+            --warning: #FFA500;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Roboto, sans-serif;
+            background-color: var(--background);
+            color: var(--text);
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Status Bar */
+        .status-bar {
+            background-color: var(--surface);
+            padding: 10px 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #333;
+        }
+
+        .status-left, .status-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .status-indicator {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: var(--success);
+        }
+
+        .status-text {
+            font-weight: bold;
+        }
+
+        .user-info {
+            color: var(--muted);
+            font-size: 0.9em;
+        }
+
+        .user-name {
+            color: var(--text);
+            font-weight: 600;
+        }
+
+        /* Main Content */
+        .content {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 30px;
+            overflow-y: auto;
+        }
+
+        /* Login Card */
+        .login-card {
+            background-color: #1A1A1A;
+            width: 350px;
+            padding: 40px 30px;
+            border-radius: 10px;
+            border: 1px solid #333;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .logo {
+            color: var(--accent);
+            font-size: 36px;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .label {
+            color: var(--muted);
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+
+        .pin-input {
+            background-color: #222;
+            border: 1px solid #444;
+            color: white;
+            padding: 10px;
+            font-size: 24px;
+            text-align: center;
+            border-radius: 5px;
+        }
+
+        .cyber-button {
+            background-color: var(--accent);
+            color: black;
+            font-weight: bold;
+            border: none;
+            padding: 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        /* Launcher Grid */
+        .launcher-view {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        .search-bar {
+            background-color: #252525;
+            border-radius: 20px;
+            padding: 10px 20px;
+            width: 400px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .search-input {
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 16px;
+            flex: 1;
+            outline: none;
+        }
+
+        .app-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 20px;
+        }
+
+        .app-card {
+            background-color: var(--surface);
+            border-radius: 10px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .app-icon-placeholder {
+            height: 150px;
+            background-color: #2A2A2A;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 48px;
+            font-weight: bold;
+            color: var(--accent);
+        }
+
+        .app-details {
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .app-name {
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .app-category {
+            color: var(--muted);
+            font-size: 11px;
+            margin-bottom: 10px;
+        }
+
+        .launch-button {
+            background-color: var(--accent);
+            color: black;
+            border: none;
+            padding: 8px;
+            border-radius: 15px;
+            font-weight: bold;
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        /* Billing Panel */
+        .billing-panel {
+            background-color: #252525;
+            border-radius: 5px;
+            padding: 10px;
+            display: flex;
+            gap: 20px;
+        }
+
+        .billing-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .billing-label {
+            font-size: 10px;
+            color: var(--muted);
+        }
+
+        .billing-value {
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .current-cost { color: var(--success); }
+        .est-total { color: #2196F3; }
+
+        /* Session Panel */
+        .session-panel {
+            display: flex;
+            gap: 20px;
+        }
+
+        .remaining-time {
+            color: var(--accent);
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        /* Mockup Layouts */
+        .mockup-container {
+            display: none; /* Controlled by JS for the screenshot script */
+            width: 1280px;
+            height: 720px;
+            background-color: var(--background);
+            flex-direction: column;
+        }
+
+        #login-mockup { display: flex; }
+        #launcher-mockup { display: none; }
+
+    </style>
+</head>
+<body>
+
+    <!-- Main Shell Mockup -->
+    <div id="main-shell" style="width: 1280px; height: 720px; display: flex; flex-direction: column;">
+
+        <!-- Status Bar -->
+        <div class="status-bar">
+            <div class="status-left">
+                <div class="status-indicator"></div>
+                <div class="status-text">Connected</div>
+                <div class="user-info">User: <span class="user-name">Guest</span></div>
+
+                <div class="billing-panel">
+                    <div class="billing-item">
+                        <span class="billing-label">RATE/HR</span>
+                        <span class="billing-value">25,000</span>
+                    </div>
+                    <div class="billing-item">
+                        <span class="billing-label">CURRENT</span>
+                        <span class="billing-value current-cost">12,500</span>
+                    </div>
+                    <div class="billing-item">
+                        <span class="billing-label">ESTIMATED</span>
+                        <span class="billing-value est-total">50,000</span>
+                    </div>
+                </div>
+            </div>
+            <div class="status-right">
+                <div class="session-panel">
+                    <div class="billing-item">
+                        <span class="billing-label">REMAINING</span>
+                        <span class="remaining-time">01:34:20</span>
+                    </div>
+                    <div class="billing-item">
+                        <span class="billing-label">ELAPSED</span>
+                        <span class="billing-value">00:25:40</span>
+                    </div>
+                </div>
+                <div class="user-info">Status: <span class="user-name" style="width: 80px; display: inline-block;">InSession</span></div>
+            </div>
+        </div>
+
+        <!-- Content Area (Showing Launcher) -->
+        <div class="content" style="display: block;">
+            <div class="launcher-view">
+                <div class="search-bar">
+                    <span>🔍</span>
+                    <input type="text" class="search-input" placeholder="Search games...">
+                </div>
+
+                <div class="app-grid">
+                    <!-- App 1 -->
+                    <div class="app-card">
+                        <div class="app-icon-placeholder">C</div>
+                        <div class="app-details">
+                            <span class="app-name">Counter-Strike 2</span>
+                            <span class="app-category">Shooter</span>
+                            <button class="launch-button">LAUNCH</button>
+                        </div>
+                    </div>
+                    <!-- App 2 -->
+                    <div class="app-card">
+                        <div class="app-icon-placeholder">D</div>
+                        <div class="app-details">
+                            <span class="app-name">Dota 2</span>
+                            <span class="app-category">MOBA</span>
+                            <button class="launch-button">LAUNCH</button>
+                        </div>
+                    </div>
+                    <!-- App 3 -->
+                    <div class="app-card">
+                        <div class="app-icon-placeholder">G</div>
+                        <div class="app-details">
+                            <span class="app-name">GTA V</span>
+                            <span class="app-category">Action</span>
+                            <button class="launch-button">LAUNCH</button>
+                        </div>
+                    </div>
+                     <!-- App 4 -->
+                     <div class="app-card">
+                        <div class="app-icon-placeholder">V</div>
+                        <div class="app-details">
+                            <span class="app-name">Valorant</span>
+                            <span class="app-category">Shooter</span>
+                            <button class="launch-button">LAUNCH</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Separate Login Mockup for reference -->
+    <div id="login-overlay" style="position: absolute; top: 0; left: 0; width: 1280px; height: 720px; background-color: var(--background); display: none; justify-content: center; align-items: center; z-index: 100;">
+        <div class="login-card">
+            <div class="logo">SAYRA</div>
+            <div class="billing-item">
+                <span class="label">ENTER PIN</span>
+                <input type="password" class="pin-input" value="••••">
+            </div>
+            <button class="cyber-button">LOGIN</button>
+        </div>
+    </div>
+
+</body>
+</html>
