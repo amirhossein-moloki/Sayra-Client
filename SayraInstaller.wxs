@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+    <!--
+        Sayra Client MSI Installer Design (WiX Toolset v3.11+)
+        This is a template/design for the professional enterprise installer.
+    -->
+    <Product Id="*" Name="Sayra Client" Language="1033" Version="1.0.0.0" Manufacturer="Sayra Technologies" UpgradeCode="a1b2c3d4-e5f6-47a8-9b0c-1d2e3f4a5b6c">
+        <Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
+
+        <MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
+        <MediaTemplate EmbedCab="yes" />
+
+        <Feature Id="ProductFeature" Title="Sayra Client" Level="1">
+            <ComponentGroupRef Id="ProductComponents" />
+            <ComponentGroupRef Id="ServiceComponents" />
+        </Feature>
+
+        <Directory Id="TARGETDIR" Name="SourceDir">
+            <Directory Id="ProgramFiles64Folder">
+                <Directory Id="INSTALLFOLDER" Name="Sayra">
+                    <Directory Id="CoreFolder" Name="CoreService" />
+                    <Directory Id="UIFolder" Name="UI" />
+                    <Directory Id="ConfigFolder" Name="Config" />
+                    <Directory Id="LogsFolder" Name="Logs" />
+                    <Directory Id="UpdatesFolder" Name="Updates" />
+                </Directory>
+            </Directory>
+        </Directory>
+
+        <ComponentGroup Id="ServiceComponents" Directory="CoreFolder">
+            <Component Id="SayraServiceExe" Guid="*">
+                <File Id="SayraClientEXE" Source="publish_core\SayraClient.exe" KeyPath="yes" />
+                <ServiceInstall Id="ServiceInstaller"
+                                Type="ownProcess"
+                                Name="Sayra Client"
+                                DisplayName="Sayra Client Service"
+                                Description="Sayra LAN Kiosk &amp; Session Management Service"
+                                Start="auto"
+                                Account="LocalSystem"
+                                ErrorControl="normal">
+                    <ServiceConfig DelayedAutoStart="yes" OnInstall="yes" />
+                    <ServiceFailureActions OnFailure="restart" Delay="60000" ResetPeriod="86400" />
+                </ServiceInstall>
+                <ServiceControl Id="StartService" Start="install" Stop="both" Remove="uninstall" Name="Sayra Client" Wait="yes" />
+            </Component>
+        </ComponentGroup>
+
+        <ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
+            <!-- Additional components like UI binaries, config templates, etc would go here -->
+            <Component Id="CreateLogsDir" Guid="*">
+                <CreateFolder Directory="LogsFolder" />
+            </Component>
+        </ComponentGroup>
+    </Product>
+</Wix>
