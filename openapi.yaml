@@ -1,31 +1,42 @@
 openapi: 3.0.3
 info:
-  title: Sayra Server Admin API
+  title: Sayra Server Admin API & Client Protocol
   description: >
-    REST API for the Sayra Server - a LAN-based cyber cafe management system.
-    This API provides a control and management layer for Admin Panels, internal tools, and monitoring systems.
-    Real-time client communication is handled via a separate TCP layer and is not covered by this specification.
-  version: 1.0.0
+    REST API for the Sayra Server and specification for the Secure TCP Client Protocol.
+    This API provides management for Admin Panels and describes the secure communication layer for Client Agents.
+
+    ### Secure Transport Layer (TCP)
+    Real-time communication between the Client and Server is secured via AES-256-CBC encryption and HMAC-SHA256 signatures.
+    Authenticated messages MUST be wrapped in the `SecureMessageEnvelope`.
+
+    ### Client Authentication Handshake
+    Clients authenticate using a challenge-response mechanism:
+    1. **Server -> Client:** `AUTH_CHALLENGE`
+    2. **Client -> Server:** `AUTH_RESPONSE` (HMAC signature of challenge + Encrypted SessionKey)
+    3. **Server -> Client:** `AUTH_STATUS`
+  version: 1.1.0
 servers:
   - url: http://localhost:5000
     description: Local development server
 tags:
   - name: Authentication
-    description: Admin login and token management
+    description: Admin login and Client handshake protocol
   - name: Clients
-    description: Client PC management and status
+    description: Client PC management and real-time state
   - name: Sessions
-    description: Session lifecycle and history
+    description: Session lifecycle, history, and control
   - name: Commands
-    description: Remote command execution on clients
+    description: Remote command execution and tracking
   - name: Billing
-    description: Billing summaries and invoicing
+    description: Billing summaries, invoicing, and reporting
   - name: Monitoring
-    description: System health and client telemetry
+    description: System health, telemetry, and real-time status
   - name: Configuration
     description: System settings and feature flags
   - name: Licensing
     description: License validation and status
+  - name: Updates
+    description: Client update management
 
 paths:
   /auth/login:
@@ -108,6 +119,28 @@ paths:
                 $ref: '#/components/schemas/ClientResponse'
         '404':
           $ref: '#/components/responses/NotFoundError'
+
+  /clients/{pcId}/status:
+    get:
+      tags:
+        - Clients
+      summary: Get detailed client real-time state
+      description: Returns the current internal state synchronized from the client agent.
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: pcId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Client detailed state
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClientStateDto'
 
   /clients/{pcId}/disconnect:
     delete:
@@ -238,6 +271,7 @@ paths:
       tags:
         - Commands
       summary: Send a command to a client
+      description: Queues a command for delivery over the secure TCP channel.
       security:
         - BearerAuth: []
       requestBody:
@@ -427,6 +461,20 @@ paths:
               schema:
                 $ref: '#/components/schemas/StatusSnapshotResponse'
 
+  /updates/manifest:
+    get:
+      tags:
+        - Updates
+      summary: Fetch latest update manifest
+      description: Used by client agents to check for version updates.
+      responses:
+        '200':
+          description: Update manifest
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpdateManifest'
+
   /config:
     get:
       tags:
@@ -520,8 +568,72 @@ components:
       type: http
       scheme: bearer
       bearerFormat: JWT
+    SecureTransport:
+      type: apiKey
+      in: header
+      name: X-Sayra-Signature
+      description: HMAC-SHA256 signature for secure TCP messages.
 
   schemas:
+    # --- Security & Handshake (TCP Only) ---
+    SecureMessageEnvelope:
+      type: object
+      description: Mandatory wrapper for all authenticated TCP traffic.
+      required:
+        - payload
+        - signature
+        - timestamp
+      properties:
+        payload:
+          type: string
+          description: AES-256-CBC encrypted JSON payload (Base64).
+        signature:
+          type: string
+          description: HMAC-SHA256 signature of (payload + timestamp) (Base64).
+        timestamp:
+          type: string
+          format: date-time
+          description: UTC timestamp for replay protection.
+
+    AuthChallenge:
+      type: object
+      required: [type, challenge]
+      properties:
+        type:
+          type: string
+          enum: [AUTH_CHALLENGE]
+        challenge:
+          type: string
+          description: Cryptographic nonce generated by the server.
+
+    AuthResponse:
+      type: object
+      required: [type, response, session_key]
+      properties:
+        type:
+          type: string
+          enum: [AUTH_RESPONSE]
+        response:
+          type: string
+          description: HMAC-SHA256(challenge, MasterKey) in Base64.
+        session_key:
+          type: string
+          description: New AES-256 SessionKey encrypted with MasterKey (Base64).
+
+    AuthStatus:
+      type: object
+      required: [type, status]
+      properties:
+        type:
+          type: string
+          enum: [AUTH_STATUS]
+        status:
+          type: string
+          enum: [SUCCESS, FAILED]
+        message:
+          type: string
+
+    # --- Authentication (REST) ---
     LoginRequest:
       type: object
       required:
@@ -546,6 +658,7 @@ components:
           type: string
           example: Bearer
 
+    # --- Client Models ---
     ClientResponse:
       type: object
       properties:
@@ -566,6 +679,35 @@ components:
           type: string
           format: date-time
 
+    ClientStateDto:
+      type: object
+      description: Detailed real-time state of the client agent.
+      properties:
+        coreState:
+          type: string
+          enum: [STARTING, CONNECTING, AUTHENTICATING, READY, IN_SESSION, DISCONNECTED, RECOVERING]
+        sessionStatus:
+          type: string
+          enum: [IDLE, ACTIVE, PAUSED, ENDED]
+        remainingTime:
+          type: string
+          format: duration
+        startTime:
+          type: string
+          format: date-time
+        elapsedSeconds:
+          type: number
+        totalDurationMinutes:
+          type: number
+        ratePerHour:
+          type: number
+        currentCost:
+          type: number
+        userName:
+          type: string
+        isKioskLocked:
+          type: boolean
+
     RegisterClientRequest:
       type: object
       required:
@@ -579,8 +721,13 @@ components:
         siteId:
           type: string
 
+    # --- Session Models ---
     SessionResponse:
+      $ref: '#/components/schemas/SessionModel'
+
+    SessionModel:
       type: object
+      required: [sessionId, pcId]
       properties:
         sessionId:
           type: string
@@ -597,8 +744,10 @@ components:
           nullable: true
         status:
           type: string
+          enum: [IDLE, ACTIVE, PAUSED, ENDED]
         duration:
           type: number
+          description: Duration in minutes.
         currentCost:
           type: number
         ratePerHour:
@@ -616,6 +765,7 @@ components:
         userId:
           type: string
 
+    # --- Command Models ---
     SendCommandRequest:
       type: object
       required:
@@ -626,13 +776,35 @@ components:
           type: string
         action:
           type: string
-          example: Shutdown
+          enum: [LOCK_PC, UNLOCK_PC, PING, GET_DIAGNOSTICS, RUN_APP, KILL_APP, LIST_PROCESSES, START_SESSION, STOP_SESSION, PAUSE_SESSION, RESUME_SESSION]
         payload:
-          type: object
+          oneOf:
+            - $ref: '#/components/schemas/RunAppPayload'
+            - $ref: '#/components/schemas/KillAppPayload'
+            - $ref: '#/components/schemas/SessionModel'
           nullable: true
 
-    CommandResponse:
+    RunAppPayload:
       type: object
+      required: [gameId]
+      properties:
+        gameId:
+          type: string
+
+    KillAppPayload:
+      type: object
+      properties:
+        pid:
+          type: integer
+        name:
+          type: string
+
+    CommandResponse:
+      $ref: '#/components/schemas/ExecutionResult'
+
+    ExecutionResult:
+      type: object
+      required: [action, status]
       properties:
         commandId:
           type: string
@@ -644,11 +816,25 @@ components:
           type: string
           enum: [Pending, Sent, Executed, Failed]
         result:
-          type: string
+          oneOf:
+            - type: string
+            - $ref: '#/components/schemas/TelemetryModel'
+            - type: array
+              items:
+                $ref: '#/components/schemas/ProcessInfo'
+          description: Serialized result or error details.
         timestamp:
           type: string
           format: date-time
 
+    ProcessInfo:
+      type: object
+      properties:
+        pid: { type: integer }
+        name: { type: string }
+        gameId: { type: string }
+
+    # --- Billing Models ---
     BillingSummaryResponse:
       type: object
       properties:
@@ -691,15 +877,22 @@ components:
         sessionCount:
           type: integer
 
+    # --- Monitoring Models ---
     TelemetryResponse:
+      $ref: '#/components/schemas/TelemetryModel'
+
+    TelemetryModel:
       type: object
+      required: [cpu, ram, uptime, timestamp]
       properties:
         cpu:
           type: number
         ram:
           type: number
+          description: Memory usage in MB.
         uptime:
           type: integer
+          description: Uptime in seconds.
         timestamp:
           type: string
           format: date-time
@@ -734,6 +927,45 @@ components:
           items:
             $ref: '#/components/schemas/SessionResponse'
 
+    # --- Client-Initiated Events (TCP) ---
+    HeartbeatMessage:
+      type: object
+      required: [type, timestamp]
+      properties:
+        type:
+          type: string
+          enum: [HEARTBEAT]
+        timestamp:
+          type: string
+          format: date-time
+
+    ClientEventMessage:
+      type: object
+      required: [type, event]
+      properties:
+        type:
+          type: string
+          enum: [EVENT]
+        event:
+          type: string
+          enum: [CLIENT_CONNECTED, SESSION_STARTED, SESSION_ENDED, BILLING_UPDATE, SECURITY_BREACH_DETECTED]
+        pcId: { type: string }
+        timestamp: { type: string, format: date-time }
+        session: { $ref: '#/components/schemas/SessionModel' }
+        details: { type: string }
+
+    # --- Update Models ---
+    UpdateManifest:
+      type: object
+      required: [Version, PackageUrl, Checksum]
+      properties:
+        Version: { type: string }
+        ReleaseNotes: { type: string }
+        PackageUrl: { type: string }
+        Checksum: { type: string, description: SHA256 }
+        Signature: { type: string, description: Digital signature }
+
+    # --- Configuration Models ---
     SayraConfigResponse:
       type: object
       properties:
@@ -754,104 +986,83 @@ components:
     HeartbeatConfig:
       type: object
       properties:
-        intervalSeconds:
-          type: integer
-        timeoutSeconds:
-          type: integer
+        intervalSeconds: { type: integer }
+        timeoutSeconds: { type: integer }
 
     SessionConfig:
       type: object
       properties:
-        maxConcurrentSessionsPerUser:
-          type: integer
-        defaultSessionDurationMinutes:
-          type: integer
+        maxConcurrentSessionsPerUser: { type: integer }
+        defaultSessionDurationMinutes: { type: integer }
 
     SecurityConfig:
       type: object
       properties:
-        maxAuthAttempts:
-          type: integer
-        lockoutDurationMinutes:
-          type: integer
-        enforceSignedUpdates:
-          type: boolean
+        maxAuthAttempts: { type: integer }
+        lockoutDurationMinutes: { type: integer }
+        enforceSignedUpdates: { type: boolean }
 
     ScalingConfig:
       type: object
       properties:
-        enableRedis:
-          type: boolean
-        redisConnectionString:
-          type: string
+        enableRedis: { type: boolean }
+        redisConnectionString: { type: string }
 
     BackupConfig:
       type: object
       properties:
-        backupIntervalHours:
-          type: integer
-        backupPath:
-          type: string
-        retentionDays:
-          type: integer
+        backupIntervalHours: { type: integer }
+        backupPath: { type: string }
+        retentionDays: { type: integer }
 
+    # --- Licensing Models ---
     ValidateLicenseRequest:
       type: object
-      required:
-        - licenseKey
+      required: [licenseKey]
       properties:
-        licenseKey:
-          type: string
+        licenseKey: { type: string }
 
     LicenseStatusResponse:
       type: object
       properties:
-        isValid:
-          type: boolean
+        isValid: { type: boolean }
         tier:
           type: string
           enum: [Trial, Standard, Pro, Enterprise]
-        expiryDate:
-          type: string
-          format: date-time
-        hardwareId:
-          type: string
-        siteName:
-          type: string
-        issuedTo:
-          type: string
+        expiryDate: { type: string, format: date-time }
+        hardwareId: { type: string }
+        siteName: { type: string }
+        issuedTo: { type: string }
 
+    # --- Common ---
     ErrorResponse:
       type: object
       properties:
-        code:
-          type: string
-        message:
-          type: string
-        details:
-          type: string
+        code: { type: string }
+        message: { type: string }
+        details: { type: string }
 
   responses:
     UnauthorizedError:
-      description: Authentication failed or token is missing/invalid
+      description: Authentication failed
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/ErrorResponse'
     ForbiddenError:
-      description: User does not have sufficient permissions
+      description: Access denied
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/ErrorResponse'
     NotFoundError:
-      description: The specified resource was not found
+      description: Resource not found
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/ErrorResponse'
     InternalServerError:
-      description: An unexpected error occurred on the server
+      description: Server error
       content:
         application/json:
           schema:
