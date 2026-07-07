@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using SayraClient.Services;
+using Sayra.Client.Discovery.Services;
 
 namespace SayraClient;
 
@@ -19,10 +20,11 @@ public class TcpClientManager
     private readonly SessionKeyManager _sessionKeyManager;
     private readonly AuthManager _authManager;
     private readonly ClientStateManager _stateManager;
+    private readonly IDiscoveryService _discoveryService;
     private TcpClient? _client;
     private NetworkStream? _stream;
-    private readonly string _ipAddress;
-    private readonly int _port;
+    private string? _discoveredIp;
+    private int? _discoveredPort;
 
     public TcpClientManager(
         ILogger<TcpClientManager> logger,
@@ -33,7 +35,8 @@ public class TcpClientManager
         SecureTransportLayer transportLayer,
         SessionKeyManager sessionKeyManager,
         AuthManager authManager,
-        ClientStateManager stateManager)
+        ClientStateManager stateManager,
+        IDiscoveryService discoveryService)
     {
         _logger = logger;
         _configuration = configuration;
@@ -44,9 +47,7 @@ public class TcpClientManager
         _sessionKeyManager = sessionKeyManager;
         _authManager = authManager;
         _stateManager = stateManager;
-
-        _ipAddress = _configuration["ServerConfig:IpAddress"] ?? "127.0.0.1";
-        _port = int.Parse(_configuration["ServerConfig:Port"] ?? "5000");
+        _discoveryService = discoveryService;
     }
 
     public async Task StartAsync(CancellationToken cancellationToken)
@@ -59,26 +60,55 @@ public class TcpClientManager
             {
                 if (_client == null || !_client.Connected)
                 {
-                    _stateManager.TransitionTo(ClientState.CONNECTING);
-                    _logger.LogInformation("Attempting to connect to {ip}:{port}...", _ipAddress, _port);
-                    _client = new TcpClient();
-                    await _client.ConnectAsync(_ipAddress, _port, cancellationToken);
-                    _stream = _client.GetStream();
-                    _reconnectManager.Reset();
-                    _logger.LogInformation("Connected to server.");
+                    string? targetIp = _configuration["ServerConfig:IpAddress"];
+                    int targetPort = int.Parse(_configuration["ServerConfig:Port"] ?? "5000");
 
-                    if (!_sessionKeyManager.IsAuthenticated)
+                    // If IpAddress is placeholder or not set, use discovery
+                    if (string.IsNullOrEmpty(targetIp) || targetIp == "SAYRA_SERVER_IP")
                     {
-                        _stateManager.TransitionTo(ClientState.AUTHENTICATING);
+                        if (_discoveredIp == null)
+                        {
+                            _stateManager.TransitionTo(ClientState.DISCOVERING);
+                            var discoveryResponse = await _discoveryService.DiscoverAsync(cancellationToken);
+                            if (discoveryResponse != null)
+                            {
+                                _discoveredIp = discoveryResponse.ip;
+                                _discoveredPort = discoveryResponse.tcpPort;
+                            }
+                        }
+
+                        targetIp = _discoveredIp;
+                        targetPort = _discoveredPort ?? targetPort;
+                    }
+
+                    if (string.IsNullOrEmpty(targetIp))
+                    {
+                        _logger.LogWarning("Server IP not discovered and no static IP configured. Retrying...");
+                        _stateManager.TransitionTo(ClientState.DISCONNECTED);
                     }
                     else
                     {
-                        _stateManager.TransitionTo(ClientState.READY);
-                        await SendStateSyncAsync(cancellationToken);
-                    }
+                        _stateManager.TransitionTo(ClientState.CONNECTING);
+                        _logger.LogInformation("Attempting to connect to {ip}:{port}...", targetIp, targetPort);
+                        _client = new TcpClient();
+                        await _client.ConnectAsync(targetIp, targetPort, cancellationToken);
+                        _stream = _client.GetStream();
+                        _reconnectManager.Reset();
+                        _logger.LogInformation("Connected to server.");
 
-                    // Start background task for receiving messages
-                    await ReceiveMessagesLoopAsync(cancellationToken);
+                        if (!_sessionKeyManager.IsAuthenticated)
+                        {
+                            _stateManager.TransitionTo(ClientState.AUTHENTICATING);
+                        }
+                        else
+                        {
+                            _stateManager.TransitionTo(ClientState.READY);
+                            await SendStateSyncAsync(cancellationToken);
+                        }
+
+                        // Start background task for receiving messages
+                        await ReceiveMessagesLoopAsync(cancellationToken);
+                    }
                 }
             }
             catch (Exception ex) when (ex is SocketException or IOException or OperationCanceledException)
@@ -102,6 +132,9 @@ public class TcpClientManager
             if (!cancellationToken.IsCancellationRequested)
             {
                 _stateManager.TransitionTo(ClientState.RECOVERING);
+                // Clear discovered endpoint on failure to trigger re-discovery
+                _discoveredIp = null;
+                _discoveredPort = null;
                 await _reconnectManager.WaitForNextRetry(cancellationToken);
             }
         }
@@ -120,7 +153,9 @@ public class TcpClientManager
 
     private async Task ReceiveMessagesLoopAsync(CancellationToken cancellationToken)
     {
-        using var reader = new StreamReader(_stream!, Encoding.UTF8, leaveOpen: true);
+        if (_stream == null) return;
+
+        using var reader = new StreamReader(_stream, Encoding.UTF8, leaveOpen: true);
         while (!cancellationToken.IsCancellationRequested)
         {
             try

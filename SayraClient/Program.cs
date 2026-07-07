@@ -1,6 +1,7 @@
 using SayraClient;
 using SayraClient.Commands;
 using SayraClient.Services;
+using Sayra.Client.Discovery.Services;
 using Microsoft.Extensions.Hosting.WindowsServices;
 using Serilog;
 
@@ -43,6 +44,9 @@ builder.Services.AddSingleton<RecoveryManager>();
 builder.Services.AddSingleton<SecurityManager>();
 builder.Services.AddSingleton<SecureMessageValidator>();
 builder.Services.AddSingleton<DiagnosticsService>();
+
+// Register Discovery Service
+builder.Services.AddSingleton<IDiscoveryService, UdpDiscoveryService>();
 
 // Register Security Services
 builder.Services.AddSingleton<SessionKeyManager>();

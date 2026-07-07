@@ -6,6 +6,7 @@ namespace SayraClient.Services;
 public enum ClientState
 {
     STARTING,
+    DISCOVERING,
     CONNECTING,
     AUTHENTICATING,
     READY,
