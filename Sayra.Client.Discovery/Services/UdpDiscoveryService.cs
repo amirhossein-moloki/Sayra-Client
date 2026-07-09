@@ -24,7 +24,7 @@ public class UdpDiscoveryService : IDiscoveryService
         _discoveryPort = int.Parse(_configuration["DiscoveryConfig:Port"] ?? "5001");
     }
 
-    public async Task<DiscoveryResponse?> DiscoverAsync(CancellationToken cancellationToken)
+    public async Task<DiscoveryResponse?> DiscoverAsync(CancellationToken cancellationToken, bool forceFresh = false)
     {
         _logger.LogInformation("Starting server discovery on port {port}...", _discoveryPort);
 

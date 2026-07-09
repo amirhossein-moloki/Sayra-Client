@@ -6,6 +6,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using SayraClient.Services;
 using Sayra.Client.Discovery.Services;
+using Sayra.Client.Discovery.Models;
 
 namespace SayraClient;
 
@@ -23,8 +24,8 @@ public class TcpClientManager
     private readonly IDiscoveryService _discoveryService;
     private TcpClient? _client;
     private NetworkStream? _stream;
-    private string? _discoveredIp;
-    private int? _discoveredPort;
+    private string? _resolvedIp;
+    private int? _resolvedPort;
 
     public TcpClientManager(
         ILogger<TcpClientManager> logger,
@@ -60,55 +61,7 @@ public class TcpClientManager
             {
                 if (_client == null || !_client.Connected)
                 {
-                    string? targetIp = _configuration["ServerConfig:IpAddress"];
-                    int targetPort = int.Parse(_configuration["ServerConfig:Port"] ?? "5000");
-
-                    // If IpAddress is placeholder or not set, use discovery
-                    if (string.IsNullOrEmpty(targetIp) || targetIp == "SAYRA_SERVER_IP")
-                    {
-                        if (_discoveredIp == null)
-                        {
-                            _stateManager.TransitionTo(ClientState.DISCOVERING);
-                            var discoveryResponse = await _discoveryService.DiscoverAsync(cancellationToken);
-                            if (discoveryResponse != null)
-                            {
-                                _discoveredIp = discoveryResponse.ip;
-                                _discoveredPort = discoveryResponse.tcpPort;
-                            }
-                        }
-
-                        targetIp = _discoveredIp;
-                        targetPort = _discoveredPort ?? targetPort;
-                    }
-
-                    if (string.IsNullOrEmpty(targetIp))
-                    {
-                        _logger.LogWarning("Server IP not discovered and no static IP configured. Retrying...");
-                        _stateManager.TransitionTo(ClientState.DISCONNECTED);
-                    }
-                    else
-                    {
-                        _stateManager.TransitionTo(ClientState.CONNECTING);
-                        _logger.LogInformation("Attempting to connect to {ip}:{port}...", targetIp, targetPort);
-                        _client = new TcpClient();
-                        await _client.ConnectAsync(targetIp, targetPort, cancellationToken);
-                        _stream = _client.GetStream();
-                        _reconnectManager.Reset();
-                        _logger.LogInformation("Connected to server.");
-
-                        if (!_sessionKeyManager.IsAuthenticated)
-                        {
-                            _stateManager.TransitionTo(ClientState.AUTHENTICATING);
-                        }
-                        else
-                        {
-                            _stateManager.TransitionTo(ClientState.READY);
-                            await SendStateSyncAsync(cancellationToken);
-                        }
-
-                        // Start background task for receiving messages
-                        await ReceiveMessagesLoopAsync(cancellationToken);
-                    }
+                    await ResolveAndConnectAsync(cancellationToken);
                 }
             }
             catch (Exception ex) when (ex is SocketException or IOException or OperationCanceledException)
@@ -132,11 +85,100 @@ public class TcpClientManager
             if (!cancellationToken.IsCancellationRequested)
             {
                 _stateManager.TransitionTo(ClientState.RECOVERING);
-                // Clear discovered endpoint on failure to trigger re-discovery
-                _discoveredIp = null;
-                _discoveredPort = null;
+                // Clear resolved endpoint on failure to trigger re-discovery/cache reload
+                _resolvedIp = null;
+                _resolvedPort = null;
                 await _reconnectManager.WaitForNextRetry(cancellationToken);
             }
+        }
+    }
+
+    private async Task ResolveAndConnectAsync(CancellationToken cancellationToken)
+    {
+        // 1. Try static IP if configured
+        string? staticIp = _configuration["ServerConfig:IpAddress"];
+        int staticPort = int.Parse(_configuration["ServerConfig:Port"] ?? "5000");
+
+        if (!string.IsNullOrEmpty(staticIp) && staticIp != "SAYRA_SERVER_IP")
+        {
+            _resolvedIp = staticIp;
+            _resolvedPort = staticPort;
+        }
+        else
+        {
+            // 2. Try Discovery (Check Cache first)
+            bool discoveryEnabled = _configuration.GetValue<bool>("ServerDiscovery:Enabled", true);
+            if (discoveryEnabled)
+            {
+                _stateManager.TransitionTo(ClientState.DISCOVERING_SERVER);
+                var response = await _discoveryService.DiscoverAsync(cancellationToken, forceFresh: false);
+                if (response != null)
+                {
+                    _resolvedIp = response.ip;
+                    _resolvedPort = response.tcpPort;
+                }
+            }
+        }
+
+        if (string.IsNullOrEmpty(_resolvedIp))
+        {
+            _logger.LogWarning("Server IP not resolved. Retrying...");
+            return;
+        }
+
+        // 3. Try Connect
+        bool connected = await ConnectAsync(_resolvedIp, _resolvedPort ?? staticPort, cancellationToken);
+
+        // 4. If connection failed and discovery is enabled, try fresh discovery
+        if (!connected && _configuration.GetValue<bool>("ServerDiscovery:Enabled", true) &&
+            (string.IsNullOrEmpty(staticIp) || staticIp == "SAYRA_SERVER_IP"))
+        {
+            _logger.LogInformation("Connection to cached/resolved server failed. Retrying with fresh discovery...");
+            _stateManager.TransitionTo(ClientState.DISCOVERING_SERVER);
+            var response = await _discoveryService.DiscoverAsync(cancellationToken, forceFresh: true);
+            if (response != null)
+            {
+                _resolvedIp = response.ip;
+                _resolvedPort = response.tcpPort;
+                await ConnectAsync(_resolvedIp, _resolvedPort ?? staticPort, cancellationToken);
+            }
+        }
+    }
+
+    private async Task<bool> ConnectAsync(string ip, int port, CancellationToken cancellationToken)
+    {
+        try
+        {
+            _stateManager.TransitionTo(ClientState.CONNECTING);
+            _logger.LogInformation("Attempting to connect to {ip}:{port}...", ip, port);
+            _client = new TcpClient();
+
+            using var timeoutCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+            timeoutCts.CancelAfter(TimeSpan.FromSeconds(5));
+
+            await _client.ConnectAsync(ip, port, timeoutCts.Token);
+            _stream = _client.GetStream();
+            _reconnectManager.Reset();
+            _logger.LogInformation("Connected to server.");
+
+            if (!_sessionKeyManager.IsAuthenticated)
+            {
+                _stateManager.TransitionTo(ClientState.AUTHENTICATING);
+            }
+            else
+            {
+                _stateManager.TransitionTo(ClientState.READY);
+                await SendStateSyncAsync(cancellationToken);
+            }
+
+            // Await the message loop here to keep the connection alive
+            await ReceiveMessagesLoopAsync(cancellationToken);
+            return true;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning("Failed to connect to {ip}:{port} - {message}", ip, port, ex.Message);
+            return false;
         }
     }
 
@@ -146,9 +188,6 @@ public class TcpClientManager
         _stream = null;
         _client?.Dispose();
         _client = null;
-        // Keep session key for now to support reconnection without re-auth if server allows
-        // _sessionKeyManager.ClearSessionKey();
-        // _authManager.Reset();
     }
 
     private async Task ReceiveMessagesLoopAsync(CancellationToken cancellationToken)
@@ -180,6 +219,9 @@ public class TcpClientManager
                 }
             }
         }
+
+        // When loop breaks, trigger reconnect
+        _stateManager.TransitionTo(ClientState.DISCONNECTED);
     }
 
     public async Task SendStateSyncAsync(CancellationToken cancellationToken)

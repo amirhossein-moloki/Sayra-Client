@@ -23,4 +23,10 @@
     <ProjectReference Include="..\Sayra.Client.Shared\Sayra.Client.Shared.csproj" />
     <ProjectReference Include="..\Sayra.Client.Discovery\Sayra.Client.Discovery.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <None Update="server_public.key">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
 </Project>

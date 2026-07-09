@@ -7,6 +7,7 @@ public enum ClientState
 {
     STARTING,
     DISCOVERING,
+    DISCOVERING_SERVER,
     CONNECTING,
     AUTHENTICATING,
     READY,
