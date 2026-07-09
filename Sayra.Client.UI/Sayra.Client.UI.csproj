@@ -11,6 +11,7 @@
 
   <ItemGroup>
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.2" />
+    <PackageReference Include="SharpVectors.Wpf" Version="1.8.4" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
     <PackageReference Include="System.Reactive" Version="6.0.0" />
   </ItemGroup>
@@ -19,4 +20,13 @@
     <ProjectReference Include="..\Sayra.Client.Shared\Sayra.Client.Shared.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Resource Include="..\photo_2026-07-08_22-07-56.jpg" Link="Assets\photo_2026-07-08_22-07-56.jpg" />
+    <Resource Include="..\sayra.svg" Link="Assets\sayra.svg" />
+    <Resource Include="..\Peyda-Bold.woff2" Link="Fonts\Peyda-Bold.woff2" />
+    <Resource Include="..\Peyda-Medium.woff2" Link="Fonts\Peyda-Medium.woff2" />
+    <Resource Include="..\Peyda-Thin.woff2" Link="Fonts\Peyda-Thin.woff2" />
+    <Resource Include="..\Peyda-black.woff2" Link="Fonts\Peyda-black.woff2" />
+    <Resource Include="..\peyda-light.woff2" Link="Fonts\peyda-light.woff2" />
+  </ItemGroup>
 </Project>
