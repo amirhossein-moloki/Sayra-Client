@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+    <EnableWindowsTargeting>true</EnableWindowsTargeting>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.2" />
+    <PackageReference Include="SharpVectors.Wpf" Version="1.8.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Assets\photo_2026-07-08_22-07-56.jpg" />
+    <Resource Include="Assets\sayra.svg" />
+    <Resource Include="Fonts\Peyda-Bold.ttf" />
+    <Resource Include="Fonts\Peyda-Medium.ttf" />
+    <Resource Include="Fonts\Peyda-Light.ttf" />
+    <Resource Include="Fonts\Peyda-Thin.ttf" />
+    <Resource Include="Fonts\Peyda-Black.ttf" />
+  </ItemGroup>
+
+</Project>

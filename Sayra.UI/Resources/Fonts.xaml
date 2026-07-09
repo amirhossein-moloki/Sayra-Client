@@ -1,0 +1,8 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <FontFamily x:Key="PeydaBold">pack://application:,,,/Fonts/#Peyda Bold</FontFamily>
+    <FontFamily x:Key="PeydaMedium">pack://application:,,,/Fonts/#Peyda Medium</FontFamily>
+    <FontFamily x:Key="PeydaThin">pack://application:,,,/Fonts/#Peyda Thin</FontFamily>
+    <FontFamily x:Key="PeydaBlack">pack://application:,,,/Fonts/#Peyda Black</FontFamily>
+    <FontFamily x:Key="PeydaLight">pack://application:,,,/Fonts/#Peyda Light</FontFamily>
+</ResourceDictionary>
