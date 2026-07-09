@@ -46,7 +46,19 @@ builder.Services.AddSingleton<SecureMessageValidator>();
 builder.Services.AddSingleton<DiagnosticsService>();
 
 // Register Discovery Service
-builder.Services.AddSingleton<IDiscoveryService, UdpDiscoveryService>();
+builder.Services.AddSingleton<UdpDiscoveryClient>(sp =>
+{
+    var config = sp.GetRequiredService<IConfiguration>();
+    int port = int.Parse(config["ServerDiscovery:UdpPort"] ?? "37020");
+    return new UdpDiscoveryClient(sp.GetRequiredService<ILogger<UdpDiscoveryClient>>(), port);
+});
+builder.Services.AddSingleton<DiscoveryValidator>(sp =>
+{
+    return new DiscoveryValidator(
+        sp.GetRequiredService<ILogger<DiscoveryValidator>>(),
+        Path.Combine(AppContext.BaseDirectory, "server_public.key"));
+});
+builder.Services.AddSingleton<IDiscoveryService, DiscoveryManager>();
 
 // Register Security Services
 builder.Services.AddSingleton<SessionKeyManager>();
