@@ -52,6 +52,8 @@ public partial class WarningOverlayService : ObservableObject
         _lastWarningMinutes = (int)Math.Floor(minutes);
     }
 
+    public void ShowSoftWarning(string message) => ShowWarning(message, false, false);
+
     private void ShowWarning(string message, bool isCritical, bool isModal)
     {
         WarningMessage = message;

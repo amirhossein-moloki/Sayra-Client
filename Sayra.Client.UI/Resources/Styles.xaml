@@ -64,7 +64,7 @@
     </Style>
 
     <!-- App-wide implicit styles -->
-    <Style TargetType="TextBlock">
+    <Style x:Key="LegacyTextBlock" TargetType="TextBlock">
         <Setter Property="Foreground" Value="{StaticResource TextBrush}"/>
         <Setter Property="FontFamily" Value="Segoe UI, Roboto, sans-serif"/>
     </Style>
