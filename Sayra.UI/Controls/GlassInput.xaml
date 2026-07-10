@@ -1,0 +1,93 @@
+<UserControl x:Class="Sayra.UI.Controls.GlassInput"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             mc:Ignorable="d"
+             x:Name="self"
+             d:DesignHeight="60" d:DesignWidth="400">
+    <UserControl.Resources>
+        <!-- Soft glow dynamic effect -->
+        <Style x:Key="GlassBorderStyle" TargetType="Border">
+            <Setter Property="Background" Value="#1A0A0A0A" />
+            <Setter Property="BorderBrush" Value="#22F5FF00" />
+            <Setter Property="BorderThickness" Value="1.5" />
+            <Setter Property="CornerRadius" Value="12" />
+            <Setter Property="SnapsToDevicePixels" Value="True" />
+            <Style.Triggers>
+                <!-- We do not animate frozen SolidColorBrush.Color via Triggers directly if it causes issues.
+                     Let's use Storyboards on non-frozen target elements or simply rely on UI elements with Opacity/Thickness shifts. -->
+            </Style.Triggers>
+        </Style>
+    </UserControl.Resources>
+
+    <Grid Margin="0,8">
+        <!-- InputBorder with SolidColorBrush specifically declared locally so it's NOT frozen -->
+        <Border x:Name="InputBorder" CornerRadius="12" BorderThickness="1.5" Background="#1A0A0A0A">
+            <Border.BorderBrush>
+                <SolidColorBrush x:Name="BorderBrushInstance" Color="#22F5FF00" />
+            </Border.BorderBrush>
+            <Border.Effect>
+                <DropShadowEffect x:Name="ShadowEffectInstance" Color="#F5FF00" BlurRadius="12" ShadowDepth="0" Opacity="0" />
+            </Border.Effect>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="50" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <!-- Icon Container -->
+                <ContentPresenter Grid.Column="0"
+                                  Content="{Binding Icon, ElementName=self}"
+                                  HorizontalAlignment="Center"
+                                  VerticalAlignment="Center"/>
+
+                <!-- Text / Password Input -->
+                <Grid Grid.Column="1" VerticalAlignment="Center" Margin="5,0,15,0">
+                    <!-- Standard TextBox for Username/Text -->
+                    <TextBox x:Name="NormalTextBox"
+                             Text="{Binding Text, ElementName=self, UpdateSourceTrigger=PropertyChanged}"
+                             Background="Transparent"
+                             BorderThickness="0"
+                             Foreground="#FFFFFF"
+                             CaretBrush="#F5FF00"
+                             FontFamily="{StaticResource PeydaMedium}"
+                             FontSize="16"
+                             VerticalAlignment="Center"
+                             Visibility="{Binding IsPassword, ElementName=self, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=Inverse}"
+                             GotFocus="TextBox_GotFocus"
+                             LostFocus="TextBox_LostFocus"
+                             MouseEnter="TextBox_MouseEnter"
+                             MouseLeave="TextBox_MouseLeave" />
+
+                    <!-- PasswordBox for Password input -->
+                    <PasswordBox x:Name="SecuredPasswordBox"
+                                 Background="Transparent"
+                                 BorderThickness="0"
+                                 Foreground="#FFFFFF"
+                                 CaretBrush="#F5FF00"
+                                 FontFamily="{StaticResource PeydaMedium}"
+                                 FontSize="16"
+                                 VerticalAlignment="Center"
+                                 Visibility="{Binding IsPassword, ElementName=self, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                 PasswordChanged="SecuredPasswordBox_PasswordChanged"
+                                 GotFocus="TextBox_GotFocus"
+                                 LostFocus="TextBox_LostFocus"
+                                 MouseEnter="TextBox_MouseEnter"
+                                 MouseLeave="TextBox_MouseLeave" />
+
+                    <!-- Floating Placeholder/Hint -->
+                    <TextBlock x:Name="PlaceholderTextBlock"
+                               Text="{Binding Placeholder, ElementName=self}"
+                               Foreground="#66FFFFFF"
+                               FontFamily="{StaticResource PeydaMedium}"
+                               FontSize="16"
+                               IsHitTestVisible="False"
+                               VerticalAlignment="Center"
+                               HorizontalAlignment="Left"
+                               Margin="2,0,0,0" />
+                </Grid>
+            </Grid>
+        </Border>
+    </Grid>
+</UserControl>

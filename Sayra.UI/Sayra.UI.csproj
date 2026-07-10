@@ -24,4 +24,10 @@
     <Resource Include="Fonts\Peyda-Black.ttf" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="Assets\LoginBg.mp4">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
