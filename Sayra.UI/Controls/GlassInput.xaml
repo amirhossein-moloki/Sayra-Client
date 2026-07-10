@@ -23,7 +23,7 @@
 
     <Grid Margin="0,8">
         <!-- InputBorder with SolidColorBrush specifically declared locally so it's NOT frozen -->
-        <Border x:Name="InputBorder" CornerRadius="12" BorderThickness="1.5" Background="#1A0A0A0A">
+        <Border x:Name="InputBorder" Height="54" CornerRadius="12" BorderThickness="1.5" Background="#1A0A0A0A">
             <Border.BorderBrush>
                 <SolidColorBrush x:Name="BorderBrushInstance" Color="#22F5FF00" />
             </Border.BorderBrush>
