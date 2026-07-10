@@ -66,9 +66,9 @@
                     <!-- Future session components will reside here -->
                 </Grid>
 
-                <!-- Middle Games Area Grid (Reserved for Part 2) -->
+                <!-- Middle Games Area Grid -->
                 <Grid Grid.Column="2">
-                    <!-- Future games library components will reside here -->
+                    <c:GameLibrary />
                 </Grid>
 
                 <!-- Right Hardware Area Grid (Reserved for Part 2) -->
