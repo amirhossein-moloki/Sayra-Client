@@ -8,11 +8,11 @@
     <Grid>
         <!-- Full-screen MediaElement -->
         <MediaElement x:Name="BackgroundVideo"
-                      Source="pack://siteoforigin:,,,/Assets/LoginBg.mp4"
                       Stretch="UniformToFill"
-                      LoadedBehavior="Play"
-                      UnloadedBehavior="Stop"
+                      LoadedBehavior="Manual"
+                      UnloadedBehavior="Manual"
                       IsMuted="True"
+                      MediaOpened="BackgroundVideo_MediaOpened"
                       MediaEnded="BackgroundVideo_MediaEnded"
                       MediaFailed="BackgroundVideo_MediaFailed" />
 
