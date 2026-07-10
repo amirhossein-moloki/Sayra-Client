@@ -2,6 +2,8 @@ using System;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Threading;
+using System.Threading.Tasks;
 
 namespace Sayra.UI.Controls
 {
@@ -9,40 +11,122 @@ namespace Sayra.UI.Controls
     {
         public VideoBackground()
         {
+            // Log before and after MediaElement initialization
+            Log("[VideoBackground] Initializing Custom Control and MediaElement...");
             InitializeComponent();
+            Log("[VideoBackground] MediaElement component initialized.");
+
             Loaded += VideoBackground_Loaded;
         }
 
         private void VideoBackground_Loaded(object sender, RoutedEventArgs e)
         {
-            // Set the absolute path or pack uri if pack doesn't work under some configurations
-            try
+            Log("[VideoBackground] Control loaded. Scheduling asynchronous video initialization...");
+
+            // Use Dispatcher.InvokeAsync with ApplicationIdle priority to allow the Login UI to render and show immediately.
+            // This ensures startup remains absolutely non-blocking and responsive.
+            Dispatcher.InvokeAsync(async () =>
             {
-                // Fallback attempt to locate file relative to AppDomain if pack fails
-                string relativePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "LoginBg.mp4");
-                if (File.Exists(relativePath))
+                try
                 {
-                    BackgroundVideo.Source = new Uri(relativePath, UriKind.Absolute);
+                    await InitializeVideoAsync();
                 }
-            }
-            catch
+                catch (Exception ex)
+                {
+                    Log($"[VideoBackground] Unhandled exception during async video setup: {ex.Message}");
+                }
+            }, DispatcherPriority.ApplicationIdle);
+        }
+
+        private async Task InitializeVideoAsync()
+        {
+            // Run file checks on a background thread to prevent any IO block on UI thread
+            string? resolvedPath = await Task.Run(() =>
             {
-                // Ignore fallback exceptions
+                try
+                {
+                    string baseDir = AppDomain.CurrentDomain.BaseDirectory;
+                    Log($"[VideoBackground] AppDomain BaseDirectory: {baseDir}");
+
+                    // Priority 1: Check in base directory Assets/
+                    string path1 = Path.Combine(baseDir, "Assets", "LoginBg.mp4");
+                    if (File.Exists(path1))
+                    {
+                        return path1;
+                    }
+
+                    // Priority 2: Check directly in base directory
+                    string path2 = Path.Combine(baseDir, "LoginBg.mp4");
+                    if (File.Exists(path2))
+                    {
+                        return path2;
+                    }
+
+                    // Priority 3: Fallback pack URI check or other locations if needed.
+                    Log("[VideoBackground] Video file not found in build assets.");
+                }
+                catch (Exception ex)
+                {
+                    Log($"[VideoBackground] File system check failed: {ex.Message}");
+                }
+                return null;
+            });
+
+            if (string.IsNullOrEmpty(resolvedPath))
+            {
+                Log("[VideoBackground] Warning: LoginBg.mp4 could not be located. Continuing with static/cinematic dark overlay background.");
+                return;
             }
 
-            BackgroundVideo.Play();
+            try
+            {
+                // Log before and after Source assignment
+                Log($"[VideoBackground] Setting Source... Target path: {resolvedPath}");
+                BackgroundVideo.Source = new Uri(resolvedPath, UriKind.Absolute);
+                Log("[VideoBackground] Source assigned successfully.");
+
+                // Log before and after Play() invocation
+                Log("[VideoBackground] Invoking Play() on MediaElement...");
+                BackgroundVideo.Play();
+                Log("[VideoBackground] Play() invoked.");
+            }
+            catch (Exception ex)
+            {
+                Log($"[VideoBackground] Error during video source assignment/playback: {ex.Message}");
+                Log("[VideoBackground] Continuing with static background fallback.");
+            }
+        }
+
+        private void BackgroundVideo_MediaOpened(object sender, RoutedEventArgs e)
+        {
+            // Log on MediaOpened
+            Log("[VideoBackground] MediaOpened event triggered. Video is successfully loaded and ready for rendering.");
         }
 
         private void BackgroundVideo_MediaEnded(object sender, RoutedEventArgs e)
         {
-            BackgroundVideo.Position = TimeSpan.Zero;
-            BackgroundVideo.Play();
+            try
+            {
+                Log("[VideoBackground] Video reached end. Rewinding to start...");
+                BackgroundVideo.Position = TimeSpan.Zero;
+                BackgroundVideo.Play();
+            }
+            catch (Exception ex)
+            {
+                Log($"[VideoBackground] Error on rewinding/replaying video: {ex.Message}");
+            }
         }
 
         private void BackgroundVideo_MediaFailed(object sender, ExceptionRoutedEventArgs e)
         {
-            // Mute error, can fallback to Solid Color Background
-            System.Diagnostics.Debug.WriteLine($"Media failed to play: {e.ErrorException.Message}");
+            Log($"[VideoBackground] MediaFailed event triggered! Error: {e.ErrorException?.Message ?? "Unknown Media Foundation/Decoding error"}");
+            Log("[VideoBackground] Media playback failed. Application will fall back to static/cinematic dark overlay background.");
+        }
+
+        private void Log(string message)
+        {
+            System.Diagnostics.Debug.WriteLine(message);
+            Console.WriteLine(message);
         }
     }
 }
