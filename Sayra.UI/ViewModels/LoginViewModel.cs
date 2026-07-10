@@ -35,11 +35,17 @@ namespace Sayra.UI.ViewModels
                 // Simulate network latency / loading animation
                 await Task.Delay(1500);
 
-                // Show success message and exit
+                // Show success message and open dashboard
                 Application.Current.Dispatcher.Invoke(() =>
                 {
                     MessageBox.Show("ورود با موفقیت انجام شد!", "سیستم سایرا", MessageBoxButton.OK, MessageBoxImage.Information);
-                    Application.Current.Shutdown();
+
+                    var dashboard = new Sayra.UI.Views.DashboardWindow();
+                    dashboard.Show();
+
+                    var oldWindow = Application.Current.MainWindow;
+                    Application.Current.MainWindow = dashboard;
+                    oldWindow?.Close();
                 });
             }
             catch (Exception ex)
