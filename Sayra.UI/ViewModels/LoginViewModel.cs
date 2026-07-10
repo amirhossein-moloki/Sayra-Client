@@ -35,21 +35,11 @@ namespace Sayra.UI.ViewModels
                 // Simulate network latency / loading animation
                 await Task.Delay(1500);
 
-                // Open the MainWindow and close current Window
+                // Show success message and exit
                 Application.Current.Dispatcher.Invoke(() =>
                 {
-                    var mainWindow = new MainWindow();
-                    mainWindow.Show();
-
-                    // Find and close the LoginWindow
-                    foreach (Window window in Application.Current.Windows)
-                    {
-                        if (window.GetType().Name == "LoginWindow")
-                        {
-                            window.Close();
-                            break;
-                        }
-                    }
+                    MessageBox.Show("ورود با موفقیت انجام شد!", "سیستم سایرا", MessageBoxButton.OK, MessageBoxImage.Information);
+                    Application.Current.Shutdown();
                 });
             }
             catch (Exception ex)
