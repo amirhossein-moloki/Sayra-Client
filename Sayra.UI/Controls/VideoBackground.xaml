@@ -17,6 +17,6 @@
                       MediaFailed="BackgroundVideo_MediaFailed" />
 
         <!-- Cinematic dark overlay -->
-        <Border Background="#CC050507" />
+        <Border x:Name="OverlayBorder" Background="{Binding OverlayBackground, RelativeSource={RelativeSource AncestorType=UserControl}}" />
     </Grid>
 </UserControl>

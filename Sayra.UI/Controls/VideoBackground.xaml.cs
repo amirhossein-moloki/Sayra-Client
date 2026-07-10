@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 using System.Windows.Threading;
 using System.Threading.Tasks;
 
@@ -17,6 +18,25 @@ namespace Sayra.UI.Controls
             Log("[VideoBackground] MediaElement component initialized.");
 
             Loaded += VideoBackground_Loaded;
+        }
+
+        public static readonly DependencyProperty VideoNameProperty =
+            DependencyProperty.Register(nameof(VideoName), typeof(string), typeof(VideoBackground), new PropertyMetadata("LoginBg.mp4"));
+
+        public string VideoName
+        {
+            get => (string)GetValue(VideoNameProperty);
+            set => SetValue(VideoNameProperty, value);
+        }
+
+        public static readonly DependencyProperty OverlayBackgroundProperty =
+            DependencyProperty.Register(nameof(OverlayBackground), typeof(Brush), typeof(VideoBackground),
+                new PropertyMetadata(new SolidColorBrush((Color)ColorConverter.ConvertFromString("#CC050507"))));
+
+        public Brush OverlayBackground
+        {
+            get => (Brush)GetValue(OverlayBackgroundProperty);
+            set => SetValue(OverlayBackgroundProperty, value);
         }
 
         private void VideoBackground_Loaded(object sender, RoutedEventArgs e)
@@ -40,6 +60,9 @@ namespace Sayra.UI.Controls
 
         private async Task InitializeVideoAsync()
         {
+            string videoName = VideoName;
+            Log($"[VideoBackground] Initializing video using configured name: {videoName}");
+
             // Run file checks on a background thread to prevent any IO block on UI thread
             string? resolvedPath = await Task.Run(() =>
             {
@@ -49,21 +72,21 @@ namespace Sayra.UI.Controls
                     Log($"[VideoBackground] AppDomain BaseDirectory: {baseDir}");
 
                     // Priority 1: Check in base directory Assets/
-                    string path1 = Path.Combine(baseDir, "Assets", "LoginBg.mp4");
+                    string path1 = Path.Combine(baseDir, "Assets", videoName);
                     if (File.Exists(path1))
                     {
                         return path1;
                     }
 
                     // Priority 2: Check directly in base directory
-                    string path2 = Path.Combine(baseDir, "LoginBg.mp4");
+                    string path2 = Path.Combine(baseDir, videoName);
                     if (File.Exists(path2))
                     {
                         return path2;
                     }
 
                     // Priority 3: Fallback pack URI check or other locations if needed.
-                    Log("[VideoBackground] Video file not found in build assets.");
+                    Log($"[VideoBackground] Video file '{videoName}' not found in build assets.");
                 }
                 catch (Exception ex)
                 {
@@ -74,7 +97,7 @@ namespace Sayra.UI.Controls
 
             if (string.IsNullOrEmpty(resolvedPath))
             {
-                Log("[VideoBackground] Warning: LoginBg.mp4 could not be located. Continuing with static/cinematic dark overlay background.");
+                Log($"[VideoBackground] Warning: {videoName} could not be located. Continuing with static/cinematic dark overlay background.");
                 return;
             }
 
