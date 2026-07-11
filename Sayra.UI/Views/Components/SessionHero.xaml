@@ -62,21 +62,30 @@
             BorderThickness="0,0,0,1"
             ClipToBounds="True">
         <Border.Background>
-            <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
-                <GradientStop Color="#D908090D" Offset="0" />
-                <GradientStop Color="#D912131A" Offset="1" />
-            </LinearGradientBrush>
+            <ImageBrush ImageSource="/Assets/SessionHeroSectionBG.jpg" Stretch="UniformToFill" />
         </Border.Background>
 
         <Grid>
+            <!-- Dark linear gradient overlay to preserve text readability and maintain aesthetic compatibility -->
+            <Border Grid.Row="0" Grid.Column="0">
+                <Border.Background>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                        <GradientStop Color="#E608090D" Offset="0" />
+                        <GradientStop Color="#B308090D" Offset="0.5" />
+                        <GradientStop Color="#E612131A" Offset="1" />
+                    </LinearGradientBrush>
+                </Border.Background>
+            </Border>
+
             <!-- 1. BACKGROUND LAYER: Large Faded SAYRA Logo -->
             <!-- Positioned at the very right of the entire control, not constrained by padding -->
+            <!-- Resized logo to be 20% larger (from 380 to 456) and shifted slightly left (Margin right from 40 to 110) -->
             <svgc:SvgViewbox Source="/Assets/sayra.svg"
-                             Width="380" Height="380"
+                             Width="456" Height="456"
                              Style="{StaticResource HeroLogoStyle}"
                              HorizontalAlignment="Right"
                              VerticalAlignment="Center"
-                             Margin="0,0,40,0"
+                             Margin="0,0,110,0"
                              IsHitTestVisible="False" />
 
             <!-- 2. FOREGROUND CONTENT LAYER -->

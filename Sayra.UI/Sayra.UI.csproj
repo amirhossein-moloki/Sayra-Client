@@ -16,6 +16,7 @@
 
   <ItemGroup>
     <Resource Include="Assets\photo_2026-07-08_22-07-56.jpg" />
+    <Resource Include="Assets\SessionHeroSectionBG.jpg" />
     <Resource Include="Assets\sayra.svg" />
     <Resource Include="Fonts\Peyda-Bold.ttf" />
     <Resource Include="Fonts\Peyda-Medium.ttf" />

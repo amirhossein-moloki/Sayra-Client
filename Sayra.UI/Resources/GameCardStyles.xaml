@@ -6,7 +6,7 @@
         <Setter Property="Background" Value="#F5FF00" />
         <Setter Property="BorderBrush" Value="#F5FF00" />
         <Setter Property="BorderThickness" Value="1.5" />
-        <Setter Property="Foreground" Value="#08090D" />
+        <Setter Property="Foreground" Value="Black" />
         <Setter Property="FontFamily" Value="{StaticResource PeydaBold}" />
         <Setter Property="FontSize" Value="13" />
         <Setter Property="Height" Value="34" />

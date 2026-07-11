@@ -8,25 +8,9 @@
              d:DesignHeight="85" d:DesignWidth="1920">
 
     <UserControl.Resources>
-        <!-- Breathing effect for SAYRA Logo glow in header -->
+        <!-- Header Svg Logo Style (Yellow Glow Effect Removed) -->
         <Style x:Key="HeaderLogoStyle" TargetType="svgc:SvgViewbox">
-            <Setter Property="Effect">
-                <Setter.Value>
-                    <DropShadowEffect x:Name="HeaderLogoGlow" Color="#F5FF00" BlurRadius="12" ShadowDepth="0" Opacity="0.45"/>
-                </Setter.Value>
-            </Setter>
-            <Style.Triggers>
-                <EventTrigger RoutedEvent="Loaded">
-                    <BeginStoryboard>
-                        <Storyboard RepeatBehavior="Forever" AutoReverse="True">
-                            <DoubleAnimation Storyboard.TargetProperty="(UIElement.Effect).(DropShadowEffect.Opacity)"
-                                             From="0.3" To="0.75" Duration="0:0:3" />
-                            <DoubleAnimation Storyboard.TargetProperty="(UIElement.Effect).(DropShadowEffect.BlurRadius)"
-                                             From="10" To="25" Duration="0:0:3" />
-                        </Storyboard>
-                    </BeginStoryboard>
-                </EventTrigger>
-            </Style.Triggers>
+            <!-- No yellow DropShadowEffect glow on Sayra Logo header -->
         </Style>
 
         <!-- Circular Red Power Button Style -->
