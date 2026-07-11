@@ -80,6 +80,23 @@ namespace Sayra.UI.Views
             GlobalExceptionHandler.LogTrace("DASHBOARD", $"Loaded Event completed in {swLoaded.ElapsedMilliseconds} ms");
         }
 
+        private void EndSession_Click(object sender, RoutedEventArgs e)
+        {
+            var result = MessageBox.Show(
+                "آیا مطمئن هستید که می‌خواهید خارج شوید؟",
+                "سیستم سایرا",
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Question,
+                MessageBoxResult.No,
+                MessageBoxOptions.RtlReading | MessageBoxOptions.RightAlign
+            );
+
+            if (result == MessageBoxResult.Yes)
+            {
+                Application.Current.Shutdown();
+            }
+        }
+
         private void DashboardWindow_Closed(object? sender, EventArgs e)
         {
             Log("Closed Event - Shutting down application...");

@@ -106,7 +106,7 @@
         </Style>
     </UserControl.Resources>
 
-    <Grid Margin="0,15,0,0">
+    <Grid Margin="0">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" /> <!-- Header Area -->
             <RowDefinition Height="Auto" /> <!-- Search Area -->
@@ -114,18 +114,18 @@
         </Grid.RowDefinitions>
 
         <!-- 1. SECTION HEADER -->
-        <StackPanel Grid.Row="0" Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,0,20">
+        <StackPanel Grid.Row="0" Orientation="Horizontal" VerticalAlignment="Center" Margin="0,24,0,20">
             <!-- Subtle yellow accent indicator bar -->
-            <Border Width="4" Height="22" Background="#F5FF00" CornerRadius="2" Margin="0,0,12,0"/>
-            <TextBlock Text="بخش بازی ها"
+            <Border Width="4" Height="26" Background="#F5FF00" CornerRadius="2" Margin="0,0,12,0"/>
+            <TextBlock Text="کتابخانه بازی ها"
                        FontFamily="{StaticResource PeydaBold}"
-                       FontSize="22"
+                       FontSize="26"
                        Foreground="White"
                        VerticalAlignment="Center" />
         </StackPanel>
 
         <!-- 2. SEARCH BOX -->
-        <Grid Grid.Row="1" Margin="0,0,0,25" HorizontalAlignment="Stretch">
+        <Grid Grid.Row="1" Margin="0,0,0,20" HorizontalAlignment="Stretch">
             <TextBox Style="{StaticResource ModernSearchTextBoxStyle}"
                      Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
                      Width="420"
