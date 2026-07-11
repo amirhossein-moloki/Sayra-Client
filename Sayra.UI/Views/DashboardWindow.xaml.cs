@@ -43,6 +43,7 @@ namespace Sayra.UI.Views
                     if (GameLib != null) GameLib.Visibility = Visibility.Collapsed;
                     if (Hardware != null) Hardware.Visibility = Visibility.Collapsed;
                     if (SessionHeroCtrl != null) SessionHeroCtrl.Visibility = Visibility.Collapsed;
+                    if (SidebarCtrl != null) SidebarCtrl.Visibility = Visibility.Collapsed;
 
                     RootGrid.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#08090D"));
                 }

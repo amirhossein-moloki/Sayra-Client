@@ -137,13 +137,13 @@
             <ItemsControl ItemsSource="{Binding Games}">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
-                        <!-- Responsive grid layout with 5 columns for desktop layout -->
-                        <UniformGrid Columns="5" VerticalAlignment="Top" />
+                        <!-- Responsive grid layout adapting to available width -->
+                        <UniformGrid Columns="{Binding GridColumns, RelativeSource={RelativeSource AncestorType=UserControl}}" VerticalAlignment="Top" />
                     </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <!-- Cards margins adjusted to achieve horizontal gap of 20px and vertical gap of 30px -->
+                        <!-- Cards margins adjusted to achieve horizontal gap of 22px and vertical gap of 28px -->
                         <local:GameCard Title="{Binding Title}"
                                         Genre="{Binding Genre}"
                                         ImagePath="{Binding ImagePath}"
@@ -151,7 +151,7 @@
                                         IsSelected="{Binding IsSelected, Mode=TwoWay}"
                                         IsAvailable="{Binding IsAvailable}"
                                         PlayCommand="{Binding DataContext.PlayGameCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                        Margin="10,15" />
+                                        Margin="11,14" />
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>

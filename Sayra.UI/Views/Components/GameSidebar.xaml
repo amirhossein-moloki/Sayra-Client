@@ -1,0 +1,196 @@
+<UserControl x:Class="Sayra.UI.Views.Components.GameSidebar"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             mc:Ignorable="d"
+             d:DesignHeight="700" d:DesignWidth="300">
+
+    <UserControl.Resources>
+        <!-- Premium Sidebar Item Style -->
+        <Style x:Key="SidebarListBoxItemStyle" TargetType="ListBoxItem">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderBrush" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Padding" Value="14,10" />
+            <Setter Property="Margin" Value="0,3" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="SnapsToDevicePixels" Value="True" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ListBoxItem">
+                        <Border x:Name="ItemBorder"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="10"
+                                Padding="{TemplateBinding Padding}">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+
+                                <!-- Small Icon -->
+                                <Path x:Name="ItemIcon"
+                                      Grid.Column="0"
+                                      Data="{Binding Tag, RelativeSource={RelativeSource TemplatedParent}}"
+                                      Fill="#A1A1AA"
+                                      Width="16" Height="16"
+                                      Stretch="Uniform"
+                                      VerticalAlignment="Center"
+                                      Margin="0,0,12,0" />
+
+                                <!-- Text -->
+                                <ContentPresenter Grid.Column="1"
+                                                  VerticalAlignment="Center" />
+                            </Grid>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <!-- Hover state: subtle background & brighter text/icon -->
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="ItemBorder" Property="Background" Value="#15FFFFFF" />
+                                <Setter TargetName="ItemIcon" Property="Fill" Value="White" />
+                                <Setter Property="Foreground" Value="White" />
+                            </Trigger>
+
+                            <!-- Selected state: yellow accent background/glow, black/dark background, or yellow text -->
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter TargetName="ItemBorder" Property="Background" Value="#25F5FF00" />
+                                <Setter TargetName="ItemBorder" Property="BorderBrush" Value="#40F5FF00" />
+                                <Setter TargetName="ItemIcon" Property="Fill" Value="#F5FF00" />
+                                <Setter Property="Foreground" Value="#F5FF00" />
+                                <Trigger.EnterActions>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <DoubleAnimation Storyboard.TargetName="ItemBorder"
+                                                             Storyboard.TargetProperty="(UIElement.Effect).(DropShadowEffect.Opacity)"
+                                                             To="0.3" Duration="0:0:0.2"/>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </Trigger.EnterActions>
+                                <Trigger.ExitActions>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <DoubleAnimation Storyboard.TargetName="ItemBorder"
+                                                             Storyboard.TargetProperty="(UIElement.Effect).(DropShadowEffect.Opacity)"
+                                                             To="0.0" Duration="0:0:0.2"/>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </Trigger.ExitActions>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Resources>
+                <!-- Target standard TextBlock within ListBoxItem -->
+                <Style TargetType="TextBlock">
+                    <Setter Property="FontFamily" Value="{StaticResource PeydaMedium}" />
+                    <Setter Property="FontSize" Value="14" />
+                    <Setter Property="Foreground" Value="#E1E1E6" />
+                </Style>
+            </Style.Resources>
+        </Style>
+
+        <!-- Clean styling for ListBox to remove default borders & scrollbars -->
+        <Style x:Key="SidebarListBoxStyle" TargetType="ListBox">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled" />
+            <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Disabled" />
+        </Style>
+    </UserControl.Resources>
+
+    <!-- Main Glass Panel container -->
+    <Border Background="#0DFFFFFF"
+            BorderBrush="#1EFFFFFF"
+            BorderThickness="1"
+            CornerRadius="22"
+            Padding="20"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch">
+        <Border.Effect>
+            <!-- Premium cinematic drop shadow -->
+            <DropShadowEffect Color="#000000" BlurRadius="20" ShadowDepth="3" Opacity="0.4" />
+        </Border.Effect>
+
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" /> <!-- Header / Title -->
+                <RowDefinition Height="20" />   <!-- Spacer -->
+                <RowDefinition Height="Auto" /> <!-- Navigation Items List -->
+                <RowDefinition Height="25" />   <!-- Category Separator Header -->
+                <RowDefinition Height="*" />    <!-- Category Items List -->
+            </Grid.RowDefinitions>
+
+            <!-- 1. HEADER SECTION -->
+            <StackPanel Grid.Row="0" Orientation="Horizontal" VerticalAlignment="Center">
+                <Border Width="4" Height="20" Background="#F5FF00" CornerRadius="2" Margin="0,0,10,0"/>
+                <TextBlock Text="Games"
+                           FontFamily="{StaticResource PeydaBold}"
+                           FontSize="20"
+                           Foreground="White" />
+            </StackPanel>
+
+            <!-- 2. NAVIGATION ITEMS -->
+            <ListBox Grid.Row="2" Style="{StaticResource SidebarListBoxStyle}">
+                <!-- All Games -->
+                <ListBoxItem Style="{StaticResource SidebarListBoxItemStyle}" IsSelected="True"
+                             Tag="M21,6H3C1.9,6 1,6.9 1,8V16C1,17.1 1.9,18 3,18H21C22.1,18 23,17.1 23,16V8C23,6.9 22.1,6 21,6M6,15H4V13H2V11H4V9H6V11H8V13H6V15M15,11A1.5,1.5 0 1,1 16.5,9.5A1.5,1.5 0 0,1 15,11M19,14A1.5,1.5 0 1,1 20.5,12.5A1.5,1.5 0 0,1 19,14Z">
+                    <TextBlock Text="All Games" />
+                </ListBoxItem>
+                <!-- Favorites -->
+                <ListBoxItem Style="{StaticResource SidebarListBoxItemStyle}"
+                             Tag="M12,17.27L18.18,21L16.54,13.97L22,9.24L14.81,8.62L12,2L9.19,8.62L2,9.24L7.45,13.97L5.82,21L12,17.27Z">
+                    <TextBlock Text="Favorites" />
+                </ListBoxItem>
+                <!-- Recently Played -->
+                <ListBoxItem Style="{StaticResource SidebarListBoxItemStyle}"
+                             Tag="M13.5,8H12V13L16.28,15.54L17,14.33L13.5,12.25V8M13,3A9,9 0 0,0 4,12H1L4.96,16.03L9,12H6A7,7 0 0,1 13,5A7,7 0 0,1 20,12A7,7 0 0,1 13,19C11.07,19 9.32,18.21 8.06,16.94L6.64,18.36C8.27,20 10.5,21 13,21A9,9 0 0,0 22,12A9,9 0 0,0 13,3Z">
+                    <TextBlock Text="Recently Played" />
+                </ListBoxItem>
+            </ListBox>
+
+            <!-- 3. CATEGORIES HEADER -->
+            <StackPanel Grid.Row="3" Orientation="Vertical" VerticalAlignment="Bottom">
+                <Border Height="1" Background="#1AFFFFFF" Margin="0,0,0,12" />
+                <TextBlock Text="Categories"
+                           FontFamily="{StaticResource PeydaMedium}"
+                           FontSize="12"
+                           Foreground="#A1A1AA"
+                           Margin="4,0,0,0" />
+            </StackPanel>
+
+            <!-- 4. CATEGORIES ITEMS -->
+            <ListBox Grid.Row="4" Style="{StaticResource SidebarListBoxStyle}" Margin="0,8,0,0">
+                <!-- FPS -->
+                <ListBoxItem Style="{StaticResource SidebarListBoxItemStyle}"
+                             Tag="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,4A8,8 0 0,1 20,12A8,8 0 0,1 12,20A8,8 0 0,1 4,12A8,8 0 0,1 12,4M12,6A6,6 0 0,0 6,12A6,6 0 0,0 12,18A6,6 0 0,0 18,12A6,6 0 0,0 12,6M12,8A4,4 0 0,1 16,12A4,4 0 0,1 12,16A4,4 0 0,1 8,12A4,4 0 0,1 12,8Z">
+                    <TextBlock Text="FPS" />
+                </ListBoxItem>
+                <!-- RPG -->
+                <ListBoxItem Style="{StaticResource SidebarListBoxItemStyle}"
+                             Tag="M12,2C11.5,2 10,2.1 7,3C3,4.3 3,12 3,12C3,12 3,18.2 12,22C21,18.2 21,12 21,12C21,12 21,4.3 17,3C14,2.1 12.5,2 12,2M12,4C12.3,4 13.5,4.1 15.8,4.8C18.6,5.7 19,10.8 19,12C19,13.5 18,17 12,19.8C6,17 5,13.5 5,12C5,10.8 5.4,5.7 8.2,4.8C10.5,4.1 11.7,4 12,4M12,7V12H7V13H12V17H13V13H18V12H13V7H12Z">
+                    <TextBlock Text="RPG" />
+                </ListBoxItem>
+                <!-- Racing -->
+                <ListBoxItem Style="{StaticResource SidebarListBoxItemStyle}"
+                             Tag="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,4A8,8 0 0,1 19.3,9.5H15.9C15.4,7.8 13.9,6.5 12,6.1C10.1,6.5 8.6,7.8 8.1,9.5H4.7A8,8 0 0,1 12,4M4.1,11H8.5C9,12.5 10.3,13.6 12,13.9C13.7,13.6 15,12.5 15.5,11H19.9A8,8 0 0,1 12,20A8,8 0 0,1 4.1,11Z">
+                    <TextBlock Text="Racing" />
+                </ListBoxItem>
+                <!-- Action -->
+                <ListBoxItem Style="{StaticResource SidebarListBoxItemStyle}"
+                             Tag="M11.5,2H17L13.5,9H19L11,22V13H7L11.5,2Z">
+                    <TextBlock Text="Action" />
+                </ListBoxItem>
+                <!-- Adventure -->
+                <ListBoxItem Style="{StaticResource SidebarListBoxItemStyle}"
+                             Tag="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,10.9A1.1,1.1 0 0,0 10.9,12A1.1,1.1 0 0,0 12,13.1A1.1,1.1 0 0,0 13.1,12A1.1,1.1 0 0,0 12,10.9M17.3,6.7L13.1,13.1L6.7,17.3L10.9,10.9L17.3,6.7Z">
+                    <TextBlock Text="Adventure" />
+                </ListBoxItem>
+            </ListBox>
+        </Grid>
+    </Border>
+</UserControl>

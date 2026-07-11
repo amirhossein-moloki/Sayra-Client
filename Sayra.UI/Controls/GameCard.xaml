@@ -5,14 +5,15 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              mc:Ignorable="d"
              x:Name="self"
-             Width="180" Height="265">
+             Width="150" Height="230">
 
     <Grid MouseEnter="Card_MouseEnter" MouseLeave="Card_MouseLeave">
-        <!-- Root Card Border -->
+        <!-- Root Card Border: CornerRadius exactly 18px -->
         <Border x:Name="CardBorder"
                 BorderThickness="1.5"
-                CornerRadius="20"
+                CornerRadius="18"
                 Background="#0DFFFFFF"
+                ClipToBounds="True"
                 RenderTransformOrigin="0.5,0.5">
             <Border.BorderBrush>
                 <SolidColorBrush x:Name="CardBorderBrushInstance" Color="#1FFFFFFF" />
@@ -25,14 +26,14 @@
             </Border.Effect>
 
             <Grid>
-                <!-- 1. COVER IMAGE AREA filling entire card background -->
-                <Border CornerRadius="18.5" ClipToBounds="True" Background="#15FFFFFF">
+                <!-- 1. COVER IMAGE AREA filling entire card background: CornerRadius 18px to avoid overflow -->
+                <Border CornerRadius="18" ClipToBounds="True" Background="#15FFFFFF">
                     <Grid>
                         <!-- Fallback Placeholder Gamepad Icon -->
                         <Grid Background="#10FFFFFF">
                             <Path Data="M21,6H3C1.9,6 1,6.9 1,8V16C1,17.1 1.9,18 3,18H21C22.1,18 23,17.1 23,16V8C23,6.9 22.1,6 21,6M6,15H4V13H2V11H4V9H6V11H8V13H6V15M15,11A1.5,1.5 0 1,1 16.5,9.5A1.5,1.5 0 0,1 15,11M19,14A1.5,1.5 0 1,1 20.5,12.5A1.5,1.5 0 0,1 19,14Z"
                                   Fill="#33FFFFFF"
-                                  Width="48" Height="48"
+                                  Width="40" Height="40"
                                   Stretch="Uniform"
                                   HorizontalAlignment="Center"
                                   VerticalAlignment="Center" />
@@ -59,7 +60,7 @@
                 </Border>
 
                 <!-- 2. CARD BODY overlaying the cover image at the bottom -->
-                <Grid VerticalAlignment="Bottom" Margin="14,0,14,16">
+                <Grid VerticalAlignment="Bottom" Margin="10,0,10,12">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" /> <!-- Title -->
                         <RowDefinition Height="Auto" /> <!-- Genre -->
@@ -70,7 +71,7 @@
                     <TextBlock Grid.Row="0"
                                Text="{Binding Title, ElementName=self}"
                                FontFamily="{StaticResource PeydaBold}"
-                               FontSize="15"
+                               FontSize="13"
                                Foreground="White"
                                TextTrimming="CharacterEllipsis"
                                HorizontalAlignment="Right">
@@ -83,9 +84,9 @@
                     <TextBlock Grid.Row="1"
                                Text="{Binding Genre, ElementName=self}"
                                FontFamily="{StaticResource PeydaLight}"
-                               FontSize="11"
+                               FontSize="10"
                                Foreground="#E1E1E6"
-                               Margin="0,3,0,0"
+                               Margin="0,2,0,0"
                                HorizontalAlignment="Right">
                         <TextBlock.Effect>
                             <DropShadowEffect Color="Black" BlurRadius="3" ShadowDepth="1" Opacity="0.8" />
@@ -93,7 +94,7 @@
                     </TextBlock>
 
                     <!-- Play Button (Yellow Accent) -->
-                    <Grid Grid.Row="2" Margin="0,10,0,0" Height="34">
+                    <Grid Grid.Row="2" Margin="0,8,0,0" Height="30">
                         <Button Content="{Binding ButtonText, ElementName=self}"
                                 Style="{StaticResource GameCardPlayButtonStyle}"
                                 Command="{Binding PlayCommand, ElementName=self}"
@@ -121,7 +122,7 @@
                 <!-- 4. DISABLED OVERLAY -->
                 <Border x:Name="DisabledOverlay"
                         Background="#99000000"
-                        CornerRadius="20"
+                        CornerRadius="18"
                         Opacity="0.0"
                         IsHitTestVisible="False" />
             </Grid>

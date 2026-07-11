@@ -97,11 +97,32 @@
                             </DataTrigger.ExitActions>
                         </DataTrigger>
 
-                        <!-- Disabled State -->
+                        <!-- PLAYING State: Background: Transparent/Dark, Border: Yellow, Text: Yellow -->
+                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=Content}" Value="PLAYING">
+                            <Setter TargetName="PlayBtnBorder" Property="Background" Value="#2208090D" />
+                            <Setter TargetName="PlayBtnBorder" Property="BorderBrush" Value="#F5FF00" />
+                            <Setter Property="Foreground" Value="#F5FF00" />
+                        </DataTrigger>
+
+                        <!-- UNAVAILABLE State: Dark gray, disabled appearance -->
+                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=Content}" Value="UNAVAILABLE">
+                            <Setter TargetName="PlayBtnBorder" Property="Background" Value="#44444A" />
+                            <Setter TargetName="PlayBtnBorder" Property="BorderBrush" Value="#44444A" />
+                            <Setter Property="Foreground" Value="#8E8E93" />
+                        </DataTrigger>
+
+                        <!-- LOCKED State: Dark gray, disabled appearance -->
+                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=Content}" Value="LOCKED">
+                            <Setter TargetName="PlayBtnBorder" Property="Background" Value="#44444A" />
+                            <Setter TargetName="PlayBtnBorder" Property="BorderBrush" Value="#44444A" />
+                            <Setter Property="Foreground" Value="#8E8E93" />
+                        </DataTrigger>
+
+                        <!-- Disabled State (generic fallback) -->
                         <Trigger Property="IsEnabled" Value="False">
-                            <Setter TargetName="PlayBtnBorder" Property="Background" Value="#1AFFFFFF" />
-                            <Setter TargetName="PlayBtnBorder" Property="BorderBrush" Value="#33FFFFFF" />
-                            <Setter Property="Foreground" Value="#66FFFFFF" />
+                            <Setter TargetName="PlayBtnBorder" Property="Background" Value="#44444A" />
+                            <Setter TargetName="PlayBtnBorder" Property="BorderBrush" Value="#44444A" />
+                            <Setter Property="Foreground" Value="#8E8E93" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
