@@ -18,6 +18,21 @@ namespace Sayra.UI.Controls
             Log("[VideoBackground] MediaElement component initialized.");
 
             Loaded += VideoBackground_Loaded;
+            Unloaded += VideoBackground_Unloaded;
+        }
+
+        private void VideoBackground_Unloaded(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                Log("[VideoBackground] Control unloaded. Stopping and cleaning up MediaElement...");
+                BackgroundVideo.Stop();
+                BackgroundVideo.Source = null;
+            }
+            catch (Exception ex)
+            {
+                Log($"[VideoBackground] Exception during Unloaded cleanup: {ex.Message}");
+            }
         }
 
         public static readonly DependencyProperty VideoNameProperty =

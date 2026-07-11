@@ -45,7 +45,8 @@
 
                         <!-- Game Cover Image -->
                         <Image x:Name="CoverImage"
-                               Source="{Binding ImagePath, ElementName=self}"
+                               Source="{Binding ImagePath, ElementName=self, TargetNullValue={x:Null}, FallbackValue={x:Null}}"
+                               ImageFailed="CoverImage_ImageFailed"
                                Stretch="UniformToFill"
                                RenderOptions.BitmapScalingMode="HighQuality" />
 
