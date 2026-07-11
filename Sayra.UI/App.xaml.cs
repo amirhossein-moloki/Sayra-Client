@@ -6,6 +6,9 @@ namespace Sayra.UI
     {
         protected override void OnStartup(StartupEventArgs e)
         {
+            // Register Global Exception Handling
+            GlobalExceptionHandler.Register();
+
             base.OnStartup(e);
             // Use OnExplicitShutdown to prevent automatic application exit during the Login to Dashboard transition.
             this.ShutdownMode = ShutdownMode.OnExplicitShutdown;

@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
@@ -13,6 +14,7 @@ namespace Sayra.UI.Controls
 
         public TopBar()
         {
+            var sw = Stopwatch.StartNew();
             Log("Constructor START");
             try
             {
@@ -47,12 +49,17 @@ namespace Sayra.UI.Controls
             this.Unloaded += TopBar_Unloaded;
 
             Log("Constructor END");
+            sw.Stop();
+            GlobalExceptionHandler.LogTrace("TIMING", $"[TopBar] Constructor & InitializeComponent completed in {sw.ElapsedMilliseconds} ms");
         }
 
         private void TopBar_Loaded(object sender, RoutedEventArgs e)
         {
+            var sw = Stopwatch.StartNew();
             Log("Loaded Event START");
             Log("Loaded Event END");
+            sw.Stop();
+            GlobalExceptionHandler.LogTrace("TIMING", $"[TopBar] Loaded event completed in {sw.ElapsedMilliseconds} ms");
         }
 
         private void TopBar_Unloaded(object sender, RoutedEventArgs e)
