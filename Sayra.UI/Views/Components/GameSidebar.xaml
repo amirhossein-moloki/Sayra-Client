@@ -4,8 +4,8 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              mc:Ignorable="d"
-             d:DesignHeight="420" d:DesignWidth="300"
-             Width="300" Height="420">
+             d:DesignHeight="294" d:DesignWidth="300"
+             Width="300" Height="294">
 
     <UserControl.Resources>
         <!-- Premium Sidebar Item Style -->
@@ -13,8 +13,8 @@
             <Setter Property="Background" Value="Transparent" />
             <Setter Property="BorderBrush" Value="Transparent" />
             <Setter Property="BorderThickness" Value="1" />
-            <Setter Property="Padding" Value="14,6" />
-            <Setter Property="Margin" Value="0,2" />
+            <Setter Property="Padding" Value="10,4" />
+            <Setter Property="Margin" Value="0,1" />
             <Setter Property="Cursor" Value="Hand" />
             <Setter Property="SnapsToDevicePixels" Value="True" />
             <Setter Property="Template">
@@ -43,7 +43,7 @@
                                       Width="16" Height="16"
                                       Stretch="Uniform"
                                       VerticalAlignment="Center"
-                                      Margin="0,0,12,0" />
+                                      Margin="0,0,8,0" />
 
                                 <!-- Text -->
                                 <ContentPresenter Grid.Column="1"
@@ -91,7 +91,7 @@
                 <!-- Target standard TextBlock within ListBoxItem -->
                 <Style TargetType="TextBlock">
                     <Setter Property="FontFamily" Value="{StaticResource PeydaMedium}" />
-                    <Setter Property="FontSize" Value="14" />
+                    <Setter Property="FontSize" Value="12" />
                     <Setter Property="Foreground" Value="#E1E1E6" />
                 </Style>
             </Style.Resources>
@@ -112,7 +112,7 @@
             BorderBrush="#1EFFFFFF"
             BorderThickness="1"
             CornerRadius="22"
-            Padding="15"
+            Padding="12,10"
             HorizontalAlignment="Stretch"
             VerticalAlignment="Stretch">
         <Border.Effect>
@@ -123,18 +123,18 @@
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" /> <!-- Header / Title -->
-                <RowDefinition Height="12" />   <!-- Spacer -->
+                <RowDefinition Height="6" />    <!-- Spacer -->
                 <RowDefinition Height="Auto" /> <!-- Navigation Items List -->
-                <RowDefinition Height="20" />   <!-- Category Separator Header -->
+                <RowDefinition Height="Auto" /> <!-- Category Separator Header -->
                 <RowDefinition Height="*" />    <!-- Category Items List -->
             </Grid.RowDefinitions>
 
             <!-- 1. HEADER SECTION -->
             <StackPanel Grid.Row="0" Orientation="Horizontal" VerticalAlignment="Center">
-                <Border Width="4" Height="20" Background="#F5FF00" CornerRadius="2" Margin="0,0,10,0"/>
+                <Border Width="4" Height="16" Background="#F5FF00" CornerRadius="2" Margin="0,0,8,0"/>
                 <TextBlock Text="Games"
                            FontFamily="{StaticResource PeydaBold}"
-                           FontSize="20"
+                           FontSize="16"
                            Foreground="White" />
             </StackPanel>
 
@@ -158,17 +158,17 @@
             </ListBox>
 
             <!-- 3. CATEGORIES HEADER -->
-            <StackPanel Grid.Row="3" Orientation="Vertical" VerticalAlignment="Bottom">
-                <Border Height="1" Background="#1AFFFFFF" Margin="0,0,0,8" />
+            <StackPanel Grid.Row="3" Orientation="Vertical" VerticalAlignment="Bottom" Margin="0,4,0,2">
+                <Border Height="1" Background="#1AFFFFFF" Margin="0,0,0,6" />
                 <TextBlock Text="Categories"
                            FontFamily="{StaticResource PeydaMedium}"
-                           FontSize="12"
+                           FontSize="11"
                            Foreground="#A1A1AA"
                            Margin="4,0,0,0" />
             </StackPanel>
 
             <!-- 4. CATEGORIES ITEMS -->
-            <ListBox Grid.Row="4" Style="{StaticResource SidebarListBoxStyle}" Margin="0,8,0,0">
+            <ListBox Grid.Row="4" Style="{StaticResource SidebarListBoxStyle}" Margin="0,2,0,0">
                 <!-- FPS -->
                 <ListBoxItem Style="{StaticResource SidebarListBoxItemStyle}"
                              Tag="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,4A8,8 0 0,1 20,12A8,8 0 0,1 12,20A8,8 0 0,1 4,12A8,8 0 0,1 12,4M12,6A6,6 0 0,0 6,12A6,6 0 0,0 12,18A6,6 0 0,0 18,12A6,6 0 0,0 12,6M12,8A4,4 0 0,1 16,12A4,4 0 0,1 12,16A4,4 0 0,1 8,12A4,4 0 0,1 12,8Z">

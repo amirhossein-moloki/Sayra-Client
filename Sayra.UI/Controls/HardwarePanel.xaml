@@ -5,8 +5,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:vm="clr-namespace:Sayra.UI.ViewModels"
              mc:Ignorable="d"
-             d:DesignHeight="700" d:DesignWidth="294"
-             Width="294" Height="700">
+             d:DesignHeight="700" d:DesignWidth="235.2"
+             Width="235.2" Height="700">
 
     <UserControl.DataContext>
         <vm:HardwarePanelViewModel />
@@ -49,7 +49,7 @@
             BorderBrush="#1EFFFFFF"
             BorderThickness="1"
             CornerRadius="22"
-            Padding="16"
+            Padding="8"
             HorizontalAlignment="Stretch"
             VerticalAlignment="Top">
         <Border.Effect>
@@ -60,7 +60,7 @@
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/> <!-- Header Area -->
-                <RowDefinition Height="20"/>   <!-- Spacing -->
+                <RowDefinition Height="12"/>   <!-- Spacing -->
                 <RowDefinition Height="*"/>    <!-- Items List Area -->
             </Grid.RowDefinitions>
 
@@ -73,10 +73,10 @@
 
                 <!-- Left Title: System Detail using Peyda Bold & White -->
                 <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
-                    <Border Width="4" Height="20" Background="#F5FF00" CornerRadius="2" Margin="0,0,10,0"/>
+                    <Border Width="4" Height="16" Background="#F5FF00" CornerRadius="2" Margin="0,0,6,0"/>
                     <TextBlock Text="System Detail"
                                FontFamily="{StaticResource PeydaBold}"
-                               FontSize="18"
+                               FontSize="14"
                                Foreground="White"
                                VerticalAlignment="Center"/>
                 </StackPanel>
@@ -85,7 +85,7 @@
                 <TextBlock Grid.Column="1"
                            Text="{Binding PcName}"
                            FontFamily="{StaticResource PeydaBold}"
-                           FontSize="18"
+                           FontSize="14"
                            Foreground="#F5FF00"
                            VerticalAlignment="Center"/>
             </Grid>
@@ -106,8 +106,8 @@
                                 BorderThickness="1"
                                 BorderBrush="Transparent"
                                 CornerRadius="12"
-                                Padding="8,12"
-                                Margin="0,0,0,14"
+                                Padding="4,8"
+                                Margin="0,0,0,10"
                                 SnapsToDevicePixels="True">
                             <Border.RenderTransform>
                                 <TranslateTransform X="0" Y="20"/>
@@ -140,13 +140,13 @@
                                     <!-- Column 0: Icon & Label -->
                                     <ColumnDefinition Width="Auto" />
                                     <!-- Column 1: Spacing -->
-                                    <ColumnDefinition Width="12" />
+                                    <ColumnDefinition Width="4" />
                                     <!-- Column 2: Elegant Separator Line -->
                                     <ColumnDefinition Width="*" />
                                     <!-- Column 3: Spacing -->
-                                    <ColumnDefinition Width="12" />
+                                    <ColumnDefinition Width="4" />
                                     <!-- Column 4: Value (Right aligned) -->
-                                    <ColumnDefinition Width="Auto" MaxWidth="200" />
+                                    <ColumnDefinition Width="Auto" MaxWidth="150" />
                                 </Grid.ColumnDefinitions>
 
                                 <!-- Left Icon & Label stack -->
@@ -154,11 +154,11 @@
                                     <!-- SAYRA Yellow Accent Icon -->
                                     <Path Data="{Binding IconPathData}"
                                           Fill="#F5FF00"
-                                          Width="18"
-                                          Height="18"
+                                          Width="14"
+                                          Height="14"
                                           Stretch="Uniform"
                                           VerticalAlignment="Center"
-                                          Margin="0,0,10,0">
+                                          Margin="0,0,4,0">
                                         <Path.Effect>
                                             <DropShadowEffect Color="#F5FF00" BlurRadius="6" ShadowDepth="0" Opacity="0.3"/>
                                         </Path.Effect>
@@ -167,7 +167,7 @@
                                     <!-- Hardware Label using Peyda Medium & Gray -->
                                     <TextBlock Text="{Binding Label}"
                                                FontFamily="{StaticResource PeydaMedium}"
-                                               FontSize="14"
+                                               FontSize="12"
                                                Foreground="#A1A1AA"
                                                VerticalAlignment="Center"/>
                                 </StackPanel>
@@ -184,7 +184,7 @@
                                 <TextBlock Grid.Column="4"
                                            Text="{Binding Value}"
                                            FontFamily="{StaticResource PeydaBold}"
-                                           FontSize="14"
+                                           FontSize="12"
                                            Foreground="White"
                                            TextAlignment="Right"
                                            TextWrapping="Wrap"

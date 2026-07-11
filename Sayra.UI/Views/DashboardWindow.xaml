@@ -133,7 +133,7 @@
                     <!-- Column 1: Middle/Center Games Library Area (Stretches to fill remaining space) -->
                     <ColumnDefinition Width="*" />
 
-                    <!-- Column 2: Right Hardware System Detail Panel Area (Fixed 294px width) -->
+                    <!-- Column 2: Right Hardware System Detail Panel Area (Fixed 235.2px width) -->
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
 
