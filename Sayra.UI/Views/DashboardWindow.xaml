@@ -45,7 +45,7 @@
             <c:TopBar Grid.Row="0" />
 
             <!-- SESSION HERO PANEL: Full width gaming banner directly below header -->
-            <components:SessionHero x:Name="SessionHeroCtrl" Grid.Row="1" Height="240" Margin="30,15,30,0" />
+            <components:SessionHero x:Name="SessionHeroCtrl" Grid.Row="1" Height="240" Margin="0" />
 
             <!-- CONTENT ROW: Prepared structure for layout sections (Games, Hardware) -->
             <Grid Grid.Row="2" Margin="30,20,30,30">
