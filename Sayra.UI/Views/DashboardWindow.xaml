@@ -143,19 +143,22 @@
                 </Grid>
 
                 <!-- Middle Games Library Grid Column -->
-                <Grid Grid.Column="1" Margin="15,0,15,0">
+                <!-- Panel.ZIndex set to 2 to display above adjacent panels if they overlap / scale -->
+                <Grid Grid.Column="1" Margin="15,0,15,0" Panel.ZIndex="2">
                     <c:GameLibrary x:Name="GameLib" />
                 </Grid>
 
                 <!-- Right Hardware Area Grid Column -->
-                <Grid Grid.Column="2" Margin="15,0,0,0">
+                <!-- Panel.ZIndex set to 1 to stay layered under middle column when overlapped -->
+                <Grid Grid.Column="2" Margin="15,0,0,0" Panel.ZIndex="1">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" /> <!-- HardwarePanel -->
                         <RowDefinition Height="20" />   <!-- Spacing (20px below System Detail) -->
                         <RowDefinition Height="Auto" /> <!-- End Session Button -->
                     </Grid.RowDefinitions>
 
-                    <c:HardwarePanel x:Name="Hardware" Grid.Row="0" HorizontalAlignment="Stretch" VerticalAlignment="Top" />
+                    <!-- Shifted HardwarePanel (System Detail) 45px down as requested -->
+                    <c:HardwarePanel x:Name="Hardware" Grid.Row="0" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="0,45,0,0" />
 
                     <Button Grid.Row="2"
                             Style="{StaticResource EndSessionButtonStyle}"

@@ -22,25 +22,9 @@
     </Window.DataContext>
 
     <Window.Resources>
-        <!-- Style for SVG Logo Breathing Glow -->
+        <!-- Style for SVG Logo (Yellow Glow Effect Removed) -->
         <Style x:Key="BreathingLogoStyle" TargetType="svgc:SvgViewbox">
-            <Setter Property="Effect">
-                <Setter.Value>
-                    <DropShadowEffect x:Name="BreathingLogoGlow" Color="#F5FF00" BlurRadius="20" ShadowDepth="0" Opacity="0.6"/>
-                </Setter.Value>
-            </Setter>
-            <Style.Triggers>
-                <EventTrigger RoutedEvent="Loaded">
-                    <BeginStoryboard>
-                        <Storyboard RepeatBehavior="Forever" AutoReverse="True">
-                            <DoubleAnimation Storyboard.TargetProperty="(UIElement.Effect).(DropShadowEffect.Opacity)"
-                                             From="0.4" To="0.95" Duration="0:0:2.5" />
-                            <DoubleAnimation Storyboard.TargetProperty="(UIElement.Effect).(DropShadowEffect.BlurRadius)"
-                                             From="15" To="35" Duration="0:0:2.5" />
-                        </Storyboard>
-                    </BeginStoryboard>
-                </EventTrigger>
-            </Style.Triggers>
+            <!-- No yellow DropShadowEffect glow on Sayra Logo in login screen -->
         </Style>
 
         <!-- Fade-in animation for Window content -->
