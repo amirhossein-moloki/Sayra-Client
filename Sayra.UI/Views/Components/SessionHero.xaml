@@ -15,6 +15,11 @@
     <UserControl.Resources>
         <!-- Soft breathing and glow animation for the background SAYRA logo -->
         <Style x:Key="HeroLogoStyle" TargetType="svgc:SvgViewbox">
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect x:Name="HeroLogoGlow" Color="#F5FF00" BlurRadius="25" ShadowDepth="0" Opacity="0.1" />
+                </Setter.Value>
+            </Setter>
             <Style.Triggers>
                 <EventTrigger RoutedEvent="Loaded">
                     <BeginStoryboard>
@@ -72,11 +77,7 @@
                              HorizontalAlignment="Right"
                              VerticalAlignment="Center"
                              Margin="0,0,-40,0"
-                             IsHitTestVisible="False">
-                <svgc:SvgViewbox.Effect>
-                    <DropShadowEffect Color="#F5FF00" BlurRadius="25" ShadowDepth="0" Opacity="0.1" />
-                </svgc:SvgViewbox.Effect>
-            </svgc:SvgViewbox>
+                             IsHitTestVisible="False" />
 
             <!-- 2. FOREGROUND CONTENT LAYER -->
             <!-- Using internal left and right padding: 60px (within the 50-70px target) for breathing space -->
