@@ -30,7 +30,7 @@
 
     <Grid x:Name="RootGrid">
         <!-- 1. BACKGROUND LAYER: Live Video Background with cinematic dark overlay (#08090D at 60% opacity) -->
-        <c:VideoBackground VideoName="Video/DashboardBg.mp4" OverlayBackground="#9908090D" />
+        <c:VideoBackground x:Name="VideoBg" VideoName="Video/DashboardBg.mp4" OverlayBackground="#9908090D" />
 
         <!-- 2. MAIN LAYOUT GRID -->
         <Grid>
@@ -68,12 +68,12 @@
 
                 <!-- Middle Games Area Grid -->
                 <Grid Grid.Column="2">
-                    <c:GameLibrary />
+                    <c:GameLibrary x:Name="GameLib" />
                 </Grid>
 
                 <!-- Right Hardware Area Grid -->
                 <Grid Grid.Column="4">
-                    <c:HardwarePanel />
+                    <c:HardwarePanel x:Name="Hardware" />
                 </Grid>
             </Grid>
         </Grid>

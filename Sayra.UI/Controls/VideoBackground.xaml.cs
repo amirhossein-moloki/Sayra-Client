@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
@@ -12,10 +13,10 @@ namespace Sayra.UI.Controls
     {
         public VideoBackground()
         {
-            // Log before and after MediaElement initialization
-            Log("[VideoBackground] Initializing Custom Control...");
+            var sw = Stopwatch.StartNew();
             InitializeComponent();
-            Log("[VideoBackground] Component initialized (Video disabled for debugging).");
+            sw.Stop();
+            GlobalExceptionHandler.LogTrace("TIMING", $"[VideoBackground] Constructor & InitializeComponent completed in {sw.ElapsedMilliseconds} ms");
 
             Loaded += VideoBackground_Loaded;
             Unloaded += VideoBackground_Unloaded;
@@ -55,7 +56,10 @@ namespace Sayra.UI.Controls
 
         private void VideoBackground_Loaded(object sender, RoutedEventArgs e)
         {
+            var sw = Stopwatch.StartNew();
             Log("[VideoBackground] Control loaded. Video playback is disabled to investigate UI freezes.");
+            sw.Stop();
+            GlobalExceptionHandler.LogTrace("TIMING", $"[VideoBackground] Loaded event completed in {sw.ElapsedMilliseconds} ms");
         }
 
         private void Log(string message)

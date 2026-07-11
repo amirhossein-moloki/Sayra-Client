@@ -37,6 +37,9 @@ namespace Sayra.UI.ViewModels
             IsLoggingIn = true;
             bool loginSuccessful = false;
 
+            GlobalExceptionHandler.CurrentOperation = "Authentication started";
+            GlobalExceptionHandler.LogTrace("LOGIN", "Authentication started");
+
             try
             {
                 // Simulate network latency / loading animation
@@ -46,6 +49,7 @@ namespace Sayra.UI.ViewModels
             catch (Exception ex)
             {
                 ErrorMessage = $"Login failed: {ex.Message}";
+                GlobalExceptionHandler.LogTrace("LOGIN", $"Authentication failed: {ex.Message}");
             }
             finally
             {
@@ -54,14 +58,24 @@ namespace Sayra.UI.ViewModels
 
             if (loginSuccessful)
             {
+                GlobalExceptionHandler.LogTrace("LOGIN", "Authentication successful");
                 try
                 {
                     // Show success message
                     MessageBox.Show("ورود با موفقیت انجام شد!", "سیستم سایرا", MessageBoxButton.OK, MessageBoxImage.Information);
 
-                    // Open dashboard and close old window
+                    GlobalExceptionHandler.CurrentOperation = "Creating DashboardWindow";
+                    GlobalExceptionHandler.LogTrace("DASHBOARD", "Creating DashboardWindow");
+
                     var dashboard = new Sayra.UI.Views.DashboardWindow();
+
+                    GlobalExceptionHandler.CurrentOperation = "Showing window";
+                    GlobalExceptionHandler.LogTrace("DASHBOARD", "Showing window");
+
                     dashboard.Show();
+
+                    GlobalExceptionHandler.CurrentOperation = "Window displayed";
+                    GlobalExceptionHandler.LogTrace("DASHBOARD", "Window displayed");
 
                     var oldWindow = Application.Current.MainWindow;
                     Application.Current.MainWindow = dashboard;
@@ -70,6 +84,8 @@ namespace Sayra.UI.ViewModels
                 catch (Exception ex)
                 {
                     ErrorMessage = $"Failed to load dashboard: {ex.Message}";
+                    GlobalExceptionHandler.LogTrace("DASHBOARD", $"Dashboard load/show exception: {ex}");
+                    GlobalExceptionHandler.HandleException(ex, "Dashboard Creation Flow");
                 }
             }
         }
