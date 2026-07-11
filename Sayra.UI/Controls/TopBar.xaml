@@ -10,6 +10,11 @@
     <UserControl.Resources>
         <!-- Breathing effect for SAYRA Logo glow in header -->
         <Style x:Key="HeaderLogoStyle" TargetType="svgc:SvgViewbox">
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect x:Name="HeaderLogoGlow" Color="#F5FF00" BlurRadius="12" ShadowDepth="0" Opacity="0.45"/>
+                </Setter.Value>
+            </Setter>
             <Style.Triggers>
                 <EventTrigger RoutedEvent="Loaded">
                     <BeginStoryboard>
@@ -143,11 +148,7 @@
                                  Width="140"
                                  Style="{StaticResource HeaderLogoStyle}"
                                  HorizontalAlignment="Left"
-                                 VerticalAlignment="Center">
-                    <svgc:SvgViewbox.Effect>
-                        <DropShadowEffect Color="#F5FF00" BlurRadius="12" ShadowDepth="0" Opacity="0.45"/>
-                    </svgc:SvgViewbox.Effect>
-                </svgc:SvgViewbox>
+                                 VerticalAlignment="Center" />
             </StackPanel>
 
             <!-- CENTER AREA: PC identity section + status badge -->

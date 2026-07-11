@@ -24,6 +24,11 @@
     <Window.Resources>
         <!-- Style for SVG Logo Breathing Glow -->
         <Style x:Key="BreathingLogoStyle" TargetType="svgc:SvgViewbox">
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect x:Name="BreathingLogoGlow" Color="#F5FF00" BlurRadius="20" ShadowDepth="0" Opacity="0.6"/>
+                </Setter.Value>
+            </Setter>
             <Style.Triggers>
                 <EventTrigger RoutedEvent="Loaded">
                     <BeginStoryboard>
@@ -105,11 +110,7 @@
                                  Width="320" Height="80"
                                  Style="{StaticResource BreathingLogoStyle}"
                                  HorizontalAlignment="Center"
-                                 VerticalAlignment="Center">
-                    <svgc:SvgViewbox.Effect>
-                        <DropShadowEffect Color="#F5FF00" BlurRadius="20" ShadowDepth="0" Opacity="0.6"/>
-                    </svgc:SvgViewbox.Effect>
-                </svgc:SvgViewbox>
+                                 VerticalAlignment="Center" />
             </Grid>
 
             <!-- Subtitle/Atmospheric hint -->

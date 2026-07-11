@@ -25,6 +25,9 @@
                                 BorderThickness="{TemplateBinding BorderThickness}"
                                 CornerRadius="10"
                                 Padding="{TemplateBinding Padding}">
+                            <Border.Effect>
+                                <DropShadowEffect x:Name="SidebarItemGlow" Color="#F5FF00" BlurRadius="12" ShadowDepth="0" Opacity="0" />
+                            </Border.Effect>
                             <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="Auto" />
@@ -63,8 +66,8 @@
                                 <Trigger.EnterActions>
                                     <BeginStoryboard>
                                         <Storyboard>
-                                            <DoubleAnimation Storyboard.TargetName="ItemBorder"
-                                                             Storyboard.TargetProperty="(UIElement.Effect).(DropShadowEffect.Opacity)"
+                                            <DoubleAnimation Storyboard.TargetName="SidebarItemGlow"
+                                                             Storyboard.TargetProperty="Opacity"
                                                              To="0.3" Duration="0:0:0.2"/>
                                         </Storyboard>
                                     </BeginStoryboard>
@@ -72,8 +75,8 @@
                                 <Trigger.ExitActions>
                                     <BeginStoryboard>
                                         <Storyboard>
-                                            <DoubleAnimation Storyboard.TargetName="ItemBorder"
-                                                             Storyboard.TargetProperty="(UIElement.Effect).(DropShadowEffect.Opacity)"
+                                            <DoubleAnimation Storyboard.TargetName="SidebarItemGlow"
+                                                             Storyboard.TargetProperty="Opacity"
                                                              To="0.0" Duration="0:0:0.2"/>
                                         </Storyboard>
                                     </BeginStoryboard>
