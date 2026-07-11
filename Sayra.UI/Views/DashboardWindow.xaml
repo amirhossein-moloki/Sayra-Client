@@ -71,9 +71,9 @@
                     <c:GameLibrary />
                 </Grid>
 
-                <!-- Right Hardware Area Grid (Reserved for Part 2) -->
+                <!-- Right Hardware Area Grid -->
                 <Grid Grid.Column="4">
-                    <!-- Future hardware panel components will reside here -->
+                    <c:HardwarePanel />
                 </Grid>
             </Grid>
         </Grid>
