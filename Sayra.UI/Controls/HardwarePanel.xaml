@@ -117,15 +117,13 @@
                                 <EventTrigger RoutedEvent="Border.Loaded">
                                     <BeginStoryboard>
                                         <Storyboard>
-                                            <DoubleAnimation Storyboard.TargetName="RowBorder"
-                                                             Storyboard.TargetProperty="Opacity"
+                                            <DoubleAnimation Storyboard.TargetProperty="Opacity"
                                                              From="0" To="1" Duration="0:0:0.6">
                                                 <DoubleAnimation.EasingFunction>
                                                     <CubicEase EasingMode="EaseOut"/>
                                                 </DoubleAnimation.EasingFunction>
                                             </DoubleAnimation>
-                                            <DoubleAnimation Storyboard.TargetName="RowBorder"
-                                                             Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)"
+                                            <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)"
                                                              From="20" To="0" Duration="0:0:0.6">
                                                 <DoubleAnimation.EasingFunction>
                                                     <CubicEase EasingMode="EaseOut"/>
