@@ -5,8 +5,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:vm="clr-namespace:Sayra.UI.ViewModels"
              mc:Ignorable="d"
-             d:DesignHeight="700" d:DesignWidth="294"
-             Width="294" Height="700">
+             d:DesignHeight="700" d:DesignWidth="235.2"
+             Width="235.2" Height="700">
 
     <UserControl.DataContext>
         <vm:HardwarePanelViewModel />
