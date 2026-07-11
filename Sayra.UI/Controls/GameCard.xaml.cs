@@ -5,6 +5,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Media.Effects;
+using System.Windows.Media.Imaging;
 
 namespace Sayra.UI.Controls
 {
@@ -20,11 +21,11 @@ namespace Sayra.UI.Controls
 
         public static readonly DependencyProperty ImagePathProperty =
             DependencyProperty.Register(nameof(ImagePath), typeof(string), typeof(GameCard),
-                new PropertyMetadata(string.Empty));
+                new PropertyMetadata(string.Empty, OnImagePathChanged));
 
         public static readonly DependencyProperty StatusProperty =
             DependencyProperty.Register(nameof(Status), typeof(string), typeof(GameCard),
-                new PropertyMetadata(string.Empty));
+                new PropertyMetadata(string.Empty, OnStateChanged));
 
         public static readonly DependencyProperty IsSelectedProperty =
             DependencyProperty.Register(nameof(IsSelected), typeof(bool), typeof(GameCard),
@@ -37,6 +38,10 @@ namespace Sayra.UI.Controls
         public static readonly DependencyProperty PlayCommandProperty =
             DependencyProperty.Register(nameof(PlayCommand), typeof(ICommand), typeof(GameCard),
                 new PropertyMetadata(null));
+
+        public static readonly DependencyProperty ButtonTextProperty =
+            DependencyProperty.Register(nameof(ButtonText), typeof(string), typeof(GameCard),
+                new PropertyMetadata("PLAY"));
 
         public string Title
         {
@@ -80,12 +85,21 @@ namespace Sayra.UI.Controls
             set => SetValue(PlayCommandProperty, value);
         }
 
+        public string ButtonText
+        {
+            get => (string)GetValue(ButtonTextProperty);
+            set => SetValue(ButtonTextProperty, value);
+        }
+
         private bool _isMouseOver;
 
         public GameCard()
         {
             InitializeComponent();
-            Loaded += (s, e) => AnimateToState(immediate: true);
+            Loaded += (s, e) => {
+                UpdateCoverImage();
+                AnimateToState(immediate: true);
+            };
         }
 
         private void CoverImage_ImageFailed(object sender, ExceptionRoutedEventArgs e)
@@ -109,6 +123,61 @@ namespace Sayra.UI.Controls
             if (d is GameCard card)
             {
                 card.AnimateToState();
+            }
+        }
+
+        private static void OnImagePathChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is GameCard card)
+            {
+                card.UpdateCoverImage();
+            }
+        }
+
+        private void UpdateCoverImage()
+        {
+            if (CoverImage == null) return;
+
+            string path = ImagePath;
+            if (string.IsNullOrEmpty(path))
+            {
+                CoverImage.Source = null;
+                return;
+            }
+
+            try
+            {
+                var bitmap = new BitmapImage();
+                bitmap.BeginInit();
+
+                if (path.StartsWith("pack://") || path.Contains("://"))
+                {
+                    bitmap.UriSource = new Uri(path);
+                }
+                else
+                {
+                    string fullPath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, path);
+                    if (!System.IO.File.Exists(fullPath))
+                    {
+                        bitmap.UriSource = new Uri(path, UriKind.RelativeOrAbsolute);
+                    }
+                    else
+                    {
+                        bitmap.UriSource = new Uri(fullPath, UriKind.Absolute);
+                    }
+                }
+
+                bitmap.CacheOption = BitmapCacheOption.OnLoad;
+                bitmap.CreateOptions = BitmapCreateOptions.DelayCreation;
+                bitmap.EndInit();
+                bitmap.Freeze(); // Optimize rendering memory and prevent UI freezes
+
+                CoverImage.Source = bitmap;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"[GameCard] Error loading image {path}: {ex.Message}");
+                CoverImage.Source = null;
             }
         }
 
@@ -170,6 +239,34 @@ namespace Sayra.UI.Controls
                 targetShadowBlur = 20;
                 targetShadowDepth = 0;
             }
+
+            // Update dynamic Button Text based on Status and availability
+            string targetButtonText = "PLAY";
+            if (!string.IsNullOrEmpty(Status))
+            {
+                string upperStatus = Status.ToUpperInvariant();
+                if (upperStatus == "CURRENTLY PLAYING" || upperStatus == "PLAYING" || upperStatus == "RUNNING")
+                {
+                    targetButtonText = "PLAYING";
+                }
+                else if (upperStatus == "LOCKED")
+                {
+                    targetButtonText = "LOCKED";
+                }
+                else if (upperStatus == "UNAVAILABLE")
+                {
+                    targetButtonText = "UNAVAILABLE";
+                }
+                else if (upperStatus == "INSTALLED")
+                {
+                    targetButtonText = "PLAY";
+                }
+            }
+            else if (!IsAvailable)
+            {
+                targetButtonText = "UNAVAILABLE";
+            }
+            ButtonText = targetButtonText;
 
             // Animate Scale
             if (CardScaleTransform != null)
