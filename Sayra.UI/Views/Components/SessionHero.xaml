@@ -31,57 +31,56 @@
             </Style.Triggers>
         </Style>
 
-        <!-- Dynamic card hover style for information cards -->
-        <Style x:Key="HeroInfoCardStyle" TargetType="Border">
-            <Setter Property="Background" Value="#1C1D24" />
-            <Setter Property="BorderBrush" Value="#1AFFFFFF" />
+        <!-- Premium style for the single merged pricing container -->
+        <Style x:Key="MergedPricingContainerStyle" TargetType="Border">
+            <Setter Property="Background" Value="#E615161E" />
+            <Setter Property="BorderBrush" Value="#40F5FF00" />
             <Setter Property="BorderThickness" Value="1" />
-            <Setter Property="CornerRadius" Value="14" />
-            <Setter Property="Width" Value="210" />
-            <Setter Property="Padding" Value="14,10" />
+            <Setter Property="CornerRadius" Value="12" />
+            <Setter Property="Padding" Value="20,12" />
+            <Setter Property="HorizontalAlignment" Value="Left" />
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="#25262E" />
-                    <Setter Property="BorderBrush" Value="#30FFFFFF" />
+                    <Setter Property="Background" Value="#E61C1E26" />
+                    <Setter Property="BorderBrush" Value="#80F5FF00" />
                 </Trigger>
             </Style.Triggers>
         </Style>
     </UserControl.Resources>
 
     <!-- Main Banner Container with premium glassmorphic style -->
-    <!-- Background: rgba(8,9,13, 0.8) for dark transparent overlay -->
-    <!-- Border: rgba(255,255,255, 0.1) for thin transparent border -->
-    <!-- CornerRadius: 22 -->
-    <!-- Height: approx 220-260px (Design Height 240) -->
-    <Border CornerRadius="22"
-            Background="#D908090D"
+    <!-- Background: subtle linear gradient starting dark transparent to slightly lighter dark transparent -->
+    <!-- Border: rgba(255,255,255, 0.1) for thin transparent bottom border -->
+    <!-- CornerRadius: 0 (clean rectangle) -->
+    <Border CornerRadius="0"
             BorderBrush="#1AFFFFFF"
-            BorderThickness="1"
+            BorderThickness="0,0,0,1"
             ClipToBounds="True">
-        <Border.Effect>
-            <!-- Gentle yellow neon glow atmospheric shadow -->
-            <DropShadowEffect Color="#F5FF00" BlurRadius="25" ShadowDepth="0" Opacity="0.12" />
-        </Border.Effect>
+        <Border.Background>
+            <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                <GradientStop Color="#D908090D" Offset="0" />
+                <GradientStop Color="#D912131A" Offset="1" />
+            </LinearGradientBrush>
+        </Border.Background>
 
         <Grid>
             <!-- 1. BACKGROUND LAYER: Large Faded SAYRA Logo -->
+            <!-- Positioned at the very right of the entire control, not constrained by padding -->
             <svgc:SvgViewbox Source="/Assets/sayra.svg"
                              Width="380" Height="380"
                              Style="{StaticResource HeroLogoStyle}"
                              HorizontalAlignment="Right"
                              VerticalAlignment="Center"
-                             Margin="0,0,-40,-40"
+                             Margin="0,0,-40,0"
                              IsHitTestVisible="False">
                 <svgc:SvgViewbox.Effect>
-                    <DropShadowEffect Color="#F5FF00" BlurRadius="25" ShadowDepth="0" Opacity="0.2" />
+                    <DropShadowEffect Color="#F5FF00" BlurRadius="25" ShadowDepth="0" Opacity="0.1" />
                 </svgc:SvgViewbox.Effect>
             </svgc:SvgViewbox>
 
             <!-- 2. FOREGROUND CONTENT LAYER -->
-            <Grid Margin="32,24">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="*" />
-                </Grid.RowDefinitions>
+            <!-- Using internal left and right padding: 60px (within the 50-70px target) for breathing space -->
+            <Grid Margin="60,0">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
@@ -100,22 +99,16 @@
                         </TextBlock.Effect>
                     </TextBlock>
 
-                    <!-- Financial Cards Stack -->
-                    <StackPanel Orientation="Horizontal">
-                        <!-- Cost Card (هزینه تاکنون) -->
-                        <Border Style="{StaticResource HeroInfoCardStyle}" Margin="0,0,16,0">
-                            <Border.Effect>
-                                <DropShadowEffect Color="#000000" BlurRadius="12" ShadowDepth="2" Opacity="0.4" />
-                            </Border.Effect>
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto" />
-                                    <ColumnDefinition Width="*" />
-                                </Grid.ColumnDefinitions>
-
+                    <!-- Merged Pricing Container -->
+                    <Border Style="{StaticResource MergedPricingContainerStyle}">
+                        <Border.Effect>
+                            <DropShadowEffect Color="#F5FF00" BlurRadius="12" ShadowDepth="0" Opacity="0.12" />
+                        </Border.Effect>
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <!-- Cost Section (هزینه تاکنون) -->
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                                 <!-- Coin/Cash icon with neon glow -->
-                                <Path Grid.Column="0"
-                                      Data="M21,18V19A2,2 0 0,1 19,21H5C3.89,21 3,20.1 3,19V5C3,3.89 3.89,3 5,3H19A2,2 0 0,1 21,5V6H12C10.89,6 10,6.89 10,8V16C10,17.11 10.89,18 12,18H21M12,16H22V8H12V16M16,13.5A1.5,1.5 0 0,1 14.5,12A1.5,1.5 0 0,1 16,10.5A1.5,1.5 0 0,1 17.5,12A1.5,1.5 0 0,1 16,13.5Z"
+                                <Path Data="M21,18V19A2,2 0 0,1 19,21H5C3.89,21 3,20.1 3,19V5C3,3.89 3.89,3 5,3H19A2,2 0 0,1 21,5V6H12C10.89,6 10,6.89 10,8V16C10,17.11 10.89,18 12,18H21M12,16H22V8H12V16M16,13.5A1.5,1.5 0 0,1 14.5,12A1.5,1.5 0 0,1 16,10.5A1.5,1.5 0 0,1 17.5,12A1.5,1.5 0 0,1 16,13.5Z"
                                       Fill="#F5FF00"
                                       Width="24" Height="24"
                                       Stretch="Uniform"
@@ -127,7 +120,7 @@
                                 </Path>
 
                                 <!-- Labels in RTL for correct Persian rendering -->
-                                <StackPanel Grid.Column="1" VerticalAlignment="Center" FlowDirection="RightToLeft">
+                                <StackPanel VerticalAlignment="Center" FlowDirection="RightToLeft">
                                     <TextBlock Text="هزینه تاکنون"
                                                FontFamily="{StaticResource PeydaMedium}"
                                                FontSize="11"
@@ -138,23 +131,15 @@
                                                Foreground="White"
                                                Margin="0,3,0,0" />
                                 </StackPanel>
-                            </Grid>
-                        </Border>
+                            </StackPanel>
 
-                        <!-- Hourly Rate Card (نرخ ساعتی) -->
-                        <Border Style="{StaticResource HeroInfoCardStyle}">
-                            <Border.Effect>
-                                <DropShadowEffect Color="#000000" BlurRadius="12" ShadowDepth="2" Opacity="0.4" />
-                            </Border.Effect>
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto" />
-                                    <ColumnDefinition Width="*" />
-                                </Grid.ColumnDefinitions>
+                            <!-- Vertical Divider -->
+                            <Rectangle Width="1" Height="30" Fill="#33FFFFFF" Margin="24,0" VerticalAlignment="Center" />
 
+                            <!-- Hourly Rate Section (نرخ ساعتی) -->
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                                 <!-- Clock icon with neon glow -->
-                                <Path Grid.Column="0"
-                                      Data="M12,20A8,8 0 0,0 20,12A8,8 0 0,0 12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22A10,10 0 0,1 2,12A10,10 0 0,1 12,2M12.5,7V12.25L17,14.92L16.25,16.15L11,13V7H12.5Z"
+                                <Path Data="M12,20A8,8 0 0,0 20,12A8,8 0 0,0 12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22A10,10 0 0,1 2,12A10,10 0 0,1 12,2M12.5,7V12.25L17,14.92L16.25,16.15L11,13V7H12.5Z"
                                       Fill="#F5FF00"
                                       Width="24" Height="24"
                                       Stretch="Uniform"
@@ -166,7 +151,7 @@
                                 </Path>
 
                                 <!-- Labels in RTL for correct Persian rendering -->
-                                <StackPanel Grid.Column="1" VerticalAlignment="Center" FlowDirection="RightToLeft">
+                                <StackPanel VerticalAlignment="Center" FlowDirection="RightToLeft">
                                     <TextBlock Text="نرخ ساعتی"
                                                FontFamily="{StaticResource PeydaMedium}"
                                                FontSize="11"
@@ -177,9 +162,9 @@
                                                Foreground="White"
                                                Margin="0,3,0,0" />
                                 </StackPanel>
-                            </Grid>
-                        </Border>
-                    </StackPanel>
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
                 </StackPanel>
             </Grid>
         </Grid>
