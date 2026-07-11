@@ -127,23 +127,19 @@
             <!-- CONTENT ROW: Prepared structure for layout sections (Games, Hardware) -->
             <Grid Grid.Row="2" Margin="30,20,30,30">
                 <Grid.ColumnDefinitions>
-                    <!-- Column 0: Left Game Navigation Sidebar (18-20% width) -->
-                    <ColumnDefinition Width="19*" />
+                    <!-- Column 0: Left Game Navigation Sidebar (Fixed 300px width) -->
+                    <ColumnDefinition Width="Auto" />
 
-                    <!-- Column 1: Middle/Center Games Library Area (60-65% width) -->
-                    <ColumnDefinition Width="67*" />
+                    <!-- Column 1: Middle/Center Games Library Area (Stretches to fill remaining space) -->
+                    <ColumnDefinition Width="*" />
 
-                    <!-- Column 2: Right Hardware System Detail Panel Area (20-25% width) -->
-                    <ColumnDefinition Width="14*" />
+                    <!-- Column 2: Right Hardware System Detail Panel Area (Fixed 294px width) -->
+                    <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
 
                 <!-- Left Sidebar Grid Column -->
                 <Grid Grid.Column="0" Margin="0,0,15,0">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="6*" />
-                        <RowDefinition Height="4*" />
-                    </Grid.RowDefinitions>
-                    <components:GameSidebar x:Name="SidebarCtrl" Grid.Row="0" VerticalAlignment="Stretch" />
+                    <components:GameSidebar x:Name="SidebarCtrl" HorizontalAlignment="Left" VerticalAlignment="Top" />
                 </Grid>
 
                 <!-- Middle Games Library Grid Column -->
@@ -159,11 +155,12 @@
                         <RowDefinition Height="Auto" /> <!-- End Session Button -->
                     </Grid.RowDefinitions>
 
-                    <c:HardwarePanel x:Name="Hardware" Grid.Row="0" />
+                    <c:HardwarePanel x:Name="Hardware" Grid.Row="0" HorizontalAlignment="Stretch" VerticalAlignment="Top" />
 
                     <Button Grid.Row="2"
                             Style="{StaticResource EndSessionButtonStyle}"
-                            Click="EndSession_Click" />
+                            Click="EndSession_Click"
+                            HorizontalAlignment="Stretch" />
                 </Grid>
             </Grid>
         </Grid>
