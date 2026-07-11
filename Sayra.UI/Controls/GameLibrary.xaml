@@ -108,32 +108,39 @@
 
     <Grid Margin="0">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" /> <!-- Header Area -->
-            <RowDefinition Height="Auto" /> <!-- Search Area -->
+            <RowDefinition Height="Auto" /> <!-- Header & Search Area -->
             <RowDefinition Height="*" />    <!-- Games Grid Area -->
         </Grid.RowDefinitions>
 
-        <!-- 1. SECTION HEADER -->
-        <StackPanel Grid.Row="0" Orientation="Horizontal" VerticalAlignment="Center" Margin="0,24,0,20">
-            <!-- Subtle yellow accent indicator bar -->
-            <Border Width="4" Height="26" Background="#F5FF00" CornerRadius="2" Margin="0,0,12,0"/>
-            <TextBlock Text="کتابخانه بازی ها"
-                       FontFamily="{StaticResource PeydaBold}"
-                       FontSize="26"
-                       Foreground="White"
-                       VerticalAlignment="Center" />
-        </StackPanel>
+        <!-- 1. HEADER & SEARCH AREA -->
+        <Grid Grid.Row="0" Margin="0,24,0,20" HorizontalAlignment="Stretch">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
 
-        <!-- 2. SEARCH BOX -->
-        <Grid Grid.Row="1" Margin="0,0,0,20" HorizontalAlignment="Stretch">
-            <TextBox Style="{StaticResource ModernSearchTextBoxStyle}"
+            <!-- Game Library Title (Start of RTL -> Physical Right) -->
+            <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
+                <!-- Subtle yellow accent indicator bar -->
+                <Border Width="4" Height="26" Background="#F5FF00" CornerRadius="2" Margin="0,0,12,0"/>
+                <TextBlock Text="کتابخانه بازی ها"
+                           FontFamily="{StaticResource PeydaBold}"
+                           FontSize="26"
+                           Foreground="White"
+                           VerticalAlignment="Center" />
+            </StackPanel>
+
+            <!-- Search Box (End of RTL -> Physical Left, directly opposite the title) -->
+            <TextBox Grid.Column="1"
+                     Style="{StaticResource ModernSearchTextBoxStyle}"
                      Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
                      Width="420"
-                     HorizontalAlignment="Left" />
+                     HorizontalAlignment="Right"
+                     VerticalAlignment="Center" />
         </Grid>
 
-        <!-- 3. GAMES GRID AREA -->
-        <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+        <!-- 2. GAMES GRID AREA -->
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
             <ItemsControl ItemsSource="{Binding Games}">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
