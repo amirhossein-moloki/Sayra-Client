@@ -50,34 +50,28 @@
             <!-- CONTENT ROW: Prepared structure for layout sections (Games, Hardware) -->
             <Grid Grid.Row="2" Margin="30,20,30,30">
                 <Grid.ColumnDefinitions>
-                    <!-- Column 0: Left Session Area (e.g., Timer section, Price cards) -->
-                    <ColumnDefinition Width="380" />
+                    <!-- Column 0: Left Game Navigation Sidebar (18-20% width) -->
+                    <ColumnDefinition Width="19*" />
 
-                    <!-- Spacing Column -->
-                    <ColumnDefinition Width="30" />
+                    <!-- Column 1: Middle/Center Games Library Area (60-65% width) -->
+                    <ColumnDefinition Width="61*" />
 
-                    <!-- Column 1: Middle/Center Games Area (e.g., Game library, Game cards) -->
-                    <ColumnDefinition Width="*" />
-
-                    <!-- Spacing Column -->
-                    <ColumnDefinition Width="30" />
-
-                    <!-- Column 2: Right Hardware Area (e.g., Hardware metrics, diagnostics panel) -->
-                    <ColumnDefinition Width="420" />
+                    <!-- Column 2: Right Hardware System Detail Panel Area (20-25% width) -->
+                    <ColumnDefinition Width="20*" />
                 </Grid.ColumnDefinitions>
 
-                <!-- Left Session Area Grid (Reserved for Part 2) -->
-                <Grid Grid.Column="0">
-                    <!-- Future session components will reside here -->
+                <!-- Left Sidebar Grid Column -->
+                <Grid Grid.Column="0" Margin="0,0,15,0">
+                    <components:GameSidebar x:Name="SidebarCtrl" />
                 </Grid>
 
-                <!-- Middle Games Area Grid -->
-                <Grid Grid.Column="2">
+                <!-- Middle Games Library Grid Column -->
+                <Grid Grid.Column="1" Margin="15,0,15,0">
                     <c:GameLibrary x:Name="GameLib" />
                 </Grid>
 
-                <!-- Right Hardware Area Grid -->
-                <Grid Grid.Column="4">
+                <!-- Right Hardware Area Grid Column -->
+                <Grid Grid.Column="2" Margin="15,0,0,0">
                     <c:HardwarePanel x:Name="Hardware" />
                 </Grid>
             </Grid>
