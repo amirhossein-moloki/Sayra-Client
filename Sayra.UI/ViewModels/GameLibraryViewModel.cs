@@ -1,9 +1,12 @@
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Sayra.UI.Models;
+using Sayra.UI.Services;
 
 namespace Sayra.UI.ViewModels
 {
@@ -12,87 +15,58 @@ namespace Sayra.UI.ViewModels
         [ObservableProperty]
         private string _searchText = string.Empty;
 
+        private readonly List<GameItem> _allGames = new();
+
         public ObservableCollection<GameItem> Games { get; } = new();
 
         public GameLibraryViewModel()
         {
             Log("Constructor START");
+            _ = LoadGamesAsync();
+            Log("Constructor END");
+        }
+
+        private async Task LoadGamesAsync()
+        {
             try
             {
-                // Populate with mock GameItems to demonstrate premium gaming design
-                Games.Add(new GameItem
+                Log("Loading games asynchronously from MockGameService...");
+                var service = new MockGameService();
+                var list = await service.GetGamesAsync();
+
+                _allGames.Clear();
+                foreach (var game in list)
                 {
-                    Id = "1",
-                    Title = "VALORANT",
-                    Genre = "FPS",
-                    Status = "Available",
-                    ImagePath = "pack://application:,,,/Assets/Games/Valorant.jpg",
-                    IsAvailable = true,
-                    IsSelected = true,
-                    Description = "Tactical shooter game with unique agent abilities."
-                });
-                Games.Add(new GameItem
-                {
-                    Id = "2",
-                    Title = "FORTNITE",
-                    Genre = "Battle Royale",
-                    Status = "Available",
-                    ImagePath = "pack://application:,,,/Assets/Games/Fortnite.jpg",
-                    IsAvailable = true,
-                    IsSelected = false,
-                    Description = "A fast-paced battle royale game with building mechanics."
-                });
-                Games.Add(new GameItem
-                {
-                    Id = "3",
-                    Title = "CYBERPUNK 2077",
-                    Genre = "RPG",
-                    Status = "Available",
-                    ImagePath = "pack://application:,,,/Assets/Games/Cyberpunk.jpg",
-                    IsAvailable = true,
-                    IsSelected = false,
-                    Description = "Open-world, action-adventure story in Night City."
-                });
-                Games.Add(new GameItem
-                {
-                    Id = "4",
-                    Title = "CS:GO 2",
-                    Genre = "Shooter",
-                    Status = "Available",
-                    ImagePath = "pack://application:,,,/Assets/Games/CsGo.jpg",
-                    IsAvailable = true,
-                    IsSelected = false,
-                    Description = "Tactical first-person shooter."
-                });
-                Games.Add(new GameItem
-                {
-                    Id = "5",
-                    Title = "DOTA 2",
-                    Genre = "MOBA",
-                    Status = "Unavailable",
-                    ImagePath = "pack://application:,,,/Assets/Games/Dota2.jpg",
-                    IsAvailable = false,
-                    IsSelected = false,
-                    Description = "Multiplayer online battle arena."
-                });
-                Games.Add(new GameItem
-                {
-                    Id = "6",
-                    Title = "FIFA 24",
-                    Genre = "Sports",
-                    Status = "Available",
-                    ImagePath = "pack://application:,,,/Assets/Games/Fifa24.jpg",
-                    IsAvailable = true,
-                    IsSelected = false,
-                    Description = "Association football simulation game."
-                });
-                Log("Mock Games populated successfully");
+                    _allGames.Add(game);
+                }
+
+                ApplyFilter();
+                Log("Mock Games populated and filtered successfully");
             }
             catch (Exception ex)
             {
                 Log($"Mock population failed: {ex}");
             }
-            Log("Constructor END");
+        }
+
+        partial void OnSearchTextChanged(string value)
+        {
+            ApplyFilter();
+        }
+
+        private void ApplyFilter()
+        {
+            string query = SearchText.Trim().ToLower();
+            Games.Clear();
+            foreach (var game in _allGames)
+            {
+                if (string.IsNullOrEmpty(query) ||
+                    game.Title.ToLower().Contains(query) ||
+                    game.Genre.ToLower().Contains(query))
+                {
+                    Games.Add(game);
+                }
+            }
         }
 
         [RelayCommand]
@@ -100,10 +74,33 @@ namespace Sayra.UI.ViewModels
         {
             if (game == null) return;
 
-            // Simple visual feedback: select the clicked game
+            // Update IsSelected in master list and active UI list
+            foreach (var g in _allGames)
+            {
+                g.IsSelected = (g.Id == game.Id);
+                // If currently playing, update status string
+                if (g.IsSelected)
+                {
+                    g.Status = "Currently Playing";
+                }
+                else if (g.Status == "Currently Playing")
+                {
+                    g.Status = "Installed"; // revert back to Installed if deselected
+                }
+            }
+
+            // Sync selection state to the filtered collection
             foreach (var g in Games)
             {
                 g.IsSelected = (g.Id == game.Id);
+                if (g.IsSelected)
+                {
+                    g.Status = "Currently Playing";
+                }
+                else if (g.Status == "Currently Playing")
+                {
+                    g.Status = "Installed";
+                }
             }
 
             Debug.WriteLine($"Playing game: {game.Title}");

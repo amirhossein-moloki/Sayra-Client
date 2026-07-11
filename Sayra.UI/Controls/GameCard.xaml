@@ -45,7 +45,6 @@
 
                         <!-- Game Cover Image -->
                         <Image x:Name="CoverImage"
-                               Source="{Binding ImagePath, ElementName=self, TargetNullValue={x:Null}, FallbackValue={x:Null}}"
                                ImageFailed="CoverImage_ImageFailed"
                                Stretch="UniformToFill"
                                RenderOptions.BitmapScalingMode="HighQuality" />
@@ -91,7 +90,7 @@
 
                     <!-- Play Button (Yellow Accent) -->
                     <Grid Grid.Row="2" VerticalAlignment="Bottom" Margin="0,8,0,0">
-                        <Button Content="PLAY"
+                        <Button Content="{Binding ButtonText, ElementName=self}"
                                 Style="{StaticResource GameCardPlayButtonStyle}"
                                 Command="{Binding PlayCommand, ElementName=self}"
                                 CommandParameter="{Binding ElementName=self}"
