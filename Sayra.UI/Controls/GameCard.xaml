@@ -8,10 +8,10 @@
              Width="150" Height="230">
 
     <Grid MouseEnter="Card_MouseEnter" MouseLeave="Card_MouseLeave">
-        <!-- Root Card Border: CornerRadius exactly 18px -->
+        <!-- Root Card Border: CornerRadius set to subtle 5px -->
         <Border x:Name="CardBorder"
                 BorderThickness="1.5"
-                CornerRadius="18"
+                CornerRadius="5"
                 Background="#0DFFFFFF"
                 ClipToBounds="True"
                 RenderTransformOrigin="0.5,0.5">
@@ -26,8 +26,8 @@
             </Border.Effect>
 
             <Grid>
-                <!-- 1. COVER IMAGE AREA filling entire card background: CornerRadius 18px to avoid overflow -->
-                <Border CornerRadius="18" ClipToBounds="True" Background="#15FFFFFF">
+                <!-- 1. COVER IMAGE AREA filling entire card background: CornerRadius 5px to avoid overflow -->
+                <Border CornerRadius="5" ClipToBounds="True" Background="#15FFFFFF">
                     <Grid>
                         <!-- Fallback Placeholder Gamepad Icon -->
                         <Grid Background="#10FFFFFF">
@@ -122,7 +122,7 @@
                 <!-- 4. DISABLED OVERLAY -->
                 <Border x:Name="DisabledOverlay"
                         Background="#99000000"
-                        CornerRadius="18"
+                        CornerRadius="5"
                         Opacity="0.0"
                         IsHitTestVisible="False" />
             </Grid>

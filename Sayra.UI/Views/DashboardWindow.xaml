@@ -54,15 +54,19 @@
                     <ColumnDefinition Width="19*" />
 
                     <!-- Column 1: Middle/Center Games Library Area (60-65% width) -->
-                    <ColumnDefinition Width="61*" />
+                    <ColumnDefinition Width="67*" />
 
                     <!-- Column 2: Right Hardware System Detail Panel Area (20-25% width) -->
-                    <ColumnDefinition Width="20*" />
+                    <ColumnDefinition Width="14*" />
                 </Grid.ColumnDefinitions>
 
                 <!-- Left Sidebar Grid Column -->
                 <Grid Grid.Column="0" Margin="0,0,15,0">
-                    <components:GameSidebar x:Name="SidebarCtrl" />
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="6*" />
+                        <RowDefinition Height="4*" />
+                    </Grid.RowDefinitions>
+                    <components:GameSidebar x:Name="SidebarCtrl" Grid.Row="0" VerticalAlignment="Stretch" />
                 </Grid>
 
                 <!-- Middle Games Library Grid Column -->

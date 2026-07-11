@@ -129,7 +129,7 @@
     <Border Background="{DynamicResource GlassPanelBrush}"
             BorderBrush="#1AFFFFFF"
             BorderThickness="0,0,0,1"
-            CornerRadius="0,0,24,24"
+            CornerRadius="0"
             Height="85">
         <Border.Effect>
             <DropShadowEffect Color="#000000" BlurRadius="20" ShadowDepth="4" Opacity="0.45"/>
