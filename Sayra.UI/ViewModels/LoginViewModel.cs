@@ -35,24 +35,13 @@ namespace Sayra.UI.ViewModels
 
             ErrorMessage = string.Empty;
             IsLoggingIn = true;
+            bool loginSuccessful = false;
 
             try
             {
                 // Simulate network latency / loading animation
                 await Task.Delay(1500);
-
-                // Show success message and open dashboard
-                Application.Current.Dispatcher.Invoke(() =>
-                {
-                    MessageBox.Show("ورود با موفقیت انجام شد!", "سیستم سایرا", MessageBoxButton.OK, MessageBoxImage.Information);
-
-                    var dashboard = new Sayra.UI.Views.DashboardWindow();
-                    dashboard.Show();
-
-                    var oldWindow = Application.Current.MainWindow;
-                    Application.Current.MainWindow = dashboard;
-                    oldWindow?.Close();
-                });
+                loginSuccessful = true;
             }
             catch (Exception ex)
             {
@@ -61,6 +50,27 @@ namespace Sayra.UI.ViewModels
             finally
             {
                 IsLoggingIn = false;
+            }
+
+            if (loginSuccessful)
+            {
+                try
+                {
+                    // Show success message
+                    MessageBox.Show("ورود با موفقیت انجام شد!", "سیستم سایرا", MessageBoxButton.OK, MessageBoxImage.Information);
+
+                    // Open dashboard and close old window
+                    var dashboard = new Sayra.UI.Views.DashboardWindow();
+                    dashboard.Show();
+
+                    var oldWindow = Application.Current.MainWindow;
+                    Application.Current.MainWindow = dashboard;
+                    oldWindow?.Close();
+                }
+                catch (Exception ex)
+                {
+                    ErrorMessage = $"Failed to load dashboard: {ex.Message}";
+                }
             }
         }
     }

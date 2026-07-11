@@ -88,6 +88,22 @@ namespace Sayra.UI.Controls
             Loaded += (s, e) => AnimateToState(immediate: true);
         }
 
+        private void CoverImage_ImageFailed(object sender, ExceptionRoutedEventArgs e)
+        {
+            try
+            {
+                if (sender is Image img)
+                {
+                    img.Visibility = Visibility.Collapsed;
+                }
+                System.Diagnostics.Debug.WriteLine($"[GameCard] Failed to load image: {e.ErrorException?.Message}");
+            }
+            catch
+            {
+                // Suppress any errors during failure handling
+            }
+        }
+
         private static void OnStateChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             if (d is GameCard card)
