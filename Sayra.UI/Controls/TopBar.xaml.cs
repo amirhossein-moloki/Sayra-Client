@@ -13,10 +13,22 @@ namespace Sayra.UI.Controls
 
         public TopBar()
         {
-            InitializeComponent();
+            Log("Constructor START");
+            try
+            {
+                Log("Before InitializeComponent()");
+                InitializeComponent();
+                Log("After InitializeComponent() SUCCESS");
+            }
+            catch (Exception ex)
+            {
+                Log($"InitializeComponent() FAILED: {ex}");
+                throw;
+            }
 
             _persianCalendar = new PersianCalendar();
 
+            Log("Before DispatcherTimer Setup");
             // Initialize and start timer for updating real-time time and date
             _timer = new DispatcherTimer
             {
@@ -24,14 +36,36 @@ namespace Sayra.UI.Controls
             };
             _timer.Tick += Timer_Tick;
             _timer.Start();
+            Log("DispatcherTimer Started");
 
+            Log("Before initial UpdateDateTime()");
             // Initial update
             UpdateDateTime();
+            Log("After initial UpdateDateTime()");
+
+            this.Loaded += TopBar_Loaded;
+            this.Unloaded += TopBar_Unloaded;
+
+            Log("Constructor END");
+        }
+
+        private void TopBar_Loaded(object sender, RoutedEventArgs e)
+        {
+            Log("Loaded Event START");
+            Log("Loaded Event END");
+        }
+
+        private void TopBar_Unloaded(object sender, RoutedEventArgs e)
+        {
+            Log("Unloaded Event");
+            _timer.Stop();
         }
 
         private void Timer_Tick(object? sender, EventArgs e)
         {
+            Log("Timer_Tick START");
             UpdateDateTime();
+            Log("Timer_Tick END");
         }
 
         private void UpdateDateTime()
@@ -52,7 +86,7 @@ namespace Sayra.UI.Controls
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"[TopBar] Date conversion error: {ex.Message}");
+                Log($"Date conversion error: {ex.Message}");
             }
         }
 
@@ -71,6 +105,14 @@ namespace Sayra.UI.Controls
             {
                 Application.Current.Shutdown();
             }
+        }
+
+        private void Log(string message)
+        {
+            string timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff");
+            string formatted = $"[TRACE][TopBar][{timestamp}] {message}";
+            System.Diagnostics.Debug.WriteLine(formatted);
+            Console.WriteLine(formatted);
         }
     }
 }
