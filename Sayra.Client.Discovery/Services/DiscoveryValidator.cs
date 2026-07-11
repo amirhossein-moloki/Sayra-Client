@@ -31,13 +31,13 @@ public class DiscoveryValidator
             }
 
             // 2. Timestamp (±10s window)
-            if (!DateTime.TryParse(response.timestamp, out var serverTime))
+            if (!DateTimeOffset.TryParse(response.timestamp, out var serverTime))
             {
                 _logger.LogWarning("Invalid timestamp format: {timestamp}", response.timestamp);
                 return false;
             }
 
-            if (Math.Abs((DateTime.UtcNow - serverTime.ToUniversalTime()).TotalSeconds) > 10)
+            if (Math.Abs((DateTimeOffset.UtcNow - serverTime).TotalSeconds) > 10)
             {
                 _logger.LogWarning("Response rejected due to expired timestamp: {timestamp}", response.timestamp);
                 return false;
