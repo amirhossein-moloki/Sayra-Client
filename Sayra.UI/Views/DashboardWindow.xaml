@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Sayra.UI.Views"
         xmlns:c="clr-namespace:Sayra.UI.Controls"
+        xmlns:components="clr-namespace:Sayra.UI.Views.Components"
         mc:Ignorable="d"
         Title="SAYRA Dashboard"
         Height="1080" Width="1920"
@@ -36,14 +37,18 @@
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" /> <!-- Top Bar Row -->
+                <RowDefinition Height="Auto" /> <!-- Session Hero Row -->
                 <RowDefinition Height="*" />    <!-- Content Row -->
             </Grid.RowDefinitions>
 
             <!-- HEADER LAYER: Top bar reusable component -->
             <c:TopBar Grid.Row="0" />
 
-            <!-- CONTENT ROW: Prepared structure for future layout sections (Session, Games, Hardware) -->
-            <Grid Grid.Row="1" Margin="30">
+            <!-- SESSION HERO PANEL: Full width gaming banner directly below header -->
+            <components:SessionHero x:Name="SessionHeroCtrl" Grid.Row="1" Height="240" Margin="30,15,30,0" />
+
+            <!-- CONTENT ROW: Prepared structure for layout sections (Games, Hardware) -->
+            <Grid Grid.Row="2" Margin="30,20,30,30">
                 <Grid.ColumnDefinitions>
                     <!-- Column 0: Left Session Area (e.g., Timer section, Price cards) -->
                     <ColumnDefinition Width="380" />
