@@ -129,7 +129,7 @@
             <TextBox Style="{StaticResource ModernSearchTextBoxStyle}"
                      Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
                      Width="420"
-                     HorizontalAlignment="Right" />
+                     HorizontalAlignment="Left" />
         </Grid>
 
         <!-- 3. GAMES GRID AREA -->
