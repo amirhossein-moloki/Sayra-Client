@@ -27,6 +27,12 @@ namespace Sayra.UI.ViewModels
                 return;
             }
 
+            if (Username != "admin" || Password != "admin")
+            {
+                ErrorMessage = "نام کاربری یا رمز عبور اشتباه است.";
+                return;
+            }
+
             ErrorMessage = string.Empty;
             IsLoggingIn = true;
 
