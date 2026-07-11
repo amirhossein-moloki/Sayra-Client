@@ -3,13 +3,13 @@
 
     <!-- Play Button Style inside Game Cards -->
     <Style x:Key="GameCardPlayButtonStyle" TargetType="Button">
-        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Background" Value="#F5FF00" />
         <Setter Property="BorderBrush" Value="#F5FF00" />
         <Setter Property="BorderThickness" Value="1.5" />
-        <Setter Property="Foreground" Value="#F5FF00" />
+        <Setter Property="Foreground" Value="#08090D" />
         <Setter Property="FontFamily" Value="{StaticResource PeydaBold}" />
-        <Setter Property="FontSize" Value="14" />
-        <Setter Property="Height" Value="36" />
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="Height" Value="34" />
         <Setter Property="Padding" Value="16,0" />
         <Setter Property="Cursor" Value="Hand" />
         <Setter Property="SnapsToDevicePixels" Value="True" />
@@ -19,8 +19,8 @@
                     <Border x:Name="PlayBtnBorder"
                             BorderBrush="{TemplateBinding BorderBrush}"
                             BorderThickness="{TemplateBinding BorderThickness}"
-                            CornerRadius="8"
-                            Background="#1A000000"
+                            CornerRadius="17"
+                            Background="{TemplateBinding Background}"
                             RenderTransformOrigin="0.5,0.5">
                         <Border.RenderTransform>
                             <ScaleTransform x:Name="PlayBtnScaleTransform" ScaleX="1.0" ScaleY="1.0" />
@@ -35,14 +35,11 @@
                     <ControlTemplate.Triggers>
                         <!-- Hover State -->
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="PlayBtnBorder" Property="Background" Value="#F5FF00" />
-                            <Setter TargetName="PlayBtnBorder" Property="BorderBrush" Value="#F5FF00" />
-                            <Setter Property="Foreground" Value="#08090D" />
                             <Trigger.EnterActions>
                                 <BeginStoryboard>
                                     <Storyboard>
                                         <DoubleAnimation Storyboard.TargetName="PlayBtnGlow" Storyboard.TargetProperty="Opacity"
-                                                         To="0.6" Duration="0:0:0.2" />
+                                                         To="0.85" Duration="0:0:0.2" />
                                     </Storyboard>
                                 </BeginStoryboard>
                             </Trigger.EnterActions>
@@ -62,9 +59,9 @@
                                 <BeginStoryboard>
                                     <Storyboard>
                                         <DoubleAnimation Storyboard.TargetName="PlayBtnScaleTransform" Storyboard.TargetProperty="ScaleX"
-                                                         To="0.95" Duration="0:0:0.05" />
+                                                         To="0.94" Duration="0:0:0.05" />
                                         <DoubleAnimation Storyboard.TargetName="PlayBtnScaleTransform" Storyboard.TargetProperty="ScaleY"
-                                                         To="0.95" Duration="0:0:0.05" />
+                                                         To="0.94" Duration="0:0:0.05" />
                                     </Storyboard>
                                 </BeginStoryboard>
                             </Trigger.EnterActions>
@@ -79,6 +76,26 @@
                                 </BeginStoryboard>
                             </Trigger.ExitActions>
                         </Trigger>
+
+                        <!-- Selected State Glow Integration via Tag Property using Animations to prevent compile error -->
+                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=Tag}" Value="True">
+                            <DataTrigger.EnterActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetName="PlayBtnGlow" Storyboard.TargetProperty="Opacity"
+                                                         To="0.8" Duration="0:0:0.2" />
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </DataTrigger.EnterActions>
+                            <DataTrigger.ExitActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetName="PlayBtnGlow" Storyboard.TargetProperty="Opacity"
+                                                         To="0.0" Duration="0:0:0.2" />
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </DataTrigger.ExitActions>
+                        </DataTrigger>
 
                         <!-- Disabled State -->
                         <Trigger Property="IsEnabled" Value="False">
