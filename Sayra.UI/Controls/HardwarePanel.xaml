@@ -1,0 +1,208 @@
+<UserControl x:Class="Sayra.UI.Controls.HardwarePanel"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:vm="clr-namespace:Sayra.UI.ViewModels"
+             mc:Ignorable="d"
+             d:DesignHeight="700" d:DesignWidth="420">
+
+    <UserControl.DataContext>
+        <vm:HardwarePanelViewModel />
+    </UserControl.DataContext>
+
+    <UserControl.Resources>
+        <!-- Fade-in animation for the main panel -->
+        <Storyboard x:Key="PanelFadeIn">
+            <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                             From="0" To="1" Duration="0:0:0.8">
+                <DoubleAnimation.EasingFunction>
+                    <CubicEase EasingMode="EaseOut"/>
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+            <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)"
+                             From="30" To="0" Duration="0:0:0.8">
+                <DoubleAnimation.EasingFunction>
+                    <CubicEase EasingMode="EaseOut"/>
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+        </Storyboard>
+    </UserControl.Resources>
+
+    <UserControl.RenderTransform>
+        <TranslateTransform X="0" Y="0"/>
+    </UserControl.RenderTransform>
+
+    <UserControl.Triggers>
+        <EventTrigger RoutedEvent="UserControl.Loaded">
+            <BeginStoryboard Storyboard="{StaticResource PanelFadeIn}"/>
+        </EventTrigger>
+    </UserControl.Triggers>
+
+    <!-- Main Premium Glass Card Panel Container -->
+    <!-- Background: rgba(255,255,255,0.05) -> #0DFFFFFF -->
+    <!-- Border: rgba(255,255,255,0.12) -> #1EFFFFFF -->
+    <!-- CornerRadius: 22 -->
+    <!-- Padding: 24 -->
+    <Border Background="#0DFFFFFF"
+            BorderBrush="#1EFFFFFF"
+            BorderThickness="1"
+            CornerRadius="22"
+            Padding="24"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Top">
+        <Border.Effect>
+            <!-- Soft Cinematic Shadow -->
+            <DropShadowEffect Color="#000000" BlurRadius="25" ShadowDepth="4" Opacity="0.5" />
+        </Border.Effect>
+
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/> <!-- Header Area -->
+                <RowDefinition Height="20"/>   <!-- Spacing -->
+                <RowDefinition Height="*"/>    <!-- Items List Area -->
+            </Grid.RowDefinitions>
+
+            <!-- 1. HEADER SECTION -->
+            <Grid Grid.Row="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <!-- Left Title: System Detail using Peyda Bold & White -->
+                <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
+                    <Border Width="4" Height="20" Background="#F5FF00" CornerRadius="2" Margin="0,0,10,0"/>
+                    <TextBlock Text="System Detail"
+                               FontFamily="{StaticResource PeydaBold}"
+                               FontSize="18"
+                               Foreground="White"
+                               VerticalAlignment="Center"/>
+                </StackPanel>
+
+                <!-- Right Title / Aside: PC-08 in SAYRA Accent Yellow -->
+                <TextBlock Grid.Column="1"
+                           Text="{Binding PcName}"
+                           FontFamily="{StaticResource PeydaBold}"
+                           FontSize="18"
+                           Foreground="#F5FF00"
+                           VerticalAlignment="Center"/>
+            </Grid>
+
+            <!-- 2. CONTENT SECTION (HARDWARE ITEMS ROWS) -->
+            <ItemsControl Grid.Row="2" ItemsSource="{Binding HardwareItems}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <!-- Grid / Stack layout for rows. Spacing of 18-22px between rows -->
+                        <StackPanel Orientation="Vertical"/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <!-- Main Row Container with Margin to manage Spacing of 20px -->
+                        <Border x:Name="RowBorder"
+                                Background="Transparent"
+                                BorderThickness="1"
+                                BorderBrush="Transparent"
+                                CornerRadius="12"
+                                Padding="12,14"
+                                Margin="0,0,0,18"
+                                SnapsToDevicePixels="True">
+                            <Border.RenderTransform>
+                                <TranslateTransform X="0" Y="20"/>
+                            </Border.RenderTransform>
+
+                            <!-- Row Load Animation: Small sequential fade-in -->
+                            <Border.Triggers>
+                                <EventTrigger RoutedEvent="Border.Loaded">
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <DoubleAnimation Storyboard.TargetName="RowBorder"
+                                                             Storyboard.TargetProperty="Opacity"
+                                                             From="0" To="1" Duration="0:0:0.6">
+                                                <DoubleAnimation.EasingFunction>
+                                                    <CubicEase EasingMode="EaseOut"/>
+                                                </DoubleAnimation.EasingFunction>
+                                            </DoubleAnimation>
+                                            <DoubleAnimation Storyboard.TargetName="RowBorder"
+                                                             Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)"
+                                                             From="20" To="0" Duration="0:0:0.6">
+                                                <DoubleAnimation.EasingFunction>
+                                                    <CubicEase EasingMode="EaseOut"/>
+                                                </DoubleAnimation.EasingFunction>
+                                            </DoubleAnimation>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </EventTrigger>
+                            </Border.Triggers>
+
+                            <Grid VerticalAlignment="Center">
+                                <Grid.ColumnDefinitions>
+                                    <!-- Column 0: Icon & Label -->
+                                    <ColumnDefinition Width="Auto" />
+                                    <!-- Column 1: Spacing -->
+                                    <ColumnDefinition Width="12" />
+                                    <!-- Column 2: Elegant Separator Line -->
+                                    <ColumnDefinition Width="*" />
+                                    <!-- Column 3: Spacing -->
+                                    <ColumnDefinition Width="12" />
+                                    <!-- Column 4: Value (Right aligned) -->
+                                    <ColumnDefinition Width="Auto" MaxWidth="200" />
+                                </Grid.ColumnDefinitions>
+
+                                <!-- Left Icon & Label stack -->
+                                <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
+                                    <!-- SAYRA Yellow Accent Icon -->
+                                    <Path Data="{Binding IconPathData}"
+                                          Fill="#F5FF00"
+                                          Width="18"
+                                          Height="18"
+                                          Stretch="Uniform"
+                                          VerticalAlignment="Center"
+                                          Margin="0,0,10,0">
+                                        <Path.Effect>
+                                            <DropShadowEffect Color="#F5FF00" BlurRadius="6" ShadowDepth="0" Opacity="0.3"/>
+                                        </Path.Effect>
+                                    </Path>
+
+                                    <!-- Hardware Label using Peyda Medium & Gray -->
+                                    <TextBlock Text="{Binding Label}"
+                                               FontFamily="{StaticResource PeydaMedium}"
+                                               FontSize="14"
+                                               Foreground="#A1A1AA"
+                                               VerticalAlignment="Center"/>
+                                </StackPanel>
+
+                                <!-- Middle: Separator line (subtle low-opacity dotted line) -->
+                                <Border Grid.Column="2"
+                                        BorderThickness="0,0,0,1"
+                                        BorderBrush="#19FFFFFF"
+                                        Height="1"
+                                        VerticalAlignment="Center"
+                                        Margin="0,4,0,0"/>
+
+                                <!-- Right: Hardware Value using Peyda Bold & White -->
+                                <TextBlock Grid.Column="4"
+                                           Text="{Binding Value}"
+                                           FontFamily="{StaticResource PeydaBold}"
+                                           FontSize="14"
+                                           Foreground="White"
+                                           TextAlignment="Right"
+                                           TextWrapping="Wrap"
+                                           VerticalAlignment="Center"/>
+                            </Grid>
+                        </Border>
+
+                        <DataTemplate.Triggers>
+                            <!-- Hover state: very subtle background highlight -->
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="RowBorder" Property="Background" Value="#0DFFFFFF"/>
+                                <Setter TargetName="RowBorder" Property="BorderBrush" Value="#15FFFFFF"/>
+                            </Trigger>
+                        </DataTemplate.Triggers>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </Grid>
+    </Border>
+</UserControl>
