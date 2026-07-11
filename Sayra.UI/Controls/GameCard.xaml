@@ -25,13 +25,8 @@
             </Border.Effect>
 
             <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="155" /> <!-- Cover Image Area -->
-                    <RowDefinition Height="*" />   <!-- Text & Button Area -->
-                </Grid.RowDefinitions>
-
-                <!-- 1. COVER IMAGE AREA with top rounded corners -->
-                <Border Grid.Row="0" CornerRadius="18,18,0,0" ClipToBounds="True" Background="#15FFFFFF">
+                <!-- 1. COVER IMAGE AREA filling entire card background -->
+                <Border CornerRadius="18.5" ClipToBounds="True" Background="#15FFFFFF">
                     <Grid>
                         <!-- Fallback Placeholder Gamepad Icon -->
                         <Grid Background="#10FFFFFF">
@@ -49,53 +44,62 @@
                                Stretch="UniformToFill"
                                RenderOptions.BitmapScalingMode="HighQuality" />
 
-                        <!-- Dark Cinematic Gradient Overlay to blend image into the card -->
+                        <!-- Subtle bottom gradient overlay for text readability -->
                         <Border>
                             <Border.Background>
                                 <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
-                                    <GradientStop Color="#0008090D" Offset="0.0" />
-                                    <GradientStop Color="#4408090D" Offset="0.5" />
-                                    <GradientStop Color="#FF121318" Offset="1.0" />
+                                    <GradientStop Color="#00000000" Offset="0.0" />
+                                    <GradientStop Color="#00000000" Offset="0.4" />
+                                    <GradientStop Color="#9908090D" Offset="0.75" />
+                                    <GradientStop Color="#F308090D" Offset="1.0" />
                                 </LinearGradientBrush>
                             </Border.Background>
                         </Border>
                     </Grid>
                 </Border>
 
-                <!-- 2. CARD BODY (Title, Genre, Play Button) -->
-                <Grid Grid.Row="1" Margin="14,8,14,12">
+                <!-- 2. CARD BODY overlaying the cover image at the bottom -->
+                <Grid VerticalAlignment="Bottom" Margin="14,0,14,16">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" /> <!-- Title -->
                         <RowDefinition Height="Auto" /> <!-- Genre -->
-                        <RowDefinition Height="*" />    <!-- Space/Button -->
+                        <RowDefinition Height="Auto" /> <!-- Play Button -->
                     </Grid.RowDefinitions>
 
-                    <!-- Game Title (Peyda Bold, White, Single Line) -->
+                    <!-- Game Title (Peyda Bold, White, Single Line with Shadow) -->
                     <TextBlock Grid.Row="0"
                                Text="{Binding Title, ElementName=self}"
                                FontFamily="{StaticResource PeydaBold}"
                                FontSize="15"
                                Foreground="White"
                                TextTrimming="CharacterEllipsis"
-                               HorizontalAlignment="Right" />
+                               HorizontalAlignment="Right">
+                        <TextBlock.Effect>
+                            <DropShadowEffect Color="Black" BlurRadius="4" ShadowDepth="1.5" Opacity="0.8" />
+                        </TextBlock.Effect>
+                    </TextBlock>
 
-                    <!-- Genre (Peyda Light, Gray, Smaller) -->
+                    <!-- Genre (Peyda Light, high contrast light color with Shadow) -->
                     <TextBlock Grid.Row="1"
                                Text="{Binding Genre, ElementName=self}"
                                FontFamily="{StaticResource PeydaLight}"
                                FontSize="11"
-                               Foreground="#A1A1AA"
+                               Foreground="#E1E1E6"
                                Margin="0,3,0,0"
-                               HorizontalAlignment="Right" />
+                               HorizontalAlignment="Right">
+                        <TextBlock.Effect>
+                            <DropShadowEffect Color="Black" BlurRadius="3" ShadowDepth="1" Opacity="0.8" />
+                        </TextBlock.Effect>
+                    </TextBlock>
 
                     <!-- Play Button (Yellow Accent) -->
-                    <Grid Grid.Row="2" VerticalAlignment="Bottom" Margin="0,8,0,0">
+                    <Grid Grid.Row="2" Margin="0,10,0,0" Height="34">
                         <Button Content="{Binding ButtonText, ElementName=self}"
                                 Style="{StaticResource GameCardPlayButtonStyle}"
                                 Command="{Binding PlayCommand, ElementName=self}"
                                 CommandParameter="{Binding ElementName=self}"
                                 IsEnabled="{Binding IsAvailable, ElementName=self}"
-                                Height="34"
+                                Tag="{Binding IsSelected, ElementName=self}"
                                 HorizontalAlignment="Stretch" />
                     </Grid>
                 </Grid>
@@ -116,7 +120,6 @@
 
                 <!-- 4. DISABLED OVERLAY -->
                 <Border x:Name="DisabledOverlay"
-                        Grid.RowSpan="2"
                         Background="#99000000"
                         CornerRadius="20"
                         Opacity="0.0"
