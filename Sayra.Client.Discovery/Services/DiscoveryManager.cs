@@ -82,7 +82,13 @@ public class DiscoveryManager : IDiscoveryService
         }
 
         // 4. Select Best Server
-        var selectedServer = SelectBestServer(validResponses);
+        string? trustedServerId = null;
+        var cached = LoadCache();
+        if (cached != null)
+        {
+            trustedServerId = cached.ServerId;
+        }
+        var selectedServer = SelectBestServer(validResponses, trustedServerId);
 
         if (selectedServer != null)
         {
@@ -94,14 +100,27 @@ public class DiscoveryManager : IDiscoveryService
         return selectedServer;
     }
 
-    private ServerDiscoveryResponse? SelectBestServer(List<ServerDiscoveryResponse> responses)
+    private ServerDiscoveryResponse? SelectBestServer(List<ServerDiscoveryResponse> responses, string? trustedServerId)
     {
         if (responses.Count == 0) return null;
 
         // Priority:
-        // 1. Previously trusted ServerId (if we had one, but cache check is already done)
+        // 1. Previously trusted ServerId (if we had one)
         // 2. Valid signature (already filtered)
         // 3. Lowest latency
+
+        if (!string.IsNullOrEmpty(trustedServerId))
+        {
+            var trustedMatch = responses
+                .Where(r => r.serverId == trustedServerId)
+                .OrderBy(r => r.Latency)
+                .FirstOrDefault();
+
+            if (trustedMatch != null)
+            {
+                return trustedMatch;
+            }
+        }
 
         return responses.OrderBy(r => r.Latency).FirstOrDefault();
     }

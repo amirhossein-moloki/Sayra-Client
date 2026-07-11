@@ -156,6 +156,48 @@ public class DiscoveryTests
     }
 
     [Fact]
+    public async Task DiscoveryManager_ServerSelection_PrioritizesTrustedServerOverLowestLatency()
+    {
+        // Arrange
+        var loggerMock = new Mock<ILogger<DiscoveryManager>>();
+        var configMock = new Mock<IConfiguration>();
+        var udpClientMock = new Mock<UdpDiscoveryClient>(new Mock<ILogger<UdpDiscoveryClient>>().Object, 37020);
+        var validatorMock = new Mock<DiscoveryValidator>(new Mock<ILogger<DiscoveryValidator>>().Object, _publicKeyPath);
+
+        var responses = new List<ServerDiscoveryResponse>
+        {
+            new ServerDiscoveryResponse { serverId = "other-server", Latency = 10, ip = "1.2.3.5", tcpPort = 5000 },
+            new ServerDiscoveryResponse { serverId = "trusted-server", Latency = 100, ip = "1.2.3.4", tcpPort = 5000 }
+        };
+
+        udpClientMock.Setup(x => x.BroadcastDiscoveryAsync(It.IsAny<string>(), It.IsAny<TimeSpan>(), It.IsAny<CancellationToken>()))
+                     .ReturnsAsync(responses);
+        validatorMock.Setup(x => x.Validate(It.IsAny<ServerDiscoveryResponse>())).Returns(true);
+
+        // Pre-populate cache with "trusted-server"
+        var cache = new ServerCache
+        {
+            ServerId = "trusted-server",
+            ServerName = "Trusted Server",
+            LastIPAddress = "1.2.3.4",
+            TcpPort = 5000,
+            LastConnected = DateTime.UtcNow
+        };
+        File.WriteAllText("server_cache.json", JsonSerializer.Serialize(cache));
+
+        var manager = new DiscoveryManager(loggerMock.Object, configMock.Object, udpClientMock.Object, validatorMock.Object);
+
+        // Act
+        var result = await manager.DiscoverAsync(CancellationToken.None, forceFresh: true);
+
+        // Assert
+        Assert.NotNull(result);
+        Assert.Equal("trusted-server", result.serverId);
+
+        if (File.Exists("server_cache.json")) File.Delete("server_cache.json");
+    }
+
+    [Fact]
     public async Task DiscoveryManager_CachePersistence_Works()
     {
         // Arrange
