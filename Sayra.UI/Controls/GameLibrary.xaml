@@ -18,7 +18,7 @@
         <Style x:Key="ModernSearchTextBoxStyle" TargetType="TextBox">
             <Setter Property="Background" Value="Transparent" />
             <Setter Property="BorderThickness" Value="0" />
-            <Setter Property="Foreground" Value="#FFFFFF" />
+            <Setter Property="Foreground" Value="{DynamicResource SecondaryWhiteBrush}" />
             <Setter Property="CaretBrush" Value="{DynamicResource PrimaryYellowBrush}" />
             <Setter Property="FontFamily" Value="{StaticResource PeydaLight}" />
             <Setter Property="FontSize" Value="15" />
@@ -45,7 +45,7 @@
                                 <!-- Specified SVG Search Icon with outline stroke 1.5 -->
                                 <Path x:Name="SearchIcon"
                                       Grid.Column="0"
-                                      Data="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
+                                      Data="{DynamicResource SearchIconGeometry}"
                                       Stroke="{DynamicResource SecondaryWhiteBrush}"
                                       StrokeThickness="1.5"
                                       StrokeStartLineCap="Round"
@@ -78,8 +78,8 @@
                                 <Setter TargetName="Placeholder" Property="Visibility" Value="Visible" />
                             </Trigger>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="SearchBorder" Property="BorderBrush" Value="{DynamicResource SecondaryWhiteBrush}" />
-                                <Setter TargetName="SearchIcon" Property="Stroke" Value="#ffffff" />
+                                <Setter TargetName="SearchBorder" Property="BorderBrush" Value="{DynamicResource PrimaryYellowBrush}" />
+                                <Setter TargetName="SearchIcon" Property="Stroke" Value="{DynamicResource PrimaryYellowBrush}" />
                             </Trigger>
                             <Trigger Property="IsKeyboardFocused" Value="True">
                                 <Setter TargetName="SearchBorder" Property="BorderBrush" Value="{DynamicResource PrimaryYellowBrush}" />
