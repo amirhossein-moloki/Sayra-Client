@@ -6,7 +6,7 @@
              xmlns:vm="clr-namespace:Sayra.UI.ViewModels"
              mc:Ignorable="d"
              d:DesignHeight="700" d:DesignWidth="235.2"
-             Width="235.2" Height="700">
+             Width="235.2" Height="Auto">
 
     <UserControl.DataContext>
         <vm:HardwarePanelViewModel />
