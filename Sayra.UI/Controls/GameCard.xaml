@@ -72,7 +72,7 @@
                                Text="{Binding Title, ElementName=self}"
                                FontFamily="{StaticResource PeydaBold}"
                                FontSize="13"
-                               Foreground="{DynamicResource WhiteBrush}"
+                               Foreground="{DynamicResource DarkerWhiteBrush}"
                                TextTrimming="CharacterEllipsis"
                                HorizontalAlignment="Right">
                         <TextBlock.Effect>

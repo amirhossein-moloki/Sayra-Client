@@ -7,6 +7,7 @@
     <Color x:Key="SecondaryBackground">#1F1F23</Color>
     <Color x:Key="Border">#252528</Color>
     <Color x:Key="White">#ffffff</Color>
+    <Color x:Key="DarkerWhite">#E1E1E6</Color>
     <Color x:Key="Muted">#9A9A9A</Color>
     <Color x:Key="Red">#F46B6B</Color>
     <Color x:Key="Success">#14BE78</Color>
@@ -47,6 +48,7 @@
     <SolidColorBrush x:Key="PrimaryHoverBrush" Color="{StaticResource PrimaryHover}"/>
     <SolidColorBrush x:Key="PrimaryHoverYellowBrush" Color="{StaticResource PrimaryHover}"/>
     <SolidColorBrush x:Key="WhiteBrush" Color="{StaticResource White}"/>
+    <SolidColorBrush x:Key="DarkerWhiteBrush" Color="{StaticResource DarkerWhite}"/>
     <SolidColorBrush x:Key="SecondaryWhiteBrush" Color="{StaticResource Muted}"/>
     <SolidColorBrush x:Key="DarkBrush" Color="{StaticResource DarkColor}"/>
     <SolidColorBrush x:Key="SecondaryBackgroundBrush" Color="{StaticResource SecondaryBackground}"/>
