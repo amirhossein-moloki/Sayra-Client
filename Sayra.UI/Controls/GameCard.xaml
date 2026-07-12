@@ -85,7 +85,7 @@
                                Text="{Binding Genre, ElementName=self}"
                                FontFamily="{StaticResource PeydaLight}"
                                FontSize="10"
-                               Foreground="#E1E1E6"
+                               Foreground="#FFFFFF"
                                Margin="0,2,0,0"
                                HorizontalAlignment="Right">
                         <TextBlock.Effect>

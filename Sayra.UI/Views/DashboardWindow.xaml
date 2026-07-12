@@ -152,15 +152,27 @@
                 <!-- Panel.ZIndex set to 1 to stay layered under middle column when overlapped -->
                 <Grid Grid.Column="2" Margin="15,0,0,0" Panel.ZIndex="1">
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" /> <!-- HardwarePanel -->
+                        <RowDefinition Height="Auto" /> <!-- Label Area -->
+                        <RowDefinition Height="Auto" /> <!-- HardwarePanel Area -->
                         <RowDefinition Height="20" />   <!-- Spacing (20px below System Detail) -->
                         <RowDefinition Height="Auto" /> <!-- End Session Button -->
                     </Grid.RowDefinitions>
 
-                    <!-- Shifted HardwarePanel (System Detail) to align with Game Cards (106px down) -->
-                    <c:HardwarePanel x:Name="Hardware" Grid.Row="0" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="0,106,0,0" />
+                    <!-- "کتابخانه بازی ها" Label at the top right, aligned with the right edge -->
+                    <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,24,0,20">
+                        <TextBlock Text="کتابخانه بازی ها"
+                                   FontFamily="{StaticResource PeydaBold}"
+                                   FontSize="26"
+                                   Foreground="White"
+                                   VerticalAlignment="Center" />
+                        <!-- Subtle yellow accent indicator bar -->
+                        <Border Width="4" Height="26" Background="#F5FF00" CornerRadius="2" Margin="12,0,0,0"/>
+                    </StackPanel>
 
-                    <Button Grid.Row="2"
+                    <!-- Shifted HardwarePanel (System Detail) to align with Game Cards (22px down from top label row) -->
+                    <c:HardwarePanel x:Name="Hardware" Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="0,22,0,0" />
+
+                    <Button Grid.Row="3"
                             Style="{StaticResource EndSessionButtonStyle}"
                             Click="EndSession_Click"
                             HorizontalAlignment="Stretch" />
