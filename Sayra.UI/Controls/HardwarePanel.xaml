@@ -41,12 +41,12 @@
     </UserControl.Triggers>
 
     <!-- Main Premium Glass Card Panel Container -->
-    <!-- Background: rgba(255,255,255,0.05) -> #0DFFFFFF -->
-    <!-- Border: rgba(255,255,255,0.12) -> #1EFFFFFF -->
+    <!-- Panel Background: #1F1F23 -->
+    <!-- Border: #252528 -->
     <!-- CornerRadius: 22 -->
-    <!-- Padding: 24 -->
-    <Border Background="#0DFFFFFF"
-            BorderBrush="#1EFFFFFF"
+    <!-- Padding: 8 -->
+    <Border Background="{DynamicResource SecondaryBackgroundBrush}"
+            BorderBrush="{DynamicResource BorderBrush}"
             BorderThickness="1"
             CornerRadius="22"
             Padding="8"
@@ -73,20 +73,34 @@
 
                 <!-- Left Title: System Detail using Peyda Bold & White -->
                 <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
-                    <Border Width="4" Height="16" Background="#F5FF00" CornerRadius="2" Margin="0,0,6,0"/>
+                    <!-- Specified System Detail Icon with outline design, 1.5 thickness, transparent fill -->
+                    <Path Data="M3.75 3v11.25A2.25 2.25 0 0 0 6 16.5h2.25M3.75 3h-1.5m1.5 0h16.5m0 0h1.5m-1.5 0v11.25A2.25 2.25 0 0 1 18 16.5h-2.25m-7.5 0h7.5m-7.5 0-1 3m8.5-3 1 3m0 0 .5 1.5m-.5-1.5h-9.5m0 0-.5 1.5m.75-9 3-3 2.148 2.148A12.061 12.061 0 0 1 16.5 7.605"
+                          Stroke="{DynamicResource PrimaryYellowBrush}"
+                          StrokeThickness="1.5"
+                          StrokeStartLineCap="Round"
+                          StrokeEndLineCap="Round"
+                          Fill="Transparent"
+                          Width="16" Height="16"
+                          Stretch="Uniform"
+                          VerticalAlignment="Center"
+                          Margin="0,0,8,0">
+                        <Path.Effect>
+                            <DropShadowEffect Color="#ffff3d" BlurRadius="6" ShadowDepth="0" Opacity="0.3"/>
+                        </Path.Effect>
+                    </Path>
                     <TextBlock Text="System Detail"
                                FontFamily="{StaticResource PeydaBold}"
                                FontSize="14"
-                               Foreground="White"
+                               Foreground="{DynamicResource WhiteBrush}"
                                VerticalAlignment="Center"/>
                 </StackPanel>
 
-                <!-- Right Title / Aside: PC-08 in SAYRA Accent Yellow -->
+                <!-- Right Title / Aside: PC Name in SAYRA Accent Yellow -->
                 <TextBlock Grid.Column="1"
                            Text="{Binding PcName}"
                            FontFamily="{StaticResource PeydaBold}"
                            FontSize="14"
-                           Foreground="#F5FF00"
+                           Foreground="{DynamicResource PrimaryYellowBrush}"
                            VerticalAlignment="Center"/>
             </Grid>
 
@@ -100,7 +114,7 @@
                 </ItemsControl.ItemsPanel>
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <!-- Main Row Container with Margin to manage Spacing of 20px -->
+                        <!-- Main Row Container with Margin to manage Spacing of 10px -->
                         <Border x:Name="RowBorder"
                                 Background="Transparent"
                                 BorderThickness="1"
@@ -153,22 +167,22 @@
                                 <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
                                     <!-- SAYRA Yellow Accent Icon -->
                                     <Path Data="{Binding IconPathData}"
-                                          Fill="#F5FF00"
+                                          Fill="{DynamicResource PrimaryYellowBrush}"
                                           Width="14"
                                           Height="14"
                                           Stretch="Uniform"
                                           VerticalAlignment="Center"
                                           Margin="0,0,4,0">
                                         <Path.Effect>
-                                            <DropShadowEffect Color="#F5FF00" BlurRadius="6" ShadowDepth="0" Opacity="0.3"/>
+                                            <DropShadowEffect Color="#ffff3d" BlurRadius="6" ShadowDepth="0" Opacity="0.3"/>
                                         </Path.Effect>
                                     </Path>
 
-                                    <!-- Hardware Label using Peyda Medium & Gray -->
+                                    <!-- Hardware Label using Peyda Medium & Secondary White -->
                                     <TextBlock Text="{Binding Label}"
                                                FontFamily="{StaticResource PeydaMedium}"
                                                FontSize="12"
-                                               Foreground="#A1A1AA"
+                                               Foreground="{DynamicResource SecondaryWhiteBrush}"
                                                VerticalAlignment="Center"/>
                                 </StackPanel>
 
@@ -185,7 +199,7 @@
                                            Text="{Binding Value}"
                                            FontFamily="{StaticResource PeydaBold}"
                                            FontSize="12"
-                                           Foreground="White"
+                                           Foreground="{DynamicResource WhiteBrush}"
                                            TextAlignment="Right"
                                            TextWrapping="Wrap"
                                            VerticalAlignment="Center"/>
@@ -193,7 +207,7 @@
                         </Border>
 
                         <DataTemplate.Triggers>
-                            <!-- Hover state: very subtle background highlight -->
+                            <!-- Hover state: subtle background highlight -->
                             <Trigger Property="IsMouseOver" Value="True">
                                 <Setter TargetName="RowBorder" Property="Background" Value="#0DFFFFFF"/>
                                 <Setter TargetName="RowBorder" Property="BorderBrush" Value="#15FFFFFF"/>

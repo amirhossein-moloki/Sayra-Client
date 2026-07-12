@@ -199,7 +199,7 @@ namespace Sayra.UI.Controls
             var duration = TimeSpan.FromSeconds(durationSec);
 
             double targetScale = 1.0;
-            Color targetBorderColor = Color.FromArgb(30, 255, 255, 255); // #1FFFFFFF (rgba(255,255,255,0.12))
+            Color targetBorderColor = Color.FromRgb(37, 37, 40); // #252528 (Border Color)
             Color targetShadowColor = Color.FromRgb(0, 0, 0);
             double targetShadowOpacity = 0.5;
             double targetShadowBlur = 15;
@@ -212,7 +212,7 @@ namespace Sayra.UI.Controls
             {
                 // Disabled State
                 targetCardOpacity = 0.55;
-                targetBorderColor = Color.FromArgb(20, 255, 255, 255);
+                targetBorderColor = Color.FromArgb(80, 37, 37, 40); // #252528 at low opacity
                 targetShadowOpacity = 0.2;
                 targetShadowBlur = 10;
                 targetShadowDepth = 2;
@@ -221,8 +221,8 @@ namespace Sayra.UI.Controls
             else if (IsSelected)
             {
                 // Selected State
-                targetBorderColor = Color.FromRgb(245, 255, 0); // Yellow
-                targetShadowColor = Color.FromRgb(245, 255, 0); // Yellow glow
+                targetBorderColor = Color.FromRgb(255, 255, 61); // #ffff3d (Primary Yellow)
+                targetShadowColor = Color.FromRgb(255, 255, 61); // #ffff3d glow
                 targetShadowOpacity = _isMouseOver ? 0.8 : 0.65;
                 targetShadowBlur = _isMouseOver ? 25 : 20;
                 targetShadowDepth = 0;
@@ -233,8 +233,8 @@ namespace Sayra.UI.Controls
             {
                 // Hover State
                 targetScale = 1.03;
-                targetBorderColor = Color.FromArgb(160, 245, 255, 0); // Bright semi-trans yellow
-                targetShadowColor = Color.FromRgb(245, 255, 0); // Yellow glow
+                targetBorderColor = Color.FromArgb(160, 244, 244, 107); // #f4f46b (Primary Hover Yellow)
+                targetShadowColor = Color.FromRgb(255, 255, 61); // #ffff3d glow
                 targetShadowOpacity = 0.55;
                 targetShadowBlur = 20;
                 targetShadowDepth = 0;
