@@ -8,15 +8,15 @@
              Width="150" Height="230">
 
     <Grid MouseEnter="Card_MouseEnter" MouseLeave="Card_MouseLeave">
-        <!-- Root Card Border: CornerRadius set to subtle 5px -->
+        <!-- Root Card Border: Background: #1F1F23, Border: #252528, CornerRadius: 5px -->
         <Border x:Name="CardBorder"
                 BorderThickness="1.5"
                 CornerRadius="5"
-                Background="#0DFFFFFF"
+                Background="{DynamicResource SecondaryBackgroundBrush}"
                 ClipToBounds="True"
                 RenderTransformOrigin="0.5,0.5">
             <Border.BorderBrush>
-                <SolidColorBrush x:Name="CardBorderBrushInstance" Color="#1FFFFFFF" />
+                <SolidColorBrush x:Name="CardBorderBrushInstance" Color="#252528" />
             </Border.BorderBrush>
             <Border.RenderTransform>
                 <ScaleTransform x:Name="CardScaleTransform" ScaleX="1.0" ScaleY="1.0" />
@@ -51,8 +51,8 @@
                                 <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
                                     <GradientStop Color="#00000000" Offset="0.0" />
                                     <GradientStop Color="#00000000" Offset="0.4" />
-                                    <GradientStop Color="#9908090D" Offset="0.75" />
-                                    <GradientStop Color="#F308090D" Offset="1.0" />
+                                    <GradientStop Color="#99101014" Offset="0.75" />
+                                    <GradientStop Color="#F3101014" Offset="1.0" />
                                 </LinearGradientBrush>
                             </Border.Background>
                         </Border>
@@ -72,7 +72,7 @@
                                Text="{Binding Title, ElementName=self}"
                                FontFamily="{StaticResource PeydaBold}"
                                FontSize="13"
-                               Foreground="White"
+                               Foreground="{DynamicResource WhiteBrush}"
                                TextTrimming="CharacterEllipsis"
                                HorizontalAlignment="Right">
                         <TextBlock.Effect>
@@ -80,12 +80,12 @@
                         </TextBlock.Effect>
                     </TextBlock>
 
-                    <!-- Genre (Peyda Light, high contrast light color with Shadow) -->
+                    <!-- Genre (Peyda Light, Secondary White color with Shadow) -->
                     <TextBlock Grid.Row="1"
                                Text="{Binding Genre, ElementName=self}"
                                FontFamily="{StaticResource PeydaLight}"
                                FontSize="10"
-                               Foreground="#FFFFFF"
+                               Foreground="{DynamicResource SecondaryWhiteBrush}"
                                Margin="0,2,0,0"
                                HorizontalAlignment="Right">
                         <TextBlock.Effect>
@@ -107,7 +107,7 @@
 
                 <!-- 3. SELECTED STATE HIGHLIGHT INDICATOR -->
                 <Border x:Name="SelectedIndicator"
-                        Background="#F5FF00"
+                        Background="{DynamicResource PrimaryYellowBrush}"
                         CornerRadius="4"
                         Height="8" Width="8"
                         HorizontalAlignment="Left"
@@ -115,13 +115,13 @@
                         Margin="12"
                         Opacity="0.0">
                     <Border.Effect>
-                        <DropShadowEffect Color="#F5FF00" BlurRadius="8" ShadowDepth="0" Opacity="1.0" />
+                        <DropShadowEffect Color="#ffff3d" BlurRadius="8" ShadowDepth="0" Opacity="1.0" />
                     </Border.Effect>
                 </Border>
 
                 <!-- 4. DISABLED OVERLAY -->
                 <Border x:Name="DisabledOverlay"
-                        Background="#99000000"
+                        Background="#99101014"
                         CornerRadius="5"
                         Opacity="0.0"
                         IsHitTestVisible="False" />

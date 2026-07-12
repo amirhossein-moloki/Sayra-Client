@@ -8,15 +8,15 @@
              d:DesignHeight="85" d:DesignWidth="1920">
 
     <UserControl.Resources>
-        <!-- Header Svg Logo Style (Yellow Glow Effect Removed) -->
+        <!-- Header Svg Logo Style -->
         <Style x:Key="HeaderLogoStyle" TargetType="svgc:SvgViewbox">
             <!-- No yellow DropShadowEffect glow on Sayra Logo header -->
         </Style>
 
         <!-- Circular Red Power Button Style -->
         <Style x:Key="CircularPowerButtonStyle" TargetType="Button">
-            <Setter Property="Background" Value="#1AEF4444"/>
-            <Setter Property="BorderBrush" Value="#EF4444"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource RedBrush}"/>
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="Cursor" Value="Hand"/>
             <Setter Property="RenderTransformOrigin" Value="0.5,0.5"/>
@@ -36,13 +36,13 @@
                                 Width="40"
                                 Height="40">
                             <Border.Effect>
-                                <DropShadowEffect x:Name="glow" Color="#EF4444" BlurRadius="0" ShadowDepth="0" Opacity="0"/>
+                                <DropShadowEffect x:Name="glow" Color="#F46B6B" BlurRadius="0" ShadowDepth="0" Opacity="0"/>
                             </Border.Effect>
-                            <!-- Power icon path -->
+                            <!-- Power icon path (End Session Button Icon) -->
                             <Path x:Name="icon"
-                                  Data="M12,2V12 M16.24,7.76A6,6 0 1,1 7.76,7.76"
-                                  Stroke="#EF4444"
-                                  StrokeThickness="2"
+                                  Data="M5.636 5.636a9 9 0 1 0 12.728 0M12 3v9"
+                                  Stroke="{DynamicResource RedBrush}"
+                                  StrokeThickness="1.5"
                                   StrokeStartLineCap="Round"
                                   StrokeEndLineCap="Round"
                                   Width="16"
@@ -53,7 +53,7 @@
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Background" Value="#33EF4444"/>
+                                <Setter Property="Background" Value="#1AF46B6B"/>
                                 <Setter Property="BorderThickness" Value="1.5"/>
                                 <Trigger.EnterActions>
                                     <BeginStoryboard>
@@ -109,9 +109,9 @@
         </Style>
     </UserControl.Resources>
 
-    <!-- Glassmorphic panel with slight bottom corners rounded, thin border, dark transparent color -->
+    <!-- Glassmorphic panel with thin border, dark transparent color -->
     <Border Background="{DynamicResource GlassPanelBrush}"
-            BorderBrush="#1AFFFFFF"
+            BorderBrush="{DynamicResource BorderBrush}"
             BorderThickness="0,0,0,1"
             CornerRadius="0"
             Height="85">
@@ -126,7 +126,7 @@
                 <ColumnDefinition Width="1*" /> <!-- Right Time & Date / Power control -->
             </Grid.ColumnDefinitions>
 
-            <!-- LEFT AREA: SAYRA Logo with subtle yellow glow -->
+            <!-- LEFT AREA: SAYRA Logo -->
             <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
                 <svgc:SvgViewbox Source="/Assets/sayra.svg"
                                  Width="140"
@@ -142,19 +142,19 @@
                            FontSize="16"
                            Foreground="White"
                            HorizontalAlignment="Center" />
-                <Border BorderBrush="#22C55E"
+                <Border BorderBrush="{DynamicResource SuccessBrush}"
                         BorderThickness="1"
                         CornerRadius="12"
                         Padding="10,2"
                         Margin="0,5,0,0"
                         HorizontalAlignment="Center"
-                        Background="#0822C55E">
+                        Background="#0814BE78">
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                        <Ellipse Width="6" Height="6" Fill="#22C55E" Margin="0,0,6,0" VerticalAlignment="Center"/>
+                        <Ellipse Width="6" Height="6" Fill="{DynamicResource SuccessBrush}" Margin="0,0,6,0" VerticalAlignment="Center"/>
                         <TextBlock Text="Connected"
                                    FontFamily="{StaticResource PeydaMedium}"
                                    FontSize="11"
-                                   Foreground="#22C55E"
+                                   Foreground="{DynamicResource SuccessBrush}"
                                    VerticalAlignment="Center"/>
                     </StackPanel>
                 </Border>
@@ -174,7 +174,7 @@
                                Text="1405/04/15"
                                FontFamily="{StaticResource PeydaLight}"
                                FontSize="11"
-                               Foreground="{DynamicResource SecondaryTextBrush}"
+                               Foreground="{DynamicResource SecondaryWhiteBrush}"
                                HorizontalAlignment="Right"
                                Margin="0,2,0,0" />
                 </StackPanel>

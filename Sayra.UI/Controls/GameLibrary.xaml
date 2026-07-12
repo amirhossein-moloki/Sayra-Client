@@ -19,7 +19,7 @@
             <Setter Property="Background" Value="Transparent" />
             <Setter Property="BorderThickness" Value="0" />
             <Setter Property="Foreground" Value="#FFFFFF" />
-            <Setter Property="CaretBrush" Value="#F5FF00" />
+            <Setter Property="CaretBrush" Value="{DynamicResource PrimaryYellowBrush}" />
             <Setter Property="FontFamily" Value="{StaticResource PeydaLight}" />
             <Setter Property="FontSize" Value="15" />
             <Setter Property="VerticalContentAlignment" Value="Center" />
@@ -27,14 +27,14 @@
                 <Setter.Value>
                     <ControlTemplate TargetType="TextBox">
                         <Border x:Name="SearchBorder"
-                                Background="#0DFFFFFF"
-                                BorderBrush="#1EFFFFFF"
+                                Background="{DynamicResource SecondaryBackgroundBrush}"
+                                BorderBrush="{DynamicResource BorderBrush}"
                                 BorderThickness="1.2"
                                 CornerRadius="20"
                                 Padding="16,10"
                                 Height="48">
                             <Border.Effect>
-                                <DropShadowEffect x:Name="ShadowEffect" Color="#F5FF00" BlurRadius="10" ShadowDepth="0" Opacity="0" />
+                                <DropShadowEffect x:Name="ShadowEffect" Color="#ffff3d" BlurRadius="10" ShadowDepth="0" Opacity="0" />
                             </Border.Effect>
                             <Grid>
                                 <Grid.ColumnDefinitions>
@@ -42,11 +42,15 @@
                                     <ColumnDefinition Width="*" />
                                 </Grid.ColumnDefinitions>
 
-                                <!-- Gray / Yellow Search Icon -->
+                                <!-- Specified SVG Search Icon with outline stroke 1.5 -->
                                 <Path x:Name="SearchIcon"
                                       Grid.Column="0"
-                                      Data="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"
-                                      Fill="#A1A1AA"
+                                      Data="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
+                                      Stroke="{DynamicResource SecondaryWhiteBrush}"
+                                      StrokeThickness="1.5"
+                                      StrokeStartLineCap="Round"
+                                      StrokeEndLineCap="Round"
+                                      Fill="Transparent"
                                       Width="18" Height="18"
                                       Stretch="Uniform"
                                       VerticalAlignment="Center"
@@ -57,7 +61,7 @@
                                     <ScrollViewer x:Name="PART_ContentHost" Margin="0" />
                                     <TextBlock x:Name="Placeholder"
                                                Text="جستجوی بازی..."
-                                               Foreground="#B3FFFFFF"
+                                               Foreground="#B39A9A9A"
                                                FontFamily="{StaticResource PeydaLight}"
                                                FontSize="15"
                                                IsHitTestVisible="False"
@@ -74,12 +78,12 @@
                                 <Setter TargetName="Placeholder" Property="Visibility" Value="Visible" />
                             </Trigger>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="SearchBorder" Property="BorderBrush" Value="#40FFFFFF" />
-                                <Setter TargetName="SearchIcon" Property="Fill" Value="#D1D1D6" />
+                                <Setter TargetName="SearchBorder" Property="BorderBrush" Value="{DynamicResource SecondaryWhiteBrush}" />
+                                <Setter TargetName="SearchIcon" Property="Stroke" Value="#ffffff" />
                             </Trigger>
                             <Trigger Property="IsKeyboardFocused" Value="True">
-                                <Setter TargetName="SearchBorder" Property="BorderBrush" Value="#F5FF00" />
-                                <Setter TargetName="SearchIcon" Property="Fill" Value="#F5FF00" />
+                                <Setter TargetName="SearchBorder" Property="BorderBrush" Value="{DynamicResource PrimaryYellowBrush}" />
+                                <Setter TargetName="SearchIcon" Property="Stroke" Value="{DynamicResource PrimaryYellowBrush}" />
                                 <Trigger.EnterActions>
                                     <BeginStoryboard>
                                         <Storyboard>

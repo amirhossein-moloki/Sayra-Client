@@ -3,8 +3,8 @@
 
     <!-- Play Button Style inside Game Cards -->
     <Style x:Key="GameCardPlayButtonStyle" TargetType="Button">
-        <Setter Property="Background" Value="#F5FF00" />
-        <Setter Property="BorderBrush" Value="#F5FF00" />
+        <Setter Property="Background" Value="{DynamicResource PrimaryYellowBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource PrimaryYellowBrush}" />
         <Setter Property="BorderThickness" Value="1.5" />
         <Setter Property="Foreground" Value="Black" />
         <Setter Property="FontFamily" Value="{StaticResource PeydaBold}" />
@@ -31,7 +31,7 @@
                             <ScaleTransform x:Name="PlayBtnScaleTransform" ScaleX="1.0" ScaleY="1.0" />
                         </Border.RenderTransform>
                         <Border.Effect>
-                            <DropShadowEffect x:Name="PlayBtnGlow" Color="#F5FF00" BlurRadius="12" ShadowDepth="0" Opacity="0" />
+                            <DropShadowEffect x:Name="PlayBtnGlow" Color="#ffff3d" BlurRadius="12" ShadowDepth="0" Opacity="0" />
                         </Border.Effect>
 
                         <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
@@ -40,6 +40,8 @@
                     <ControlTemplate.Triggers>
                         <!-- Hover State -->
                         <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="PlayBtnBorder" Property="Background" Value="{DynamicResource PrimaryHoverYellowBrush}" />
+                            <Setter TargetName="PlayBtnBorder" Property="BorderBrush" Value="{DynamicResource PrimaryHoverYellowBrush}" />
                             <Trigger.EnterActions>
                                 <BeginStoryboard>
                                     <Storyboard>
@@ -104,30 +106,30 @@
 
                         <!-- PLAYING State: Background: Yellow, Border: Yellow, Text: Black -->
                         <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=Content}" Value="PLAYING">
-                            <Setter TargetName="PlayBtnBorder" Property="Background" Value="#F5FF00" />
-                            <Setter TargetName="PlayBtnBorder" Property="BorderBrush" Value="#F5FF00" />
+                            <Setter TargetName="PlayBtnBorder" Property="Background" Value="{DynamicResource PrimaryYellowBrush}" />
+                            <Setter TargetName="PlayBtnBorder" Property="BorderBrush" Value="{DynamicResource PrimaryYellowBrush}" />
                             <Setter Property="Foreground" Value="Black" />
                         </DataTrigger>
 
-                        <!-- UNAVAILABLE State: Dark gray, disabled appearance -->
+                        <!-- UNAVAILABLE State: Dark gray/border, disabled appearance -->
                         <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=Content}" Value="UNAVAILABLE">
-                            <Setter TargetName="PlayBtnBorder" Property="Background" Value="#44444A" />
-                            <Setter TargetName="PlayBtnBorder" Property="BorderBrush" Value="#44444A" />
-                            <Setter Property="Foreground" Value="#8E8E93" />
+                            <Setter TargetName="PlayBtnBorder" Property="Background" Value="{DynamicResource BorderBrush}" />
+                            <Setter TargetName="PlayBtnBorder" Property="BorderBrush" Value="{DynamicResource BorderBrush}" />
+                            <Setter Property="Foreground" Value="{DynamicResource SecondaryWhiteBrush}" />
                         </DataTrigger>
 
-                        <!-- LOCKED State: Dark gray, disabled appearance -->
+                        <!-- LOCKED State: Dark gray/border, disabled appearance -->
                         <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=Content}" Value="LOCKED">
-                            <Setter TargetName="PlayBtnBorder" Property="Background" Value="#44444A" />
-                            <Setter TargetName="PlayBtnBorder" Property="BorderBrush" Value="#44444A" />
-                            <Setter Property="Foreground" Value="#8E8E93" />
+                            <Setter TargetName="PlayBtnBorder" Property="Background" Value="{DynamicResource BorderBrush}" />
+                            <Setter TargetName="PlayBtnBorder" Property="BorderBrush" Value="{DynamicResource BorderBrush}" />
+                            <Setter Property="Foreground" Value="{DynamicResource SecondaryWhiteBrush}" />
                         </DataTrigger>
 
                         <!-- Disabled State (generic fallback) -->
                         <Trigger Property="IsEnabled" Value="False">
-                            <Setter TargetName="PlayBtnBorder" Property="Background" Value="#44444A" />
-                            <Setter TargetName="PlayBtnBorder" Property="BorderBrush" Value="#44444A" />
-                            <Setter Property="Foreground" Value="#8E8E93" />
+                            <Setter TargetName="PlayBtnBorder" Property="Background" Value="{DynamicResource BorderBrush}" />
+                            <Setter TargetName="PlayBtnBorder" Property="BorderBrush" Value="{DynamicResource BorderBrush}" />
+                            <Setter Property="Foreground" Value="{DynamicResource SecondaryWhiteBrush}" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>

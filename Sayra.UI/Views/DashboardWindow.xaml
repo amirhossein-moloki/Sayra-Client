@@ -24,8 +24,8 @@
 
         <!-- Premium End Session Button Style -->
         <Style x:Key="EndSessionButtonStyle" TargetType="Button">
-            <Setter Property="Background" Value="#1AEF4444"/>
-            <Setter Property="BorderBrush" Value="#EF4444"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource RedBrush}"/>
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="Height" Value="50"/>
             <Setter Property="Cursor" Value="Hand"/>
@@ -38,7 +38,7 @@
                                 BorderThickness="{TemplateBinding BorderThickness}"
                                 CornerRadius="12">
                             <Border.Effect>
-                                <DropShadowEffect x:Name="GlowEffect" Color="#EF4444" BlurRadius="10" ShadowDepth="0" Opacity="0"/>
+                                <DropShadowEffect x:Name="GlowEffect" Color="#F46B6B" BlurRadius="10" ShadowDepth="0" Opacity="0"/>
                             </Border.Effect>
                             <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
                                 <Grid.ColumnDefinitions>
@@ -47,36 +47,40 @@
                                     <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
 
-                                <!-- Power Icon -->
+                                <!-- Specified End Session Button Icon with stroke style, 1.5 thickness, and transparent fill -->
                                 <Path Grid.Column="0"
-                                      Data="M12,2V12 M16.24,7.76A6,6 0 1,1 7.76,7.76"
-                                      Stroke="#EF4444"
-                                      StrokeThickness="2"
+                                      Data="M5.636 5.636a9 9 0 1 0 12.728 0M12 3v9"
+                                      Stroke="{DynamicResource RedBrush}"
+                                      StrokeThickness="1.5"
                                       StrokeStartLineCap="Round"
                                       StrokeEndLineCap="Round"
+                                      Fill="Transparent"
                                       Width="16" Height="16"
                                       Stretch="Uniform"
                                       VerticalAlignment="Center"/>
 
-                                <!-- Text -->
+                                <!-- Text with Peyda Bold, Numbers/Buttons -->
                                 <TextBlock Grid.Column="2"
                                            Text="پایان دادن به استفاده"
-                                           Foreground="White"
-                                           FontFamily="{StaticResource PeydaMedium}"
+                                           Foreground="{DynamicResource RedBrush}"
+                                           FontFamily="{StaticResource PeydaBold}"
                                            FontSize="15"
                                            VerticalAlignment="Center"/>
                             </Grid>
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="ButtonBorder" Property="Background" Value="#33EF4444"/>
+                                <Setter TargetName="ButtonBorder" Property="Background" Value="#1AF46B6B"/>
                                 <Setter TargetName="ButtonBorder" Property="BorderThickness" Value="1.5"/>
                                 <Trigger.EnterActions>
                                     <BeginStoryboard>
                                         <Storyboard>
                                             <DoubleAnimation Storyboard.TargetName="GlowEffect"
                                                              Storyboard.TargetProperty="Opacity"
-                                                             To="0.4" Duration="0:0:0.2"/>
+                                                             To="0.6" Duration="0:0:0.2"/>
+                                            <DoubleAnimation Storyboard.TargetName="GlowEffect"
+                                                             Storyboard.TargetProperty="BlurRadius"
+                                                             To="15" Duration="0:0:0.2"/>
                                         </Storyboard>
                                     </BeginStoryboard>
                                 </Trigger.EnterActions>
@@ -91,7 +95,7 @@
                                 </Trigger.ExitActions>
                             </Trigger>
                             <Trigger Property="IsPressed" Value="True">
-                                <Setter TargetName="ButtonBorder" Property="Background" Value="#4AEF4444"/>
+                                <Setter TargetName="ButtonBorder" Property="Background" Value="#33F46B6B"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
