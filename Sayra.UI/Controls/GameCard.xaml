@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              mc:Ignorable="d"
              x:Name="self"
-             Width="150" Height="230">
+             Width="188" Height="288">
 
     <Grid MouseEnter="Card_MouseEnter" MouseLeave="Card_MouseLeave">
         <!-- Root Card Border: Background: #1F1F23, Border: #252528, CornerRadius: 5px -->
@@ -33,7 +33,7 @@
                         <Grid Background="#10FFFFFF">
                             <Path Data="M21,6H3C1.9,6 1,6.9 1,8V16C1,17.1 1.9,18 3,18H21C22.1,18 23,17.1 23,16V8C23,6.9 22.1,6 21,6M6,15H4V13H2V11H4V9H6V11H8V13H6V15M15,11A1.5,1.5 0 1,1 16.5,9.5A1.5,1.5 0 0,1 15,11M19,14A1.5,1.5 0 1,1 20.5,12.5A1.5,1.5 0 0,1 19,14Z"
                                   Fill="#33FFFFFF"
-                                  Width="40" Height="40"
+                                  Width="50" Height="50"
                                   Stretch="Uniform"
                                   HorizontalAlignment="Center"
                                   VerticalAlignment="Center" />
@@ -78,7 +78,7 @@
                     <TextBlock Grid.Row="0"
                                Text="{Binding Title, ElementName=self}"
                                FontFamily="{StaticResource PeydaBold}"
-                               FontSize="13"
+                               FontSize="16"
                                Foreground="{DynamicResource DarkerWhiteBrush}"
                                TextTrimming="CharacterEllipsis"
                                HorizontalAlignment="Right">
@@ -91,7 +91,7 @@
                     <TextBlock Grid.Row="1"
                                Text="{Binding Genre, ElementName=self}"
                                FontFamily="{StaticResource PeydaLight}"
-                               FontSize="10"
+                               FontSize="12"
                                Foreground="{DynamicResource SecondaryWhiteBrush}"
                                Margin="0,2,0,0"
                                HorizontalAlignment="Right">
@@ -101,7 +101,7 @@
                     </TextBlock>
 
                     <!-- Play Button (Yellow Accent) -->
-                    <Grid Grid.Row="2" Margin="0,8,0,0" Height="30">
+                    <Grid Grid.Row="2" Margin="0,8,0,0" Height="38">
                         <Button Content="{Binding ButtonText, ElementName=self}"
                                 Style="{StaticResource GameCardPlayButtonStyle}"
                                 Command="{Binding PlayCommand, ElementName=self}"
