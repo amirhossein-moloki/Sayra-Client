@@ -16,11 +16,6 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
-                    <ControlTemplate.Resources>
-                        <Style TargetType="TextBlock">
-                            <Setter Property="Foreground" Value="{Binding Foreground, RelativeSource={RelativeSource TemplatedParent}}" />
-                        </Style>
-                    </ControlTemplate.Resources>
                     <Border x:Name="PlayBtnBorder"
                             BorderBrush="{TemplateBinding BorderBrush}"
                             BorderThickness="{TemplateBinding BorderThickness}"
@@ -34,7 +29,12 @@
                             <DropShadowEffect x:Name="PlayBtnGlow" Color="#ffff3d" BlurRadius="12" ShadowDepth="0" Opacity="0" />
                         </Border.Effect>
 
-                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        <TextBlock Text="{TemplateBinding Content}"
+                                   Foreground="{TemplateBinding Foreground}"
+                                   FontFamily="{TemplateBinding FontFamily}"
+                                   FontSize="{TemplateBinding FontSize}"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center" />
                     </Border>
 
                     <ControlTemplate.Triggers>
