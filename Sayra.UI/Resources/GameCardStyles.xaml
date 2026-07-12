@@ -104,33 +104,33 @@
                             </DataTrigger.ExitActions>
                         </DataTrigger>
 
-                        <!-- PLAYING State: Background: Yellow, Border: Yellow, Text: Black (using DynamicResource DarkBrush) -->
-                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=Content}" Value="PLAYING">
-                            <Setter TargetName="PlayBtnBorder" Property="Background" Value="{DynamicResource PrimaryYellowBrush}" />
-                            <Setter TargetName="PlayBtnBorder" Property="BorderBrush" Value="{DynamicResource PrimaryYellowBrush}" />
-                            <Setter Property="Foreground" Value="{DynamicResource DarkBrush}" />
-                        </DataTrigger>
-
-                        <!-- UNAVAILABLE State: Dark gray/border, disabled appearance -->
-                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=Content}" Value="UNAVAILABLE">
-                            <Setter TargetName="PlayBtnBorder" Property="Background" Value="{DynamicResource BorderBrush}" />
-                            <Setter TargetName="PlayBtnBorder" Property="BorderBrush" Value="{DynamicResource BorderBrush}" />
-                            <Setter Property="Foreground" Value="{DynamicResource SecondaryWhiteBrush}" />
-                        </DataTrigger>
-
-                        <!-- LOCKED State: Dark gray/border, disabled appearance -->
-                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=Content}" Value="LOCKED">
-                            <Setter TargetName="PlayBtnBorder" Property="Background" Value="{DynamicResource BorderBrush}" />
-                            <Setter TargetName="PlayBtnBorder" Property="BorderBrush" Value="{DynamicResource BorderBrush}" />
-                            <Setter Property="Foreground" Value="{DynamicResource SecondaryWhiteBrush}" />
-                        </DataTrigger>
-
-                        <!-- Disabled State (generic fallback) -->
+                        <!-- Disabled State (generic fallback - placed before specific content data triggers so they take precedence) -->
                         <Trigger Property="IsEnabled" Value="False">
                             <Setter TargetName="PlayBtnBorder" Property="Background" Value="{DynamicResource BorderBrush}" />
                             <Setter TargetName="PlayBtnBorder" Property="BorderBrush" Value="{DynamicResource BorderBrush}" />
                             <Setter Property="Foreground" Value="{DynamicResource SecondaryWhiteBrush}" />
                         </Trigger>
+
+                        <!-- PLAYING State: Background: Success (Green), Border: Success, Text: White for high contrast -->
+                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=Content}" Value="PLAYING">
+                            <Setter TargetName="PlayBtnBorder" Property="Background" Value="{DynamicResource SuccessBrush}" />
+                            <Setter TargetName="PlayBtnBorder" Property="BorderBrush" Value="{DynamicResource SuccessBrush}" />
+                            <Setter Property="Foreground" Value="{DynamicResource WhiteBrush}" />
+                        </DataTrigger>
+
+                        <!-- UNAVAILABLE State: Outlined Red appearance with high readability -->
+                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=Content}" Value="UNAVAILABLE">
+                            <Setter TargetName="PlayBtnBorder" Property="Background" Value="Transparent" />
+                            <Setter TargetName="PlayBtnBorder" Property="BorderBrush" Value="{DynamicResource RedBrush}" />
+                            <Setter Property="Foreground" Value="{DynamicResource RedBrush}" />
+                        </DataTrigger>
+
+                        <!-- LOCKED State: Outlined Red appearance with high readability -->
+                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=Content}" Value="LOCKED">
+                            <Setter TargetName="PlayBtnBorder" Property="Background" Value="Transparent" />
+                            <Setter TargetName="PlayBtnBorder" Property="BorderBrush" Value="{DynamicResource RedBrush}" />
+                            <Setter Property="Foreground" Value="{DynamicResource RedBrush}" />
+                        </DataTrigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
