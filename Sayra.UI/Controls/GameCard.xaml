@@ -59,6 +59,13 @@
                     </Grid>
                 </Border>
 
+                <!-- 4. DISABLED OVERLAY (Placed behind Card Body so texts/buttons are not obscured) -->
+                <Border x:Name="DisabledOverlay"
+                        Background="#99101014"
+                        CornerRadius="5"
+                        Opacity="0.0"
+                        IsHitTestVisible="False" />
+
                 <!-- 2. CARD BODY overlaying the cover image at the bottom -->
                 <Grid VerticalAlignment="Bottom" Margin="10,0,10,12">
                     <Grid.RowDefinitions>
@@ -119,12 +126,6 @@
                     </Border.Effect>
                 </Border>
 
-                <!-- 4. DISABLED OVERLAY -->
-                <Border x:Name="DisabledOverlay"
-                        Background="#99101014"
-                        CornerRadius="5"
-                        Opacity="0.0"
-                        IsHitTestVisible="False" />
             </Grid>
         </Border>
     </Grid>
