@@ -49,7 +49,7 @@
 
                                 <!-- Specified End Session Button Icon with stroke style, 1.5 thickness, and transparent fill -->
                                 <Path Grid.Column="0"
-                                      Data="M5.636 5.636a9 9 0 1 0 12.728 0M12 3v9"
+                                      Data="{DynamicResource EndSessionIconGeometry}"
                                       Stroke="{DynamicResource RedBrush}"
                                       StrokeThickness="1.5"
                                       StrokeStartLineCap="Round"
