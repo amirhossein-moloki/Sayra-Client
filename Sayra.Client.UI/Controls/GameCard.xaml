@@ -2,7 +2,29 @@
     <UserControl.Resources>
         <Style x:Key="PlayButton" TargetType="Button">
             <Setter Property="Height" Value="28"/><Setter Property="Margin" Value="10,4,10,10"/><Setter Property="Background" Value="{StaticResource PrimaryAccentBrush}"/><Setter Property="Foreground" Value="Black"/><Setter Property="FontFamily" Value="{StaticResource PeydaBold}"/><Setter Property="FontSize" Value="11"/><Setter Property="BorderThickness" Value="0"/><Setter Property="Cursor" Value="Hand"/>
-            <Setter Property="Template"><Setter.Value><ControlTemplate TargetType="Button"><Border x:Name="B" Background="{TemplateBinding Background}" CornerRadius="10"><ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/></Border><ControlTemplate.Triggers><Trigger Property="IsMouseOver" Value="True"><Setter TargetName="B" Property="Effect"><Setter.Value><DropShadowEffect Color="#F5FF00" BlurRadius="14" ShadowDepth="0" Opacity=".45"/></Setter.Value></Setter></Trigger></ControlTemplate.Triggers></ControlTemplate></Setter.Value></Setter>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <ControlTemplate.Resources>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="Foreground" Value="{Binding Foreground, RelativeSource={RelativeSource TemplatedParent}}" />
+                            </Style>
+                        </ControlTemplate.Resources>
+                        <Border x:Name="B" Background="{TemplateBinding Background}" CornerRadius="10">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="B" Property="Effect">
+                                    <Setter.Value>
+                                        <DropShadowEffect Color="#F5FF00" BlurRadius="14" ShadowDepth="0" Opacity=".45"/>
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
             <Style.Triggers><DataTrigger Binding="{Binding State}" Value="{x:Static m:GameState.Playing}"><Setter Property="Background" Value="White"/></DataTrigger><DataTrigger Binding="{Binding State}" Value="{x:Static m:GameState.Unavailable}"><Setter Property="Background" Value="#55555A"/><Setter Property="Foreground" Value="#D1D1D5"/></DataTrigger></Style.Triggers>
         </Style>
     </UserControl.Resources>
