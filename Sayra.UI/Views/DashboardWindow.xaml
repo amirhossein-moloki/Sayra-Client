@@ -139,7 +139,7 @@
 
                 <!-- Left Sidebar Grid Column -->
                 <Grid Grid.Column="0" Margin="0,0,15,0">
-                    <components:GameSidebar x:Name="SidebarCtrl" HorizontalAlignment="Left" VerticalAlignment="Top" />
+                    <components:GameSidebar x:Name="SidebarCtrl" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,106,0,0" />
                 </Grid>
 
                 <!-- Middle Games Library Grid Column -->
@@ -157,8 +157,8 @@
                         <RowDefinition Height="Auto" /> <!-- End Session Button -->
                     </Grid.RowDefinitions>
 
-                    <!-- Shifted HardwarePanel (System Detail) 45px down as requested -->
-                    <c:HardwarePanel x:Name="Hardware" Grid.Row="0" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="0,45,0,0" />
+                    <!-- Shifted HardwarePanel (System Detail) to align with Game Cards (106px down) -->
+                    <c:HardwarePanel x:Name="Hardware" Grid.Row="0" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="0,106,0,0" />
 
                     <Button Grid.Row="2"
                             Style="{StaticResource EndSessionButtonStyle}"
