@@ -43,9 +43,9 @@ namespace Sayra.UI.Controls
         private void GameLibrary_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             // Calculate dynamic column count based on available width
-            // All cards have identical width = 150px
-            // Margin="11,14" -> total horizontal slot per card is 150 + (11 * 2) = 172px.
-            double cardWidthWithMargin = 172.0;
+            // All cards have identical width = 188px
+            // Margin="11,14" -> total horizontal slot per card is 188 + (11 * 2) = 210px.
+            double cardWidthWithMargin = 210.0;
             double availableWidth = e.NewSize.Width - 10; // 10px safety buffer
             int cols = (int)(availableWidth / cardWidthWithMargin);
             if (cols < 1) cols = 1;
@@ -60,6 +60,15 @@ namespace Sayra.UI.Controls
             Log("Loaded Event END");
             sw.Stop();
             GlobalExceptionHandler.LogTrace("TIMING", $"[GameLibrary] Loaded event completed in {sw.ElapsedMilliseconds} ms");
+        }
+
+        private void ScrollViewer_PreviewMouseWheel(object sender, System.Windows.Input.MouseWheelEventArgs e)
+        {
+            if (sender is ScrollViewer scrollViewer)
+            {
+                scrollViewer.ScrollToVerticalOffset(scrollViewer.VerticalOffset - e.Delta);
+                e.Handled = true;
+            }
         }
 
         private void Log(string message)

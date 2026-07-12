@@ -5,8 +5,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:vm="clr-namespace:Sayra.UI.ViewModels"
              mc:Ignorable="d"
-             d:DesignHeight="700" d:DesignWidth="235.2"
-             Width="235.2" Height="Auto">
+             d:DesignHeight="700" d:DesignWidth="300"
+             Width="300" Height="Auto">
 
     <UserControl.DataContext>
         <vm:HardwarePanelViewModel />
@@ -160,7 +160,7 @@
                                     <!-- Column 3: Spacing -->
                                     <ColumnDefinition Width="4" />
                                     <!-- Column 4: Value (Right aligned) -->
-                                    <ColumnDefinition Width="Auto" MaxWidth="150" />
+                                    <ColumnDefinition Width="Auto" MaxWidth="200" />
                                 </Grid.ColumnDefinitions>
 
                                 <!-- Left Icon & Label stack -->
