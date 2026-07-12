@@ -2,9 +2,9 @@ using System.Windows.Controls;
 
 namespace Sayra.UI.Views.Components
 {
-    public partial class GameSidebar : UserControl
+    public partial class AdPanel : UserControl
     {
-        public GameSidebar()
+        public AdPanel()
         {
             InitializeComponent();
         }

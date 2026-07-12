@@ -15,6 +15,9 @@ namespace Sayra.UI.ViewModels
         [ObservableProperty]
         private string _searchText = string.Empty;
 
+        [ObservableProperty]
+        private string _selectedCategory = "All";
+
         private readonly List<GameItem> _allGames = new();
 
         public ObservableCollection<GameItem> Games { get; } = new();
@@ -54,15 +57,33 @@ namespace Sayra.UI.ViewModels
             ApplyFilter();
         }
 
+        partial void OnSelectedCategoryChanged(string value)
+        {
+            ApplyFilter();
+        }
+
         private void ApplyFilter()
         {
             string query = SearchText.Trim().ToLower();
+            string category = SelectedCategory.Trim().ToLower();
+
             Games.Clear();
             foreach (var game in _allGames)
             {
-                if (string.IsNullOrEmpty(query) ||
-                    game.Title.ToLower().Contains(query) ||
-                    game.Genre.ToLower().Contains(query))
+                // Match search query if present
+                bool matchesSearch = string.IsNullOrEmpty(query) ||
+                                     game.Title.ToLower().Contains(query) ||
+                                     game.Genre.ToLower().Contains(query);
+
+                // Match category if selected is not "all"
+                bool matchesCategory = true;
+                if (category != "all")
+                {
+                    matchesCategory = game.Genre.ToLower().Contains(category) ||
+                                      game.Status.ToLower().Contains(category);
+                }
+
+                if (matchesSearch && matchesCategory)
                 {
                     Games.Add(game);
                 }
