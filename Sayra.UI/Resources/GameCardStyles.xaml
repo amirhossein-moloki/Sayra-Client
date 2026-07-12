@@ -102,11 +102,11 @@
                             </DataTrigger.ExitActions>
                         </DataTrigger>
 
-                        <!-- PLAYING State: Background: Transparent/Dark, Border: Yellow, Text: Yellow -->
+                        <!-- PLAYING State: Background: Yellow, Border: Yellow, Text: Black -->
                         <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=Content}" Value="PLAYING">
-                            <Setter TargetName="PlayBtnBorder" Property="Background" Value="#2208090D" />
+                            <Setter TargetName="PlayBtnBorder" Property="Background" Value="#F5FF00" />
                             <Setter TargetName="PlayBtnBorder" Property="BorderBrush" Value="#F5FF00" />
-                            <Setter Property="Foreground" Value="#F5FF00" />
+                            <Setter Property="Foreground" Value="Black" />
                         </DataTrigger>
 
                         <!-- UNAVAILABLE State: Dark gray, disabled appearance -->

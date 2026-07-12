@@ -57,7 +57,7 @@
                                     <ScrollViewer x:Name="PART_ContentHost" Margin="0" />
                                     <TextBlock x:Name="Placeholder"
                                                Text="جستجوی بازی..."
-                                               Foreground="#55FFFFFF"
+                                               Foreground="#B3FFFFFF"
                                                FontFamily="{StaticResource PeydaLight}"
                                                FontSize="15"
                                                IsHitTestVisible="False"
@@ -114,28 +114,11 @@
 
         <!-- 1. HEADER & SEARCH AREA -->
         <Grid Grid.Row="0" Margin="0,24,0,20" HorizontalAlignment="Stretch">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="*" />
-            </Grid.ColumnDefinitions>
-
-            <!-- Game Library Title (Start of RTL -> Physical Right) -->
-            <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
-                <!-- Subtle yellow accent indicator bar -->
-                <Border Width="4" Height="26" Background="#F5FF00" CornerRadius="2" Margin="0,0,12,0"/>
-                <TextBlock Text="کتابخانه بازی ها"
-                           FontFamily="{StaticResource PeydaBold}"
-                           FontSize="26"
-                           Foreground="White"
-                           VerticalAlignment="Center" />
-            </StackPanel>
-
-            <!-- Search Box (End of RTL -> Physical Left, directly opposite the title) -->
-            <TextBox Grid.Column="1"
-                     Style="{StaticResource ModernSearchTextBoxStyle}"
+            <!-- Search Box (End of RTL -> Physical Left) -->
+            <TextBox Style="{StaticResource ModernSearchTextBoxStyle}"
                      Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
                      Width="420"
-                     HorizontalAlignment="Right"
+                     HorizontalAlignment="Left"
                      VerticalAlignment="Center" />
         </Grid>
 
