@@ -6,7 +6,7 @@
         <Setter Property="Background" Value="{DynamicResource PrimaryYellowBrush}" />
         <Setter Property="BorderBrush" Value="{DynamicResource PrimaryYellowBrush}" />
         <Setter Property="BorderThickness" Value="1.5" />
-        <Setter Property="Foreground" Value="{DynamicResource DarkBrush}" />
+        <Setter Property="Foreground" Value="Black" />
         <Setter Property="FontFamily" Value="{StaticResource PeydaBold}" />
         <Setter Property="FontSize" Value="15" />
         <Setter Property="Height" Value="38" />
