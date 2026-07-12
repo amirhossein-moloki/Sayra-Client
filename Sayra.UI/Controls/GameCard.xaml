@@ -98,7 +98,7 @@
                         <Button Content="{Binding ButtonText, ElementName=self}"
                                 Style="{StaticResource GameCardPlayButtonStyle}"
                                 Command="{Binding PlayCommand, ElementName=self}"
-                                CommandParameter="{Binding ElementName=self}"
+                                CommandParameter="{Binding DataContext, ElementName=self}"
                                 IsEnabled="{Binding IsAvailable, ElementName=self}"
                                 Tag="{Binding IsSelected, ElementName=self}"
                                 HorizontalAlignment="Stretch" />
