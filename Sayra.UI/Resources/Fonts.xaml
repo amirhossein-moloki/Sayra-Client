@@ -1,5 +1,7 @@
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- Peyda Bold: به فایل Peyda-Bold.ttf اشاره می‌کند که نام داخلی آن Peyda است -->
     <FontFamily x:Key="PeydaBold">
         <FontFamily.FamilyMaps>
             <FontFamilyMap Unicode="0000-00FF" Target="pack://application:,,,/Fonts/BlackOpsOne-Regular.ttf#Black Ops One" />
@@ -8,6 +10,7 @@
         </FontFamily.FamilyMaps>
     </FontFamily>
 
+    <!-- Peyda Medium: به فایل Peyda-Medium.ttf اشاره می‌کند که نام داخلی آن Peyda Med است -->
     <FontFamily x:Key="PeydaMedium">
         <FontFamily.FamilyMaps>
             <FontFamilyMap Unicode="0000-00FF" Target="pack://application:,,,/Fonts/BlackOpsOne-Regular.ttf#Black Ops One" />
@@ -16,6 +19,7 @@
         </FontFamily.FamilyMaps>
     </FontFamily>
 
+    <!-- Peyda Thin -->
     <FontFamily x:Key="PeydaThin">
         <FontFamily.FamilyMaps>
             <FontFamilyMap Unicode="0000-00FF" Target="pack://application:,,,/Fonts/BlackOpsOne-Regular.ttf#Black Ops One" />
@@ -24,6 +28,7 @@
         </FontFamily.FamilyMaps>
     </FontFamily>
 
+    <!-- Peyda Black -->
     <FontFamily x:Key="PeydaBlack">
         <FontFamily.FamilyMaps>
             <FontFamilyMap Unicode="0000-00FF" Target="pack://application:,,,/Fonts/BlackOpsOne-Regular.ttf#Black Ops One" />
@@ -32,6 +37,7 @@
         </FontFamily.FamilyMaps>
     </FontFamily>
 
+    <!-- Peyda Light -->
     <FontFamily x:Key="PeydaLight">
         <FontFamily.FamilyMaps>
             <FontFamilyMap Unicode="0000-00FF" Target="pack://application:,,,/Fonts/BlackOpsOne-Regular.ttf#Black Ops One" />

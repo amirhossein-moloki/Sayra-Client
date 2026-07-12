@@ -24,6 +24,7 @@
     <Resource Include="Fonts\Peyda-Light.ttf" />
     <Resource Include="Fonts\Peyda-Thin.ttf" />
     <Resource Include="Fonts\Peyda-Black.ttf" />
+    <Resource Include="Fonts\BlackOpsOne-Regular.ttf" />
   </ItemGroup>
 
   <ItemGroup>
