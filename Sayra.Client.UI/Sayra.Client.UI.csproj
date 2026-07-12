@@ -21,12 +21,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="..\photo_2026-07-08_22-07-56.jpg" Link="Assets\photo_2026-07-08_22-07-56.jpg" />
-    <Resource Include="..\sayra.svg" Link="Assets\sayra.svg" />
-    <Resource Include="..\Peyda-Bold.woff2" Link="Fonts\Peyda-Bold.woff2" />
-    <Resource Include="..\Peyda-Medium.woff2" Link="Fonts\Peyda-Medium.woff2" />
-    <Resource Include="..\Peyda-Thin.woff2" Link="Fonts\Peyda-Thin.woff2" />
-    <Resource Include="..\Peyda-black.woff2" Link="Fonts\Peyda-black.woff2" />
-    <Resource Include="..\peyda-light.woff2" Link="Fonts\peyda-light.woff2" />
+    <Resource Include="Assets\photo_2026-07-08_22-07-56.jpg" />
+    <Resource Include="Assets\sayra.svg" />
+    <Resource Include="Fonts\Peyda-Bold.ttf" />
+    <Resource Include="Fonts\Peyda-Medium.ttf" />
+    <Resource Include="Fonts\Peyda-Light.ttf" />
+    <Resource Include="Fonts\Peyda-Thin.ttf" />
+    <Resource Include="Fonts\Peyda-Black.ttf" />
+    <Resource Include="Fonts\BlackOpsOne-Regular.ttf" />
   </ItemGroup>
 </Project>

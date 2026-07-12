@@ -2,41 +2,41 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <FontFamily x:Key="PeydaBold">
         <FontFamily.FamilyMaps>
-            <FontFamilyMap Unicode="0000-00FF" Target="pack://application:,,,/Fonts/#Black Ops One" />
-            <FontFamilyMap Unicode="0600-06FF, FB50-FDFF, FE70-FEFE" Target="pack://application:,,,/Fonts/#Peyda Bold" />
-            <FontFamilyMap Target="pack://application:,,,/Fonts/#Peyda Bold" />
+            <FontFamilyMap Unicode="0000-00FF" Target="pack://application:,,,/Fonts/BlackOpsOne-Regular.ttf#Black Ops One" />
+            <FontFamilyMap Unicode="0600-06FF, FB50-FDFF, FE70-FEFE" Target="pack://application:,,,/Fonts/Peyda-Bold.ttf#Peyda" />
+            <FontFamilyMap Target="pack://application:,,,/Fonts/Peyda-Bold.ttf#Peyda" />
         </FontFamily.FamilyMaps>
     </FontFamily>
 
     <FontFamily x:Key="PeydaMedium">
         <FontFamily.FamilyMaps>
-            <FontFamilyMap Unicode="0000-00FF" Target="pack://application:,,,/Fonts/#Black Ops One" />
-            <FontFamilyMap Unicode="0600-06FF, FB50-FDFF, FE70-FEFE" Target="pack://application:,,,/Fonts/#Peyda Medium" />
-            <FontFamilyMap Target="pack://application:,,,/Fonts/#Peyda Medium" />
+            <FontFamilyMap Unicode="0000-00FF" Target="pack://application:,,,/Fonts/BlackOpsOne-Regular.ttf#Black Ops One" />
+            <FontFamilyMap Unicode="0600-06FF, FB50-FDFF, FE70-FEFE" Target="pack://application:,,,/Fonts/Peyda-Medium.ttf#Peyda" />
+            <FontFamilyMap Target="pack://application:,,,/Fonts/Peyda-Medium.ttf#Peyda" />
         </FontFamily.FamilyMaps>
     </FontFamily>
 
     <FontFamily x:Key="PeydaThin">
         <FontFamily.FamilyMaps>
-            <FontFamilyMap Unicode="0000-00FF" Target="pack://application:,,,/Fonts/#Black Ops One" />
-            <FontFamilyMap Unicode="0600-06FF, FB50-FDFF, FE70-FEFE" Target="pack://application:,,,/Fonts/#Peyda Thin" />
-            <FontFamilyMap Target="pack://application:,,,/Fonts/#Peyda Thin" />
+            <FontFamilyMap Unicode="0000-00FF" Target="pack://application:,,,/Fonts/BlackOpsOne-Regular.ttf#Black Ops One" />
+            <FontFamilyMap Unicode="0600-06FF, FB50-FDFF, FE70-FEFE" Target="pack://application:,,,/Fonts/Peyda-Thin.ttf#Peyda" />
+            <FontFamilyMap Target="pack://application:,,,/Fonts/Peyda-Thin.ttf#Peyda" />
         </FontFamily.FamilyMaps>
     </FontFamily>
 
     <FontFamily x:Key="PeydaBlack">
         <FontFamily.FamilyMaps>
-            <FontFamilyMap Unicode="0000-00FF" Target="pack://application:,,,/Fonts/#Black Ops One" />
-            <FontFamilyMap Unicode="0600-06FF, FB50-FDFF, FE70-FEFE" Target="pack://application:,,,/Fonts/#Peyda Black" />
-            <FontFamilyMap Target="pack://application:,,,/Fonts/#Peyda Black" />
+            <FontFamilyMap Unicode="0000-00FF" Target="pack://application:,,,/Fonts/BlackOpsOne-Regular.ttf#Black Ops One" />
+            <FontFamilyMap Unicode="0600-06FF, FB50-FDFF, FE70-FEFE" Target="pack://application:,,,/Fonts/Peyda-Black.ttf#Peyda" />
+            <FontFamilyMap Target="pack://application:,,,/Fonts/Peyda-Black.ttf#Peyda" />
         </FontFamily.FamilyMaps>
     </FontFamily>
 
     <FontFamily x:Key="PeydaLight">
         <FontFamily.FamilyMaps>
-            <FontFamilyMap Unicode="0000-00FF" Target="pack://application:,,,/Fonts/#Black Ops One" />
-            <FontFamilyMap Unicode="0600-06FF, FB50-FDFF, FE70-FEFE" Target="pack://application:,,,/Fonts/#Peyda Light" />
-            <FontFamilyMap Target="pack://application:,,,/Fonts/#Peyda Light" />
+            <FontFamilyMap Unicode="0000-00FF" Target="pack://application:,,,/Fonts/BlackOpsOne-Regular.ttf#Black Ops One" />
+            <FontFamilyMap Unicode="0600-06FF, FB50-FDFF, FE70-FEFE" Target="pack://application:,,,/Fonts/Peyda-Light.ttf#Peyda" />
+            <FontFamilyMap Target="pack://application:,,,/Fonts/Peyda-Light.ttf#Peyda" />
         </FontFamily.FamilyMaps>
     </FontFamily>
 </ResourceDictionary>
