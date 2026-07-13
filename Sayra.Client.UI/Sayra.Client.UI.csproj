@@ -21,12 +21,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="..\photo_2026-07-08_22-07-56.jpg" Link="Assets\photo_2026-07-08_22-07-56.jpg" />
-    <Resource Include="..\sayra.svg" Link="Assets\sayra.svg" />
-    <Resource Include="..\Peyda-Bold.woff2" Link="Fonts\Peyda-Bold.woff2" />
-    <Resource Include="..\Peyda-Medium.woff2" Link="Fonts\Peyda-Medium.woff2" />
-    <Resource Include="..\Peyda-Thin.woff2" Link="Fonts\Peyda-Thin.woff2" />
-    <Resource Include="..\Peyda-black.woff2" Link="Fonts\Peyda-black.woff2" />
-    <Resource Include="..\peyda-light.woff2" Link="Fonts\peyda-light.woff2" />
+    <Resource Include="..\Sayra.UI\Assets\photo_2026-07-08_22-07-56.jpg" Link="Assets\photo_2026-07-08_22-07-56.jpg" />
+    <Resource Include="..\Sayra.UI\Assets\sayra.svg" Link="Assets\sayra.svg" />
+    <Resource Include="..\Sayra.UI\Fonts\BlackOpsOne-Regular.ttf" Link="Fonts\BlackOpsOne-Regular.ttf" />
+    <Resource Include="..\Sayra.UI\Fonts\Peyda-Bold.ttf" Link="Fonts\Peyda-Bold.ttf" />
+    <Resource Include="..\Sayra.UI\Fonts\Peyda-Medium.ttf" Link="Fonts\Peyda-Medium.ttf" />
+    <Resource Include="..\Sayra.UI\Fonts\Peyda-Light.ttf" Link="Fonts\Peyda-Light.ttf" />
+    <Resource Include="..\Sayra.UI\Fonts\Peyda-Thin.ttf" Link="Fonts\Peyda-Thin.ttf" />
+    <Resource Include="..\Sayra.UI\Fonts\Peyda-Black.ttf" Link="Fonts\Peyda-Black.ttf" />
   </ItemGroup>
 </Project>

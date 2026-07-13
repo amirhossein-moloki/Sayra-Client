@@ -1,7 +1,54 @@
-<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-    <FontFamily x:Key="PeydaBold">pack://application:,,,/Fonts/Peyda-Bold.woff2#Peyda</FontFamily>
-    <FontFamily x:Key="PeydaMedium">pack://application:,,,/Fonts/Peyda-Medium.woff2#Peyda</FontFamily>
-    <FontFamily x:Key="PeydaLight">pack://application:,,,/Fonts/peyda-light.woff2#Peyda</FontFamily>
-    <FontFamily x:Key="PeydaBlack">pack://application:,,,/Fonts/Peyda-black.woff2#Peyda</FontFamily>
-    <Style TargetType="TextBlock"><Setter Property="Foreground" Value="{StaticResource PrimaryTextBrush}"/><Setter Property="FontFamily" Value="{StaticResource PeydaMedium}"/><Setter Property="TextOptions.TextFormattingMode" Value="Display"/></Style>
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- Peyda Bold -->
+    <FontFamily x:Key="PeydaBold">
+        <FontFamily.FamilyMaps>
+            <FontFamilyMap Unicode="0000-00FF" Target="pack://application:,,,/Fonts/BlackOpsOne-Regular.ttf#Black Ops One" />
+            <FontFamilyMap Unicode="0600-06FF, FB50-FDFF, FE70-FEFE" Target="pack://application:,,,/Fonts/Peyda-Bold.ttf#Peyda" />
+            <FontFamilyMap Target="pack://application:,,,/Fonts/Peyda-Bold.ttf#Peyda" />
+        </FontFamily.FamilyMaps>
+    </FontFamily>
+
+    <!-- Peyda Medium -->
+    <FontFamily x:Key="PeydaMedium">
+        <FontFamily.FamilyMaps>
+            <FontFamilyMap Unicode="0000-00FF" Target="pack://application:,,,/Fonts/BlackOpsOne-Regular.ttf#Black Ops One" />
+            <FontFamilyMap Unicode="0600-06FF, FB50-FDFF, FE70-FEFE" Target="pack://application:,,,/Fonts/Peyda-Medium.ttf#Peyda Med" />
+            <FontFamilyMap Target="pack://application:,,,/Fonts/Peyda-Medium.ttf#Peyda Med" />
+        </FontFamily.FamilyMaps>
+    </FontFamily>
+
+    <!-- Peyda Light -->
+    <FontFamily x:Key="PeydaLight">
+        <FontFamily.FamilyMaps>
+            <FontFamilyMap Unicode="0000-00FF" Target="pack://application:,,,/Fonts/BlackOpsOne-Regular.ttf#Black Ops One" />
+            <FontFamilyMap Unicode="0600-06FF, FB50-FDFF, FE70-FEFE" Target="pack://application:,,,/Fonts/Peyda-Light.ttf#Peyda Light" />
+            <FontFamilyMap Target="pack://application:,,,/Fonts/Peyda-Light.ttf#Peyda Light" />
+        </FontFamily.FamilyMaps>
+    </FontFamily>
+
+    <!-- Peyda Black -->
+    <FontFamily x:Key="PeydaBlack">
+        <FontFamily.FamilyMaps>
+            <FontFamilyMap Unicode="0000-00FF" Target="pack://application:,,,/Fonts/BlackOpsOne-Regular.ttf#Black Ops One" />
+            <FontFamilyMap Unicode="0600-06FF, FB50-FDFF, FE70-FEFE" Target="pack://application:,,,/Fonts/Peyda-Black.ttf#Peyda Black" />
+            <FontFamilyMap Target="pack://application:,,,/Fonts/Peyda-Black.ttf#Peyda Black" />
+        </FontFamily.FamilyMaps>
+    </FontFamily>
+
+    <!-- Peyda Thin -->
+    <FontFamily x:Key="PeydaThin">
+        <FontFamily.FamilyMaps>
+            <FontFamilyMap Unicode="0000-00FF" Target="pack://application:,,,/Fonts/BlackOpsOne-Regular.ttf#Black Ops One" />
+            <FontFamilyMap Unicode="0600-06FF, FB50-FDFF, FE70-FEFE" Target="pack://application:,,,/Fonts/Peyda-Thin.ttf#Peyda Thin" />
+            <FontFamilyMap Target="pack://application:,,,/Fonts/Peyda-Thin.ttf#Peyda Thin" />
+        </FontFamily.FamilyMaps>
+    </FontFamily>
+
+    <Style TargetType="TextBlock">
+        <Setter Property="Foreground" Value="{StaticResource PrimaryTextBrush}"/>
+        <Setter Property="FontFamily" Value="{StaticResource PeydaMedium}"/>
+        <Setter Property="TextOptions.TextFormattingMode" Value="Display"/>
+    </Style>
 </ResourceDictionary>
