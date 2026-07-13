@@ -110,10 +110,7 @@
         </EventTrigger>
     </Window.Triggers>
 
-    <Grid x:Name="RootGrid">
-        <!-- 1. BACKGROUND LAYER: Live Video Background with cinematic dark overlay (#08090D at 60% opacity) -->
-        <c:VideoBackground x:Name="VideoBg" VideoName="Video/DashboardBg.mp4" OverlayBackground="#9908090D" />
-
+    <Grid x:Name="RootGrid" Background="#08090D">
         <!-- 2. MAIN LAYOUT GRID -->
         <Grid>
             <Grid.RowDefinitions>

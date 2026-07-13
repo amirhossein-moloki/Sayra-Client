@@ -39,7 +39,6 @@ namespace Sayra.UI.Views
                     this.Triggers.Clear();
                     this.Opacity = 1.0;
 
-                    if (VideoBg != null) VideoBg.Visibility = Visibility.Collapsed;
                     if (GameLib != null) GameLib.Visibility = Visibility.Collapsed;
                     if (Hardware != null) Hardware.Visibility = Visibility.Collapsed;
                     if (SessionHeroCtrl != null) SessionHeroCtrl.Visibility = Visibility.Collapsed;
