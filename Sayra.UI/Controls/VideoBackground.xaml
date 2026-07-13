@@ -6,7 +6,7 @@
              mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid Background="#08090D">
-        <!-- Full-screen MediaElement (Temporarily disabled to investigate UI freezes / deadlocks)
+        <!-- Full-screen MediaElement with safe event registration and programmatically controlled behavior -->
         <MediaElement x:Name="BackgroundVideo"
                       Stretch="UniformToFill"
                       LoadedBehavior="Manual"
@@ -15,7 +15,6 @@
                       MediaOpened="BackgroundVideo_MediaOpened"
                       MediaEnded="BackgroundVideo_MediaEnded"
                       MediaFailed="BackgroundVideo_MediaFailed" />
-        -->
 
         <!-- Cinematic dark overlay -->
         <Border x:Name="OverlayBorder" Background="{Binding OverlayBackground, RelativeSource={RelativeSource AncestorType=UserControl}}" />

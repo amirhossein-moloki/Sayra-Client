@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:svgc="http://sharpvectors.codeplex.com/svgc/"
              xmlns:vm="clr-namespace:Sayra.UI.ViewModels"
+             xmlns:c="clr-namespace:Sayra.UI.Controls"
              mc:Ignorable="d"
              d:DesignHeight="240" d:DesignWidth="1860">
 
@@ -58,11 +59,11 @@
             BorderBrush="{DynamicResource BorderBrush}"
             BorderThickness="0,0,0,1"
             ClipToBounds="True">
-        <Border.Background>
-            <ImageBrush ImageSource="/Assets/SessionHeroSectionBG.jpg" Stretch="UniformToFill" />
-        </Border.Background>
 
         <Grid>
+            <!-- Video background for the session hero banner -->
+            <c:VideoBackground VideoName="LoginBg.mp4" OverlayBackground="#B308090D" />
+
             <!-- Dark linear gradient overlay with maximum contrast based on #101014 -->
             <Border Grid.Row="0" Grid.Column="0">
                 <Border.Background>
