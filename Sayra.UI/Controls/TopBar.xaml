@@ -136,24 +136,24 @@
             </StackPanel>
 
             <!-- CENTER AREA: PC identity section + status badge -->
-            <StackPanel Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center">
+            <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
                 <TextBlock Text="PC-08"
-                           FontFamily="{StaticResource PeydaMedium}"
-                           FontSize="16"
+                           FontFamily="{StaticResource PeydaBold}"
+                           FontSize="22"
                            Foreground="White"
-                           HorizontalAlignment="Center" />
+                           VerticalAlignment="Center" />
                 <Border BorderBrush="{DynamicResource SuccessBrush}"
-                        BorderThickness="1"
-                        CornerRadius="12"
-                        Padding="10,2"
-                        Margin="0,5,0,0"
-                        HorizontalAlignment="Center"
+                        BorderThickness="1.2"
+                        CornerRadius="14"
+                        Padding="14,5"
+                        Margin="16,0,0,0"
+                        VerticalAlignment="Center"
                         Background="#0814BE78">
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                        <Ellipse Width="6" Height="6" Fill="{DynamicResource SuccessBrush}" Margin="0,0,6,0" VerticalAlignment="Center"/>
+                        <Ellipse Width="8" Height="8" Fill="{DynamicResource SuccessBrush}" Margin="0,0,8,0" VerticalAlignment="Center"/>
                         <TextBlock Text="Connected"
                                    FontFamily="{StaticResource PeydaMedium}"
-                                   FontSize="11"
+                                   FontSize="14"
                                    Foreground="{DynamicResource SuccessBrush}"
                                    VerticalAlignment="Center"/>
                     </StackPanel>

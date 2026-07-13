@@ -222,11 +222,11 @@
         </Grid.RowDefinitions>
 
         <!-- 1. HEADER & SEARCH AREA -->
-        <Grid Grid.Row="0" Margin="0,24,0,20" HorizontalAlignment="Stretch">
+        <Grid Grid.Row="0" Margin="11,24,11,20" HorizontalAlignment="Stretch">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" /> <!-- Horizontal Filter Bar next to search (RTL -> Right side) -->
-                <ColumnDefinition Width="Auto" /> <!-- Search Box immediately to its left (RTL -> Physical Left of Filter Bar) -->
-                <ColumnDefinition Width="*" />    <!-- Flexible spacer to the left (RTL -> Left side) -->
+                <ColumnDefinition Width="*" />    <!-- Flexible spacer in the middle -->
+                <ColumnDefinition Width="Auto" /> <!-- Search Box on the left (RTL -> Left side) -->
             </Grid.ColumnDefinitions>
 
             <!-- Custom Horizontal Category Bar on the Right side (RTL) -->
@@ -268,11 +268,11 @@
             </ListBox>
 
             <!-- Search Box (Physically to the left of Filter Bar) -->
-            <TextBox Grid.Column="1"
+            <TextBox Grid.Column="2"
                      Style="{StaticResource ModernSearchTextBoxStyle}"
                      Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
                      Width="294"
-                     Margin="16,0,0,0"
+                     Margin="0"
                      VerticalAlignment="Center" />
         </Grid>
 

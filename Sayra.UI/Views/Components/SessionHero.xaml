@@ -15,9 +15,10 @@
     <UserControl.Resources>
         <!-- Soft breathing and glow animation for the background SAYRA logo -->
         <Style x:Key="HeroLogoStyle" TargetType="svgc:SvgViewbox">
+            <Setter Property="Opacity" Value="0.15" />
             <Setter Property="Effect">
                 <Setter.Value>
-                    <DropShadowEffect x:Name="HeroLogoGlow" Color="#ffff3d" BlurRadius="25" ShadowDepth="0" Opacity="0.1" />
+                    <DropShadowEffect x:Name="HeroLogoGlow" Color="#ffff3d" BlurRadius="20" ShadowDepth="0" Opacity="0.3" />
                 </Setter.Value>
             </Setter>
             <Style.Triggers>
@@ -25,11 +26,11 @@
                     <BeginStoryboard>
                         <Storyboard RepeatBehavior="Forever" AutoReverse="True">
                             <DoubleAnimation Storyboard.TargetProperty="(UIElement.Effect).(DropShadowEffect.Opacity)"
-                                             From="0.1" To="0.35" Duration="0:0:4" />
+                                             From="0.3" To="0.85" Duration="0:0:4" />
                             <DoubleAnimation Storyboard.TargetProperty="(UIElement.Effect).(DropShadowEffect.BlurRadius)"
-                                             From="15" To="35" Duration="0:0:4" />
+                                             From="20" To="60" Duration="0:0:4" />
                             <DoubleAnimation Storyboard.TargetProperty="Opacity"
-                                             From="0.05" To="0.12" Duration="0:0:4" />
+                                             From="0.15" To="0.45" Duration="0:0:4" />
                         </Storyboard>
                     </BeginStoryboard>
                 </EventTrigger>
