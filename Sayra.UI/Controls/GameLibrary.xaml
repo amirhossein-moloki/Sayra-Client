@@ -21,7 +21,7 @@
             <Setter Property="Foreground" Value="{DynamicResource SecondaryWhiteBrush}" />
             <Setter Property="CaretBrush" Value="{DynamicResource PrimaryYellowBrush}" />
             <Setter Property="FontFamily" Value="{StaticResource PeydaLight}" />
-            <Setter Property="FontSize" Value="15" />
+            <Setter Property="FontSize" Value="13" />
             <Setter Property="VerticalContentAlignment" Value="Center" />
             <Setter Property="Template">
                 <Setter.Value>
@@ -30,9 +30,9 @@
                                 Background="{DynamicResource SecondaryBackgroundBrush}"
                                 BorderBrush="{DynamicResource BorderBrush}"
                                 BorderThickness="1.2"
-                                CornerRadius="20"
-                                Padding="16,10"
-                                Height="48">
+                                CornerRadius="18"
+                                Padding="14,0"
+                                Height="36">
                             <Border.Effect>
                                 <DropShadowEffect x:Name="ShadowEffect" Color="#ffff3d" BlurRadius="10" ShadowDepth="0" Opacity="0" />
                             </Border.Effect>
@@ -51,10 +51,10 @@
                                       StrokeStartLineCap="Round"
                                       StrokeEndLineCap="Round"
                                       Fill="Transparent"
-                                      Width="18" Height="18"
+                                      Width="15" Height="15"
                                       Stretch="Uniform"
                                       VerticalAlignment="Center"
-                                      Margin="0,0,12,0" />
+                                      Margin="0,0,8,0" />
 
                                 <!-- Text content / Placeholder container -->
                                 <Grid Grid.Column="1" VerticalAlignment="Center">
@@ -63,7 +63,7 @@
                                                Text="جستجوی بازی..."
                                                Foreground="#B39A9A9A"
                                                FontFamily="{StaticResource PeydaLight}"
-                                               FontSize="15"
+                                               FontSize="13"
                                                IsHitTestVisible="False"
                                                VerticalAlignment="Center"
                                                Visibility="Collapsed" />
@@ -225,8 +225,8 @@
         <Grid Grid.Row="0" Margin="0,24,0,20" HorizontalAlignment="Stretch">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" /> <!-- Horizontal Filter Bar next to search (RTL -> Right side) -->
-                <ColumnDefinition Width="*" />    <!-- Flexible spacer -->
-                <ColumnDefinition Width="Auto" /> <!-- Search Box (RTL -> Left side) -->
+                <ColumnDefinition Width="Auto" /> <!-- Search Box immediately to its left (RTL -> Physical Left of Filter Bar) -->
+                <ColumnDefinition Width="*" />    <!-- Flexible spacer to the left (RTL -> Left side) -->
             </Grid.ColumnDefinitions>
 
             <!-- Custom Horizontal Category Bar on the Right side (RTL) -->
@@ -267,11 +267,12 @@
                 </ListBoxItem>
             </ListBox>
 
-            <!-- Search Box (End of RTL -> Physical Left) -->
-            <TextBox Grid.Column="2"
+            <!-- Search Box (Physically to the left of Filter Bar) -->
+            <TextBox Grid.Column="1"
                      Style="{StaticResource ModernSearchTextBoxStyle}"
                      Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
-                     Width="420"
+                     Width="300"
+                     Margin="16,0,0,0"
                      VerticalAlignment="Center" />
         </Grid>
 
