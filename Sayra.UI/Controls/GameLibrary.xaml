@@ -271,7 +271,7 @@
             <TextBox Grid.Column="1"
                      Style="{StaticResource ModernSearchTextBoxStyle}"
                      Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
-                     Width="300"
+                     Width="294"
                      Margin="16,0,0,0"
                      VerticalAlignment="Center" />
         </Grid>
