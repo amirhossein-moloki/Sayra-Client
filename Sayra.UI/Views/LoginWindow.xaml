@@ -7,6 +7,7 @@
         xmlns:c="clr-namespace:Sayra.UI.Controls"
         xmlns:vm="clr-namespace:Sayra.UI.ViewModels"
         xmlns:svgc="http://sharpvectors.codeplex.com/svgc/"
+        xmlns:suis="clr-namespace:Sayra.UI.Services"
         mc:Ignorable="d"
         Title="SAYRA"
         Height="1080" Width="1920"
@@ -22,6 +23,7 @@
     </Window.DataContext>
 
     <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
         <!-- Style for SVG Logo (Yellow Glow Effect Removed) -->
         <Style x:Key="BreathingLogoStyle" TargetType="svgc:SvgViewbox">
             <!-- No yellow DropShadowEffect glow on Sayra Logo in login screen -->
@@ -187,6 +189,13 @@
                                      Height="54" />
                 </StackPanel>
             </Border>
+        </Grid>
+
+        <!-- Floating Horizontal Notification Card -->
+        <Grid VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="0,0,0,40" Panel.ZIndex="1000" IsHitTestVisible="True"
+              DataContext="{Binding Source={x:Static suis:NotificationService.Instance}}"
+              Visibility="{Binding IsNotificationVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <c:NotificationCard DataContext="{Binding CurrentNotification}" />
         </Grid>
     </Grid>
 </Window>

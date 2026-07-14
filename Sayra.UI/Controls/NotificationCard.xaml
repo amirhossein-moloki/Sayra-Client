@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:svgc="http://sharpvectors.codeplex.com/svgc/"
+             xmlns:suis="clr-namespace:Sayra.UI.Services"
              mc:Ignorable="d"
              Width="420" Height="84" FlowDirection="RightToLeft">
 
@@ -53,7 +54,7 @@
 
                 <Style.Triggers>
                     <!-- TYPE 1: ERROR -->
-                    <DataTrigger Binding="{Binding NotificationType}" Value="Error">
+                    <DataTrigger Binding="{Binding NotificationType}" Value="{x:Static suis:NotificationType.Error}">
                         <Setter Property="Background">
                             <Setter.Value>
                                 <LinearGradientBrush StartPoint="0,0.5" EndPoint="1,0.5">
@@ -66,7 +67,7 @@
                     </DataTrigger>
 
                     <!-- TYPE 2: SUCCESS -->
-                    <DataTrigger Binding="{Binding NotificationType}" Value="Success">
+                    <DataTrigger Binding="{Binding NotificationType}" Value="{x:Static suis:NotificationType.Success}">
                         <Setter Property="Background">
                             <Setter.Value>
                                 <LinearGradientBrush StartPoint="0,0.5" EndPoint="1,0.5">
@@ -79,7 +80,7 @@
                     </DataTrigger>
 
                     <!-- TYPE 3: WARNING / INFO -->
-                    <DataTrigger Binding="{Binding NotificationType}" Value="Warning">
+                    <DataTrigger Binding="{Binding NotificationType}" Value="{x:Static suis:NotificationType.Warning}">
                         <Setter Property="Background">
                             <Setter.Value>
                                 <LinearGradientBrush StartPoint="0,0.5" EndPoint="1,0.5">
@@ -92,7 +93,7 @@
                     </DataTrigger>
 
                     <!-- TYPE 4: LOADING -->
-                    <DataTrigger Binding="{Binding NotificationType}" Value="Loading">
+                    <DataTrigger Binding="{Binding NotificationType}" Value="{x:Static suis:NotificationType.Loading}">
                         <Setter Property="Background">
                             <Setter.Value>
                                 <LinearGradientBrush StartPoint="0,0.5" EndPoint="1,0.5">
