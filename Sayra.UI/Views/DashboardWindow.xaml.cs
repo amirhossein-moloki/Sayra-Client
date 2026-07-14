@@ -82,7 +82,7 @@ namespace Sayra.UI.Views
             GlobalExceptionHandler.LogTrace("DASHBOARD", $"Loaded Event completed in {swLoaded.ElapsedMilliseconds} ms");
         }
 
-        private void EndSession_Click(object sender, RoutedEventArgs e)
+        private async void EndSession_Click(object sender, RoutedEventArgs e)
         {
             var result = MessageBox.Show(
                 "آیا مطمئن هستید که می‌خواهید خارج شوید؟",
@@ -95,6 +95,8 @@ namespace Sayra.UI.Views
 
             if (result == MessageBoxResult.Yes)
             {
+                Sayra.UI.Services.NotificationService.Instance.ShowLoading("در حال خروج از سیستم...");
+                await System.Threading.Tasks.Task.Delay(1000);
                 Application.Current.Shutdown();
             }
         }
