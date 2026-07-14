@@ -205,7 +205,7 @@
                 <!-- Row 2: Columns -->
                 <Grid Grid.Row="2" VerticalAlignment="Top">
                     <Grid.ColumnDefinitions>
-                        <!-- Left Column: Large Game Box & Logo (Width: 927) -->
+                        <!-- Left Column: Large Game Box & Logo (Width: 1296) -->
                         <ColumnDefinition Width="Auto" />
                         <!-- Spacer -->
                         <ColumnDefinition Width="*" />
@@ -214,8 +214,8 @@
                     </Grid.ColumnDefinitions>
 
                     <!-- Left Column Content -->
-                    <StackPanel Grid.Column="0" VerticalAlignment="Top" Width="927">
-                        <!-- Large Box (Game Details - Width: 927, Height: 406, CornerRadius: 20, Border: 1) -->
+                    <StackPanel Grid.Column="0" VerticalAlignment="Top" Width="1296">
+                        <!-- Large Box (Game Details - Width: 1296, Height: 406, CornerRadius: 20, Border: 1) -->
                         <Border CornerRadius="20" Background="#CC1F1F23" BorderBrush="#252528" BorderThickness="1" Padding="30" Height="406">
                             <Border.Effect>
                                 <DropShadowEffect Color="#000000" BlurRadius="25" ShadowDepth="4" Opacity="0.5" />
