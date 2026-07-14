@@ -61,9 +61,6 @@ namespace Sayra.UI.ViewModels
                 GlobalExceptionHandler.LogTrace("LOGIN", "Authentication successful");
                 try
                 {
-                    // Show success message
-                    MessageBox.Show("ورود با موفقیت انجام شد!", "سیستم سایرا", MessageBoxButton.OK, MessageBoxImage.Information);
-
                     GlobalExceptionHandler.CurrentOperation = "Creating DashboardWindow";
                     GlobalExceptionHandler.LogTrace("DASHBOARD", "Creating DashboardWindow");
 

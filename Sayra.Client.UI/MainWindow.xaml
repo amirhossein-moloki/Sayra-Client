@@ -1,4 +1,4 @@
-<Window x:Class="Sayra.Client.UI.MainWindow" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:controls="clr-namespace:Sayra.Client.UI.Controls" xmlns:v="clr-namespace:Sayra.Client.UI.Views" xmlns:svgc="http://sharpvectors.codeplex.com/svgc/" Title="Sayra Gaming Center" Width="1920" Height="1080" WindowStyle="None" AllowsTransparency="True" Background="Transparent" ResizeMode="CanResize" WindowState="Maximized" UseLayoutRounding="True" SnapsToDevicePixels="True" TextOptions.TextFormattingMode="Display" TextOptions.TextRenderingMode="ClearType">
+<Window x:Class="Sayra.Client.UI.MainWindow" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:controls="clr-namespace:Sayra.Client.UI.Controls" xmlns:v="clr-namespace:Sayra.Client.UI.Views" xmlns:svgc="http://sharpvectors.codeplex.com/svgc/" xmlns:suic="clr-namespace:Sayra.UI.Controls;assembly=Sayra.UI" xmlns:suis="clr-namespace:Sayra.UI.Services;assembly=Sayra.UI" Title="Sayra Gaming Center" Width="1920" Height="1080" WindowStyle="None" AllowsTransparency="True" Background="Transparent" ResizeMode="CanResize" WindowState="Maximized" UseLayoutRounding="True" SnapsToDevicePixels="True" TextOptions.TextFormattingMode="Display" TextOptions.TextRenderingMode="ClearType">
 <Grid Background="{StaticResource AppBackgroundBrush}">
     <Grid.OpacityMask><SolidColorBrush Color="White"/></Grid.OpacityMask>
 
@@ -62,5 +62,12 @@
         </Grid>
     </Grid>
     <v:WarningOverlay Visibility="{Binding Warnings.IsWarningVisible, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+
+    <!-- Floating Horizontal Notification Card -->
+    <Grid VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="0,0,0,40" Panel.ZIndex="1000" IsHitTestVisible="True"
+          DataContext="{Binding Source={x:Static suis:NotificationService.Instance}}"
+          Visibility="{Binding IsNotificationVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
+        <suic:NotificationCard DataContext="{Binding CurrentNotification}" />
+    </Grid>
 </Grid>
 </Window>

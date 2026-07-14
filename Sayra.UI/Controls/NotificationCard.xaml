@@ -1,0 +1,134 @@
+<UserControl x:Class="Sayra.UI.Controls.NotificationCard"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:svgc="http://sharpvectors.codeplex.com/svgc/"
+             mc:Ignorable="d"
+             Width="420" Height="84" FlowDirection="RightToLeft">
+
+    <UserControl.Resources>
+        <!-- Fade in & slide translation entrance animation -->
+        <Storyboard x:Key="ShowStoryboard">
+            <DoubleAnimation Storyboard.TargetName="MainBorder"
+                             Storyboard.TargetProperty="Opacity"
+                             From="0" To="1" Duration="0:0:0.220"/>
+            <DoubleAnimation Storyboard.TargetName="Translation"
+                             Storyboard.TargetProperty="Y"
+                             From="15" To="0" Duration="0:0:0.220">
+                <DoubleAnimation.EasingFunction>
+                    <PowerEase Power="2" EasingMode="EaseOut"/>
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+        </Storyboard>
+
+        <!-- Fade out exit animation -->
+        <Storyboard x:Key="HideStoryboard">
+            <DoubleAnimation Storyboard.TargetName="MainBorder"
+                             Storyboard.TargetProperty="Opacity"
+                             From="1" To="0" Duration="0:0:0.180"/>
+        </Storyboard>
+
+        <!-- Loading icon pulse style/animation -->
+        <Storyboard x:Key="LoadingPulseStoryboard" RepeatBehavior="Forever">
+            <DoubleAnimation Storyboard.TargetName="IconViewbox"
+                             Storyboard.TargetProperty="Opacity"
+                             From="0.3" To="1.0" Duration="0:0:0.450" AutoReverse="True"/>
+        </Storyboard>
+    </UserControl.Resources>
+
+    <Border x:Name="MainBorder" BorderThickness="1.5" CornerRadius="20" Padding="24,18">
+        <Border.Style>
+            <Style TargetType="Border">
+                <!-- Fallback Gradient/Border Brush if type is normal or default -->
+                <Setter Property="Background">
+                    <Setter.Value>
+                        <LinearGradientBrush StartPoint="0,0.5" EndPoint="1,0.5">
+                            <GradientStop Color="#2D2D31" Offset="0"/>
+                            <GradientStop Color="#3A3A40" Offset="1"/>
+                        </LinearGradientBrush>
+                    </Setter.Value>
+                </Setter>
+                <Setter Property="BorderBrush" Value="#3A3A40"/>
+
+                <Style.Triggers>
+                    <!-- TYPE 1: ERROR -->
+                    <DataTrigger Binding="{Binding NotificationType}" Value="Error">
+                        <Setter Property="Background">
+                            <Setter.Value>
+                                <LinearGradientBrush StartPoint="0,0.5" EndPoint="1,0.5">
+                                    <GradientStop Color="#341B1B" Offset="0"/>
+                                    <GradientStop Color="#F46B6B" Offset="1"/>
+                                </LinearGradientBrush>
+                            </Setter.Value>
+                        </Setter>
+                        <Setter Property="BorderBrush" Value="#F46B6B"/>
+                    </DataTrigger>
+
+                    <!-- TYPE 2: SUCCESS -->
+                    <DataTrigger Binding="{Binding NotificationType}" Value="Success">
+                        <Setter Property="Background">
+                            <Setter.Value>
+                                <LinearGradientBrush StartPoint="0,0.5" EndPoint="1,0.5">
+                                    <GradientStop Color="#12461F" Offset="0"/>
+                                    <GradientStop Color="#2EE15B" Offset="1"/>
+                                </LinearGradientBrush>
+                            </Setter.Value>
+                        </Setter>
+                        <Setter Property="BorderBrush" Value="#2EE15B"/>
+                    </DataTrigger>
+
+                    <!-- TYPE 3: WARNING / INFO -->
+                    <DataTrigger Binding="{Binding NotificationType}" Value="Warning">
+                        <Setter Property="Background">
+                            <Setter.Value>
+                                <LinearGradientBrush StartPoint="0,0.5" EndPoint="1,0.5">
+                                    <GradientStop Color="#6D3F03" Offset="0"/>
+                                    <GradientStop Color="#FFA023" Offset="1"/>
+                                </LinearGradientBrush>
+                            </Setter.Value>
+                        </Setter>
+                        <Setter Property="BorderBrush" Value="#FFA023"/>
+                    </DataTrigger>
+
+                    <!-- TYPE 4: LOADING -->
+                    <DataTrigger Binding="{Binding NotificationType}" Value="Loading">
+                        <Setter Property="Background">
+                            <Setter.Value>
+                                <LinearGradientBrush StartPoint="0,0.5" EndPoint="1,0.5">
+                                    <GradientStop Color="#5E5E5E" Offset="0"/>
+                                    <GradientStop Color="#FFFFFF" Offset="1"/>
+                                </LinearGradientBrush>
+                            </Setter.Value>
+                        </Setter>
+                        <Setter Property="BorderBrush" Value="#FFFFFF"/>
+                    </DataTrigger>
+                </Style.Triggers>
+            </Style>
+        </Border.Style>
+
+        <Border.RenderTransform>
+            <TranslateTransform x:Name="Translation" Y="15"/>
+        </Border.RenderTransform>
+
+        <Grid VerticalAlignment="Center">
+            <Grid.ColumnDefinitions>
+                <!-- Icon stays on the RIGHT side, text stays on the LEFT side. RTL FlowDirection means Index 0 is Right, Index 1 is Left -->
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <!-- SVG Icon stays on the right (Index 0 of grid with RTL) -->
+            <Grid x:Name="IconContainer" Grid.Column="0" Width="28" Height="28" Margin="0,0,18,0">
+                <svgc:SvgViewbox x:Name="IconViewbox" Width="28" Height="28"
+                                 HorizontalAlignment="Center" VerticalAlignment="Center" />
+            </Grid>
+
+            <!-- Message centered vertically, Peyda Medium, 18px size, White, RTL truncated with ... -->
+            <TextBlock x:Name="MessageText" Grid.Column="1" Text="{Binding Message}"
+                       FontFamily="{StaticResource PeydaMedium}" FontSize="18" Foreground="White"
+                       VerticalAlignment="Center" HorizontalAlignment="Right"
+                       TextWrapping="NoWrap" TextTrimming="CharacterEllipsis"/>
+        </Grid>
+    </Border>
+</UserControl>

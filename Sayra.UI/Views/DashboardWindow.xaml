@@ -6,6 +6,7 @@
         xmlns:local="clr-namespace:Sayra.UI.Views"
         xmlns:c="clr-namespace:Sayra.UI.Controls"
         xmlns:components="clr-namespace:Sayra.UI.Views.Components"
+        xmlns:suis="clr-namespace:Sayra.UI.Services"
         mc:Ignorable="d"
         Title="SAYRA Dashboard"
         Height="1080" Width="1920"
@@ -17,6 +18,7 @@
         FlowDirection="LeftToRight">
 
     <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
         <!-- Fade-in animation for Window content -->
         <Storyboard x:Key="WindowFadeInStoryboard">
             <DoubleAnimation Storyboard.TargetProperty="Opacity" From="0" To="1" Duration="0:0:1.0" />
@@ -179,6 +181,13 @@
                             HorizontalAlignment="Stretch" />
                 </Grid>
             </Grid>
+        </Grid>
+
+        <!-- Floating Horizontal Notification Card -->
+        <Grid VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="0,0,0,40" Panel.ZIndex="1000" IsHitTestVisible="True"
+              DataContext="{Binding Source={x:Static suis:NotificationService.Instance}}"
+              Visibility="{Binding IsNotificationVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <c:NotificationCard DataContext="{Binding CurrentNotification}" />
         </Grid>
     </Grid>
 </Window>
