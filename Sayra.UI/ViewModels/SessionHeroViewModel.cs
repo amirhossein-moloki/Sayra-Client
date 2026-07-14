@@ -15,14 +15,31 @@ namespace Sayra.UI.ViewModels
         [ObservableProperty]
         private string _hourlyRate = "120,000 تومان";
 
+        [ObservableProperty]
+        private string _startTime = "12:00";
+
         private DispatcherTimer? _timer;
         private TimeSpan _elapsedTime = new TimeSpan(0, 58, 16);
 
         public SessionHeroViewModel()
         {
             Log("Constructor START");
+            CalculateStartTime();
             InitializeTimer();
             Log("Constructor END");
+        }
+
+        private void CalculateStartTime()
+        {
+            try
+            {
+                var start = DateTime.Now.Subtract(_elapsedTime);
+                StartTime = start.ToString(@"HH\:mm");
+            }
+            catch (Exception ex)
+            {
+                Log($"Failed to calculate start time: {ex}");
+            }
         }
 
         private void InitializeTimer()
