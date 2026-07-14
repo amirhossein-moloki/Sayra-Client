@@ -101,6 +101,24 @@ namespace Sayra.UI.Views
             }
         }
 
+        public void OpenGameDetail(Sayra.UI.Models.GameItem game)
+        {
+            try
+            {
+                Log($"Opening detail screen for game: {game.Title}");
+                var detailWindow = new Sayra.UI.Views.GameDetailWindow(game, this);
+                detailWindow.Owner = this;
+                this.Hide();
+                detailWindow.ShowDialog();
+                this.Show();
+            }
+            catch (Exception ex)
+            {
+                Log($"Failed to open GameDetailWindow: {ex.Message}");
+                GlobalExceptionHandler.HandleException(ex, "Open Game Detail Window");
+            }
+        }
+
         private void DashboardWindow_Closed(object? sender, EventArgs e)
         {
             Log("Closed Event - Shutting down application...");

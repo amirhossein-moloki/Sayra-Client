@@ -7,7 +7,7 @@
              x:Name="self"
              Width="188" Height="288">
 
-    <Grid MouseEnter="Card_MouseEnter" MouseLeave="Card_MouseLeave">
+    <Grid MouseEnter="Card_MouseEnter" MouseLeave="Card_MouseLeave" PreviewMouseLeftButtonUp="Card_PreviewMouseLeftButtonUp">
         <!-- Root Card Border: Background: #1F1F23, Border: #252528, CornerRadius: 5px -->
         <Border x:Name="CardBorder"
                 BorderThickness="1.5"
