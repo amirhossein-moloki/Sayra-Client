@@ -4,52 +4,52 @@
     <!-- Black Ops One Font Family for Timer and specific English accents -->
     <FontFamily x:Key="BlackOpsOne">
         <FontFamily.FamilyMaps>
-            <FontFamilyMap Target="pack://application:,,,/Fonts/BlackOpsOne-Regular.ttf#Black Ops One" />
+            <FontFamilyMap Target="pack://application:,,,/Sayra.UI;component/Fonts/BlackOpsOne-Regular.ttf#Black Ops One" />
         </FontFamily.FamilyMaps>
     </FontFamily>
 
     <!-- Peyda Bold: به فایل Peyda-Bold.ttf اشاره می‌کند که نام داخلی آن Peyda است -->
     <FontFamily x:Key="PeydaBold">
         <FontFamily.FamilyMaps>
-            <FontFamilyMap Unicode="0000-00FF" Target="pack://application:,,,/Fonts/BlackOpsOne-Regular.ttf#Black Ops One" />
-            <FontFamilyMap Unicode="0600-06FF, FB50-FDFF, FE70-FEFE" Target="pack://application:,,,/Fonts/Peyda-Bold.ttf#Peyda" />
-            <FontFamilyMap Target="pack://application:,,,/Fonts/Peyda-Bold.ttf#Peyda" />
+            <FontFamilyMap Unicode="0000-00FF" Target="pack://application:,,,/Sayra.UI;component/Fonts/BlackOpsOne-Regular.ttf#Black Ops One" />
+            <FontFamilyMap Unicode="0600-06FF, FB50-FDFF, FE70-FEFE" Target="pack://application:,,,/Sayra.UI;component/Fonts/Peyda-Bold.ttf#Peyda" />
+            <FontFamilyMap Target="pack://application:,,,/Sayra.UI;component/Fonts/Peyda-Bold.ttf#Peyda" />
         </FontFamily.FamilyMaps>
     </FontFamily>
 
     <!-- Peyda Medium: به فایل Peyda-Medium.ttf اشاره می‌کند که نام داخلی آن Peyda Med است -->
     <FontFamily x:Key="PeydaMedium">
         <FontFamily.FamilyMaps>
-            <FontFamilyMap Unicode="0000-00FF" Target="pack://application:,,,/Fonts/BlackOpsOne-Regular.ttf#Black Ops One" />
-            <FontFamilyMap Unicode="0600-06FF, FB50-FDFF, FE70-FEFE" Target="pack://application:,,,/Fonts/Peyda-Medium.ttf#Peyda Med" />
-            <FontFamilyMap Target="pack://application:,,,/Fonts/Peyda-Medium.ttf#Peyda Med" />
+            <FontFamilyMap Unicode="0000-00FF" Target="pack://application:,,,/Sayra.UI;component/Fonts/BlackOpsOne-Regular.ttf#Black Ops One" />
+            <FontFamilyMap Unicode="0600-06FF, FB50-FDFF, FE70-FEFE" Target="pack://application:,,,/Sayra.UI;component/Fonts/Peyda-Medium.ttf#Peyda Med" />
+            <FontFamilyMap Target="pack://application:,,,/Sayra.UI;component/Fonts/Peyda-Medium.ttf#Peyda Med" />
         </FontFamily.FamilyMaps>
     </FontFamily>
 
     <!-- Peyda Thin -->
     <FontFamily x:Key="PeydaThin">
         <FontFamily.FamilyMaps>
-            <FontFamilyMap Unicode="0000-00FF" Target="pack://application:,,,/Fonts/BlackOpsOne-Regular.ttf#Black Ops One" />
-            <FontFamilyMap Unicode="0600-06FF, FB50-FDFF, FE70-FEFE" Target="pack://application:,,,/Fonts/Peyda-Thin.ttf#Peyda Thin" />
-            <FontFamilyMap Target="pack://application:,,,/Fonts/Peyda-Thin.ttf#Peyda Thin" />
+            <FontFamilyMap Unicode="0000-00FF" Target="pack://application:,,,/Sayra.UI;component/Fonts/BlackOpsOne-Regular.ttf#Black Ops One" />
+            <FontFamilyMap Unicode="0600-06FF, FB50-FDFF, FE70-FEFE" Target="pack://application:,,,/Sayra.UI;component/Fonts/Peyda-Thin.ttf#Peyda Thin" />
+            <FontFamilyMap Target="pack://application:,,,/Sayra.UI;component/Fonts/Peyda-Thin.ttf#Peyda Thin" />
         </FontFamily.FamilyMaps>
     </FontFamily>
 
     <!-- Peyda Black -->
     <FontFamily x:Key="PeydaBlack">
         <FontFamily.FamilyMaps>
-            <FontFamilyMap Unicode="0000-00FF" Target="pack://application:,,,/Fonts/BlackOpsOne-Regular.ttf#Black Ops One" />
-            <FontFamilyMap Unicode="0600-06FF, FB50-FDFF, FE70-FEFE" Target="pack://application:,,,/Fonts/Peyda-Black.ttf#Peyda Black" />
-            <FontFamilyMap Target="pack://application:,,,/Fonts/Peyda-Black.ttf#Peyda Black" />
+            <FontFamilyMap Unicode="0000-00FF" Target="pack://application:,,,/Sayra.UI;component/Fonts/BlackOpsOne-Regular.ttf#Black Ops One" />
+            <FontFamilyMap Unicode="0600-06FF, FB50-FDFF, FE70-FEFE" Target="pack://application:,,,/Sayra.UI;component/Fonts/Peyda-Black.ttf#Peyda Black" />
+            <FontFamilyMap Target="pack://application:,,,/Sayra.UI;component/Fonts/Peyda-Black.ttf#Peyda Black" />
         </FontFamily.FamilyMaps>
     </FontFamily>
 
     <!-- Peyda Light -->
     <FontFamily x:Key="PeydaLight">
         <FontFamily.FamilyMaps>
-            <FontFamilyMap Unicode="0000-00FF" Target="pack://application:,,,/Fonts/BlackOpsOne-Regular.ttf#Black Ops One" />
-            <FontFamilyMap Unicode="0600-06FF, FB50-FDFF, FE70-FEFE" Target="pack://application:,,,/Fonts/Peyda-Light.ttf#Peyda Light" />
-            <FontFamilyMap Target="pack://application:,,,/Fonts/Peyda-Light.ttf#Peyda Light" />
+            <FontFamilyMap Unicode="0000-00FF" Target="pack://application:,,,/Sayra.UI;component/Fonts/BlackOpsOne-Regular.ttf#Black Ops One" />
+            <FontFamilyMap Unicode="0600-06FF, FB50-FDFF, FE70-FEFE" Target="pack://application:,,,/Sayra.UI;component/Fonts/Peyda-Light.ttf#Peyda Light" />
+            <FontFamilyMap Target="pack://application:,,,/Sayra.UI;component/Fonts/Peyda-Light.ttf#Peyda Light" />
         </FontFamily.FamilyMaps>
     </FontFamily>
 </ResourceDictionary>
