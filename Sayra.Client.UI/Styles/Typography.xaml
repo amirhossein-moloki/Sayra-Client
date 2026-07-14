@@ -1,6 +1,13 @@
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
+    <!-- Black Ops One Font Family for Timer and specific English accents -->
+    <FontFamily x:Key="BlackOpsOne">
+        <FontFamily.FamilyMaps>
+            <FontFamilyMap Target="pack://application:,,,/Fonts/BlackOpsOne-Regular.ttf#Black Ops One" />
+        </FontFamily.FamilyMaps>
+    </FontFamily>
+
     <!-- Peyda Bold -->
     <FontFamily x:Key="PeydaBold">
         <FontFamily.FamilyMaps>
