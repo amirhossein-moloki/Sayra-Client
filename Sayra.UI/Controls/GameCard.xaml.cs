@@ -193,6 +193,44 @@ namespace Sayra.UI.Controls
             AnimateToState();
         }
 
+        private void Card_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            // Walk the visual tree up from original source to see if we clicked the Play button
+            DependencyObject? obj = e.OriginalSource as DependencyObject;
+            while (obj != null)
+            {
+                if (obj is Button btn)
+                {
+                    // Clicked on the Play Button itself, let the command execute
+                    return;
+                }
+                if (obj == this)
+                {
+                    break;
+                }
+                obj = VisualTreeHelper.GetParent(obj);
+            }
+
+            // Clicked outside the Play Button, navigate to Game Detail!
+            try
+            {
+                Window parentWindow = Window.GetWindow(this);
+                if (parentWindow is Sayra.UI.Views.DashboardWindow dashboard)
+                {
+                    // Map the DataContext which is our GameItem model
+                    if (this.DataContext is Sayra.UI.Models.GameItem gameItem)
+                    {
+                        dashboard.OpenGameDetail(gameItem);
+                        e.Handled = true;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"[GameCard] Navigation to detail failed: {ex.Message}");
+            }
+        }
+
         private void AnimateToState(bool immediate = false)
         {
             double durationSec = immediate ? 0.0 : 0.25;

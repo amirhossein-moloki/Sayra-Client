@@ -1,0 +1,235 @@
+<Window x:Class="Sayra.UI.Views.GameDetailWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:c="clr-namespace:Sayra.UI.Controls"
+        xmlns:suis="clr-namespace:Sayra.UI.Services"
+        mc:Ignorable="d"
+        Title="Game Details"
+        Height="1080" Width="1920"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Background="Transparent"
+        WindowState="Maximized"
+        WindowStartupLocation="CenterScreen"
+        FlowDirection="LeftToRight">
+
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+
+        <!-- Fade-in animation for Window content -->
+        <Storyboard x:Key="WindowFadeInStoryboard">
+            <DoubleAnimation Storyboard.TargetProperty="Opacity" From="0" To="1" Duration="0:0:0.6" />
+        </Storyboard>
+
+        <!-- Glassmorphic Action Button Style -->
+        <Style x:Key="GlassDetailButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Height" Value="50"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="ButtonBorder"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="12">
+                            <Border.Effect>
+                                <DropShadowEffect x:Name="GlowEffect" Color="#ffff3d" BlurRadius="10" ShadowDepth="0" Opacity="0"/>
+                            </Border.Effect>
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="ButtonBorder" Property="Background" Value="#1AFFFFFF"/>
+                                <Setter TargetName="ButtonBorder" Property="BorderBrush" Value="#80FFFFFF"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="ButtonBorder" Property="Background" Value="#33FFFFFF"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
+    <Window.Triggers>
+        <EventTrigger RoutedEvent="Window.Loaded">
+            <BeginStoryboard Storyboard="{StaticResource WindowFadeInStoryboard}" />
+        </EventTrigger>
+    </Window.Triggers>
+
+    <Grid x:Name="RootGrid" Background="#08090D">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" /> <!-- Top Bar Row -->
+                <RowDefinition Height="*" />    <!-- Content Row -->
+            </Grid.RowDefinitions>
+
+            <!-- EXACT SAME HEADER: Top bar reusable component -->
+            <c:TopBar Grid.Row="0" />
+
+            <!-- CONTENT BODY (Persian RTL Flow) -->
+            <Grid Grid.Row="1" FlowDirection="RightToLeft" Margin="60,40,60,60">
+                <Grid.ColumnDefinitions>
+                    <!-- Left: Large Cover Art Display & Main Launch Action -->
+                    <ColumnDefinition Width="Auto" />
+                    <!-- Spacer -->
+                    <ColumnDefinition Width="60" />
+                    <!-- Right: Info Panel & Metadata details -->
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <!-- LEFT PANEL: Cover Card & Large Launch Trigger -->
+                <StackPanel Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center">
+                    <!-- High-fidelity large Cover card -->
+                    <Border CornerRadius="16" Width="380" Height="580" BorderThickness="1.5" BorderBrush="{DynamicResource BorderBrush}" Background="{DynamicResource SecondaryBackgroundBrush}" ClipToBounds="True">
+                        <Border.Effect>
+                            <DropShadowEffect Color="#000000" BlurRadius="30" ShadowDepth="10" Opacity="0.7" />
+                        </Border.Effect>
+                        <Grid>
+                            <!-- Gamepad Fallback Vector Graphic -->
+                            <Grid Background="#10FFFFFF">
+                                <Path Data="M21,6H3C1.9,6 1,6.9 1,8V16C1,17.1 1.9,18 3,18H21C22.1,18 23,17.1 23,16V8C23,6.9 22.1,6 21,6M6,15H4V13H2V11H4V9H6V11H8V13H6V15M15,11A1.5,1.5 0 1,1 16.5,9.5A1.5,1.5 0 0,1 15,11M19,14A1.5,1.5 0 1,1 20.5,12.5A1.5,1.5 0 0,1 19,14Z"
+                                      Fill="#33FFFFFF"
+                                      Width="80" Height="80"
+                                      Stretch="Uniform"
+                                      HorizontalAlignment="Center"
+                                      VerticalAlignment="Center" />
+                            </Grid>
+                            <!-- Cover Artwork -->
+                            <Image x:Name="DetailCoverImage" Stretch="UniformToFill" ImageFailed="DetailCoverImage_ImageFailed"/>
+
+                            <!-- Premium dynamic glow overlay -->
+                            <Border>
+                                <Border.Background>
+                                    <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
+                                        <GradientStop Color="#00000000" Offset="0.0" />
+                                        <GradientStop Color="#77101014" Offset="0.7" />
+                                        <GradientStop Color="#F3101014" Offset="1.0" />
+                                    </LinearGradientBrush>
+                                </Border.Background>
+                            </Border>
+                        </Grid>
+                    </Border>
+
+                    <!-- Large Play/Launch Action Button with Neon Styling -->
+                    <Button x:Name="PlayGameBtn"
+                            Click="PlayGame_Click"
+                            Margin="0,30,0,0"
+                            Width="380" Height="60"
+                            Style="{StaticResource GameCardPlayButtonStyle}">
+                        <Button.Resources>
+                            <!-- Override corner radius to fit larger size -->
+                            <Style TargetType="Border">
+                                <Setter Property="CornerRadius" Value="30"/>
+                            </Style>
+                        </Button.Resources>
+                        <TextBlock Text="شروع بازی" FontFamily="{StaticResource PeydaBold}" FontSize="18"/>
+                    </Button>
+                </StackPanel>
+
+                <!-- RIGHT PANEL: Descriptive Metadata and details -->
+                <Grid Grid.Column="2" VerticalAlignment="Center">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" /> <!-- Top Back Button -->
+                        <RowDefinition Height="30" />   <!-- Spacer -->
+                        <RowDefinition Height="Auto" /> <!-- Title / Subtitle Header -->
+                        <RowDefinition Height="20" />   <!-- Spacer -->
+                        <RowDefinition Height="Auto" /> <!-- Divider -->
+                        <RowDefinition Height="30" />   <!-- Spacer -->
+                        <RowDefinition Height="Auto" /> <!-- Information Meta Rows -->
+                        <RowDefinition Height="40" />   <!-- Spacer -->
+                        <RowDefinition Height="*" />    <!-- Description Text Area -->
+                    </Grid.RowDefinitions>
+
+                    <!-- Premium Glassmorphic Back Button -->
+                    <Button Grid.Row="0"
+                            Style="{StaticResource GlassDetailButtonStyle}"
+                            Click="Back_Click"
+                            HorizontalAlignment="Right"
+                            Width="160">
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <Path Data="M10 19l-7-7m0 0l7-7m-7 7h18"
+                                  Stroke="{DynamicResource DarkerWhiteBrush}"
+                                  StrokeThickness="2"
+                                  Width="16" Height="16"
+                                  Stretch="Uniform"
+                                  Margin="0,0,10,0"/>
+                            <TextBlock Text="بازگشت"
+                                       FontFamily="{StaticResource PeydaMedium}"
+                                       FontSize="15"
+                                       Foreground="{DynamicResource DarkerWhiteBrush}"/>
+                        </StackPanel>
+                    </Button>
+
+                    <!-- Title / Subtitle Header Layout -->
+                    <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+                        <!-- Yellow Accent Accent Bar -->
+                        <Border Width="6" Height="48" Background="#F5FF00" CornerRadius="3" Margin="0,0,16,0"/>
+                        <StackPanel VerticalAlignment="Center">
+                            <TextBlock x:Name="DetailTitle"
+                                       Text="عنوان بازی"
+                                       FontFamily="{StaticResource PeydaBold}"
+                                       FontSize="42"
+                                       Foreground="White" />
+                            <TextBlock x:Name="DetailGenre"
+                                       Text="دسته بندی"
+                                       FontFamily="{StaticResource PeydaLight}"
+                                       FontSize="18"
+                                       Foreground="{DynamicResource SecondaryWhiteBrush}"
+                                       Margin="0,4,0,0"/>
+                        </StackPanel>
+                    </StackPanel>
+
+                    <!-- Subtle Horizontal Divider -->
+                    <Border Grid.Row="4" Height="1" Background="{DynamicResource BorderBrush}" Opacity="0.5" HorizontalAlignment="Stretch"/>
+
+                    <!-- Game Information Badges and Key/Value Metadata -->
+                    <WrapPanel Grid.Row="6" Orientation="Horizontal" HorizontalAlignment="Right">
+                        <!-- Status Badge -->
+                        <Border x:Name="StatusBadgeBorder"
+                                BorderThickness="1.2"
+                                CornerRadius="12"
+                                Padding="16,8"
+                                Margin="0,0,15,10"
+                                Background="#1014BE78"
+                                BorderBrush="{DynamicResource SuccessBrush}">
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                <Ellipse x:Name="StatusBadgeDot" Width="8" Height="8" Fill="{DynamicResource SuccessBrush}" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                                <TextBlock x:Name="DetailStatus"
+                                           Text="وضعیت"
+                                           FontFamily="{StaticResource PeydaMedium}"
+                                           FontSize="14"
+                                           Foreground="{DynamicResource SuccessBrush}"
+                                           VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Border>
+                    </WrapPanel>
+
+                    <!-- Description Segment -->
+                    <StackPanel Grid.Row="8" HorizontalAlignment="Right" Width="800">
+                        <TextBlock Text="درباره بازی"
+                                   FontFamily="{StaticResource PeydaBold}"
+                                   FontSize="20"
+                                   Foreground="White"
+                                   Margin="0,0,0,15"/>
+                        <TextBlock x:Name="DetailDescription"
+                                   Text="توضیحات تکمیلی و خلاصه بازی در این قسمت قرار می‌گیرد."
+                                   FontFamily="{StaticResource PeydaLight}"
+                                   FontSize="16"
+                                   Foreground="{DynamicResource DarkerWhiteBrush}"
+                                   TextWrapping="Wrap"
+                                   LineHeight="28"
+                                   HorizontalAlignment="Right" />
+                    </StackPanel>
+                </Grid>
+            </Grid>
+        </Grid>
+    </Grid>
+</Window>
