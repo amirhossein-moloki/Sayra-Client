@@ -22,6 +22,7 @@
   <ItemGroup>
     <ProjectReference Include="..\SayraClient\SayraClient.csproj" />
     <ProjectReference Include="..\Sayra.Client.Shared\Sayra.Client.Shared.csproj" />
+    <ProjectReference Include="..\Sayra.Client.GameLibrary\Sayra.Client.GameLibrary.csproj" />
   </ItemGroup>
 
 </Project>
