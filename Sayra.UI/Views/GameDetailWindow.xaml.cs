@@ -29,6 +29,7 @@ namespace Sayra.UI.Views
             // Bind values directly
             DetailTitle.Text = _game.Title;
             DetailGenre.Text = _game.Genre;
+            BreadcrumbGameTitle.Text = _game.Title;
             DetailDescription.Text = string.IsNullOrEmpty(_game.Description)
                 ? "توضیحاتی برای این بازی ثبت نشده است."
                 : _game.Description;
@@ -66,9 +67,6 @@ namespace Sayra.UI.Views
                     DetailStatus.Text = "آماده بازی";
                 }
             }
-
-            // Update Play button state
-            PlayGameBtn.IsEnabled = _game.IsAvailable;
 
             // Update large artwork
             UpdateCoverImage();
@@ -139,6 +137,25 @@ namespace Sayra.UI.Views
         private void Back_Click(object sender, RoutedEventArgs e)
         {
             this.Close();
+        }
+
+        private async void EndSession_Click(object sender, RoutedEventArgs e)
+        {
+            var result = MessageBox.Show(
+                "آیا مطمئن هستید که می‌خواهید خارج شوید؟",
+                "سیستم سایرا",
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Question,
+                MessageBoxResult.No,
+                MessageBoxOptions.RtlReading | MessageBoxOptions.RightAlign
+            );
+
+            if (result == MessageBoxResult.Yes)
+            {
+                Sayra.UI.Services.NotificationService.Instance.ShowLoading("در حال خروج از سیستم...");
+                await System.Threading.Tasks.Task.Delay(1000);
+                Application.Current.Shutdown();
+            }
         }
 
         private void PlayGame_Click(object sender, RoutedEventArgs e)
