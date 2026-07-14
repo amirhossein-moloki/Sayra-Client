@@ -5,186 +5,669 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Sayra.UI.Views"
         xmlns:c="clr-namespace:Sayra.UI.Controls"
-        xmlns:components="clr-namespace:Sayra.UI.Views.Components"
+        xmlns:vm="clr-namespace:Sayra.UI.ViewModels"
         xmlns:suis="clr-namespace:Sayra.UI.Services"
         mc:Ignorable="d"
-        Title="SAYRA Dashboard"
+        Title="SAYRA - Administrative Console"
         Height="1080" Width="1920"
         WindowStyle="None"
         AllowsTransparency="True"
         Background="Transparent"
         WindowState="Maximized"
-        WindowStartupLocation="CenterScreen"
-        FlowDirection="LeftToRight">
+        WindowStartupLocation="CenterScreen">
 
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
-        <!-- Fade-in animation for Window content -->
-        <Storyboard x:Key="WindowFadeInStoryboard">
-            <DoubleAnimation Storyboard.TargetProperty="Opacity" From="0" To="1" Duration="0:0:1.0" />
-        </Storyboard>
 
-        <!-- Premium End Session Button Style -->
-        <Style x:Key="EndSessionButtonStyle" TargetType="Button">
+        <!-- Premium Navigation Item Style -->
+        <Style x:Key="ConsoleNavItemStyle" TargetType="ListBoxItem">
             <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="BorderBrush" Value="{DynamicResource RedBrush}"/>
-            <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="Height" Value="50"/>
-            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="10,8"/>
             <Setter Property="Template">
                 <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Border x:Name="ButtonBorder"
+                    <ControlTemplate TargetType="ListBoxItem">
+                        <Border x:Name="ItemBorder"
                                 Background="{TemplateBinding Background}"
                                 BorderBrush="{TemplateBinding BorderBrush}"
-                                BorderThickness="{TemplateBinding BorderThickness}"
-                                CornerRadius="12">
-                            <Border.Effect>
-                                <DropShadowEffect x:Name="GlowEffect" Color="#F46B6B" BlurRadius="10" ShadowDepth="0" Opacity="0"/>
-                            </Border.Effect>
-                            <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto" />
-                                    <ColumnDefinition Width="10" />
-                                    <ColumnDefinition Width="Auto" />
-                                </Grid.ColumnDefinitions>
-
-                                <!-- Specified End Session Button Icon with stroke style, 1.5 thickness, and transparent fill -->
-                                <Path Grid.Column="0"
-                                      Data="{DynamicResource EndSessionIconGeometry}"
-                                      Stroke="{DynamicResource RedBrush}"
-                                      StrokeThickness="1.5"
-                                      StrokeStartLineCap="Round"
-                                      StrokeEndLineCap="Round"
-                                      Fill="Transparent"
-                                      Width="16" Height="16"
-                                      Stretch="Uniform"
-                                      VerticalAlignment="Center"/>
-
-                                <!-- Text with Peyda Bold, Numbers/Buttons -->
-                                <TextBlock Grid.Column="2"
-                                           Text="پایان دادن به استفاده"
-                                           Foreground="{DynamicResource RedBrush}"
-                                           FontFamily="{StaticResource PeydaBold}"
-                                           FontSize="15"
-                                           VerticalAlignment="Center"/>
-                            </Grid>
+                                BorderThickness="3,0,0,0"
+                                Margin="0,2"
+                                Padding="{TemplateBinding Padding}"
+                                CornerRadius="0">
+                            <ContentPresenter VerticalAlignment="Center"/>
                         </Border>
                         <ControlTemplate.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="ButtonBorder" Property="Background" Value="#1AF46B6B"/>
-                                <Setter TargetName="ButtonBorder" Property="BorderThickness" Value="1.5"/>
-                                <Trigger.EnterActions>
-                                    <BeginStoryboard>
-                                        <Storyboard>
-                                            <DoubleAnimation Storyboard.TargetName="GlowEffect"
-                                                             Storyboard.TargetProperty="Opacity"
-                                                             To="0.6" Duration="0:0:0.2"/>
-                                            <DoubleAnimation Storyboard.TargetName="GlowEffect"
-                                                             Storyboard.TargetProperty="BlurRadius"
-                                                             To="15" Duration="0:0:0.2"/>
-                                        </Storyboard>
-                                    </BeginStoryboard>
-                                </Trigger.EnterActions>
-                                <Trigger.ExitActions>
-                                    <BeginStoryboard>
-                                        <Storyboard>
-                                            <DoubleAnimation Storyboard.TargetName="GlowEffect"
-                                                             Storyboard.TargetProperty="Opacity"
-                                                             To="0.0" Duration="0:0:0.2"/>
-                                        </Storyboard>
-                                    </BeginStoryboard>
-                                </Trigger.ExitActions>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter TargetName="ItemBorder" Property="Background" Value="#15F7E733"/>
+                                <Setter TargetName="ItemBorder" Property="BorderBrush" Value="#F7E733"/>
                             </Trigger>
-                            <Trigger Property="IsPressed" Value="True">
-                                <Setter TargetName="ButtonBorder" Property="Background" Value="#33F46B6B"/>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="ItemBorder" Property="Background" Value="#0AFFFFFF"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
         </Style>
+
+        <!-- Premium Dense Action Button Style -->
+        <Style x:Key="ConsoleActionButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="#171A20"/>
+            <Setter Property="Foreground" Value="#E1E1E6"/>
+            <Setter Property="BorderBrush" Value="#2B3039"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="12,8"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="FontFamily" Value="{StaticResource PeydaMedium}"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="BtnBorder"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="6">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="BtnBorder" Property="Background" Value="#1F222B"/>
+                                <Setter TargetName="BtnBorder" Property="BorderBrush" Value="#F7E733"/>
+                                <Setter Property="Foreground" Value="White"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="BtnBorder" Property="Background" Value="#252528"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Primary Accent Save Button Style -->
+        <Style x:Key="SaveButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="#F7E733"/>
+            <Setter Property="Foreground" Value="Black"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="15,10"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="FontFamily" Value="{StaticResource PeydaBold}"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="BtnBorder"
+                                Background="{TemplateBinding Background}"
+                                CornerRadius="8">
+                            <Border.Effect>
+                                <DropShadowEffect x:Name="Glow" Color="#F7E733" BlurRadius="10" ShadowDepth="0" Opacity="0"/>
+                            </Border.Effect>
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="BtnBorder" Property="Background" Value="#FFFF5F"/>
+                                <Trigger.EnterActions>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <DoubleAnimation Storyboard.TargetName="Glow" Storyboard.TargetProperty="Opacity" To="0.5" Duration="0:0:0.2"/>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </Trigger.EnterActions>
+                                <Trigger.ExitActions>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <DoubleAnimation Storyboard.TargetName="Glow" Storyboard.TargetProperty="Opacity" To="0.0" Duration="0:0:0.2"/>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </Trigger.ExitActions>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="BtnBorder" Property="Background" Value="#E0D12E"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Professional DataGrid Style -->
+        <Style x:Key="ConsoleDataGridStyle" TargetType="DataGrid">
+            <Setter Property="Background" Value="#171A20"/>
+            <Setter Property="BorderBrush" Value="#2B3039"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="RowBackground" Value="#171A20"/>
+            <Setter Property="AlternatingRowBackground" Value="#1D2027"/>
+            <Setter Property="GridLinesVisibility" Value="All"/>
+            <Setter Property="HorizontalGridLinesBrush" Value="#252528"/>
+            <Setter Property="VerticalGridLinesBrush" Value="#252528"/>
+            <Setter Property="AutoGenerateColumns" Value="False"/>
+            <Setter Property="CanUserAddRows" Value="False"/>
+            <Setter Property="CanUserDeleteRows" Value="False"/>
+            <Setter Property="IsReadOnly" Value="True"/>
+            <Setter Property="SelectionMode" Value="Single"/>
+            <Setter Property="HeadersVisibility" Value="Column"/>
+            <Setter Property="RowHeaderWidth" Value="0"/>
+        </Style>
+
+        <Style x:Key="ConsoleColumnHeaderStyle" TargetType="DataGridColumnHeader">
+            <Setter Property="Background" Value="#252528"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontFamily" Value="{StaticResource PeydaBold}"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Padding" Value="10,12"/>
+            <Setter Property="BorderThickness" Value="0,0,1,1"/>
+            <Setter Property="BorderBrush" Value="#2B3039"/>
+        </Style>
+
+        <Style x:Key="ConsoleCellPlaceholderStyle" TargetType="DataGridCell">
+            <Setter Property="Foreground" Value="#E1E1E6"/>
+            <Setter Property="FontFamily" Value="{StaticResource PeydaMedium}"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Padding" Value="10,10"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="DataGridCell">
+                        <Border Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="Background" Value="#2A2D35"/>
+                    <Setter Property="Foreground" Value="#F7E733"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
     </Window.Resources>
 
-    <Window.Triggers>
-        <EventTrigger RoutedEvent="Window.Loaded">
-            <BeginStoryboard Storyboard="{StaticResource WindowFadeInStoryboard}" />
-        </EventTrigger>
-    </Window.Triggers>
+    <Grid Background="#0E1015">
+        <!-- Main Layout with rows for Title Bar and Console Workspace -->
+        <Grid.RowDefinitions>
+            <RowDefinition Height="50" /> <!-- Window Header -->
+            <RowDefinition Height="*" />  <!-- Workspace Area -->
+        </Grid.RowDefinitions>
 
-    <Grid x:Name="RootGrid" Background="#08090D">
-        <!-- 2. MAIN LAYOUT GRID -->
-        <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" /> <!-- Top Bar Row -->
-                <RowDefinition Height="Auto" /> <!-- Session Hero Row -->
-                <RowDefinition Height="*" />    <!-- Content Row -->
-            </Grid.RowDefinitions>
+        <!-- 1. ADMINISTRATIVE TITLE BAR -->
+        <Grid Grid.Row="0" Background="#171A20" SnapsToDevicePixels="True">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
 
-            <!-- HEADER LAYER: Top bar reusable component -->
-            <c:TopBar Grid.Row="0" />
+            <!-- Brand Logo & Context Indicator -->
+            <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center" Margin="20,0,0,0">
+                <TextBlock Text="SAYRA CLIENT"
+                           FontFamily="{StaticResource PeydaBlack}"
+                           FontSize="18"
+                           Foreground="#F7E733"
+                           VerticalAlignment="Center" />
+                <Border Width="1" Height="20" Background="#2B3039" Margin="15,0" />
+                <TextBlock Text="ADMINISTRATIVE WORKSPACE"
+                           FontFamily="{StaticResource PeydaBold}"
+                           FontSize="14"
+                           Foreground="#9A9A9A"
+                           VerticalAlignment="Center" />
+            </StackPanel>
 
-            <!-- SESSION HERO PANEL: Full width gaming banner directly below header -->
-            <components:SessionHero x:Name="SessionHeroCtrl" Grid.Row="1" Height="240" Margin="0" />
+            <!-- Server Connection Indicator / Global Actions -->
+            <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,20,0">
+                <Border Background="#14BE78" Width="8" Height="8" CornerRadius="4" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                <TextBlock Text="Local Client Online"
+                           FontFamily="{StaticResource PeydaMedium}"
+                           FontSize="12"
+                           Foreground="#E1E1E6"
+                           VerticalAlignment="Center" Margin="0,0,20,0"/>
 
-            <!-- CONTENT ROW: Prepared structure for layout sections (Games, Hardware) -->
-            <Grid Grid.Row="2" Margin="30,20,30,30">
-                <Grid.ColumnDefinitions>
-                    <!-- Column 0: Left Game Navigation Sidebar (Fixed 300px width) -->
-                    <ColumnDefinition Width="Auto" />
+                <!-- Logout / Exit Console button -->
+                <Button Style="{StaticResource ConsoleActionButtonStyle}"
+                        Click="Exit_Click"
+                        Padding="15,6"
+                        Background="#2B1B1B"
+                        BorderBrush="#F46B6B"
+                        Foreground="#F46B6B"
+                        Content="خروج از کنسول مدیریت" />
+            </StackPanel>
+        </Grid>
 
-                    <!-- Column 1: Middle/Center Games Library Area (Stretches to fill remaining space) -->
-                    <ColumnDefinition Width="*" />
+        <!-- 2. CONSOLE WORKSPACE -->
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <!-- Column 0: Left minimal navigation tree/sidebar (260px) -->
+                <ColumnDefinition Width="260" />
 
-                    <!-- Column 2: Right Hardware System Detail Panel Area (Fixed 300px width) -->
-                    <ColumnDefinition Width="Auto" />
-                </Grid.ColumnDefinitions>
+                <!-- Column 1: Center dominant table workspace (Stretches) -->
+                <ColumnDefinition Width="*" />
 
-                <!-- Left Sidebar Grid Column -->
-                <Grid Grid.Column="0" Margin="0,0,15,0">
-                    <components:AdPanel x:Name="AdPanelCtrl" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="0,24,0,0" />
-                </Grid>
+                <!-- Column 2: Right detailed property inspector (380px) -->
+                <ColumnDefinition Width="380" />
+            </Grid.ColumnDefinitions>
 
-                <!-- Middle Games Library Grid Column -->
-                <!-- Panel.ZIndex set to 2 to display above adjacent panels if they overlap / scale -->
-                <Grid Grid.Column="1" Margin="15,0,15,0" Panel.ZIndex="2">
-                    <c:GameLibrary x:Name="GameLib" />
-                </Grid>
+            <!-- ================= LEFT NAVIGATION TREE ================= -->
+            <Grid Grid.Column="0" Background="#171A20" SnapsToDevicePixels="True" Margin="0,0,2,0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
 
-                <!-- Right Hardware Area Grid Column -->
-                <!-- Panel.ZIndex set to 1 to stay layered under middle column when overlapped -->
-                <Grid Grid.Column="2" Margin="15,0,0,0" Panel.ZIndex="1">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" /> <!-- Label Area -->
-                        <RowDefinition Height="Auto" /> <!-- HardwarePanel Area -->
-                        <RowDefinition Height="20" />   <!-- Spacing (20px below System Detail) -->
-                        <RowDefinition Height="Auto" /> <!-- End Session Button -->
-                    </Grid.RowDefinitions>
-
-                    <!-- "کتابخانه بازی ها" Label at the top right, aligned with the right edge -->
-                    <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,24,0,20">
-                        <TextBlock Text="کتابخانه بازی ها"
+                <Border Grid.Row="0" Background="#1D2027" Padding="15" BorderThickness="0,0,0,1" BorderBrush="#2B3039">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="Console Root [Local]"
                                    FontFamily="{StaticResource PeydaBold}"
-                                   FontSize="26"
-                                   Foreground="White"
-                                   VerticalAlignment="Center" />
-                        <!-- Subtle yellow accent indicator bar -->
-                        <Border Width="4" Height="26" Background="#F5FF00" CornerRadius="2" Margin="12,0,0,0"/>
+                                   FontSize="13"
+                                   Foreground="#E1E1E6"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- Navigation Hierarchy Mockup tree using Styled ListBox -->
+                <ListBox Grid.Row="1"
+                         Background="Transparent"
+                         BorderThickness="0"
+                         ItemContainerStyle="{StaticResource ConsoleNavItemStyle}"
+                         SelectedIndex="2">
+                    <ListBox.Items>
+                        <!-- Node 1: Administration Root -->
+                        <StackPanel Orientation="Horizontal" Margin="5,0">
+                            <TextBlock Text="📁 Console Root" FontFamily="{StaticResource PeydaBold}" FontSize="13" Foreground="#9A9A9A" />
+                        </StackPanel>
+                        <!-- Node 2: Local Administration sub-folder -->
+                        <StackPanel Orientation="Horizontal" Margin="15,0">
+                            <TextBlock Text="📁 Local Administration" FontFamily="{StaticResource PeydaBold}" FontSize="13" Foreground="#E1E1E6" />
+                        </StackPanel>
+                        <!-- Node 3: Game & Application Manager (Active Workspace) -->
+                        <StackPanel Orientation="Horizontal" Margin="25,0">
+                            <TextBlock Text="🎮 Game &amp; App Manager" FontFamily="{StaticResource PeydaBold}" FontSize="13" Foreground="White" />
+                        </StackPanel>
+                        <!-- Node 4: Configuration & Policies -->
+                        <StackPanel Orientation="Horizontal" Margin="25,0">
+                            <TextBlock Text="⚙️ Client Configuration" FontFamily="{StaticResource PeydaMedium}" FontSize="13" Foreground="#9A9A9A" />
+                        </StackPanel>
+                        <!-- Node 5: Sync Logs -->
+                        <StackPanel Orientation="Horizontal" Margin="25,0">
+                            <TextBlock Text="📄 Sync &amp; Audit Logs" FontFamily="{StaticResource PeydaMedium}" FontSize="13" Foreground="#9A9A9A" />
+                        </StackPanel>
+                        <!-- Node 6: Server Synchronization -->
+                        <StackPanel Orientation="Horizontal" Margin="15,0">
+                            <TextBlock Text="🌐 Server Connection" FontFamily="{StaticResource PeydaMedium}" FontSize="13" Foreground="#9A9A9A" />
+                        </StackPanel>
+                    </ListBox.Items>
+                </ListBox>
+
+                <Border Grid.Row="2" Background="#1D2027" Padding="15" BorderThickness="0,1,0,0" BorderBrush="#2B3039">
+                    <StackPanel>
+                        <TextBlock Text="Console Version 2.8" FontSize="11" FontFamily="{StaticResource PeydaMedium}" Foreground="#9A9A9A"/>
+                        <TextBlock Text="Admin User: Administrator" FontSize="11" FontFamily="{StaticResource PeydaMedium}" Foreground="#9A9A9A" Margin="0,4,0,0"/>
+                    </StackPanel>
+                </Border>
+            </Grid>
+
+            <!-- ================= CENTER TABLE WORKSPACE ================= -->
+            <Grid Grid.Column="1" Background="#0E1015" Padding="20">
+                <Grid.RowDefinitions>
+                    <!-- Toolbar for administrative tasks -->
+                    <RowDefinition Height="Auto" />
+                    <!-- Dominant Workspace Grid Table -->
+                    <RowDefinition Height="*" />
+                    <!-- Bottom table statistics or verification report bar (Dense) -->
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <!-- TOP ADMINISTRATIVE TOOLBAR -->
+                <Grid Grid.Row="0" Margin="0,0,0,15">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Left Aligned Actions (Scan, Add, Sync, etc.) -->
+                    <StackPanel Grid.Column="0" Orientation="Horizontal">
+                        <Button Style="{StaticResource ConsoleActionButtonStyle}"
+                                Command="{Binding ScanGamesCommand}"
+                                Content="🔍 اسکن بازی‌ها"
+                                Margin="0,0,8,0" />
+                        <Button Style="{StaticResource ConsoleActionButtonStyle}"
+                                Command="{Binding ScanAppsCommand}"
+                                Content="🔍 اسکن برنامه‌ها"
+                                Margin="0,0,8,0" />
+                        <Button Style="{StaticResource ConsoleActionButtonStyle}"
+                                Command="{Binding RegisterSoftwareCommand}"
+                                Content="➕ ثبت نرم‌افزار جدید"
+                                Margin="0,0,8,0" />
+                        <Button Style="{StaticResource ConsoleActionButtonStyle}"
+                                Command="{Binding ValidatePathsCommand}"
+                                Content="✅ اعتبارسنجی تمام مسیرها"
+                                Margin="0,0,8,0" />
+                        <Button Style="{StaticResource ConsoleActionButtonStyle}"
+                                Command="{Binding SyncServerCommand}"
+                                Content="🌐 همگام‌سازی با سرور"
+                                Margin="0,0,8,0" />
+                        <Button Style="{StaticResource ConsoleActionButtonStyle}"
+                                Command="{Binding ExportConfigCommand}"
+                                Content="💾 خروجی پیکربندی (JSON)"
+                                Margin="0,0,8,0" />
                     </StackPanel>
 
-                    <!-- Shifted HardwarePanel (System Detail) to align with Game Cards (22px down from top label row) -->
-                    <c:HardwarePanel x:Name="Hardware" Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="0,22,0,0" />
-
-                    <Button Grid.Row="3"
-                            Style="{StaticResource EndSessionButtonStyle}"
-                            Click="EndSession_Click"
-                            HorizontalAlignment="Stretch" />
+                    <!-- Right Aligned Search Field -->
+                    <StackPanel Grid.Column="1" Orientation="Horizontal" Width="280">
+                        <TextBlock Text="🔍" VerticalAlignment="Center" Foreground="#9A9A9A" Margin="0,0,8,0"/>
+                        <TextBox Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
+                                 Height="36"
+                                 Width="250"
+                                 Background="#171A20"
+                                 Foreground="White"
+                                 BorderBrush="#2B3039"
+                                 BorderThickness="1"
+                                 Padding="8,5"
+                                 FontFamily="{StaticResource PeydaMedium}"
+                                 FontSize="13"
+                                 VerticalAlignment="Center">
+                            <TextBox.Resources>
+                                <Style TargetType="{x:Type Border}">
+                                    <Setter Property="CornerRadius" Value="6" />
+                                </Style>
+                            </TextBox.Resources>
+                        </TextBox>
+                    </StackPanel>
                 </Grid>
+
+                <!-- THE DOMINANT CENTER TABLE -->
+                <DataGrid Grid.Row="1"
+                          Style="{StaticResource ConsoleDataGridStyle}"
+                          ColumnHeaderStyle="{StaticResource ConsoleColumnHeaderStyle}"
+                          CellStyle="{StaticResource ConsoleCellPlaceholderStyle}"
+                          ItemsSource="{Binding Apps}"
+                          SelectedItem="{Binding SelectedApp, Mode=TwoWay}"
+                          SnapsToDevicePixels="True">
+                    <DataGrid.Columns>
+                        <!-- Status Toggle (IsEnabled) -->
+                        <DataGridTemplateColumn Header="وضعیت" Width="70" HeaderStyle="{StaticResource ConsoleColumnHeaderStyle}">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <CheckBox IsChecked="{Binding IsEnabled, UpdateSourceTrigger=PropertyChanged}"
+                                              HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+
+                        <!-- ID -->
+                        <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="50" HeaderStyle="{StaticResource ConsoleColumnHeaderStyle}" CellStyle="{StaticResource ConsoleCellPlaceholderStyle}"/>
+
+                        <!-- Name/Title -->
+                        <DataGridTextColumn Header="نام نرم‌افزار / بازی" Binding="{Binding Name}" Width="180" HeaderStyle="{StaticResource ConsoleColumnHeaderStyle}" CellStyle="{StaticResource ConsoleCellPlaceholderStyle}"/>
+
+                        <!-- Type -->
+                        <DataGridTextColumn Header="نوع" Binding="{Binding Type}" Width="100" HeaderStyle="{StaticResource ConsoleColumnHeaderStyle}" CellStyle="{StaticResource ConsoleCellPlaceholderStyle}"/>
+
+                        <!-- Category -->
+                        <DataGridTextColumn Header="دسته‌بندی" Binding="{Binding Category}" Width="120" HeaderStyle="{StaticResource ConsoleColumnHeaderStyle}" CellStyle="{StaticResource ConsoleCellPlaceholderStyle}"/>
+
+                        <!-- Executable Path -->
+                        <DataGridTextColumn Header="مسیر فایل اجرایی" Binding="{Binding ExecutablePath}" Width="*" HeaderStyle="{StaticResource ConsoleColumnHeaderStyle}" CellStyle="{StaticResource ConsoleCellPlaceholderStyle}"/>
+
+                        <!-- Validation State -->
+                        <DataGridTemplateColumn Header="اعتبارسنجی" Width="130" HeaderStyle="{StaticResource ConsoleColumnHeaderStyle}">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5,0">
+                                        <!-- Visual Check / Alert Indicator -->
+                                        <Ellipse Width="8" Height="8" Margin="0,0,6,0">
+                                            <Ellipse.Style>
+                                                <Style TargetType="Ellipse">
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding ValidationState}" Value="Valid Path">
+                                                            <Setter Property="Fill" Value="#14BE78" />
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding ValidationState}" Value="Path Not Found">
+                                                            <Setter Property="Fill" Value="#F46B6B" />
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding ValidationState}" Value="Unverified">
+                                                            <Setter Property="Fill" Value="#FF9F1C" />
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Ellipse.Style>
+                                        </Ellipse>
+                                        <TextBlock Text="{Binding ValidationState}" FontSize="12">
+                                            <TextBlock.Style>
+                                                <Style TargetType="TextBlock">
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding ValidationState}" Value="Valid Path">
+                                                            <Setter Property="Foreground" Value="#14BE78" />
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding ValidationState}" Value="Path Not Found">
+                                                            <Setter Property="Foreground" Value="#F46B6B" />
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding ValidationState}" Value="Unverified">
+                                                            <Setter Property="Foreground" Value="#FF9F1C" />
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </TextBlock.Style>
+                                        </TextBlock>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+
+                        <!-- Launcher Source -->
+                        <DataGridTextColumn Header="منبع" Binding="{Binding Source}" Width="100" HeaderStyle="{StaticResource ConsoleColumnHeaderStyle}" CellStyle="{StaticResource ConsoleCellPlaceholderStyle}"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+
+                <!-- BOTTOM COMPLEMENTARY CONSOLE REPORT STATUS BAR (Highly Professional) -->
+                <Border Grid.Row="2" Background="#171A20" Padding="15,10" CornerRadius="0,0,6,6" BorderThickness="1,0,1,1" BorderBrush="#2B3039">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+
+                        <StackPanel Grid.Column="0" Orientation="Horizontal">
+                            <TextBlock Text="مجموع کل بازی‌ها و برنامه‌ها: " FontFamily="{StaticResource PeydaMedium}" Foreground="#9A9A9A" FontSize="13"/>
+                            <TextBlock Text="{Binding Apps.Count}" FontFamily="{StaticResource PeydaBold}" Foreground="White" FontSize="13" Margin="5,0,0,0"/>
+                        </StackPanel>
+
+                        <StackPanel Grid.Column="2" Orientation="Horizontal">
+                            <TextBlock Text="مسیرهای معتبر: " FontFamily="{StaticResource PeydaMedium}" Foreground="#9A9A9A" FontSize="13" Margin="20,0,0,0"/>
+                            <!-- Count simulated directly from binding values -->
+                            <TextBlock Text="تأیید شده" FontFamily="{StaticResource PeydaBold}" Foreground="#14BE78" FontSize="13" Margin="5,0"/>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+            </Grid>
+
+            <!-- ================= RIGHT PROPERTY INSPECTOR ================= -->
+            <Grid Grid.Column="2" Background="#171A20" SnapsToDevicePixels="True" Margin="2,0,0,0">
+                <Grid.RowDefinitions>
+                    <!-- Header -->
+                    <RowDefinition Height="Auto" />
+                    <!-- Inspector Properties Content -->
+                    <RowDefinition Height="*" />
+                    <!-- Actions -->
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <Border Grid.Row="0" Background="#1D2027" Padding="15" BorderThickness="0,0,0,1" BorderBrush="#2B3039">
+                    <TextBlock Text="⚙️ Property Inspector"
+                               FontFamily="{StaticResource PeydaBold}"
+                               FontSize="14"
+                               Foreground="#F7E733"/>
+                </Border>
+
+                <!-- Inspector Settings Form -->
+                <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                    <StackPanel Padding="20" DataContext="{Binding SelectedApp}">
+                        <StackPanel.Style>
+                            <Style TargetType="StackPanel">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding}" Value="{x:Null}">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </StackPanel.Style>
+
+                        <!-- Basic Metadata Section -->
+                        <TextBlock Text="General Properties" FontFamily="{StaticResource PeydaBold}" FontSize="13" Foreground="#9A9A9A" Margin="0,0,0,10" />
+
+                        <TextBlock Text="Software Name:" FontFamily="{StaticResource PeydaMedium}" FontSize="12" Foreground="#E1E1E6" Margin="0,0,0,5" />
+                        <TextBox Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}" Height="34" Margin="0,0,0,15" Background="#1D2027" Foreground="White" BorderBrush="#2B3039" BorderThickness="1" Padding="5">
+                            <TextBox.Resources><Style TargetType="Border"><Setter Property="CornerRadius" Value="4"/></Style></TextBox.Resources>
+                        </TextBox>
+
+                        <Grid Margin="0,0,0,15">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="10" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+
+                            <StackPanel Grid.Column="0">
+                                <TextBlock Text="Type:" FontFamily="{StaticResource PeydaMedium}" FontSize="12" Foreground="#E1E1E6" Margin="0,0,0,5" />
+                                <ComboBox SelectedItem="{Binding Type}" ItemsSource="{Binding DataContext.AppTypes, RelativeSource={RelativeSource AncestorType=Window}}" Height="34" Background="#1D2027" Foreground="White" BorderBrush="#2B3039" BorderThickness="1">
+                                    <ComboBox.Resources><Style TargetType="Border"><Setter Property="CornerRadius" Value="4"/></Style></ComboBox.Resources>
+                                </ComboBox>
+                            </StackPanel>
+
+                            <StackPanel Grid.Column="2">
+                                <TextBlock Text="Category:" FontFamily="{StaticResource PeydaMedium}" FontSize="12" Foreground="#E1E1E6" Margin="0,0,0,5" />
+                                <ComboBox SelectedItem="{Binding Category}" ItemsSource="{Binding DataContext.Categories, RelativeSource={RelativeSource AncestorType=Window}}" Height="34" Background="#1D2027" Foreground="White" BorderBrush="#2B3039" BorderThickness="1">
+                                    <ComboBox.Resources><Style TargetType="Border"><Setter Property="CornerRadius" Value="4"/></Style></ComboBox.Resources>
+                                </ComboBox>
+                            </StackPanel>
+                        </Grid>
+
+                        <Border Height="1" Background="#2B3039" Margin="0,10,0,15"/>
+
+                        <!-- Execution Settings Section -->
+                        <TextBlock Text="Execution Settings" FontFamily="{StaticResource PeydaBold}" FontSize="13" Foreground="#9A9A9A" Margin="0,0,0,10" />
+
+                        <TextBlock Text="Executable Path:" FontFamily="{StaticResource PeydaMedium}" FontSize="12" Foreground="#E1E1E6" Margin="0,0,0,5" />
+                        <Grid Margin="0,0,0,15">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="5" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <TextBox Grid.Column="0" Text="{Binding ExecutablePath, UpdateSourceTrigger=PropertyChanged}" Height="34" Background="#1D2027" Foreground="White" BorderBrush="#2B3039" BorderThickness="1" Padding="5">
+                                <TextBox.Resources><Style TargetType="Border"><Setter Property="CornerRadius" Value="4"/></Style></TextBox.Resources>
+                            </TextBox>
+                            <!-- Validate Selected Path Button -->
+                            <Button Grid.Column="2" Style="{StaticResource ConsoleActionButtonStyle}" Command="{Binding DataContext.ValidateSelectedPathCommand, RelativeSource={RelativeSource AncestorType=Window}}" Content="Verify" Height="34" Padding="10,0"/>
+                        </Grid>
+
+                        <TextBlock Text="Launch Arguments:" FontFamily="{StaticResource PeydaMedium}" FontSize="12" Foreground="#E1E1E6" Margin="0,0,0,5" />
+                        <TextBox Text="{Binding Arguments, UpdateSourceTrigger=PropertyChanged}" Height="34" Margin="0,0,0,15" Background="#1D2027" Foreground="White" BorderBrush="#2B3039" BorderThickness="1" Padding="5">
+                            <TextBox.Resources><Style TargetType="Border"><Setter Property="CornerRadius" Value="4"/></Style></TextBox.Resources>
+                        </TextBox>
+
+                        <TextBlock Text="Working Directory:" FontFamily="{StaticResource PeydaMedium}" FontSize="12" Foreground="#E1E1E6" Margin="0,0,0,5" />
+                        <TextBox Text="{Binding WorkingDirectory, UpdateSourceTrigger=PropertyChanged}" Height="34" Margin="0,0,0,15" Background="#1D2027" Foreground="White" BorderBrush="#2B3039" BorderThickness="1" Padding="5">
+                            <TextBox.Resources><Style TargetType="Border"><Setter Property="CornerRadius" Value="4"/></Style></TextBox.Resources>
+                        </TextBox>
+
+                        <Border Height="1" Background="#2B3039" Margin="0,10,0,15"/>
+
+                        <!-- Launcher Configuration Options -->
+                        <TextBlock Text="Launcher Options" FontFamily="{StaticResource PeydaBold}" FontSize="13" Foreground="#9A9A9A" Margin="0,0,0,10" />
+
+                        <TextBlock Text="Launcher Type:" FontFamily="{StaticResource PeydaMedium}" FontSize="12" Foreground="#E1E1E6" Margin="0,0,0,5" />
+                        <ComboBox SelectedItem="{Binding LauncherType}" ItemsSource="{Binding DataContext.LauncherTypes, RelativeSource={RelativeSource AncestorType=Window}}" Height="34" Margin="0,0,0,15" Background="#1D2027" Foreground="White" BorderBrush="#2B3039" BorderThickness="1">
+                            <ComboBox.Resources><Style TargetType="Border"><Setter Property="CornerRadius" Value="4"/></Style></ComboBox.Resources>
+                        </ComboBox>
+
+                        <!-- Additional Policy Checks -->
+                        <CheckBox IsChecked="{Binding RunAsAdmin}" Margin="0,0,0,8" VerticalContentAlignment="Center">
+                            <TextBlock Text="Run as Administrator" FontSize="12" Foreground="#E1E1E6" Margin="5,0,0,0" VerticalAlignment="Center"/>
+                        </CheckBox>
+                        <CheckBox IsChecked="{Binding EnableOverlay}" Margin="0,0,0,8" VerticalContentAlignment="Center">
+                            <TextBlock Text="Enable In-Game Overlay" FontSize="12" Foreground="#E1E1E6" Margin="5,0,0,0" VerticalAlignment="Center"/>
+                        </CheckBox>
+                        <CheckBox IsChecked="{Binding UseSandbox}" Margin="0,0,0,15" VerticalContentAlignment="Center">
+                            <TextBlock Text="Launch via Watchdog Sandbox" FontSize="12" Foreground="#E1E1E6" Margin="5,0,0,0" VerticalAlignment="Center"/>
+                        </CheckBox>
+
+                        <Border Height="1" Background="#2B3039" Margin="0,10,0,15"/>
+
+                        <!-- Description Box -->
+                        <TextBlock Text="Description:" FontFamily="{StaticResource PeydaMedium}" FontSize="12" Foreground="#E1E1E6" Margin="0,0,0,5" />
+                        <TextBox Text="{Binding Description, UpdateSourceTrigger=PropertyChanged}" Height="80" TextWrapping="Wrap" AcceptsReturn="True" Background="#1D2027" Foreground="White" BorderBrush="#2B3039" BorderThickness="1" Padding="5">
+                            <TextBox.Resources><Style TargetType="Border"><Setter Property="CornerRadius" Value="4"/></Style></TextBox.Resources>
+                        </TextBox>
+                    </StackPanel>
+                </ScrollViewer>
+
+                <!-- Visual Indicator if No App is Selected -->
+                <Grid Grid.Row="1" IsHitTestVisible="False">
+                    <Grid.Style>
+                        <Style TargetType="Grid">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding SelectedApp}" Value="{x:Null}">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Grid.Style>
+                    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Margin="20">
+                        <TextBlock Text="📭" FontSize="40" HorizontalAlignment="Center" Margin="0,0,0,10"/>
+                        <TextBlock Text="لطفاً یک نرم‌افزار را از جدول جهت ویرایش انتخاب کنید" Foreground="#9A9A9A" FontSize="13" TextAlignment="Center" TextWrapping="Wrap"/>
+                    </StackPanel>
+                </Grid>
+
+                <!-- inspector actions footer panel -->
+                <Border Grid.Row="2" Background="#1D2027" Padding="20" BorderThickness="0,1,0,0" BorderBrush="#2B3039">
+                    <StackPanel DataContext="{Binding SelectedApp}">
+                        <StackPanel.Style>
+                            <Style TargetType="StackPanel">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding}" Value="{x:Null}">
+                                        <Setter Property="IsEnabled" Value="False"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </StackPanel.Style>
+
+                        <Button Style="{StaticResource SaveButtonStyle}"
+                                Command="{Binding DataContext.SaveAppCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                Content="ذخیره تنظیمات محلی"
+                                HorizontalAlignment="Stretch" Margin="0,0,0,8" />
+
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="10" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+
+                            <Button Grid.Column="0"
+                                    Style="{StaticResource ConsoleActionButtonStyle}"
+                                    Command="{Binding DataContext.ImportMetadataCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                    Content="📥 فراخوانی فراداده"
+                                    HorizontalAlignment="Stretch" />
+
+                            <Button Grid.Column="2"
+                                    Style="{StaticResource ConsoleActionButtonStyle}"
+                                    Command="{Binding DataContext.RemoveSelectedCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                    Content="🗑️ حذف نرم‌افزار"
+                                    HorizontalAlignment="Stretch" />
+                        </Grid>
+                    </StackPanel>
+                </Border>
             </Grid>
         </Grid>
 
         <!-- Floating Horizontal Notification Card -->
-        <Grid VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="0,0,0,40" Panel.ZIndex="1000" IsHitTestVisible="True"
+        <Grid Grid.Row="1" VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="0,0,0,40" Panel.ZIndex="1000" IsHitTestVisible="True"
               DataContext="{Binding Source={x:Static suis:NotificationService.Instance}}"
               Visibility="{Binding IsNotificationVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
             <c:NotificationCard DataContext="{Binding CurrentNotification}" />
