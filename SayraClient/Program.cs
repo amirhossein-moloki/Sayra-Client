@@ -2,6 +2,7 @@ using SayraClient;
 using SayraClient.Commands;
 using SayraClient.Services;
 using Sayra.Client.Discovery.Services;
+using Sayra.Client.GameLibrary;
 using Microsoft.Extensions.Hosting.WindowsServices;
 using Serilog;
 
@@ -33,6 +34,9 @@ builder.Services.AddWindowsService(options =>
 builder.Services.AddSingleton<ReconnectManager>();
 builder.Services.AddSingleton<TcpClientManager>();
 builder.Services.AddSingleton<ClientStateManager>();
+
+// Register Game Library Component
+builder.Services.AddGameLibrary();
 
 // Register Application Services
 builder.Services.AddSingleton<ProcessManager>();
