@@ -92,9 +92,9 @@
 
                 <!-- Align Left Side content vertically -->
                 <StackPanel HorizontalAlignment="Left" VerticalAlignment="Center">
-                    <!-- Session Timer - Numbers: Peyda-Black -->
+                    <!-- Session Timer - Numbers: BlackOpsOne -->
                     <TextBlock Text="{Binding SessionTime}"
-                               FontFamily="{StaticResource PeydaBlack}"
+                               FontFamily="{StaticResource BlackOpsOne}"
                                FontSize="64"
                                Foreground="{DynamicResource WhiteBrush}"
                                HorizontalAlignment="Left"
