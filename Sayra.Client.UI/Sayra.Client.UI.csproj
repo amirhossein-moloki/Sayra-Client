@@ -18,11 +18,16 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Sayra.Client.Shared\Sayra.Client.Shared.csproj" />
+    <ProjectReference Include="..\Sayra.UI\Sayra.UI.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <Resource Include="..\Sayra.UI\Assets\photo_2026-07-08_22-07-56.jpg" Link="Assets\photo_2026-07-08_22-07-56.jpg" />
     <Resource Include="..\Sayra.UI\Assets\sayra.svg" Link="Assets\sayra.svg" />
+    <Resource Include="..\Sayra.UI\Assets\failed.svg" Link="Assets\failed.svg" Condition="Exists('..\Sayra.UI\Assets\failed.svg')" />
+    <Resource Include="..\Sayra.UI\Assets\info.svg" Link="Assets\info.svg" Condition="Exists('..\Sayra.UI\Assets\info.svg')" />
+    <Resource Include="..\Sayra.UI\Assets\loading.svg" Link="Assets\loading.svg" Condition="Exists('..\Sayra.UI\Assets\loading.svg')" />
+    <Resource Include="..\Sayra.UI\Assets\success.svg" Link="Assets\success.svg" Condition="Exists('..\Sayra.UI\Assets\success.svg')" />
     <Resource Include="..\Sayra.UI\Fonts\BlackOpsOne-Regular.ttf" Link="Fonts\BlackOpsOne-Regular.ttf" />
     <Resource Include="..\Sayra.UI\Fonts\Peyda-Bold.ttf" Link="Fonts\Peyda-Bold.ttf" />
     <Resource Include="..\Sayra.UI\Fonts\Peyda-Medium.ttf" Link="Fonts\Peyda-Medium.ttf" />

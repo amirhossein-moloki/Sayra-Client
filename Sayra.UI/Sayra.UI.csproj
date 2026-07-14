@@ -18,6 +18,10 @@
     <Resource Include="Assets\photo_2026-07-08_22-07-56.jpg" />
     <Resource Include="Assets\SessionHeroSectionBG.jpg" />
     <Resource Include="Assets\sayra.svg" />
+    <Resource Include="Assets\failed.svg" Condition="Exists('Assets\failed.svg')" />
+    <Resource Include="Assets\info.svg" Condition="Exists('Assets\info.svg')" />
+    <Resource Include="Assets\loading.svg" Condition="Exists('Assets\loading.svg')" />
+    <Resource Include="Assets\success.svg" Condition="Exists('Assets\success.svg')" />
     <Resource Include="Fonts\BlackOpsOne-Regular.ttf" />
     <Resource Include="Fonts\Peyda-Bold.ttf" />
     <Resource Include="Fonts\Peyda-Medium.ttf" />

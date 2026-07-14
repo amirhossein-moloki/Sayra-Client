@@ -67,6 +67,8 @@ public partial class WarningOverlayService : ObservableObject
         {
             IsSoftWarningVisible = true;
             IsWarningVisible = false;
+            // Trigger our beautiful floating warning notification card!
+            Sayra.UI.Services.NotificationService.Instance.ShowWarning(message);
         }
     }
 

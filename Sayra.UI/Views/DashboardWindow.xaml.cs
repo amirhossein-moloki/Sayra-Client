@@ -75,6 +75,9 @@ namespace Sayra.UI.Views
             Log("Loaded Event START");
             Log("Loaded Event END");
 
+            // Show our premium success notification!
+            Sayra.UI.Services.NotificationService.Instance.ShowSuccess("ورود با موفقیت انجام شد!");
+
             swLoaded.Stop();
             GlobalExceptionHandler.LogTrace("DASHBOARD", $"Loaded Event completed in {swLoaded.ElapsedMilliseconds} ms");
         }
