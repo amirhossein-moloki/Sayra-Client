@@ -222,108 +222,111 @@
                             </Border.Effect>
                             <Grid FlowDirection="RightToLeft">
                                 <Grid.ColumnDefinitions>
-                                    <!-- Right side of the box (RTL Column 0): Game Image -->
-                                    <ColumnDefinition Width="Auto" />
+                                    <!-- Right Column of the box (RTL Column 0): Name, Genre, Description, Play Button -->
+                                    <ColumnDefinition Width="*" />
                                     <!-- Spacer -->
                                     <ColumnDefinition Width="30" />
-                                    <!-- Left side of the box (RTL Column 2): Name, Genre, Description -->
-                                    <ColumnDefinition Width="*" />
+                                    <!-- Left Column of the box (RTL Column 2): Cover Image, Title, Genre -->
+                                    <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
 
-                                <!-- Game Cover Image (Width: 248, Height: 334) -->
-                                <Border Grid.Column="0" CornerRadius="16" Width="248" Height="334" BorderThickness="1.5" BorderBrush="{DynamicResource BorderBrush}" Background="{DynamicResource SecondaryBackgroundBrush}" ClipToBounds="True" VerticalAlignment="Center">
-                                    <Grid Background="#10FFFFFF">
-                                        <!-- Gamepad Fallback Vector Graphic -->
-                                        <Path Data="M21,6H3C1.9,6 1,6.9 1,8V16C1,17.1 1.9,18 3,18H21C22.1,18 23,17.1 23,16V8C23,6.9 22.1,6 21,6M6,15H4V13H2V11H4V9H6V11H8V13H6V15M15,11A1.5,1.5 0 1,1 16.5,9.5A1.5,1.5 0 0,1 15,11M19,14A1.5,1.5 0 1,1 20.5,12.5A1.5,1.5 0 0,1 19,14Z"
-                                              Fill="#33FFFFFF"
-                                              Width="60" Height="60"
-                                              Stretch="Uniform"
-                                              HorizontalAlignment="Center"
-                                              VerticalAlignment="Center" />
-                                        <Image x:Name="DetailCoverImage" Stretch="UniformToFill" ImageFailed="DetailCoverImage_ImageFailed"/>
-                                    </Grid>
-                                </Border>
-
-                                <!-- Text details -->
-                                <Grid Grid.Column="2" VerticalAlignment="Stretch">
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="Auto" /> <!-- Title / Subtitle Header -->
-                                        <RowDefinition Height="12" />   <!-- Spacer -->
-                                        <RowDefinition Height="Auto" /> <!-- Status Badge / Button (Width: 288, Height: 50, CornerRadius: 10) -->
-                                        <RowDefinition Height="12" />   <!-- Spacer -->
-                                        <RowDefinition Height="Auto" /> <!-- Divider Line -->
-                                        <RowDefinition Height="15" />   <!-- Spacer -->
-                                        <RowDefinition Height="*" />    <!-- Description -->
-                                    </Grid.RowDefinitions>
-
+                                <!-- Left Column Content (Image + Title/Genre stacked) -->
+                                <StackPanel Grid.Column="2" VerticalAlignment="Stretch" Width="280" HorizontalAlignment="Left">
                                     <!-- Title / Genre -->
-                                    <StackPanel Grid.Row="0" Orientation="Horizontal">
+                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,0,0,15">
                                         <Border Width="6" Height="42" Background="#F5FF00" CornerRadius="3" Margin="0,0,16,0"/>
                                         <StackPanel VerticalAlignment="Center">
                                             <TextBlock x:Name="DetailTitle"
                                                        Text="عنوان بازی"
                                                        FontFamily="{StaticResource PeydaBold}"
-                                                       FontSize="30"
+                                                       FontSize="26"
                                                        Foreground="White" />
                                             <TextBlock x:Name="DetailGenre"
                                                        Text="دسته بندی"
                                                        FontFamily="{StaticResource PeydaLight}"
-                                                       FontSize="15"
+                                                       FontSize="14"
                                                        Foreground="{DynamicResource SecondaryWhiteBrush}"
                                                        Margin="0,2,0,0"/>
                                         </StackPanel>
                                     </StackPanel>
 
-                                    <!-- Game Status Badge / Button (Width: 288, Height: 50, CornerRadius: 10, Border: 1) -->
-                                    <Border Grid.Row="2"
-                                            x:Name="StatusBadgeBorder"
-                                            Width="288"
-                                            Height="50"
-                                            BorderThickness="1"
-                                            CornerRadius="10"
-                                            HorizontalAlignment="Left"
-                                            Background="#1014BE78"
-                                            BorderBrush="{DynamicResource SuccessBrush}">
-                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-                                            <Ellipse x:Name="StatusBadgeDot" Width="8" Height="8" Fill="{DynamicResource SuccessBrush}" Margin="0,0,10,0" VerticalAlignment="Center"/>
-                                            <TextBlock x:Name="DetailStatus"
-                                                       Text="وضعیت"
-                                                       FontFamily="{StaticResource PeydaMedium}"
-                                                       FontSize="15"
-                                                       Foreground="{DynamicResource SuccessBrush}"
-                                                       VerticalAlignment="Center"/>
-                                        </StackPanel>
+                                    <!-- Game Cover Image (Width: 248, Height: 250) -->
+                                    <Border CornerRadius="16" Width="248" Height="250" BorderThickness="1.5" BorderBrush="{DynamicResource BorderBrush}" Background="{DynamicResource SecondaryBackgroundBrush}" ClipToBounds="True" HorizontalAlignment="Left">
+                                        <Grid Background="#10FFFFFF">
+                                            <!-- Gamepad Fallback Vector Graphic -->
+                                            <Path Data="M21,6H3C1.9,6 1,6.9 1,8V16C1,17.1 1.9,18 3,18H21C22.1,18 23,17.1 23,16V8C23,6.9 22.1,6 21,6M6,15H4V13H2V11H4V9H6V11H8V13H6V15M15,11A1.5,1.5 0 1,1 16.5,9.5A1.5,1.5 0 0,1 15,11M19,14A1.5,1.5 0 1,1 20.5,12.5A1.5,1.5 0 0,1 19,14Z"
+                                                  Fill="#33FFFFFF"
+                                                  Width="50" Height="50"
+                                                  Stretch="Uniform"
+                                                  HorizontalAlignment="Center"
+                                                  VerticalAlignment="Center" />
+                                            <Image x:Name="DetailCoverImage" Stretch="UniformToFill" ImageFailed="DetailCoverImage_ImageFailed"/>
+                                        </Grid>
                                     </Border>
+                                </StackPanel>
 
-                                    <!-- Horizontal Divider -->
-                                    <Border Grid.Row="4" Height="1" Background="{DynamicResource BorderBrush}" Opacity="0.5" HorizontalAlignment="Stretch"/>
+                                <!-- Right Column Content (Description + Play Button) -->
+                                <Grid Grid.Column="0" VerticalAlignment="Stretch">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="*" />    <!-- Description Segment -->
+                                        <RowDefinition Height="Auto" /> <!-- Play / Status Button -->
+                                    </Grid.RowDefinitions>
 
                                     <!-- Description Segment -->
-                                    <StackPanel Grid.Row="6">
-                                        <TextBlock Text="درباره بازی"
-                                                   FontFamily="{StaticResource PeydaBold}"
-                                                   FontSize="16"
-                                                   Foreground="White"
-                                                   Margin="0,0,0,10"/>
-                                        <TextBlock x:Name="DetailDescription"
-                                                   Text="توضیحات تکمیلی و خلاصه بازی در این قسمت قرار می‌گیرد."
-                                                   FontFamily="{StaticResource PeydaLight}"
-                                                   FontSize="14"
-                                                   Foreground="{DynamicResource DarkerWhiteBrush}"
-                                                   TextWrapping="Wrap"
-                                                   LineHeight="22"
-                                                   HorizontalAlignment="Right" />
-                                    </StackPanel>
+                                    <TextBlock x:Name="DetailDescription"
+                                               Grid.Row="0"
+                                               Text="توضیحات تکمیلی و خلاصه بازی در این قسمت قرار می‌گیرد."
+                                               FontFamily="{StaticResource PeydaLight}"
+                                               FontSize="15"
+                                               Foreground="{DynamicResource DarkerWhiteBrush}"
+                                               TextWrapping="Wrap"
+                                               LineHeight="24"
+                                               HorizontalAlignment="Right"
+                                               Margin="0,10,0,20"/>
+
+                                    <!-- Game Status Badge / Button -->
+                                    <Button Grid.Row="1"
+                                            Click="PlayGame_Click"
+                                            Background="Transparent"
+                                            BorderBrush="Transparent"
+                                            BorderThickness="0"
+                                            HorizontalAlignment="Right"
+                                            Padding="0"
+                                            Cursor="Hand"
+                                            Margin="0,0,0,10">
+                                        <Button.Template>
+                                            <ControlTemplate TargetType="Button">
+                                                <ContentPresenter />
+                                            </ControlTemplate>
+                                        </Button.Template>
+                                        <Border x:Name="StatusBadgeBorder"
+                                                Width="288"
+                                                Height="50"
+                                                BorderThickness="1"
+                                                CornerRadius="10"
+                                                Background="#1014BE78"
+                                                BorderBrush="{DynamicResource SuccessBrush}">
+                                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                <Ellipse x:Name="StatusBadgeDot" Width="8" Height="8" Fill="{DynamicResource SuccessBrush}" Margin="0,0,10,0" VerticalAlignment="Center"/>
+                                                <TextBlock x:Name="DetailStatus"
+                                                           Text="وضعیت"
+                                                           FontFamily="{StaticResource PeydaMedium}"
+                                                           FontSize="15"
+                                                           Foreground="{DynamicResource SuccessBrush}"
+                                                           VerticalAlignment="Center"/>
+                                            </StackPanel>
+                                        </Border>
+                                    </Button>
                                 </Grid>
                             </Grid>
                         </Border>
 
-                        <!-- Centered Sayra Logo below the box -->
+                        <!-- Sayra Logo below the box aligned and sized proportionally (Width: 400, Height: 100) -->
                         <svgc:SvgViewbox Source="/Assets/sayra.svg"
-                                         Width="110" Height="110"
+                                         Width="400" Height="100"
                                          Opacity="0.25"
-                                         HorizontalAlignment="Center"
-                                         Margin="0,35,0,0"
+                                         HorizontalAlignment="Right"
+                                         Margin="0,20,0,0"
                                          IsHitTestVisible="False" />
                     </StackPanel>
 
