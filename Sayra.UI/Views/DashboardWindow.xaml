@@ -13,181 +13,339 @@
         WindowStyle="None"
         AllowsTransparency="True"
         Background="Transparent"
-        WindowState="Maximized"
+        WindowState="Normal"
         WindowStartupLocation="CenterScreen"
         FlowDirection="LeftToRight">
 
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
-        <!-- Fade-in animation for Window content -->
-        <Storyboard x:Key="WindowFadeInStoryboard">
-            <DoubleAnimation Storyboard.TargetProperty="Opacity" From="0" To="1" Duration="0:0:1.0" />
-        </Storyboard>
 
-        <!-- Premium End Session Button Style -->
-        <Style x:Key="EndSessionButtonStyle" TargetType="Button">
-            <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="BorderBrush" Value="{DynamicResource RedBrush}"/>
+        <!-- Premium Color Palette Solid Color Brushes -->
+        <SolidColorBrush x:Key="BackgroundBrush" Color="#0E1015"/>
+        <SolidColorBrush x:Key="MainSurfaceBrush" Color="#171A20"/>
+        <SolidColorBrush x:Key="SecondarySurfaceBrush" Color="#1D2027"/>
+        <SolidColorBrush x:Key="BordersBrush" Color="#2B3039"/>
+        <SolidColorBrush x:Key="HoverBrush" Color="#252932"/>
+        <SolidColorBrush x:Key="SelectedBrush" Color="#2F3542"/>
+        <SolidColorBrush x:Key="DividerBrush" Color="#303641"/>
+        <SolidColorBrush x:Key="PrimaryAccentBrush" Color="#F7E733"/>
+        <SolidColorBrush x:Key="PrimaryHoverBrush" Color="#FFE84F"/>
+        <SolidColorBrush x:Key="DangerBrush" Color="#E55B5B"/>
+        <SolidColorBrush x:Key="SuccessBrush" Color="#33D17A"/>
+        <SolidColorBrush x:Key="InformationBrush" Color="#63C5FF"/>
+        <SolidColorBrush x:Key="TextPrimaryBrush" Color="#FFFFFF"/>
+        <SolidColorBrush x:Key="TextSecondaryBrush" Color="#BFC5D0"/>
+        <SolidColorBrush x:Key="TextMutedBrush" Color="#8D95A3"/>
+
+        <!-- Typography Fallbacks utilizing Segoe UI Variable -->
+        <FontFamily x:Key="SegoeUIVariable">Segoe UI Variable, Segoe UI, Arial</FontFamily>
+
+        <!-- Typography Styles -->
+        <Style x:Key="TitleStyle" TargetType="TextBlock">
+            <Setter Property="FontFamily" Value="{StaticResource SegoeUIVariable}"/>
+            <Setter Property="FontSize" Value="32"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>
+        </Style>
+
+        <Style x:Key="SectionTitleStyle" TargetType="TextBlock">
+            <Setter Property="FontFamily" Value="{StaticResource SegoeUIVariable}"/>
+            <Setter Property="FontSize" Value="20"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>
+        </Style>
+
+        <Style x:Key="SubtitleStyle" TargetType="TextBlock">
+            <Setter Property="FontFamily" Value="{StaticResource SegoeUIVariable}"/>
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}"/>
+        </Style>
+
+        <Style x:Key="BodyStyle" TargetType="TextBlock">
+            <Setter Property="FontFamily" Value="{StaticResource SegoeUIVariable}"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}"/>
+        </Style>
+
+        <Style x:Key="SmallTextStyle" TargetType="TextBlock">
+            <Setter Property="FontFamily" Value="{StaticResource SegoeUIVariable}"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Foreground" Value="{StaticResource TextMutedBrush}"/>
+        </Style>
+
+        <!-- Premium Surface Panel Styling -->
+        <Style x:Key="PremiumPanelStyle" TargetType="Border">
+            <Setter Property="Background" Value="{StaticResource MainSurfaceBrush}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource BordersBrush}"/>
             <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="Height" Value="50"/>
-            <Setter Property="Cursor" Value="Hand"/>
-            <Setter Property="Template">
+            <Setter Property="CornerRadius" Value="12"/>
+            <Setter Property="Effect">
                 <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Border x:Name="ButtonBorder"
-                                Background="{TemplateBinding Background}"
-                                BorderBrush="{TemplateBinding BorderBrush}"
-                                BorderThickness="{TemplateBinding BorderThickness}"
-                                CornerRadius="12">
-                            <Border.Effect>
-                                <DropShadowEffect x:Name="GlowEffect" Color="#F46B6B" BlurRadius="10" ShadowDepth="0" Opacity="0"/>
-                            </Border.Effect>
-                            <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto" />
-                                    <ColumnDefinition Width="10" />
-                                    <ColumnDefinition Width="Auto" />
-                                </Grid.ColumnDefinitions>
-
-                                <!-- Specified End Session Button Icon with stroke style, 1.5 thickness, and transparent fill -->
-                                <Path Grid.Column="0"
-                                      Data="{DynamicResource EndSessionIconGeometry}"
-                                      Stroke="{DynamicResource RedBrush}"
-                                      StrokeThickness="1.5"
-                                      StrokeStartLineCap="Round"
-                                      StrokeEndLineCap="Round"
-                                      Fill="Transparent"
-                                      Width="16" Height="16"
-                                      Stretch="Uniform"
-                                      VerticalAlignment="Center"/>
-
-                                <!-- Text with Peyda Bold, Numbers/Buttons -->
-                                <TextBlock Grid.Column="2"
-                                           Text="پایان دادن به استفاده"
-                                           Foreground="{DynamicResource RedBrush}"
-                                           FontFamily="{StaticResource PeydaBold}"
-                                           FontSize="15"
-                                           VerticalAlignment="Center"/>
-                            </Grid>
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="ButtonBorder" Property="Background" Value="#1AF46B6B"/>
-                                <Setter TargetName="ButtonBorder" Property="BorderThickness" Value="1.5"/>
-                                <Trigger.EnterActions>
-                                    <BeginStoryboard>
-                                        <Storyboard>
-                                            <DoubleAnimation Storyboard.TargetName="GlowEffect"
-                                                             Storyboard.TargetProperty="Opacity"
-                                                             To="0.6" Duration="0:0:0.2"/>
-                                            <DoubleAnimation Storyboard.TargetName="GlowEffect"
-                                                             Storyboard.TargetProperty="BlurRadius"
-                                                             To="15" Duration="0:0:0.2"/>
-                                        </Storyboard>
-                                    </BeginStoryboard>
-                                </Trigger.EnterActions>
-                                <Trigger.ExitActions>
-                                    <BeginStoryboard>
-                                        <Storyboard>
-                                            <DoubleAnimation Storyboard.TargetName="GlowEffect"
-                                                             Storyboard.TargetProperty="Opacity"
-                                                             To="0.0" Duration="0:0:0.2"/>
-                                        </Storyboard>
-                                    </BeginStoryboard>
-                                </Trigger.ExitActions>
-                            </Trigger>
-                            <Trigger Property="IsPressed" Value="True">
-                                <Setter TargetName="ButtonBorder" Property="Background" Value="#33F46B6B"/>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
+                    <DropShadowEffect Color="#000000" BlurRadius="16" ShadowDepth="2" Opacity="0.4"/>
                 </Setter.Value>
             </Setter>
         </Style>
+
+        <!-- Placeholder Nested Block Styling -->
+        <Style x:Key="PlaceholderBlockStyle" TargetType="Border">
+            <Setter Property="Background" Value="{StaticResource SecondarySurfaceBrush}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource BordersBrush}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="12"/>
+        </Style>
     </Window.Resources>
 
-    <Window.Triggers>
-        <EventTrigger RoutedEvent="Window.Loaded">
-            <BeginStoryboard Storyboard="{StaticResource WindowFadeInStoryboard}" />
-        </EventTrigger>
-    </Window.Triggers>
-
-    <Grid x:Name="RootGrid" Background="#08090D">
-        <!-- 2. MAIN LAYOUT GRID -->
-        <Grid>
+    <Grid x:Name="RootGrid" Width="1920" Height="1080" Background="{StaticResource BackgroundBrush}" ClipToBounds="True">
+        <!-- Spacing System Margin: 32px Outer Margin -->
+        <Grid Margin="32">
             <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" /> <!-- Top Bar Row -->
-                <RowDefinition Height="Auto" /> <!-- Session Hero Row -->
-                <RowDefinition Height="*" />    <!-- Content Row -->
+                <RowDefinition Height="Auto" /> <!-- SECTION 1: Search Area (64px) -->
+                <RowDefinition Height="Auto" /> <!-- SECTION 2: Toolbar Area (92px) -->
+                <RowDefinition Height="*" />    <!-- SECTION 3: Main Workspace (Flexible, fills remaining height) -->
+                <RowDefinition Height="Auto" /> <!-- SECTION 4: Footer Statistics (90px) -->
             </Grid.RowDefinitions>
 
-            <!-- HEADER LAYER: Top bar reusable component -->
-            <c:TopBar Grid.Row="0" />
+            <!-- SECTION 1: Search Area (Height: 64px) -->
+            <Border Grid.Row="0" Height="64" Style="{StaticResource PremiumPanelStyle}">
+                <Grid Margin="24,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
 
-            <!-- SESSION HERO PANEL: Full width gaming banner directly below header -->
-            <components:SessionHero x:Name="SessionHeroCtrl" Grid.Row="1" Height="240" Margin="0" />
+                    <!-- Search Icon (Using requested stroke geometry style) -->
+                    <Path Grid.Column="0"
+                          Data="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
+                          Stroke="{StaticResource TextMutedBrush}"
+                          StrokeThickness="1.5"
+                          Width="18" Height="18"
+                          Stretch="Uniform"
+                          VerticalAlignment="Center"/>
 
-            <!-- CONTENT ROW: Prepared structure for layout sections (Games, Hardware) -->
-            <Grid Grid.Row="2" Margin="30,20,30,30">
+                    <TextBlock Grid.Column="1"
+                               Text="SEARCH PLACEHOLDER BLOCK"
+                               Style="{StaticResource SubtitleStyle}"
+                               Foreground="{StaticResource TextMutedBrush}"
+                               VerticalAlignment="Center"
+                               Margin="16,0,0,0"/>
+                </Grid>
+            </Border>
+
+            <!-- SECTION 2: Toolbar Area (Height: 92px, Margin Top: 24px) -->
+            <Grid Grid.Row="1" Height="92" Margin="0,24,0,0">
                 <Grid.ColumnDefinitions>
-                    <!-- Column 0: Left Game Navigation Sidebar (Fixed 300px width) -->
-                    <ColumnDefinition Width="Auto" />
-
-                    <!-- Column 1: Middle/Center Games Library Area (Stretches to fill remaining space) -->
-                    <ColumnDefinition Width="*" />
-
-                    <!-- Column 2: Right Hardware System Detail Panel Area (Fixed 300px width) -->
-                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="28*" />
+                    <ColumnDefinition Width="18*" />
+                    <ColumnDefinition Width="22*" />
+                    <ColumnDefinition Width="32*" />
                 </Grid.ColumnDefinitions>
 
-                <!-- Left Sidebar Grid Column -->
-                <Grid Grid.Column="0" Margin="0,0,15,0">
-                    <components:AdPanel x:Name="AdPanelCtrl" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="0,24,0,0" />
-                </Grid>
+                <!-- Group 1 (28% Width) -->
+                <Border Grid.Column="0" Margin="0,0,16,0" Style="{StaticResource PremiumPanelStyle}">
+                    <Grid Margin="24,0">
+                        <TextBlock Text="TOOLBAR GROUP 1 — 28%" Style="{StaticResource SubtitleStyle}" FontWeight="SemiBold" VerticalAlignment="Center" HorizontalAlignment="Left" />
+                    </Grid>
+                </Border>
 
-                <!-- Middle Games Library Grid Column -->
-                <!-- Panel.ZIndex set to 2 to display above adjacent panels if they overlap / scale -->
-                <Grid Grid.Column="1" Margin="15,0,15,0" Panel.ZIndex="2">
-                    <c:GameLibrary x:Name="GameLib" />
-                </Grid>
+                <!-- Group 2 (18% Width) -->
+                <Border Grid.Column="1" Margin="0,0,16,0" Style="{StaticResource PremiumPanelStyle}">
+                    <Grid Margin="24,0">
+                        <TextBlock Text="TOOLBAR GROUP 2 — 18%" Style="{StaticResource SubtitleStyle}" FontWeight="SemiBold" VerticalAlignment="Center" HorizontalAlignment="Left" />
+                    </Grid>
+                </Border>
 
-                <!-- Right Hardware Area Grid Column -->
-                <!-- Panel.ZIndex set to 1 to stay layered under middle column when overlapped -->
-                <Grid Grid.Column="2" Margin="15,0,0,0" Panel.ZIndex="1">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" /> <!-- Label Area -->
-                        <RowDefinition Height="Auto" /> <!-- HardwarePanel Area -->
-                        <RowDefinition Height="20" />   <!-- Spacing (20px below System Detail) -->
-                        <RowDefinition Height="Auto" /> <!-- End Session Button -->
-                    </Grid.RowDefinitions>
+                <!-- Group 3 (22% Width) -->
+                <Border Grid.Column="2" Margin="0,0,16,0" Style="{StaticResource PremiumPanelStyle}">
+                    <Grid Margin="24,0">
+                        <TextBlock Text="TOOLBAR GROUP 3 — 22%" Style="{StaticResource SubtitleStyle}" FontWeight="SemiBold" VerticalAlignment="Center" HorizontalAlignment="Left" />
+                    </Grid>
+                </Border>
 
-                    <!-- "کتابخانه بازی ها" Label at the top right, aligned with the right edge -->
-                    <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,24,0,20">
-                        <TextBlock Text="کتابخانه بازی ها"
-                                   FontFamily="{StaticResource PeydaBold}"
-                                   FontSize="26"
-                                   Foreground="White"
-                                   VerticalAlignment="Center" />
-                        <!-- Subtle yellow accent indicator bar -->
-                        <Border Width="4" Height="26" Background="#F5FF00" CornerRadius="2" Margin="12,0,0,0"/>
-                    </StackPanel>
-
-                    <!-- Shifted HardwarePanel (System Detail) to align with Game Cards (22px down from top label row) -->
-                    <c:HardwarePanel x:Name="Hardware" Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="0,22,0,0" />
-
-                    <Button Grid.Row="3"
-                            Style="{StaticResource EndSessionButtonStyle}"
-                            Click="EndSession_Click"
-                            HorizontalAlignment="Stretch" />
-                </Grid>
+                <!-- Group 4 (32% Width) -->
+                <Border Grid.Column="3" Margin="0" Style="{StaticResource PremiumPanelStyle}">
+                    <Grid Margin="24,0">
+                        <TextBlock Text="TOOLBAR GROUP 4 — 32%" Style="{StaticResource SubtitleStyle}" FontWeight="SemiBold" VerticalAlignment="Center" HorizontalAlignment="Left" />
+                    </Grid>
+                </Border>
             </Grid>
-        </Grid>
 
-        <!-- Floating Horizontal Notification Card -->
-        <Grid VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="0,0,0,40" Panel.ZIndex="1000" IsHitTestVisible="True"
-              DataContext="{Binding Source={x:Static suis:NotificationService.Instance}}"
-              Visibility="{Binding IsNotificationVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
-            <c:NotificationCard DataContext="{Binding CurrentNotification}" />
+            <!-- SECTION 3: Main Workspace (Margin Top: 24px) -->
+            <Grid Grid.Row="2" Margin="0,24,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="260" /> <!-- LEFT PANEL: 260px (Fixed) -->
+                    <ColumnDefinition Width="24" />  <!-- Gap: 24px -->
+                    <ColumnDefinition Width="*" MinWidth="900" /> <!-- CENTER PANEL: Flexible -->
+                    <ColumnDefinition Width="24" />  <!-- Gap: 24px -->
+                    <ColumnDefinition Width="420" /> <!-- RIGHT PANEL: 420px (Fixed) -->
+                </Grid.ColumnDefinitions>
+
+                <!-- LEFT PANEL -->
+                <Border Grid.Column="0" Style="{StaticResource PremiumPanelStyle}">
+                    <Grid Margin="24">
+                        <TextBlock Text="LEFT PANEL PLACEHOLDER (260px)" Style="{StaticResource SubtitleStyle}" Foreground="{StaticResource TextMutedBrush}" HorizontalAlignment="Center" VerticalAlignment="Center" TextAlignment="Center" TextWrapping="Wrap"/>
+                    </Grid>
+                </Border>
+
+                <!-- CENTER PANEL -->
+                <Border Grid.Column="2" Style="{StaticResource PremiumPanelStyle}">
+                    <Grid Margin="24">
+                        <!-- Main workspace indicator -->
+                        <TextBlock Text="CENTER PANEL MAIN WORKSPACE" Style="{StaticResource SectionTitleStyle}" Foreground="{StaticResource TextSecondaryBrush}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+
+                        <!-- Top right reserve space for future toolbar -->
+                        <Border HorizontalAlignment="Right" VerticalAlignment="Top" Width="320" Height="40" Style="{StaticResource PlaceholderBlockStyle}">
+                            <TextBlock Text="RESERVED FOR FUTURE TOOLBAR" Style="{StaticResource SmallTextStyle}" Foreground="{StaticResource TextMutedBrush}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+
+                        <!-- Bottom reserve space for pagination -->
+                        <Border HorizontalAlignment="Center" VerticalAlignment="Bottom" Width="400" Height="40" Style="{StaticResource PlaceholderBlockStyle}">
+                            <TextBlock Text="RESERVED FOR PAGINATION" Style="{StaticResource SmallTextStyle}" Foreground="{StaticResource TextMutedBrush}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                    </Grid>
+                </Border>
+
+                <!-- RIGHT PANEL -->
+                <Border Grid.Column="4" Style="{StaticResource PremiumPanelStyle}">
+                    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Margin="16" Padding="0,0,8,0">
+                        <StackPanel>
+                            <!-- 1. General: 120px -->
+                            <Border Height="120" Margin="0,0,0,16" Style="{StaticResource PlaceholderBlockStyle}">
+                                <Grid Margin="16">
+                                    <TextBlock Text="GENERAL" Style="{StaticResource SubtitleStyle}" FontWeight="SemiBold" VerticalAlignment="Top"/>
+                                    <TextBlock Text="Height: 120px" Style="{StaticResource SmallTextStyle}" VerticalAlignment="Bottom"/>
+                                </Grid>
+                            </Border>
+
+                            <!-- 2. Executable: 120px -->
+                            <Border Height="120" Margin="0,0,0,16" Style="{StaticResource PlaceholderBlockStyle}">
+                                <Grid Margin="16">
+                                    <TextBlock Text="EXECUTABLE" Style="{StaticResource SubtitleStyle}" FontWeight="SemiBold" VerticalAlignment="Top"/>
+                                    <TextBlock Text="Height: 120px" Style="{StaticResource SmallTextStyle}" VerticalAlignment="Bottom"/>
+                                </Grid>
+                            </Border>
+
+                            <!-- 3. Launcher: 90px -->
+                            <Border Height="90" Margin="0,0,0,16" Style="{StaticResource PlaceholderBlockStyle}">
+                                <Grid Margin="16">
+                                    <TextBlock Text="LAUNCHER" Style="{StaticResource SubtitleStyle}" FontWeight="SemiBold" VerticalAlignment="Top"/>
+                                    <TextBlock Text="Height: 90px" Style="{StaticResource SmallTextStyle}" VerticalAlignment="Bottom"/>
+                                </Grid>
+                            </Border>
+
+                            <!-- 4. Launch Settings: 170px -->
+                            <Border Height="170" Margin="0,0,0,16" Style="{StaticResource PlaceholderBlockStyle}">
+                                <Grid Margin="16">
+                                    <TextBlock Text="LAUNCH SETTINGS" Style="{StaticResource SubtitleStyle}" FontWeight="SemiBold" VerticalAlignment="Top"/>
+                                    <TextBlock Text="Height: 170px" Style="{StaticResource SmallTextStyle}" VerticalAlignment="Bottom"/>
+                                </Grid>
+                            </Border>
+
+                            <!-- 5. Runtime: 140px -->
+                            <Border Height="140" Margin="0,0,0,16" Style="{StaticResource PlaceholderBlockStyle}">
+                                <Grid Margin="16">
+                                    <TextBlock Text="RUNTIME" Style="{StaticResource SubtitleStyle}" FontWeight="SemiBold" VerticalAlignment="Top"/>
+                                    <TextBlock Text="Height: 140px" Style="{StaticResource SmallTextStyle}" VerticalAlignment="Bottom"/>
+                                </Grid>
+                            </Border>
+
+                            <!-- 6. Images: 170px -->
+                            <Border Height="170" Margin="0,0,0,16" Style="{StaticResource PlaceholderBlockStyle}">
+                                <Grid Margin="16">
+                                    <TextBlock Text="IMAGES" Style="{StaticResource SubtitleStyle}" FontWeight="SemiBold" VerticalAlignment="Top"/>
+                                    <TextBlock Text="Height: 170px" Style="{StaticResource SmallTextStyle}" VerticalAlignment="Bottom"/>
+                                </Grid>
+                            </Border>
+
+                            <!-- 7. Metadata: 130px -->
+                            <Border Height="130" Margin="0,0,0,16" Style="{StaticResource PlaceholderBlockStyle}">
+                                <Grid Margin="16">
+                                    <TextBlock Text="METADATA" Style="{StaticResource SubtitleStyle}" FontWeight="SemiBold" VerticalAlignment="Top"/>
+                                    <TextBlock Text="Height: 130px" Style="{StaticResource SmallTextStyle}" VerticalAlignment="Bottom"/>
+                                </Grid>
+                            </Border>
+
+                            <!-- 8. Tags: 90px -->
+                            <Border Height="90" Margin="0,0,0,16" Style="{StaticResource PlaceholderBlockStyle}">
+                                <Grid Margin="16">
+                                    <TextBlock Text="TAGS" Style="{StaticResource SubtitleStyle}" FontWeight="SemiBold" VerticalAlignment="Top"/>
+                                    <TextBlock Text="Height: 90px" Style="{StaticResource SmallTextStyle}" VerticalAlignment="Bottom"/>
+                                </Grid>
+                            </Border>
+
+                            <!-- 9. Security: 120px -->
+                            <Border Height="120" Margin="0,0,0,16" Style="{StaticResource PlaceholderBlockStyle}">
+                                <Grid Margin="16">
+                                    <TextBlock Text="SECURITY" Style="{StaticResource SubtitleStyle}" FontWeight="SemiBold" VerticalAlignment="Top"/>
+                                    <TextBlock Text="Height: 120px" Style="{StaticResource SmallTextStyle}" VerticalAlignment="Bottom"/>
+                                </Grid>
+                            </Border>
+
+                            <!-- 10. Visibility: 100px -->
+                            <Border Height="100" Margin="0" Style="{StaticResource PlaceholderBlockStyle}">
+                                <Grid Margin="16">
+                                    <TextBlock Text="VISIBILITY" Style="{StaticResource SubtitleStyle}" FontWeight="SemiBold" VerticalAlignment="Top"/>
+                                    <TextBlock Text="Height: 100px" Style="{StaticResource SmallTextStyle}" VerticalAlignment="Bottom"/>
+                                </Grid>
+                            </Border>
+                        </StackPanel>
+                    </ScrollViewer>
+                </Border>
+            </Grid>
+
+            <!-- SECTION 4: Footer Statistics (Height: 90px, Margin Top: 24px) -->
+            <Grid Grid.Row="3" Height="90" Margin="0,24,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <Border Grid.Column="0" Margin="0,0,16,0" Style="{StaticResource PremiumPanelStyle}">
+                    <Grid Margin="16,0">
+                        <TextBlock Text="STAT 1" Style="{StaticResource SmallTextStyle}" Foreground="{StaticResource TextSecondaryBrush}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Grid>
+                </Border>
+                <Border Grid.Column="1" Margin="0,0,16,0" Style="{StaticResource PremiumPanelStyle}">
+                    <Grid Margin="16,0">
+                        <TextBlock Text="STAT 2" Style="{StaticResource SmallTextStyle}" Foreground="{StaticResource TextSecondaryBrush}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Grid>
+                </Border>
+                <Border Grid.Column="2" Margin="0,0,16,0" Style="{StaticResource PremiumPanelStyle}">
+                    <Grid Margin="16,0">
+                        <TextBlock Text="STAT 3" Style="{StaticResource SmallTextStyle}" Foreground="{StaticResource TextSecondaryBrush}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Grid>
+                </Border>
+                <Border Grid.Column="3" Margin="0,0,16,0" Style="{StaticResource PremiumPanelStyle}">
+                    <Grid Margin="16,0">
+                        <TextBlock Text="STAT 4" Style="{StaticResource SmallTextStyle}" Foreground="{StaticResource TextSecondaryBrush}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Grid>
+                </Border>
+                <Border Grid.Column="4" Margin="0,0,16,0" Style="{StaticResource PremiumPanelStyle}">
+                    <Grid Margin="16,0">
+                        <TextBlock Text="STAT 5" Style="{StaticResource SmallTextStyle}" Foreground="{StaticResource TextSecondaryBrush}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Grid>
+                </Border>
+                <Border Grid.Column="5" Margin="0,0,16,0" Style="{StaticResource PremiumPanelStyle}">
+                    <Grid Margin="16,0">
+                        <TextBlock Text="STAT 6" Style="{StaticResource SmallTextStyle}" Foreground="{StaticResource TextSecondaryBrush}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Grid>
+                </Border>
+                <Border Grid.Column="6" Margin="0,0,16,0" Style="{StaticResource PremiumPanelStyle}">
+                    <Grid Margin="16,0">
+                        <TextBlock Text="STAT 7" Style="{StaticResource SmallTextStyle}" Foreground="{StaticResource TextSecondaryBrush}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Grid>
+                </Border>
+                <Border Grid.Column="7" Margin="0" Style="{StaticResource PremiumPanelStyle}">
+                    <Grid Margin="16,0">
+                        <TextBlock Text="STAT 8" Style="{StaticResource SmallTextStyle}" Foreground="{StaticResource TextSecondaryBrush}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Grid>
+                </Border>
+            </Grid>
         </Grid>
     </Grid>
 </Window>
