@@ -11,7 +11,7 @@ namespace Sayra.UI.Views
         private readonly AdminWorkspaceViewModel _viewModel;
 
         // Backward compatibility stub
-        public object? GameLib => null;
+        public FrameworkElement? GameLib => null;
 
         public DashboardWindow()
         {

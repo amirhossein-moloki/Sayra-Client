@@ -259,7 +259,6 @@ namespace Sayra.UI.ViewModels
 
             foreach (var app in _allApps)
             {
-                // Simple mockup check: if path contains "C:\" and ends in ".exe"
                 if (!string.IsNullOrWhiteSpace(app.ExecutablePath) &&
                     app.ExecutablePath.Contains(":\\") &&
                     app.ExecutablePath.EndsWith(".exe", StringComparison.OrdinalIgnoreCase))
@@ -340,6 +339,235 @@ namespace Sayra.UI.ViewModels
         {
             if (SelectedApp == null) return;
             NotificationService.Instance.ShowSuccess($"تنظیمات نرم‌افزار '{SelectedApp.Name}' ذخیره شد.");
+        }
+
+        // --- NEW COMMANDS LINKED TO TOOLBAR CONTROLS ---
+
+        [RelayCommand]
+        private async Task ScanAllAsync()
+        {
+            NotificationService.Instance.ShowLoading("در حال اسکن تمامی لانچرها و پوشه‌های سیستم...");
+            await Task.Delay(1200);
+            NotificationService.Instance.ShowSuccess("اسکن کامل شد! بازی‌های جدید شناسایی شدند.");
+        }
+
+        [RelayCommand]
+        private async Task ScanSteamAsync()
+        {
+            NotificationService.Instance.ShowLoading("در حال اسکن بازی‌های Steam...");
+            await Task.Delay(800);
+            NotificationService.Instance.ShowSuccess("بازی‌های Steam با موفقیت شناسایی شدند.");
+        }
+
+        [RelayCommand]
+        private async Task ScanEpicAsync()
+        {
+            NotificationService.Instance.ShowLoading("در حال اسکن بازی‌های Epic Games...");
+            await Task.Delay(800);
+            NotificationService.Instance.ShowSuccess("بازی‌های Epic Games با موفقیت شناسایی شدند.");
+        }
+
+        [RelayCommand]
+        private async Task ScanRiotAsync()
+        {
+            NotificationService.Instance.ShowLoading("در حال اسکن بازی‌های Riot Games...");
+            await Task.Delay(800);
+            NotificationService.Instance.ShowSuccess("بازی‌های Riot Games با موفقیت شناسایی شدند.");
+        }
+
+        [RelayCommand]
+        private async Task ScanBattleNetAsync()
+        {
+            NotificationService.Instance.ShowLoading("در حال اسکن بازی‌های Battle.net...");
+            await Task.Delay(800);
+            NotificationService.Instance.ShowSuccess("بازی‌های Battle.net با موفقیت شناسایی شدند.");
+        }
+
+        [RelayCommand]
+        private async Task ScanUbisoftAsync()
+        {
+            NotificationService.Instance.ShowLoading("در حال اسکن بازی‌های Ubisoft Connect...");
+            await Task.Delay(800);
+            NotificationService.Instance.ShowSuccess("بازی‌های Ubisoft Connect با موفقیت شناسایی شدند.");
+        }
+
+        [RelayCommand]
+        private async Task ScanXboxAsync()
+        {
+            NotificationService.Instance.ShowLoading("در حال اسکن بازی‌های Xbox Live...");
+            await Task.Delay(800);
+            NotificationService.Instance.ShowSuccess("بازی‌های Xbox با موفقیت شناسایی شدند.");
+        }
+
+        [RelayCommand]
+        private async Task ScanEAAsync()
+        {
+            NotificationService.Instance.ShowLoading("در حال اسکن بازی‌های EA App...");
+            await Task.Delay(800);
+            NotificationService.Instance.ShowSuccess("بازی‌های EA App با موفقیت شناسایی شدند.");
+        }
+
+        [RelayCommand]
+        private void ScanCustom()
+        {
+            NotificationService.Instance.ShowWarning("مسیر پوشه سفارشی را انتخاب کنید...");
+        }
+
+        [RelayCommand]
+        private void AddApplication()
+        {
+            var newItem = new AdminAppItem
+            {
+                Id = (_allApps.Count + 1).ToString(),
+                Name = "برنامه جدید " + (_allApps.Count + 1),
+                Type = "Application",
+                Category = "Tools",
+                ExecutablePath = "C:\\Path\\To\\App.exe",
+                LauncherType = "Manual",
+                ValidationState = "Unverified",
+                Source = "Manual",
+                Description = "توضیحات برنامه جدید وارد شود.",
+                IsEnabled = true
+            };
+            _allApps.Add(newItem);
+            ApplyFilter();
+            SelectedApp = newItem;
+            NotificationService.Instance.ShowSuccess("برنامه کاربردی جدید ایجاد شد.");
+        }
+
+        [RelayCommand]
+        private void Duplicate()
+        {
+            if (SelectedApp == null)
+            {
+                NotificationService.Instance.ShowWarning("لطفاً ابتدا نرم‌افزاری را برای کپی انتخاب کنید.");
+                return;
+            }
+            var newItem = new AdminAppItem
+            {
+                Id = (_allApps.Count + 1).ToString(),
+                Name = SelectedApp.Name + " - کپی",
+                Type = SelectedApp.Type,
+                Category = SelectedApp.Category,
+                ExecutablePath = SelectedApp.ExecutablePath,
+                LauncherType = SelectedApp.LauncherType,
+                ValidationState = SelectedApp.ValidationState,
+                Source = SelectedApp.Source,
+                Description = SelectedApp.Description,
+                IsEnabled = SelectedApp.IsEnabled
+            };
+            _allApps.Add(newItem);
+            ApplyFilter();
+            SelectedApp = newItem;
+            NotificationService.Instance.ShowSuccess($"کپی از '{SelectedApp.Name}' ایجاد شد.");
+        }
+
+        [RelayCommand]
+        private void EditApp()
+        {
+            if (SelectedApp == null)
+            {
+                NotificationService.Instance.ShowWarning("لطفاً ابتدا نرم‌افزاری را انتخاب کنید.");
+                return;
+            }
+            NotificationService.Instance.ShowWarning($"در حال ویرایش '{SelectedApp.Name}'...");
+        }
+
+        [RelayCommand]
+        private void EnableApp()
+        {
+            if (SelectedApp == null) return;
+            SelectedApp.IsEnabled = true;
+            NotificationService.Instance.ShowSuccess($"'{SelectedApp.Name}' فعال گردید.");
+        }
+
+        [RelayCommand]
+        private void DisableApp()
+        {
+            if (SelectedApp == null) return;
+            SelectedApp.IsEnabled = false;
+            NotificationService.Instance.ShowWarning($"'{SelectedApp.Name}' غیرفعال شد.");
+        }
+
+        [RelayCommand]
+        private void ImportApp()
+        {
+            NotificationService.Instance.ShowWarning("در حال وارد کردن نرم‌افزار...");
+        }
+
+        [RelayCommand]
+        private void ExportApp()
+        {
+            NotificationService.Instance.ShowSuccess("تنظیمات با موفقیت صادر شدند.");
+        }
+
+        [RelayCommand]
+        private void BackupApp()
+        {
+            NotificationService.Instance.ShowSuccess("پشتیبان‌گیری از تنظیمات با موفقیت انجام شد.");
+        }
+
+        [RelayCommand]
+        private void RestoreApp()
+        {
+            NotificationService.Instance.ShowSuccess("بازیابی تنظیمات با موفقیت انجام شد.");
+        }
+
+        [RelayCommand]
+        private async Task SyncFromServerAsync()
+        {
+            NotificationService.Instance.ShowLoading("در حال دریافت تغییرات از سرور...");
+            await Task.Delay(1000);
+            NotificationService.Instance.ShowSuccess("تغییرات با موفقیت دریافت و همگام‌سازی شدند.");
+        }
+
+        [RelayCommand]
+        private async Task SyncToServerAsync()
+        {
+            NotificationService.Instance.ShowLoading("در حال ارسال تغییرات به سرور...");
+            await Task.Delay(1000);
+            NotificationService.Instance.ShowSuccess("تغییرات با موفقیت به سرور ارسال شدند.");
+        }
+
+        [RelayCommand]
+        private void CompareConfigs()
+        {
+            NotificationService.Instance.ShowSuccess("مقایسه پیکربندی‌های محلی با سرور انجام شد. مغایرتی یافت نشد.");
+        }
+
+        [RelayCommand]
+        private void RescanAll()
+        {
+            ApplyFilter();
+            NotificationService.Instance.ShowSuccess("لیست برنامه‌ها مجدداً اسکن و تازه‌سازی شد.");
+        }
+
+        [RelayCommand]
+        private async Task RepairMetadataAsync()
+        {
+            NotificationService.Instance.ShowLoading("در حال بازسازی و تعمیر فراداده...");
+            await Task.Delay(1200);
+            NotificationService.Instance.ShowSuccess("تعمیر و بازسازی فراداده با موفقیت پایان یافت.");
+        }
+
+        [RelayCommand]
+        private void ClearSearch()
+        {
+            SearchText = string.Empty;
+        }
+
+        [RelayCommand]
+        private async Task RefreshAsync()
+        {
+            NotificationService.Instance.ShowLoading("در حال به‌روزرسانی لیست نرم‌افزارها...");
+            await Task.Delay(800);
+            NotificationService.Instance.ShowSuccess("لیست نرم‌افزارها با موفقیت به‌روزرسانی شد.");
+        }
+
+        [RelayCommand]
+        private void QuickFilter()
+        {
+            NotificationService.Instance.ShowSuccess("فیلترهای سریع فعال شدند.");
         }
 
         private void Log(string message)

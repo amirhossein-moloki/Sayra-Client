@@ -19,39 +19,35 @@
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
 
-        <!-- Premium Navigation Item Style -->
-        <Style x:Key="ConsoleNavItemStyle" TargetType="ListBoxItem">
-            <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="BorderBrush" Value="Transparent"/>
-            <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="Padding" Value="10,8"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="ListBoxItem">
-                        <Border x:Name="ItemBorder"
-                                Background="{TemplateBinding Background}"
-                                BorderBrush="{TemplateBinding BorderBrush}"
-                                BorderThickness="3,0,0,0"
-                                Margin="0,2"
-                                Padding="{TemplateBinding Padding}"
-                                CornerRadius="0">
-                            <ContentPresenter VerticalAlignment="Center"/>
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsSelected" Value="True">
-                                <Setter TargetName="ItemBorder" Property="Background" Value="#15F7E733"/>
-                                <Setter TargetName="ItemBorder" Property="BorderBrush" Value="#F7E733"/>
-                            </Trigger>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="ItemBorder" Property="Background" Value="#0AFFFFFF"/>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
+        <!-- Centralized High-Fidelity SVG Icon Geometries -->
+        <Geometry x:Key="SearchIconGeometry">m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z</Geometry>
+        <Geometry x:Key="ClearIconGeometry">M6 18L18 6M6 6l12 12</Geometry>
+        <Geometry x:Key="RefreshIconGeometry">M16 3h5v5 M21 3l-7 7 M8 21H3v-5 M3 21l7-7 M18.5 15.5a7 7 0 1 1-13-7</Geometry>
+        <Geometry x:Key="FilterIconGeometry">M3 4.5h18l-7.5 9v5.25L9.75 21v-7.5l-6.75-9Z</Geometry>
+        <Geometry x:Key="ScanIconGeometry">M12 3v3 M12 18v3 M3 12h3 M18 12h3 M5.6 5.6l2.1 2.1 M16.3 16.3l2.1 2.1 M18.4 5.6l-2.1 2.1 M7.7 16.3l-2.1 2.1</Geometry>
+        <Geometry x:Key="SteamIconGeometry">M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm-1.8 11.2a2.3 2.3 0 1 1-1.3-3.1 2.3 2.3 0 0 1 1.3 3.1z</Geometry>
+        <Geometry x:Key="EpicGamesIconGeometry">M12 2L3 5v6c0 5.5 3.8 10.7 9 12 5.2-1.3 9-6.5 9-12V5zm0 15a3 3 0 1 1 3-3 3 3 0 0 1-3 3z</Geometry>
+        <Geometry x:Key="RiotGamesIconGeometry">M4 4h6l2 8 2-8h6l-4 16H8z</Geometry>
+        <Geometry x:Key="BattleNetIconGeometry">M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm3.5 11h-7a1.5 1.5 0 0 1 0-3h7a1.5 1.5 0 0 1 0 3z</Geometry>
+        <Geometry x:Key="UbisoftIconGeometry">M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm0 15a5 5 0 1 1 5-5 5 5 0 0 1-5 5z</Geometry>
+        <Geometry x:Key="XboxIconGeometry">M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm6 12a13 13 0 0 1-12 0c1.2-2.3 4.2-4 6-4s4.8 1.7 6 4z</Geometry>
+        <Geometry x:Key="EAIconGeometry">M2 12h20M12 2v20</Geometry>
+        <Geometry x:Key="FolderIconGeometry">M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z</Geometry>
+        <Geometry x:Key="AddIconGeometry">M12 5v14M5 12h14</Geometry>
+        <Geometry x:Key="DuplicateIconGeometry">M8 4h10a2 2 0 012 2v10a2 2 0 01-2 2H8a2 2 0 01-2-2V6a2 2 0 012-2z M4 8h2v12H4z</Geometry>
+        <Geometry x:Key="EditIconGeometry">M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7 M18.5 2.5a2.12 2.12 0 113 3L12 15l-4 1 1-4z</Geometry>
+        <Geometry x:Key="RemoveIconGeometry">M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7M10 11v6M14 11v6 M4 7h16 M9 7V4a1 1 0 011-1h4a1 1 0 011 1v3</Geometry>
+        <Geometry x:Key="PowerIconGeometry">M18.36 6.64a9 9 0 11-12.73 0 M12 2v10</Geometry>
+        <Geometry x:Key="ImportIconGeometry">M12 3v12m0 0l-4-4m4 4l4-4M4 17h16</Geometry>
+        <Geometry x:Key="ExportIconGeometry">M12 15V3m0 12l-4-4m4 4l4-4M4 17h16</Geometry>
+        <Geometry x:Key="BackupIconGeometry">M12 16.5V9.75m0 0l3 3m-3-3l-3 3M4 12a8 8 0 1116 0v4.5A2.25 2.25 0 0117.75 19H6.25A2.25 2.25 0 014 16.75V12z</Geometry>
+        <Geometry x:Key="RestoreIconGeometry">M12 9.75v6.75m0 0l3-3m-3 3l-3-3M4 12a8 8 0 1116 0v4.5A2.25 2.25 0 0117.75 19H6.25A2.25 2.25 0 014 16.75V12z</Geometry>
+        <Geometry x:Key="MetadataIconGeometry">M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z</Geometry>
+        <Geometry x:Key="SyncIconGeometry">M4 4v5h.582m15.356 2A8.001 8.001 0 1021 12h-1.5M20 20v-5h-.581m0 0a8.003 8.003 0 11-15.355-2H3.5</Geometry>
+        <Geometry x:Key="CompareIconGeometry">M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4</Geometry>
+        <Geometry x:Key="ValidateIconGeometry">M9 12l2 2 4-4m5 2a9 9 0 11-18 0 9 9 0 0118 0z</Geometry>
 
-        <!-- Premium Dense Action Button Style -->
+        <!-- Base Action Button Style (For Title Bar) -->
         <Style x:Key="ConsoleActionButtonStyle" TargetType="Button">
             <Setter Property="Background" Value="#171A20"/>
             <Setter Property="Foreground" Value="#E1E1E6"/>
@@ -73,12 +69,12 @@
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="BtnBorder" Property="Background" Value="#1F222B"/>
+                                <Setter TargetName="BtnBorder" Property="Background" Value="#252932"/>
                                 <Setter TargetName="BtnBorder" Property="BorderBrush" Value="#F7E733"/>
                                 <Setter Property="Foreground" Value="White"/>
                             </Trigger>
                             <Trigger Property="IsPressed" Value="True">
-                                <Setter TargetName="BtnBorder" Property="Background" Value="#252528"/>
+                                <Setter TargetName="BtnBorder" Property="Background" Value="#0E1015"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -86,43 +82,65 @@
             </Setter>
         </Style>
 
-        <!-- Primary Accent Save Button Style -->
-        <Style x:Key="SaveButtonStyle" TargetType="Button">
-            <Setter Property="Background" Value="#F7E733"/>
-            <Setter Property="Foreground" Value="Black"/>
-            <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="Padding" Value="15,10"/>
+        <!-- Standard High-Fidelity Button Style -->
+        <Style x:Key="ConsoleButtonStyle" TargetType="Button">
+            <Setter Property="Height" Value="40"/>
+            <Setter Property="Background" Value="#1D2027"/>
+            <Setter Property="Foreground" Value="#C5CBD5"/>
+            <Setter Property="BorderBrush" Value="#2B3039"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="18,0"/>
             <Setter Property="Cursor" Value="Hand"/>
             <Setter Property="FontFamily" Value="{StaticResource PeydaBold}"/>
             <Setter Property="FontSize" Value="14"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
                         <Border x:Name="BtnBorder"
                                 Background="{TemplateBinding Background}"
-                                CornerRadius="8">
-                            <Border.Effect>
-                                <DropShadowEffect x:Name="Glow" Color="#F7E733" BlurRadius="10" ShadowDepth="0" Opacity="0"/>
-                            </Border.Effect>
-                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="10">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" Margin="{TemplateBinding Padding}"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="BtnBorder" Property="Background" Value="#252932"/>
+                                <Setter Property="Foreground" Value="#FFFFFF"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="BtnBorder" Property="Background" Value="#0E1015"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="BtnBorder" Property="Background" Value="#121418"/>
+                                <Setter TargetName="BtnBorder" Property="BorderBrush" Value="#1B1E24"/>
+                                <Setter Property="Foreground" Value="#8E95A1"/>
+                                <Setter Property="Opacity" Value="0.4"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Primary Button Style (Yellow Accent) -->
+        <Style x:Key="PrimaryConsoleButtonStyle" TargetType="Button" BasedOn="{StaticResource ConsoleButtonStyle}">
+            <Setter Property="Background" Value="#F7E733"/>
+            <Setter Property="Foreground" Value="#0E1015"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="BtnBorder"
+                                Background="{TemplateBinding Background}"
+                                CornerRadius="10">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" Margin="{TemplateBinding Padding}"/>
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
                                 <Setter TargetName="BtnBorder" Property="Background" Value="#FFFF5F"/>
-                                <Trigger.EnterActions>
-                                    <BeginStoryboard>
-                                        <Storyboard>
-                                            <DoubleAnimation Storyboard.TargetName="Glow" Storyboard.TargetProperty="Opacity" To="0.5" Duration="0:0:0.2"/>
-                                        </Storyboard>
-                                    </BeginStoryboard>
-                                </Trigger.EnterActions>
-                                <Trigger.ExitActions>
-                                    <BeginStoryboard>
-                                        <Storyboard>
-                                            <DoubleAnimation Storyboard.TargetName="Glow" Storyboard.TargetProperty="Opacity" To="0.0" Duration="0:0:0.2"/>
-                                        </Storyboard>
-                                    </BeginStoryboard>
-                                </Trigger.ExitActions>
                             </Trigger>
                             <Trigger Property="IsPressed" Value="True">
                                 <Setter TargetName="BtnBorder" Property="Background" Value="#E0D12E"/>
@@ -133,67 +151,58 @@
             </Setter>
         </Style>
 
-        <!-- Professional DataGrid Style -->
-        <Style x:Key="ConsoleDataGridStyle" TargetType="DataGrid">
-            <Setter Property="Background" Value="#171A20"/>
-            <Setter Property="BorderBrush" Value="#2B3039"/>
-            <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="RowBackground" Value="#171A20"/>
-            <Setter Property="AlternatingRowBackground" Value="#1D2027"/>
-            <Setter Property="GridLinesVisibility" Value="All"/>
-            <Setter Property="HorizontalGridLinesBrush" Value="#252528"/>
-            <Setter Property="VerticalGridLinesBrush" Value="#252528"/>
-            <Setter Property="AutoGenerateColumns" Value="False"/>
-            <Setter Property="CanUserAddRows" Value="False"/>
-            <Setter Property="CanUserDeleteRows" Value="False"/>
-            <Setter Property="IsReadOnly" Value="True"/>
-            <Setter Property="SelectionMode" Value="Single"/>
-            <Setter Property="HeadersVisibility" Value="Column"/>
-            <Setter Property="RowHeaderWidth" Value="0"/>
-        </Style>
-
-        <Style x:Key="ConsoleColumnHeaderStyle" TargetType="DataGridColumnHeader">
-            <Setter Property="Background" Value="#252528"/>
-            <Setter Property="Foreground" Value="White"/>
-            <Setter Property="FontFamily" Value="{StaticResource PeydaBold}"/>
-            <Setter Property="FontSize" Value="13"/>
-            <Setter Property="Padding" Value="10,12"/>
-            <Setter Property="BorderThickness" Value="0,0,1,1"/>
-            <Setter Property="BorderBrush" Value="#2B3039"/>
-        </Style>
-
-        <Style x:Key="ConsoleCellPlaceholderStyle" TargetType="DataGridCell">
-            <Setter Property="Foreground" Value="#E1E1E6"/>
-            <Setter Property="FontFamily" Value="{StaticResource PeydaMedium}"/>
-            <Setter Property="FontSize" Value="13"/>
-            <Setter Property="Padding" Value="10,10"/>
+        <!-- Danger Button Style (Red Accent) -->
+        <Style x:Key="DangerConsoleButtonStyle" TargetType="Button" BasedOn="{StaticResource ConsoleButtonStyle}">
+            <Setter Property="Background" Value="#E65C5C"/>
+            <Setter Property="Foreground" Value="#FFFFFF"/>
             <Setter Property="BorderThickness" Value="0"/>
             <Setter Property="Template">
                 <Setter.Value>
-                    <ControlTemplate TargetType="DataGridCell">
-                        <Border Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}">
-                            <ContentPresenter VerticalAlignment="Center"/>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="BtnBorder"
+                                Background="{TemplateBinding Background}"
+                                CornerRadius="10">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" Margin="{TemplateBinding Padding}"/>
                         </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="BtnBorder" Property="Background" Value="#F57A7A"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="BtnBorder" Property="Background" Value="#C24444"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
-            <Style.Triggers>
-                <Trigger Property="IsSelected" Value="True">
-                    <Setter Property="Background" Value="#2A2D35"/>
-                    <Setter Property="Foreground" Value="#F7E733"/>
-                </Trigger>
-            </Style.Triggers>
+        </Style>
+
+        <!-- Mock Showcase Button States (Group 2) -->
+        <Style x:Key="HoverMockButtonStyle" TargetType="Button" BasedOn="{StaticResource ConsoleButtonStyle}">
+            <Setter Property="Background" Value="#252932"/>
+            <Setter Property="Foreground" Value="#FFFFFF"/>
+        </Style>
+
+        <Style x:Key="PressedMockButtonStyle" TargetType="Button" BasedOn="{StaticResource ConsoleButtonStyle}">
+            <Setter Property="Background" Value="#0E1015"/>
+            <Setter Property="Foreground" Value="#C5CBD5"/>
+        </Style>
+
+        <Style x:Key="FocusedMockButtonStyle" TargetType="Button" BasedOn="{StaticResource ConsoleButtonStyle}">
+            <Setter Property="Background" Value="#1D2027"/>
+            <Setter Property="Foreground" Value="#FFFFFF"/>
+            <Setter Property="BorderBrush" Value="#F7E733"/>
+            <Setter Property="BorderThickness" Value="1.5"/>
         </Style>
     </Window.Resources>
 
     <Grid Background="#0E1015">
-        <!-- Main Layout with rows for Title Bar and Console Workspace -->
         <Grid.RowDefinitions>
-            <RowDefinition Height="50" /> <!-- Window Header -->
-            <RowDefinition Height="*" />  <!-- Workspace Area -->
+            <RowDefinition Height="50" /> <!-- 1. Window Title Header -->
+            <RowDefinition Height="*" />  <!-- 2. Workspace Area -->
         </Grid.RowDefinitions>
 
-        <!-- 1. ADMINISTRATIVE TITLE BAR -->
+        <!-- ================= 1. ADMINISTRATIVE TITLE BAR ================= -->
         <Grid Grid.Row="0" Background="#171A20" SnapsToDevicePixels="True">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />
@@ -236,437 +245,427 @@
             </StackPanel>
         </Grid>
 
-        <!-- 2. CONSOLE WORKSPACE -->
-        <Grid Grid.Row="1">
-            <Grid.ColumnDefinitions>
-                <!-- Column 0: Left minimal navigation tree/sidebar (260px) -->
-                <ColumnDefinition Width="260" />
+        <!-- ================= 2. CONSOLE WORKSPACE (TOP ONLY) ================= -->
+        <Grid Grid.Row="1" Background="#0E1015">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" /> <!-- Search Area Row -->
+                <RowDefinition Height="Auto" /> <!-- Toolbar Row -->
+                <RowDefinition Height="*" />    <!-- Rest of Canvas (Empty as Requested) -->
+            </Grid.RowDefinitions>
 
-                <!-- Column 1: Center dominant table workspace (Stretches) -->
-                <ColumnDefinition Width="*" />
+            <!-- ================= A. SEARCH AREA ================= -->
+            <Border Grid.Row="0"
+                    Height="64"
+                    Margin="32,32,32,0"
+                    Padding="20,0"
+                    CornerRadius="12"
+                    BorderThickness="1"
+                    BorderBrush="#2B3039"
+                    Background="#171A20"
+                    VerticalAlignment="Center">
 
-                <!-- Column 2: Right detailed property inspector (380px) -->
-                <ColumnDefinition Width="380" />
-            </Grid.ColumnDefinitions>
-
-            <!-- ================= LEFT NAVIGATION TREE ================= -->
-            <Grid Grid.Column="0" Background="#171A20" SnapsToDevicePixels="True" Margin="0,0,2,0">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="*" />
-                    <RowDefinition Height="Auto" />
-                </Grid.RowDefinitions>
-
-                <Border Grid.Row="0" Background="#1D2027" Padding="15" BorderThickness="0,0,0,1" BorderBrush="#2B3039">
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="Console Root [Local]"
-                                   FontFamily="{StaticResource PeydaBold}"
-                                   FontSize="13"
-                                   Foreground="#E1E1E6"/>
-                    </StackPanel>
-                </Border>
-
-                <!-- Navigation Hierarchy Mockup tree using Styled ListBox -->
-                <ListBox Grid.Row="1"
-                         Background="Transparent"
-                         BorderThickness="0"
-                         ItemContainerStyle="{StaticResource ConsoleNavItemStyle}"
-                         SelectedIndex="2">
-                    <ListBox.Items>
-                        <!-- Node 1: Administration Root -->
-                        <StackPanel Orientation="Horizontal" Margin="5,0">
-                            <TextBlock Text="📁 Console Root" FontFamily="{StaticResource PeydaBold}" FontSize="13" Foreground="#9A9A9A" />
-                        </StackPanel>
-                        <!-- Node 2: Local Administration sub-folder -->
-                        <StackPanel Orientation="Horizontal" Margin="15,0">
-                            <TextBlock Text="📁 Local Administration" FontFamily="{StaticResource PeydaBold}" FontSize="13" Foreground="#E1E1E6" />
-                        </StackPanel>
-                        <!-- Node 3: Game & Application Manager (Active Workspace) -->
-                        <StackPanel Orientation="Horizontal" Margin="25,0">
-                            <TextBlock Text="🎮 Game &amp; App Manager" FontFamily="{StaticResource PeydaBold}" FontSize="13" Foreground="White" />
-                        </StackPanel>
-                        <!-- Node 4: Configuration & Policies -->
-                        <StackPanel Orientation="Horizontal" Margin="25,0">
-                            <TextBlock Text="⚙️ Client Configuration" FontFamily="{StaticResource PeydaMedium}" FontSize="13" Foreground="#9A9A9A" />
-                        </StackPanel>
-                        <!-- Node 5: Sync Logs -->
-                        <StackPanel Orientation="Horizontal" Margin="25,0">
-                            <TextBlock Text="📄 Sync &amp; Audit Logs" FontFamily="{StaticResource PeydaMedium}" FontSize="13" Foreground="#9A9A9A" />
-                        </StackPanel>
-                        <!-- Node 6: Server Synchronization -->
-                        <StackPanel Orientation="Horizontal" Margin="15,0">
-                            <TextBlock Text="🌐 Server Connection" FontFamily="{StaticResource PeydaMedium}" FontSize="13" Foreground="#9A9A9A" />
-                        </StackPanel>
-                    </ListBox.Items>
-                </ListBox>
-
-                <Border Grid.Row="2" Background="#1D2027" Padding="15" BorderThickness="0,1,0,0" BorderBrush="#2B3039">
-                    <StackPanel>
-                        <TextBlock Text="Console Version 2.8" FontSize="11" FontFamily="{StaticResource PeydaMedium}" Foreground="#9A9A9A"/>
-                        <TextBlock Text="Admin User: Administrator" FontSize="11" FontFamily="{StaticResource PeydaMedium}" Foreground="#9A9A9A" Margin="0,4,0,0"/>
-                    </StackPanel>
-                </Border>
-            </Grid>
-
-            <!-- ================= CENTER TABLE WORKSPACE ================= -->
-            <Grid Grid.Column="1" Background="#0E1015" Padding="20">
-                <Grid.RowDefinitions>
-                    <!-- Toolbar for administrative tasks -->
-                    <RowDefinition Height="Auto" />
-                    <!-- Dominant Workspace Grid Table -->
-                    <RowDefinition Height="*" />
-                    <!-- Bottom table statistics or verification report bar (Dense) -->
-                    <RowDefinition Height="Auto" />
-                </Grid.RowDefinitions>
-
-                <!-- TOP ADMINISTRATIVE TOOLBAR -->
-                <Grid Grid.Row="0" Margin="0,0,0,15">
+                <Grid>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="7*" />  <!-- Search Box occupies ~70% -->
+                        <ColumnDefinition Width="3*" />  <!-- Aligned Right Actions -->
                     </Grid.ColumnDefinitions>
 
-                    <!-- Left Aligned Actions (Scan, Add, Sync, etc.) -->
-                    <StackPanel Grid.Column="0" Orientation="Horizontal">
-                        <Button Style="{StaticResource ConsoleActionButtonStyle}"
-                                Command="{Binding ScanGamesCommand}"
-                                Content="🔍 اسکن بازی‌ها"
-                                Margin="0,0,8,0" />
-                        <Button Style="{StaticResource ConsoleActionButtonStyle}"
-                                Command="{Binding ScanAppsCommand}"
-                                Content="🔍 اسکن برنامه‌ها"
-                                Margin="0,0,8,0" />
-                        <Button Style="{StaticResource ConsoleActionButtonStyle}"
-                                Command="{Binding RegisterSoftwareCommand}"
-                                Content="➕ ثبت نرم‌افزار جدید"
-                                Margin="0,0,8,0" />
-                        <Button Style="{StaticResource ConsoleActionButtonStyle}"
-                                Command="{Binding ValidatePathsCommand}"
-                                Content="✅ اعتبارسنجی تمام مسیرها"
-                                Margin="0,0,8,0" />
-                        <Button Style="{StaticResource ConsoleActionButtonStyle}"
-                                Command="{Binding SyncServerCommand}"
-                                Content="🌐 همگام‌سازی با سرور"
-                                Margin="0,0,8,0" />
-                        <Button Style="{StaticResource ConsoleActionButtonStyle}"
-                                Command="{Binding ExportConfigCommand}"
-                                Content="💾 خروجی پیکربندی (JSON)"
-                                Margin="0,0,8,0" />
-                    </StackPanel>
-
-                    <!-- Right Aligned Search Field -->
-                    <StackPanel Grid.Column="1" Orientation="Horizontal" Width="280">
-                        <TextBlock Text="🔍" VerticalAlignment="Center" Foreground="#9A9A9A" Margin="0,0,8,0"/>
-                        <TextBox Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
-                                 Height="36"
-                                 Width="250"
-                                 Background="#171A20"
-                                 Foreground="White"
-                                 BorderBrush="#2B3039"
-                                 BorderThickness="1"
-                                 Padding="8,5"
-                                 FontFamily="{StaticResource PeydaMedium}"
-                                 FontSize="13"
-                                 VerticalAlignment="Center">
-                            <TextBox.Resources>
-                                <Style TargetType="{x:Type Border}">
-                                    <Setter Property="CornerRadius" Value="6" />
-                                </Style>
-                            </TextBox.Resources>
-                        </TextBox>
-                    </StackPanel>
-                </Grid>
-
-                <!-- THE DOMINANT CENTER TABLE -->
-                <DataGrid Grid.Row="1"
-                          Style="{StaticResource ConsoleDataGridStyle}"
-                          ColumnHeaderStyle="{StaticResource ConsoleColumnHeaderStyle}"
-                          CellStyle="{StaticResource ConsoleCellPlaceholderStyle}"
-                          ItemsSource="{Binding Apps}"
-                          SelectedItem="{Binding SelectedApp, Mode=TwoWay}"
-                          SnapsToDevicePixels="True">
-                    <DataGrid.Columns>
-                        <!-- Status Toggle (IsEnabled) -->
-                        <DataGridTemplateColumn Header="وضعیت" Width="70" HeaderStyle="{StaticResource ConsoleColumnHeaderStyle}">
-                            <DataGridTemplateColumn.CellTemplate>
-                                <DataTemplate>
-                                    <CheckBox IsChecked="{Binding IsEnabled, UpdateSourceTrigger=PropertyChanged}"
-                                              HorizontalAlignment="Center"
-                                              VerticalAlignment="Center"/>
-                                </DataTemplate>
-                            </DataGridTemplateColumn.CellTemplate>
-                        </DataGridTemplateColumn>
-
-                        <!-- ID -->
-                        <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="50" HeaderStyle="{StaticResource ConsoleColumnHeaderStyle}" CellStyle="{StaticResource ConsoleCellPlaceholderStyle}"/>
-
-                        <!-- Name/Title -->
-                        <DataGridTextColumn Header="نام نرم‌افزار / بازی" Binding="{Binding Name}" Width="180" HeaderStyle="{StaticResource ConsoleColumnHeaderStyle}" CellStyle="{StaticResource ConsoleCellPlaceholderStyle}"/>
-
-                        <!-- Type -->
-                        <DataGridTextColumn Header="نوع" Binding="{Binding Type}" Width="100" HeaderStyle="{StaticResource ConsoleColumnHeaderStyle}" CellStyle="{StaticResource ConsoleCellPlaceholderStyle}"/>
-
-                        <!-- Category -->
-                        <DataGridTextColumn Header="دسته‌بندی" Binding="{Binding Category}" Width="120" HeaderStyle="{StaticResource ConsoleColumnHeaderStyle}" CellStyle="{StaticResource ConsoleCellPlaceholderStyle}"/>
-
-                        <!-- Executable Path -->
-                        <DataGridTextColumn Header="مسیر فایل اجرایی" Binding="{Binding ExecutablePath}" Width="*" HeaderStyle="{StaticResource ConsoleColumnHeaderStyle}" CellStyle="{StaticResource ConsoleCellPlaceholderStyle}"/>
-
-                        <!-- Validation State -->
-                        <DataGridTemplateColumn Header="اعتبارسنجی" Width="130" HeaderStyle="{StaticResource ConsoleColumnHeaderStyle}">
-                            <DataGridTemplateColumn.CellTemplate>
-                                <DataTemplate>
-                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5,0">
-                                        <!-- Visual Check / Alert Indicator -->
-                                        <Ellipse Width="8" Height="8" Margin="0,0,6,0">
-                                            <Ellipse.Style>
-                                                <Style TargetType="Ellipse">
-                                                    <Style.Triggers>
-                                                        <DataTrigger Binding="{Binding ValidationState}" Value="Valid Path">
-                                                            <Setter Property="Fill" Value="#14BE78" />
-                                                        </DataTrigger>
-                                                        <DataTrigger Binding="{Binding ValidationState}" Value="Path Not Found">
-                                                            <Setter Property="Fill" Value="#F46B6B" />
-                                                        </DataTrigger>
-                                                        <DataTrigger Binding="{Binding ValidationState}" Value="Unverified">
-                                                            <Setter Property="Fill" Value="#FF9F1C" />
-                                                        </DataTrigger>
-                                                    </Style.Triggers>
-                                                </Style>
-                                            </Ellipse.Style>
-                                        </Ellipse>
-                                        <TextBlock Text="{Binding ValidationState}" FontSize="12">
-                                            <TextBlock.Style>
-                                                <Style TargetType="TextBlock">
-                                                    <Style.Triggers>
-                                                        <DataTrigger Binding="{Binding ValidationState}" Value="Valid Path">
-                                                            <Setter Property="Foreground" Value="#14BE78" />
-                                                        </DataTrigger>
-                                                        <DataTrigger Binding="{Binding ValidationState}" Value="Path Not Found">
-                                                            <Setter Property="Foreground" Value="#F46B6B" />
-                                                        </DataTrigger>
-                                                        <DataTrigger Binding="{Binding ValidationState}" Value="Unverified">
-                                                            <Setter Property="Foreground" Value="#FF9F1C" />
-                                                        </DataTrigger>
-                                                    </Style.Triggers>
-                                                </Style>
-                                            </TextBlock.Style>
-                                        </TextBlock>
-                                    </StackPanel>
-                                </DataTemplate>
-                            </DataGridTemplateColumn.CellTemplate>
-                        </DataGridTemplateColumn>
-
-                        <!-- Launcher Source -->
-                        <DataGridTextColumn Header="منبع" Binding="{Binding Source}" Width="100" HeaderStyle="{StaticResource ConsoleColumnHeaderStyle}" CellStyle="{StaticResource ConsoleCellPlaceholderStyle}"/>
-                    </DataGrid.Columns>
-                </DataGrid>
-
-                <!-- BOTTOM COMPLEMENTARY CONSOLE REPORT STATUS BAR (Highly Professional) -->
-                <Border Grid.Row="2" Background="#171A20" Padding="15,10" CornerRadius="0,0,6,6" BorderThickness="1,0,1,1" BorderBrush="#2B3039">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
-
-                        <StackPanel Grid.Column="0" Orientation="Horizontal">
-                            <TextBlock Text="مجموع کل بازی‌ها و برنامه‌ها: " FontFamily="{StaticResource PeydaMedium}" Foreground="#9A9A9A" FontSize="13"/>
-                            <TextBlock Text="{Binding Apps.Count}" FontFamily="{StaticResource PeydaBold}" Foreground="White" FontSize="13" Margin="5,0,0,0"/>
-                        </StackPanel>
-
-                        <StackPanel Grid.Column="2" Orientation="Horizontal">
-                            <TextBlock Text="مسیرهای معتبر: " FontFamily="{StaticResource PeydaMedium}" Foreground="#9A9A9A" FontSize="13" Margin="20,0,0,0"/>
-                            <!-- Count simulated directly from binding values -->
-                            <TextBlock Text="تأیید شده" FontFamily="{StaticResource PeydaBold}" Foreground="#14BE78" FontSize="13" Margin="5,0"/>
-                        </StackPanel>
-                    </Grid>
-                </Border>
-            </Grid>
-
-            <!-- ================= RIGHT PROPERTY INSPECTOR ================= -->
-            <Grid Grid.Column="2" Background="#171A20" SnapsToDevicePixels="True" Margin="2,0,0,0">
-                <Grid.RowDefinitions>
-                    <!-- Header -->
-                    <RowDefinition Height="Auto" />
-                    <!-- Inspector Properties Content -->
-                    <RowDefinition Height="*" />
-                    <!-- Actions -->
-                    <RowDefinition Height="Auto" />
-                </Grid.RowDefinitions>
-
-                <Border Grid.Row="0" Background="#1D2027" Padding="15" BorderThickness="0,0,0,1" BorderBrush="#2B3039">
-                    <TextBlock Text="⚙️ Property Inspector"
-                               FontFamily="{StaticResource PeydaBold}"
-                               FontSize="14"
-                               Foreground="#F7E733"/>
-                </Border>
-
-                <!-- Inspector Settings Form -->
-                <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-                    <StackPanel Padding="20" DataContext="{Binding SelectedApp}">
-                        <StackPanel.Style>
-                            <Style TargetType="StackPanel">
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding}" Value="{x:Null}">
-                                        <Setter Property="Visibility" Value="Collapsed"/>
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </StackPanel.Style>
-
-                        <!-- Basic Metadata Section -->
-                        <TextBlock Text="General Properties" FontFamily="{StaticResource PeydaBold}" FontSize="13" Foreground="#9A9A9A" Margin="0,0,0,10" />
-
-                        <TextBlock Text="Software Name:" FontFamily="{StaticResource PeydaMedium}" FontSize="12" Foreground="#E1E1E6" Margin="0,0,0,5" />
-                        <TextBox Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}" Height="34" Margin="0,0,0,15" Background="#1D2027" Foreground="White" BorderBrush="#2B3039" BorderThickness="1" Padding="5">
-                            <TextBox.Resources><Style TargetType="Border"><Setter Property="CornerRadius" Value="4"/></Style></TextBox.Resources>
-                        </TextBox>
-
-                        <Grid Margin="0,0,0,15">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="10" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-
-                            <StackPanel Grid.Column="0">
-                                <TextBlock Text="Type:" FontFamily="{StaticResource PeydaMedium}" FontSize="12" Foreground="#E1E1E6" Margin="0,0,0,5" />
-                                <ComboBox SelectedItem="{Binding Type}" ItemsSource="{Binding DataContext.AppTypes, RelativeSource={RelativeSource AncestorType=Window}}" Height="34" Background="#1D2027" Foreground="White" BorderBrush="#2B3039" BorderThickness="1">
-                                    <ComboBox.Resources><Style TargetType="Border"><Setter Property="CornerRadius" Value="4"/></Style></ComboBox.Resources>
-                                </ComboBox>
-                            </StackPanel>
-
-                            <StackPanel Grid.Column="2">
-                                <TextBlock Text="Category:" FontFamily="{StaticResource PeydaMedium}" FontSize="12" Foreground="#E1E1E6" Margin="0,0,0,5" />
-                                <ComboBox SelectedItem="{Binding Category}" ItemsSource="{Binding DataContext.Categories, RelativeSource={RelativeSource AncestorType=Window}}" Height="34" Background="#1D2027" Foreground="White" BorderBrush="#2B3039" BorderThickness="1">
-                                    <ComboBox.Resources><Style TargetType="Border"><Setter Property="CornerRadius" Value="4"/></Style></ComboBox.Resources>
-                                </ComboBox>
-                            </StackPanel>
-                        </Grid>
-
-                        <Border Height="1" Background="#2B3039" Margin="0,10,0,15"/>
-
-                        <!-- Execution Settings Section -->
-                        <TextBlock Text="Execution Settings" FontFamily="{StaticResource PeydaBold}" FontSize="13" Foreground="#9A9A9A" Margin="0,0,0,10" />
-
-                        <TextBlock Text="Executable Path:" FontFamily="{StaticResource PeydaMedium}" FontSize="12" Foreground="#E1E1E6" Margin="0,0,0,5" />
-                        <Grid Margin="0,0,0,15">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="5" />
-                                <ColumnDefinition Width="Auto" />
-                            </Grid.ColumnDefinitions>
-                            <TextBox Grid.Column="0" Text="{Binding ExecutablePath, UpdateSourceTrigger=PropertyChanged}" Height="34" Background="#1D2027" Foreground="White" BorderBrush="#2B3039" BorderThickness="1" Padding="5">
-                                <TextBox.Resources><Style TargetType="Border"><Setter Property="CornerRadius" Value="4"/></Style></TextBox.Resources>
-                            </TextBox>
-                            <!-- Validate Selected Path Button -->
-                            <Button Grid.Column="2" Style="{StaticResource ConsoleActionButtonStyle}" Command="{Binding DataContext.ValidateSelectedPathCommand, RelativeSource={RelativeSource AncestorType=Window}}" Content="Verify" Height="34" Padding="10,0"/>
-                        </Grid>
-
-                        <TextBlock Text="Launch Arguments:" FontFamily="{StaticResource PeydaMedium}" FontSize="12" Foreground="#E1E1E6" Margin="0,0,0,5" />
-                        <TextBox Text="{Binding Arguments, UpdateSourceTrigger=PropertyChanged}" Height="34" Margin="0,0,0,15" Background="#1D2027" Foreground="White" BorderBrush="#2B3039" BorderThickness="1" Padding="5">
-                            <TextBox.Resources><Style TargetType="Border"><Setter Property="CornerRadius" Value="4"/></Style></TextBox.Resources>
-                        </TextBox>
-
-                        <TextBlock Text="Working Directory:" FontFamily="{StaticResource PeydaMedium}" FontSize="12" Foreground="#E1E1E6" Margin="0,0,0,5" />
-                        <TextBox Text="{Binding WorkingDirectory, UpdateSourceTrigger=PropertyChanged}" Height="34" Margin="0,0,0,15" Background="#1D2027" Foreground="White" BorderBrush="#2B3039" BorderThickness="1" Padding="5">
-                            <TextBox.Resources><Style TargetType="Border"><Setter Property="CornerRadius" Value="4"/></Style></TextBox.Resources>
-                        </TextBox>
-
-                        <Border Height="1" Background="#2B3039" Margin="0,10,0,15"/>
-
-                        <!-- Launcher Configuration Options -->
-                        <TextBlock Text="Launcher Options" FontFamily="{StaticResource PeydaBold}" FontSize="13" Foreground="#9A9A9A" Margin="0,0,0,10" />
-
-                        <TextBlock Text="Launcher Type:" FontFamily="{StaticResource PeydaMedium}" FontSize="12" Foreground="#E1E1E6" Margin="0,0,0,5" />
-                        <ComboBox SelectedItem="{Binding LauncherType}" ItemsSource="{Binding DataContext.LauncherTypes, RelativeSource={RelativeSource AncestorType=Window}}" Height="34" Margin="0,0,0,15" Background="#1D2027" Foreground="White" BorderBrush="#2B3039" BorderThickness="1">
-                            <ComboBox.Resources><Style TargetType="Border"><Setter Property="CornerRadius" Value="4"/></Style></ComboBox.Resources>
-                        </ComboBox>
-
-                        <!-- Additional Policy Checks -->
-                        <CheckBox IsChecked="{Binding RunAsAdmin}" Margin="0,0,0,8" VerticalContentAlignment="Center">
-                            <TextBlock Text="Run as Administrator" FontSize="12" Foreground="#E1E1E6" Margin="5,0,0,0" VerticalAlignment="Center"/>
-                        </CheckBox>
-                        <CheckBox IsChecked="{Binding EnableOverlay}" Margin="0,0,0,8" VerticalContentAlignment="Center">
-                            <TextBlock Text="Enable In-Game Overlay" FontSize="12" Foreground="#E1E1E6" Margin="5,0,0,0" VerticalAlignment="Center"/>
-                        </CheckBox>
-                        <CheckBox IsChecked="{Binding UseSandbox}" Margin="0,0,0,15" VerticalContentAlignment="Center">
-                            <TextBlock Text="Launch via Watchdog Sandbox" FontSize="12" Foreground="#E1E1E6" Margin="5,0,0,0" VerticalAlignment="Center"/>
-                        </CheckBox>
-
-                        <Border Height="1" Background="#2B3039" Margin="0,10,0,15"/>
-
-                        <!-- Description Box -->
-                        <TextBlock Text="Description:" FontFamily="{StaticResource PeydaMedium}" FontSize="12" Foreground="#E1E1E6" Margin="0,0,0,5" />
-                        <TextBox Text="{Binding Description, UpdateSourceTrigger=PropertyChanged}" Height="80" TextWrapping="Wrap" AcceptsReturn="True" Background="#1D2027" Foreground="White" BorderBrush="#2B3039" BorderThickness="1" Padding="5">
-                            <TextBox.Resources><Style TargetType="Border"><Setter Property="CornerRadius" Value="4"/></Style></TextBox.Resources>
-                        </TextBox>
-                    </StackPanel>
-                </ScrollViewer>
-
-                <!-- Visual Indicator if No App is Selected -->
-                <Grid Grid.Row="1" IsHitTestVisible="False">
-                    <Grid.Style>
-                        <Style TargetType="Grid">
-                            <Setter Property="Visibility" Value="Collapsed"/>
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding SelectedApp}" Value="{x:Null}">
-                                    <Setter Property="Visibility" Value="Visible"/>
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </Grid.Style>
-                    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Margin="20">
-                        <TextBlock Text="📭" FontSize="40" HorizontalAlignment="Center" Margin="0,0,0,10"/>
-                        <TextBlock Text="لطفاً یک نرم‌افزار را از جدول جهت ویرایش انتخاب کنید" Foreground="#9A9A9A" FontSize="13" TextAlignment="Center" TextWrapping="Wrap"/>
-                    </StackPanel>
-                </Grid>
-
-                <!-- inspector actions footer panel -->
-                <Border Grid.Row="2" Background="#1D2027" Padding="20" BorderThickness="0,1,0,0" BorderBrush="#2B3039">
-                    <StackPanel DataContext="{Binding SelectedApp}">
-                        <StackPanel.Style>
-                            <Style TargetType="StackPanel">
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding}" Value="{x:Null}">
-                                        <Setter Property="IsEnabled" Value="False"/>
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </StackPanel.Style>
-
-                        <Button Style="{StaticResource SaveButtonStyle}"
-                                Command="{Binding DataContext.SaveAppCommand, RelativeSource={RelativeSource AncestorType=Window}}"
-                                Content="ذخیره تنظیمات محلی"
-                                HorizontalAlignment="Stretch" Margin="0,0,0,8" />
-
+                    <!-- Left: Large Search Box (70% Width) -->
+                    <Border Grid.Column="0"
+                            Background="#1D2027"
+                            BorderBrush="#2B3039"
+                            BorderThickness="1"
+                            CornerRadius="8"
+                            Height="44"
+                            Padding="12,0"
+                            VerticalAlignment="Center">
                         <Grid>
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="10" />
+                                <ColumnDefinition Width="Auto" />
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
 
-                            <Button Grid.Column="0"
-                                    Style="{StaticResource ConsoleActionButtonStyle}"
-                                    Command="{Binding DataContext.ImportMetadataCommand, RelativeSource={RelativeSource AncestorType=Window}}"
-                                    Content="📥 فراخوانی فراداده"
-                                    HorizontalAlignment="Stretch" />
+                            <!-- Left Search Icon -->
+                            <Path Grid.Column="0"
+                                  Data="{StaticResource SearchIconGeometry}"
+                                  Width="18"
+                                  Height="18"
+                                  Fill="#8E95A1"
+                                  Stretch="Uniform"
+                                  Margin="0,0,12,0"
+                                  VerticalAlignment="Center" />
 
-                            <Button Grid.Column="2"
-                                    Style="{StaticResource ConsoleActionButtonStyle}"
-                                    Command="{Binding DataContext.RemoveSelectedCommand, RelativeSource={RelativeSource AncestorType=Window}}"
-                                    Content="🗑️ حذف نرم‌افزار"
-                                    HorizontalAlignment="Stretch" />
+                            <!-- Text Area & Placeholder -->
+                            <Grid Grid.Column="1">
+                                <TextBlock IsHitTestVisible="False"
+                                           Text="Search by game name, executable, publisher, launcher or category..."
+                                           Foreground="#8E95A1"
+                                           FontSize="13"
+                                           FontFamily="{StaticResource PeydaMedium}"
+                                           VerticalAlignment="Center">
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="Visibility" Value="Collapsed" />
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Text, ElementName=SearchTextBox}" Value="">
+                                                    <Setter Property="Visibility" Value="Visible" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
+
+                                <TextBox x:Name="SearchTextBox"
+                                         Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
+                                         Background="Transparent"
+                                         BorderThickness="0"
+                                         Foreground="#FFFFFF"
+                                         CaretBrush="#F7E733"
+                                         FontSize="13"
+                                         FontFamily="{StaticResource PeydaMedium}"
+                                         VerticalAlignment="Center"/>
+                            </Grid>
                         </Grid>
+                    </Border>
+
+                    <!-- Right: Aligned Buttons (Clear Search, Refresh, Quick Filter) -->
+                    <StackPanel Grid.Column="1"
+                                Orientation="Horizontal"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Center">
+
+                        <!-- Clear Search Button -->
+                        <Button Style="{StaticResource ConsoleButtonStyle}"
+                                Command="{Binding ClearSearchCommand}"
+                                Margin="0,0,12,0">
+                            <StackPanel Orientation="Horizontal">
+                                <Path Data="{StaticResource ClearIconGeometry}" Width="16" Height="16" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" Stretch="Uniform" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                                <TextBlock Text="Clear Search" VerticalAlignment="Center" FontSize="13" FontFamily="{StaticResource PeydaBold}"/>
+                            </StackPanel>
+                        </Button>
+
+                        <!-- Refresh Button -->
+                        <Button Style="{StaticResource ConsoleButtonStyle}"
+                                Command="{Binding RefreshCommand}"
+                                Margin="0,0,12,0">
+                            <StackPanel Orientation="Horizontal">
+                                <Path Data="{StaticResource RefreshIconGeometry}" Width="16" Height="16" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" Stretch="Uniform" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                                <TextBlock Text="Refresh" VerticalAlignment="Center" FontSize="13" FontFamily="{StaticResource PeydaBold}"/>
+                            </StackPanel>
+                        </Button>
+
+                        <!-- Quick Filter Button -->
+                        <Button Style="{StaticResource ConsoleButtonStyle}"
+                                Command="{Binding QuickFilterCommand}">
+                            <StackPanel Orientation="Horizontal">
+                                <Path Data="{StaticResource FilterIconGeometry}" Width="16" Height="16" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" Stretch="Uniform" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                                <TextBlock Text="Quick Filter" VerticalAlignment="Center" FontSize="13" FontFamily="{StaticResource PeydaBold}"/>
+                            </StackPanel>
+                        </Button>
                     </StackPanel>
-                </Border>
-            </Grid>
+                </Grid>
+            </Border>
+
+            <!-- ================= B. ADMINISTRATION TOOLBAR ================= -->
+            <Border Grid.Row="1"
+                    Height="88"
+                    Margin="32,24,32,0"
+                    Padding="20,12"
+                    CornerRadius="12"
+                    BorderThickness="1"
+                    BorderBrush="#2B3039"
+                    Background="#171A20"
+                    VerticalAlignment="Center">
+
+                <!-- Smooth Horizontal Scrollbar for Toolbar command groups -->
+                <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled">
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+
+                        <!-- GROUP 1: DISCOVERY -->
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+
+                            <StackPanel Grid.Row="0" Orientation="Horizontal">
+                                <Button Style="{StaticResource PrimaryConsoleButtonStyle}" Command="{Binding ScanAllCommand}" Margin="0,0,12,0">
+                                    <StackPanel Orientation="Horizontal">
+                                        <Path Data="{StaticResource ScanIconGeometry}" Width="16" Height="16" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" Stretch="Uniform" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                                        <TextBlock Text="Scan All" VerticalAlignment="Center" FontSize="13" FontFamily="{StaticResource PeydaBold}"/>
+                                    </StackPanel>
+                                </Button>
+
+                                <Button Style="{StaticResource ConsoleButtonStyle}" Command="{Binding ScanSteamCommand}" Margin="0,0,12,0">
+                                    <StackPanel Orientation="Horizontal">
+                                        <Path Data="{StaticResource SteamIconGeometry}" Width="16" Height="16" Fill="#66c0f4" Stretch="Uniform" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                                        <TextBlock Text="Steam" VerticalAlignment="Center" FontSize="13" FontFamily="{StaticResource PeydaBold}"/>
+                                    </StackPanel>
+                                </Button>
+
+                                <Button Style="{StaticResource ConsoleButtonStyle}" Command="{Binding ScanEpicCommand}" Margin="0,0,12,0">
+                                    <StackPanel Orientation="Horizontal">
+                                        <Path Data="{StaticResource EpicGamesIconGeometry}" Width="16" Height="16" Fill="#FFFFFF" Stretch="Uniform" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                                        <TextBlock Text="Epic Games" VerticalAlignment="Center" FontSize="13" FontFamily="{StaticResource PeydaBold}"/>
+                                    </StackPanel>
+                                </Button>
+
+                                <Button Style="{StaticResource ConsoleButtonStyle}" Command="{Binding ScanRiotCommand}" Margin="0,0,12,0">
+                                    <StackPanel Orientation="Horizontal">
+                                        <Path Data="{StaticResource RiotGamesIconGeometry}" Width="16" Height="16" Fill="#D11F36" Stretch="Uniform" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                                        <TextBlock Text="Riot Games" VerticalAlignment="Center" FontSize="13" FontFamily="{StaticResource PeydaBold}"/>
+                                    </StackPanel>
+                                </Button>
+
+                                <Button Style="{StaticResource ConsoleButtonStyle}" Command="{Binding ScanBattleNetCommand}" Margin="0,0,12,0">
+                                    <StackPanel Orientation="Horizontal">
+                                        <Path Data="{StaticResource BattleNetIconGeometry}" Width="16" Height="16" Fill="#00AEFF" Stretch="Uniform" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                                        <TextBlock Text="Battle.net" VerticalAlignment="Center" FontSize="13" FontFamily="{StaticResource PeydaBold}"/>
+                                    </StackPanel>
+                                </Button>
+
+                                <Button Style="{StaticResource ConsoleButtonStyle}" Command="{Binding ScanUbisoftCommand}" Margin="0,0,12,0">
+                                    <StackPanel Orientation="Horizontal">
+                                        <Path Data="{StaticResource UbisoftIconGeometry}" Width="16" Height="16" Fill="#0070FF" Stretch="Uniform" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                                        <TextBlock Text="Ubisoft Connect" VerticalAlignment="Center" FontSize="13" FontFamily="{StaticResource PeydaBold}"/>
+                                    </StackPanel>
+                                </Button>
+
+                                <Button Style="{StaticResource ConsoleButtonStyle}" Command="{Binding ScanXboxCommand}" Margin="0,0,12,0">
+                                    <StackPanel Orientation="Horizontal">
+                                        <Path Data="{StaticResource XboxIconGeometry}" Width="16" Height="16" Fill="#107C11" Stretch="Uniform" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                                        <TextBlock Text="Xbox" VerticalAlignment="Center" FontSize="13" FontFamily="{StaticResource PeydaBold}"/>
+                                    </StackPanel>
+                                </Button>
+
+                                <Button Style="{StaticResource ConsoleButtonStyle}" Command="{Binding ScanEACommand}" Margin="0,0,12,0">
+                                    <StackPanel Orientation="Horizontal">
+                                        <Path Data="{StaticResource EAIconGeometry}" Width="16" Height="16" Fill="#F55734" Stretch="Uniform" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                                        <TextBlock Text="EA App" VerticalAlignment="Center" FontSize="13" FontFamily="{StaticResource PeydaBold}"/>
+                                    </StackPanel>
+                                </Button>
+
+                                <Button Style="{StaticResource ConsoleButtonStyle}" Command="{Binding ScanCustomCommand}">
+                                    <StackPanel Orientation="Horizontal">
+                                        <Path Data="{StaticResource FolderIconGeometry}" Width="16" Height="16" Fill="#FFB900" Stretch="Uniform" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                                        <TextBlock Text="Custom Folder" VerticalAlignment="Center" FontSize="13" FontFamily="{StaticResource PeydaBold}"/>
+                                    </StackPanel>
+                                </Button>
+                            </StackPanel>
+
+                            <TextBlock Grid.Row="1" Text="DISCOVERY" FontSize="11" FontFamily="{StaticResource PeydaBold}" Foreground="#8E95A1" HorizontalAlignment="Center" Margin="0,6,0,0" />
+                        </Grid>
+
+                        <!-- Vertical Divider Group 1 to 2 -->
+                        <Border Width="1" Height="40" Background="#303641" Margin="16,0"/>
+
+                        <!-- GROUP 2: MANAGEMENT (Showcasing all Button Interaction States) -->
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+
+                            <StackPanel Grid.Row="0" Orientation="Horizontal">
+                                <!-- Add Game (Normal - Primary yellow button style) -->
+                                <Button Style="{StaticResource PrimaryConsoleButtonStyle}" Command="{Binding RegisterSoftwareCommand}" Margin="0,0,12,0">
+                                    <StackPanel Orientation="Horizontal">
+                                        <Path Data="{StaticResource AddIconGeometry}" Width="16" Height="16" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" Stretch="Uniform" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                                        <TextBlock Text="Add Game" VerticalAlignment="Center" FontSize="13" FontFamily="{StaticResource PeydaBold}"/>
+                                    </StackPanel>
+                                </Button>
+
+                                <!-- Add Application (Hover State representation) -->
+                                <Button Style="{StaticResource HoverMockButtonStyle}" Command="{Binding AddApplicationCommand}" Margin="0,0,12,0">
+                                    <StackPanel Orientation="Horizontal">
+                                        <Path Data="{StaticResource AddIconGeometry}" Width="16" Height="16" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" Stretch="Uniform" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                                        <TextBlock Text="Add Application" VerticalAlignment="Center" FontSize="13" FontFamily="{StaticResource PeydaBold}"/>
+                                    </StackPanel>
+                                </Button>
+
+                                <!-- Duplicate (Pressed State representation) -->
+                                <Button Style="{StaticResource PressedMockButtonStyle}" Command="{Binding DuplicateCommand}" Margin="0,0,12,0">
+                                    <StackPanel Orientation="Horizontal">
+                                        <Path Data="{StaticResource DuplicateIconGeometry}" Width="16" Height="16" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" Stretch="Uniform" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                                        <TextBlock Text="Duplicate" VerticalAlignment="Center" FontSize="13" FontFamily="{StaticResource PeydaBold}"/>
+                                    </StackPanel>
+                                </Button>
+
+                                <!-- Edit (Focused State representation) -->
+                                <Button Style="{StaticResource FocusedMockButtonStyle}" Command="{Binding EditAppCommand}" Margin="0,0,12,0">
+                                    <StackPanel Orientation="Horizontal">
+                                        <Path Data="{StaticResource EditIconGeometry}" Width="16" Height="16" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" Stretch="Uniform" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                                        <TextBlock Text="Edit" VerticalAlignment="Center" FontSize="13" FontFamily="{StaticResource PeydaBold}"/>
+                                    </StackPanel>
+                                </Button>
+
+                                <!-- Remove (Disabled State - using red danger style but clearly muted via IsEnabled=False) -->
+                                <Button Style="{StaticResource ConsoleButtonStyle}" IsEnabled="False" Command="{Binding RemoveSelectedCommand}" Margin="0,0,12,0">
+                                    <StackPanel Orientation="Horizontal">
+                                        <Path Data="{StaticResource RemoveIconGeometry}" Width="16" Height="16" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" Stretch="Uniform" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                                        <TextBlock Text="Remove" VerticalAlignment="Center" FontSize="13" FontFamily="{StaticResource PeydaBold}"/>
+                                    </StackPanel>
+                                </Button>
+
+                                <!-- Enable (Loading State - containing live rotation animation on spinner icon) -->
+                                <Button Style="{StaticResource ConsoleButtonStyle}" Command="{Binding EnableAppCommand}" Margin="0,0,12,0">
+                                    <StackPanel Orientation="Horizontal">
+                                        <!-- Active Spinning Loader -->
+                                        <Path Data="{StaticResource RefreshIconGeometry}" Width="16" Height="16" Fill="#C5CBD5" Stretch="Uniform" Margin="0,0,8,0" VerticalAlignment="Center" RenderTransformOrigin="0.5,0.5">
+                                            <Path.RenderTransform>
+                                                <RotateTransform x:Name="LoaderSpinTransform" Angle="0"/>
+                                            </Path.RenderTransform>
+                                            <Path.Triggers>
+                                                <EventTrigger RoutedEvent="Loaded">
+                                                    <BeginStoryboard>
+                                                        <Storyboard RepeatBehavior="Forever">
+                                                            <DoubleAnimation Storyboard.TargetName="LoaderSpinTransform"
+                                                                             Storyboard.TargetProperty="Angle"
+                                                                             From="0" To="360" Duration="0:0:1.2"/>
+                                                        </Storyboard>
+                                                    </BeginStoryboard>
+                                                </EventTrigger>
+                                            </Path.Triggers>
+                                        </Path>
+                                        <TextBlock Text="Enable..." VerticalAlignment="Center" FontSize="13" FontFamily="{StaticResource PeydaBold}" Foreground="#8E95A1"/>
+                                    </StackPanel>
+                                </Button>
+
+                                <!-- Disable (Normal State) -->
+                                <Button Style="{StaticResource ConsoleButtonStyle}" Command="{Binding DisableAppCommand}">
+                                    <StackPanel Orientation="Horizontal">
+                                        <Path Data="{StaticResource PowerIconGeometry}" Width="16" Height="16" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" Stretch="Uniform" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                                        <TextBlock Text="Disable" VerticalAlignment="Center" FontSize="13" FontFamily="{StaticResource PeydaBold}"/>
+                                    </StackPanel>
+                                </Button>
+                            </StackPanel>
+
+                            <TextBlock Grid.Row="1" Text="MANAGEMENT" FontSize="11" FontFamily="{StaticResource PeydaBold}" Foreground="#8E95A1" HorizontalAlignment="Center" Margin="0,6,0,0" />
+                        </Grid>
+
+                        <!-- Vertical Divider Group 2 to 3 -->
+                        <Border Width="1" Height="40" Background="#303641" Margin="16,0"/>
+
+                        <!-- GROUP 3: IMPORT / EXPORT -->
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+
+                            <StackPanel Grid.Row="0" Orientation="Horizontal">
+                                <Button Style="{StaticResource ConsoleButtonStyle}" Command="{Binding ImportAppCommand}" Margin="0,0,12,0">
+                                    <StackPanel Orientation="Horizontal">
+                                        <Path Data="{StaticResource ImportIconGeometry}" Width="16" Height="16" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" Stretch="Uniform" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                                        <TextBlock Text="Import" VerticalAlignment="Center" FontSize="13" FontFamily="{StaticResource PeydaBold}"/>
+                                    </StackPanel>
+                                </Button>
+
+                                <Button Style="{StaticResource ConsoleButtonStyle}" Command="{Binding ExportAppCommand}" Margin="0,0,12,0">
+                                    <StackPanel Orientation="Horizontal">
+                                        <Path Data="{StaticResource ExportIconGeometry}" Width="16" Height="16" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" Stretch="Uniform" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                                        <TextBlock Text="Export" VerticalAlignment="Center" FontSize="13" FontFamily="{StaticResource PeydaBold}"/>
+                                    </StackPanel>
+                                </Button>
+
+                                <Button Style="{StaticResource ConsoleButtonStyle}" Command="{Binding BackupAppCommand}" Margin="0,0,12,0">
+                                    <StackPanel Orientation="Horizontal">
+                                        <Path Data="{StaticResource BackupIconGeometry}" Width="16" Height="16" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" Stretch="Uniform" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                                        <TextBlock Text="Backup" VerticalAlignment="Center" FontSize="13" FontFamily="{StaticResource PeydaBold}"/>
+                                    </StackPanel>
+                                </Button>
+
+                                <Button Style="{StaticResource ConsoleButtonStyle}" Command="{Binding RestoreAppCommand}" Margin="0,0,12,0">
+                                    <StackPanel Orientation="Horizontal">
+                                        <Path Data="{StaticResource RestoreIconGeometry}" Width="16" Height="16" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" Stretch="Uniform" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                                        <TextBlock Text="Restore" VerticalAlignment="Center" FontSize="13" FontFamily="{StaticResource PeydaBold}"/>
+                                    </StackPanel>
+                                </Button>
+
+                                <Button Style="{StaticResource ConsoleButtonStyle}" Command="{Binding ImportMetadataCommand}" Margin="0,0,12,0">
+                                    <StackPanel Orientation="Horizontal">
+                                        <Path Data="{StaticResource MetadataIconGeometry}" Width="16" Height="16" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" Stretch="Uniform" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                                        <TextBlock Text="Import Metadata" VerticalAlignment="Center" FontSize="13" FontFamily="{StaticResource PeydaBold}"/>
+                                    </StackPanel>
+                                </Button>
+
+                                <Button Style="{StaticResource ConsoleButtonStyle}" Command="{Binding ExportConfigCommand}">
+                                    <StackPanel Orientation="Horizontal">
+                                        <Path Data="{StaticResource MetadataIconGeometry}" Width="16" Height="16" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" Stretch="Uniform" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                                        <TextBlock Text="Export Configuration" VerticalAlignment="Center" FontSize="13" FontFamily="{StaticResource PeydaBold}"/>
+                                    </StackPanel>
+                                </Button>
+                            </StackPanel>
+
+                            <TextBlock Grid.Row="1" Text="IMPORT / EXPORT" FontSize="11" FontFamily="{StaticResource PeydaBold}" Foreground="#8E95A1" HorizontalAlignment="Center" Margin="0,6,0,0" />
+                        </Grid>
+
+                        <!-- Vertical Divider Group 3 to 4 -->
+                        <Border Width="1" Height="40" Background="#303641" Margin="16,0"/>
+
+                        <!-- GROUP 4: SYNCHRONIZATION -->
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+
+                            <StackPanel Grid.Row="0" Orientation="Horizontal">
+                                <Button Style="{StaticResource ConsoleButtonStyle}" Command="{Binding SyncFromServerCommand}" Margin="0,0,12,0">
+                                    <StackPanel Orientation="Horizontal">
+                                        <Path Data="{StaticResource SyncIconGeometry}" Width="16" Height="16" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" Stretch="Uniform" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                                        <TextBlock Text="Sync From Server" VerticalAlignment="Center" FontSize="13" FontFamily="{StaticResource PeydaBold}"/>
+                                    </StackPanel>
+                                </Button>
+
+                                <Button Style="{StaticResource ConsoleButtonStyle}" Command="{Binding SyncToServerCommand}" Margin="0,0,12,0">
+                                    <StackPanel Orientation="Horizontal">
+                                        <Path Data="{StaticResource SyncIconGeometry}" Width="16" Height="16" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" Stretch="Uniform" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                                        <TextBlock Text="Sync To Server" VerticalAlignment="Center" FontSize="13" FontFamily="{StaticResource PeydaBold}"/>
+                                    </StackPanel>
+                                </Button>
+
+                                <Button Style="{StaticResource ConsoleButtonStyle}" Command="{Binding CompareConfigsCommand}" Margin="0,0,12,0">
+                                    <StackPanel Orientation="Horizontal">
+                                        <Path Data="{StaticResource CompareIconGeometry}" Width="16" Height="16" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" Stretch="Uniform" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                                        <TextBlock Text="Compare" VerticalAlignment="Center" FontSize="13" FontFamily="{StaticResource PeydaBold}"/>
+                                    </StackPanel>
+                                </Button>
+
+                                <Button Style="{StaticResource ConsoleButtonStyle}" Command="{Binding ValidatePathsCommand}" Margin="0,0,12,0">
+                                    <StackPanel Orientation="Horizontal">
+                                        <Path Data="{StaticResource ValidateIconGeometry}" Width="16" Height="16" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" Stretch="Uniform" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                                        <TextBlock Text="Validate" VerticalAlignment="Center" FontSize="13" FontFamily="{StaticResource PeydaBold}"/>
+                                    </StackPanel>
+                                </Button>
+
+                                <Button Style="{StaticResource ConsoleButtonStyle}" Command="{Binding RescanAllCommand}" Margin="0,0,12,0">
+                                    <StackPanel Orientation="Horizontal">
+                                        <Path Data="{StaticResource RefreshIconGeometry}" Width="16" Height="16" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" Stretch="Uniform" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                                        <TextBlock Text="Rescan" VerticalAlignment="Center" FontSize="13" FontFamily="{StaticResource PeydaBold}"/>
+                                    </StackPanel>
+                                </Button>
+
+                                <Button Style="{StaticResource ConsoleButtonStyle}" Command="{Binding RepairMetadataCommand}">
+                                    <StackPanel Orientation="Horizontal">
+                                        <Path Data="{StaticResource MetadataIconGeometry}" Width="16" Height="16" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" Stretch="Uniform" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                                        <TextBlock Text="Repair Metadata" VerticalAlignment="Center" FontSize="13" FontFamily="{StaticResource PeydaBold}"/>
+                                    </StackPanel>
+                                </Button>
+                            </StackPanel>
+
+                            <TextBlock Grid.Row="1" Text="SYNCHRONIZATION" FontSize="11" FontFamily="{StaticResource PeydaBold}" Foreground="#8E95A1" HorizontalAlignment="Center" Margin="0,6,0,0" />
+                        </Grid>
+
+                    </StackPanel>
+                </ScrollViewer>
+            </Border>
+
+            <!-- ================= C. CANVAS WORKSPACE (REST FILLER) ================= -->
+            <Grid Grid.Row="2" Background="#0E1015"/>
         </Grid>
 
-        <!-- Floating Horizontal Notification Card -->
+        <!-- Floating Horizontal Notification Card (Overlays bottom of UI) -->
         <Grid Grid.Row="1" VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="0,0,0,40" Panel.ZIndex="1000" IsHitTestVisible="True"
               DataContext="{Binding Source={x:Static suis:NotificationService.Instance}}"
               Visibility="{Binding IsNotificationVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
