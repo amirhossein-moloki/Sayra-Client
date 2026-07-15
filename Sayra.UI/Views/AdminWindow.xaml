@@ -47,6 +47,472 @@
         <SolidColorBrush x:Key="SecondaryTextBrush" Color="#C5CBD5"/>
         <SolidColorBrush x:Key="MutedTextBrush" Color="#8E95A1"/>
         <SolidColorBrush x:Key="DisabledTextBrush" Color="#6D737D"/>
+
+        <!-- Reusable Inline SVG Geometry Resources for Toolbar & Search -->
+        <Geometry x:Key="SearchIconGeometry">M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z</Geometry>
+        <Geometry x:Key="ClearSearchIconGeometry">M6 18L18 6M6 6l12 12</Geometry>
+        <Geometry x:Key="RefreshIconGeometry">M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99</Geometry>
+        <Geometry x:Key="QuickFilterIconGeometry">M3 4.5h18m-15 4h12m-9 4h6m-3 4h0</Geometry>
+
+        <Geometry x:Key="ScanAllIconGeometry">M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z</Geometry>
+        <Geometry x:Key="SteamIconGeometry">M12 2a10 10 0 1010 10A10 10 0 0012 2zm-1.74 15.35a3.48 3.48 0 01-3.13-1.66l2.9-1.28c.18.23.47.34.78.34a1.13 1.13 0 001-.63L14.7 13a2.3 2.3 0 011.63-1.23L16 11.45a3.36 3.36 0 00-3.35 3.35c0 .35.05.69.15 1z</Geometry>
+        <Geometry x:Key="EpicGamesIconGeometry">M12 2L2 5v12l10 3 10-3V5zm0 3a1.5 1.5 0 110 3 1.5 1.5 0 010-3zm5 9H7v-1h10z</Geometry>
+        <Geometry x:Key="RiotGamesIconGeometry">M2 5l2-1h14l2 1v12l-2 1H4l-2-1zm14 3H6v2h10zm0 4H6v2h10z</Geometry>
+        <Geometry x:Key="BattleNetIconGeometry">M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm2 14H10v-2h4zm1-4H9v-2h6z</Geometry>
+        <Geometry x:Key="UbisoftIconGeometry">M12 2a10 10 0 1010 10A10 10 0 0012 2zm3.5 11.5a3.5 3.5 0 110-3 3.5 3.5 0 010 3z</Geometry>
+        <Geometry x:Key="XboxIconGeometry">M12 2a10 10 0 1010 10A10 10 0 0012 2zM6 12c2.5-4 5.5-4 8 0m-8 2c2-3 4-3 6 0</Geometry>
+        <Geometry x:Key="EaAppIconGeometry">M12 2a10 10 0 1010 10A10 10 0 0012 2zM8 14h8v-1H8zm0-3h8V10H8z</Geometry>
+        <Geometry x:Key="CustomFolderIconGeometry">M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z</Geometry>
+        <Geometry x:Key="AddGameIconGeometry">M12 4v16m8-8H4</Geometry>
+        <Geometry x:Key="AddAppIconGeometry">M9 13h6m-3-3v6m5 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z</Geometry>
+        <Geometry x:Key="DuplicateIconGeometry">M8 7v12a2 2 0 002 2h8a2 2 0 002-2V7.828a2 2 0 00-.586-1.414l-4.828-4.828A2 2 0 0013.172 1H10a2 2 0 00-2 2zm-4 4v10a2 2 0 002 2h8</Geometry>
+        <Geometry x:Key="EditIconGeometry">M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z</Geometry>
+        <Geometry x:Key="RemoveIconGeometry">M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16</Geometry>
+        <Geometry x:Key="EnableIconGeometry">M5 13l4 4L19 7</Geometry>
+        <Geometry x:Key="DisableIconGeometry">M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636</Geometry>
+        <Geometry x:Key="ImportIconGeometry">M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4</Geometry>
+        <Geometry x:Key="ExportIconGeometry">M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12</Geometry>
+        <Geometry x:Key="BackupIconGeometry">M12 16.5V9.75m0 0l3 3m-3-3l-3 3M6.75 19.5a4.5 4.5 0 01-1.41-8.775 5.25 5.25 0 0110.233-2.33 3 3 0 013.758 3.848A3.752 3.752 0 0118 19.5H6.75z</Geometry>
+        <Geometry x:Key="RestoreIconGeometry">M12 9.75v6.75m0 0l-3-3m3 3l3-3M6.75 19.5a4.5 4.5 0 01-1.41-8.775 5.25 5.25 0 0110.233-2.33 3 3 0 013.758 3.848A3.752 3.752 0 0118 19.5H6.75z</Geometry>
+        <Geometry x:Key="CompareIconGeometry">M9 17H5a2 2 0 01-2-2V5a2 2 0 012-2h4m6 14h4a2 2 0 002-2V5a2 2 0 00-2-2h-4M9 12h6</Geometry>
+        <Geometry x:Key="ValidateIconGeometry">M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z</Geometry>
+        <Geometry x:Key="RescanIconGeometry">M4 4v5h.582m15.356 2A8.001 8.001 0 1121.21 8H17</Geometry>
+        <Geometry x:Key="RepairIconGeometry">M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z</Geometry>
+
+        <!-- Base Toolbar Button Style -->
+        <Style x:Key="ToolbarButtonStyle" TargetType="Button">
+            <Setter Property="Height" Value="40" />
+            <Setter Property="Background" Value="{StaticResource SecondarySurfaceBrush}" />
+            <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Foreground" Value="{StaticResource PrimaryTextBrush}" />
+            <Setter Property="Padding" Value="18,0" />
+            <Setter Property="FontFamily" Value="Segoe UI Variable, Segoe UI" />
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Focusable" Value="True" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="10">
+                            <Grid Margin="{TemplateBinding Padding}">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+
+                                <!-- Icon Area (if Tag has geometry) -->
+                                <Path x:Name="btnIcon"
+                                      Grid.Column="0"
+                                      Data="{TemplateBinding Tag}"
+                                      Stroke="{TemplateBinding Foreground}"
+                                      StrokeThickness="1.5"
+                                      StrokeStartLineCap="Round"
+                                      StrokeEndLineCap="Round"
+                                      Fill="Transparent"
+                                      Width="20" Height="20"
+                                      Stretch="Uniform"
+                                      VerticalAlignment="Center"
+                                      Margin="0,0,8,0">
+                                    <Path.RenderTransform>
+                                        <RotateTransform x:Name="iconRotate" Angle="0" CenterX="10" CenterY="10" />
+                                    </Path.RenderTransform>
+                                </Path>
+
+                                <!-- Text content -->
+                                <TextBlock Grid.Column="1"
+                                           Text="{TemplateBinding Content}"
+                                           Foreground="{TemplateBinding Foreground}"
+                                           FontFamily="{TemplateBinding FontFamily}"
+                                           FontSize="{TemplateBinding FontSize}"
+                                           FontWeight="{TemplateBinding FontWeight}"
+                                           VerticalAlignment="Center" />
+                            </Grid>
+                        </Border>
+
+                        <ControlTemplate.Triggers>
+                            <!-- Hover state -->
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="{StaticResource HoverBrush}" />
+                                <Setter TargetName="border" Property="BorderBrush" Value="{StaticResource DividerBrush}" />
+                            </Trigger>
+                            <!-- Pressed state -->
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="{StaticResource SelectedBrush}" />
+                            </Trigger>
+                            <!-- Focused state -->
+                            <Trigger Property="IsKeyboardFocused" Value="True">
+                                <Setter TargetName="border" Property="BorderBrush" Value="{StaticResource PrimaryAccentBrush}" />
+                                <Setter TargetName="border" Property="Effect">
+                                    <Setter.Value>
+                                        <DropShadowEffect Color="#F7E733" BlurRadius="8" ShadowDepth="0" Opacity="0.4"/>
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
+                            <!-- Disabled state -->
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="border" Property="Background" Value="#0AFFFFFF" />
+                                <Setter TargetName="border" Property="BorderBrush" Value="#05FFFFFF" />
+                                <Setter Property="Foreground" Value="{StaticResource DisabledTextBrush}" />
+                                <Setter TargetName="btnIcon" Property="Stroke" Value="{StaticResource DisabledTextBrush}" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Primary Accent Button Style -->
+        <Style x:Key="PrimaryToolbarButtonStyle" TargetType="Button" BasedOn="{StaticResource ToolbarButtonStyle}">
+            <Setter Property="Background" Value="{StaticResource PrimaryAccentBrush}" />
+            <Setter Property="BorderBrush" Value="{StaticResource PrimaryAccentBrush}" />
+            <Setter Property="Foreground" Value="#0E1015" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="10">
+                            <Grid Margin="{TemplateBinding Padding}">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+
+                                <!-- Icon Area -->
+                                <Path x:Name="btnIcon"
+                                      Grid.Column="0"
+                                      Data="{TemplateBinding Tag}"
+                                      Stroke="#0E1015"
+                                      StrokeThickness="1.5"
+                                      StrokeStartLineCap="Round"
+                                      StrokeEndLineCap="Round"
+                                      Fill="Transparent"
+                                      Width="20" Height="20"
+                                      Stretch="Uniform"
+                                      VerticalAlignment="Center"
+                                      Margin="0,0,8,0" />
+
+                                <!-- Text content -->
+                                <TextBlock Grid.Column="1"
+                                           Text="{TemplateBinding Content}"
+                                           Foreground="#0E1015"
+                                           FontFamily="{TemplateBinding FontFamily}"
+                                           FontSize="{TemplateBinding FontSize}"
+                                           FontWeight="{TemplateBinding FontWeight}"
+                                           VerticalAlignment="Center" />
+                            </Grid>
+                        </Border>
+
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="{StaticResource AccentHoverBrush}" />
+                                <Setter TargetName="border" Property="BorderBrush" Value="{StaticResource AccentHoverBrush}" />
+                                <Setter TargetName="border" Property="Effect">
+                                    <Setter.Value>
+                                        <DropShadowEffect Color="#F7E733" BlurRadius="15" ShadowDepth="0" Opacity="0.5"/>
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#FFE01B" />
+                                <Setter TargetName="border" Property="BorderBrush" Value="#FFE01B" />
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="border" Property="Background" Value="#22F7E733" />
+                                <Setter TargetName="border" Property="BorderBrush" Value="#11F7E733" />
+                                <Setter Property="Foreground" Value="{StaticResource DisabledTextBrush}" />
+                                <Setter TargetName="btnIcon" Property="Stroke" Value="{StaticResource DisabledTextBrush}" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Danger Red Button Style -->
+        <Style x:Key="DangerToolbarButtonStyle" TargetType="Button" BasedOn="{StaticResource ToolbarButtonStyle}">
+            <Setter Property="Background" Value="#1AE65C5C" />
+            <Setter Property="BorderBrush" Value="{StaticResource DangerBrush}" />
+            <Setter Property="Foreground" Value="{StaticResource DangerBrush}" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="10">
+                            <Grid Margin="{TemplateBinding Padding}">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+
+                                <!-- Icon Area -->
+                                <Path x:Name="btnIcon"
+                                      Grid.Column="0"
+                                      Data="{TemplateBinding Tag}"
+                                      Stroke="{TemplateBinding Foreground}"
+                                      StrokeThickness="1.5"
+                                      StrokeStartLineCap="Round"
+                                      StrokeEndLineCap="Round"
+                                      Fill="Transparent"
+                                      Width="20" Height="20"
+                                      Stretch="Uniform"
+                                      VerticalAlignment="Center"
+                                      Margin="0,0,8,0" />
+
+                                <!-- Text content -->
+                                <TextBlock Grid.Column="1"
+                                           Text="{TemplateBinding Content}"
+                                           Foreground="{TemplateBinding Foreground}"
+                                           FontFamily="{TemplateBinding FontFamily}"
+                                           FontSize="{TemplateBinding FontSize}"
+                                           FontWeight="{TemplateBinding FontWeight}"
+                                           VerticalAlignment="Center" />
+                            </Grid>
+                        </Border>
+
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#33E65C5C" />
+                                <Setter TargetName="border" Property="Effect">
+                                    <Setter.Value>
+                                        <DropShadowEffect Color="#E65C5C" BlurRadius="12" ShadowDepth="0" Opacity="0.4"/>
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#4CE65C5C" />
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="border" Property="Background" Value="#0AE65C5C" />
+                                <Setter TargetName="border" Property="BorderBrush" Value="#11E65C5C" />
+                                <Setter Property="Foreground" Value="{StaticResource DisabledTextBrush}" />
+                                <Setter TargetName="btnIcon" Property="Stroke" Value="{StaticResource DisabledTextBrush}" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Statically Demoed States Button Styles -->
+        <!-- Hover State Static Demo Style -->
+        <Style x:Key="HoverStaticDemoButtonStyle" TargetType="Button" BasedOn="{StaticResource ToolbarButtonStyle}">
+            <Setter Property="Background" Value="{StaticResource HoverBrush}" />
+            <Setter Property="BorderBrush" Value="{StaticResource DividerBrush}" />
+        </Style>
+
+        <!-- Pressed State Static Demo Style -->
+        <Style x:Key="PressedStaticDemoButtonStyle" TargetType="Button" BasedOn="{StaticResource ToolbarButtonStyle}">
+            <Setter Property="Background" Value="{StaticResource SelectedBrush}" />
+            <Setter Property="BorderBrush" Value="{StaticResource DividerBrush}" />
+        </Style>
+
+        <!-- Focused State Static Demo Style -->
+        <Style x:Key="FocusedStaticDemoButtonStyle" TargetType="Button" BasedOn="{StaticResource ToolbarButtonStyle}">
+            <Setter Property="BorderBrush" Value="{StaticResource PrimaryAccentBrush}" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="1.5"
+                                CornerRadius="10">
+                            <Border.Effect>
+                                <DropShadowEffect Color="#F7E733" BlurRadius="10" ShadowDepth="0" Opacity="0.6"/>
+                            </Border.Effect>
+                            <Grid Margin="{TemplateBinding Padding}">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+
+                                <!-- Icon Area -->
+                                <Path x:Name="btnIcon"
+                                      Grid.Column="0"
+                                      Data="{TemplateBinding Tag}"
+                                      Stroke="{TemplateBinding Foreground}"
+                                      StrokeThickness="1.5"
+                                      StrokeStartLineCap="Round"
+                                      StrokeEndLineCap="Round"
+                                      Fill="Transparent"
+                                      Width="20" Height="20"
+                                      Stretch="Uniform"
+                                      VerticalAlignment="Center"
+                                      Margin="0,0,8,0" />
+
+                                <!-- Text content -->
+                                <TextBlock Grid.Column="1"
+                                           Text="{TemplateBinding Content}"
+                                           Foreground="{TemplateBinding Foreground}"
+                                           FontFamily="{TemplateBinding FontFamily}"
+                                           FontSize="{TemplateBinding FontSize}"
+                                           FontWeight="{TemplateBinding FontWeight}"
+                                           VerticalAlignment="Center" />
+                            </Grid>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Loading State Spinner Rotating Style -->
+        <Style x:Key="LoadingToolbarButtonStyle" TargetType="Button" BasedOn="{StaticResource ToolbarButtonStyle}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="10">
+                            <Grid Margin="{TemplateBinding Padding}">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+
+                                <!-- Loading rotating spinner (standard circular layout) -->
+                                <Path x:Name="spinner"
+                                      Grid.Column="0"
+                                      Data="M12 4V2m0 20v-2m8-8h2M2 12h2m13.657-5.657l1.414-1.414M5.657 16.343l1.414-1.414m11.314 11.314l-1.414-1.414M5.657 5.657L7.07 7.07"
+                                      Stroke="{TemplateBinding Foreground}"
+                                      StrokeThickness="2"
+                                      StrokeStartLineCap="Round"
+                                      StrokeEndLineCap="Round"
+                                      Fill="Transparent"
+                                      Width="20" Height="20"
+                                      Stretch="Uniform"
+                                      VerticalAlignment="Center"
+                                      Margin="0,0,8,0"
+                                      RenderTransformOrigin="0.5,0.5">
+                                    <Path.RenderTransform>
+                                        <RotateTransform x:Name="noFreezeRotate" Angle="0" />
+                                    </Path.RenderTransform>
+                                </Path>
+
+                                <!-- Text content -->
+                                <TextBlock Grid.Column="1"
+                                           Text="{TemplateBinding Content}"
+                                           Foreground="{TemplateBinding Foreground}"
+                                           FontFamily="{TemplateBinding FontFamily}"
+                                           FontSize="{TemplateBinding FontSize}"
+                                           FontWeight="{TemplateBinding FontWeight}"
+                                           VerticalAlignment="Center" />
+                            </Grid>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <EventTrigger RoutedEvent="FrameworkElement.Loaded" SourceName="spinner">
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetName="noFreezeRotate"
+                                                         Storyboard.TargetProperty="Angle"
+                                                         From="0" To="360" Duration="0:0:1.2"
+                                                         RepeatBehavior="Forever" />
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </EventTrigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="{StaticResource HoverBrush}" />
+                                <Setter TargetName="border" Property="BorderBrush" Value="{StaticResource DividerBrush}" />
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="{StaticResource SelectedBrush}" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Large Search Box Style -->
+        <Style x:Key="LargeSearchBoxStyle" TargetType="TextBox">
+            <Setter Property="Background" Value="{StaticResource SecondarySurfaceBrush}" />
+            <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Foreground" Value="{StaticResource PrimaryTextBrush}" />
+            <Setter Property="CaretBrush" Value="{StaticResource PrimaryAccentBrush}" />
+            <Setter Property="FontFamily" Value="Segoe UI Variable, Segoe UI" />
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Border x:Name="SearchBorder"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="10"
+                                Padding="14,0"
+                                Height="40">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+
+                                <!-- Search Icon -->
+                                <Path x:Name="SearchIcon"
+                                      Grid.Column="0"
+                                      Data="{StaticResource SearchIconGeometry}"
+                                      Stroke="{StaticResource MutedTextBrush}"
+                                      StrokeThickness="1.5"
+                                      StrokeStartLineCap="Round"
+                                      StrokeEndLineCap="Round"
+                                      Fill="Transparent"
+                                      Width="18" Height="18"
+                                      Stretch="Uniform"
+                                      VerticalAlignment="Center"
+                                      Margin="0,0,10,0" />
+
+                                <!-- Text/Placeholder -->
+                                <Grid Grid.Column="1" VerticalAlignment="Center">
+                                    <ScrollViewer x:Name="PART_ContentHost" Margin="0" />
+                                    <TextBlock x:Name="Placeholder"
+                                               Text="Search by game name, executable, publisher, launcher or category..."
+                                               Foreground="{StaticResource MutedTextBrush}"
+                                               FontFamily="Segoe UI Variable, Segoe UI"
+                                               FontSize="14"
+                                               IsHitTestVisible="False"
+                                               VerticalAlignment="Center"
+                                               Visibility="Collapsed" />
+                                </Grid>
+                            </Grid>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="Text" Value="">
+                                <Setter TargetName="Placeholder" Property="Visibility" Value="Visible" />
+                            </Trigger>
+                            <Trigger Property="Text" Value="{x:Null}">
+                                <Setter TargetName="Placeholder" Property="Visibility" Value="Visible" />
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="SearchBorder" Property="BorderBrush" Value="{StaticResource DividerBrush}" />
+                            </Trigger>
+                            <Trigger Property="IsKeyboardFocused" Value="True">
+                                <Setter TargetName="SearchBorder" Property="BorderBrush" Value="{StaticResource PrimaryAccentBrush}" />
+                                <Setter TargetName="SearchBorder" Property="Effect">
+                                    <Setter.Value>
+                                        <DropShadowEffect Color="#F7E733" BlurRadius="8" ShadowDepth="0" Opacity="0.3" />
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
     </Window.Resources>
 
     <Grid x:Name="RootGrid" Background="{StaticResource AppBackgroundBrush}">
@@ -103,361 +569,268 @@
                 <RowDefinition Height="Auto" />
                 <!-- Section 2: Toolbar -->
                 <RowDefinition Height="Auto" />
-                <!-- Section 3: Main Workspace -->
-                <RowDefinition Height="*" />
-                <!-- Section 4: Bottom Status Area -->
-                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
-            <!-- SECTION 1: SEARCH AREA -->
+            <!-- SECTION 1: SEARCH AREA (Height: 64px, Padding: 20px, Rounded Corners: 12px) -->
             <Border Grid.Row="0" Height="64" Background="{StaticResource PrimarySurfaceBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="12">
-                <Grid Margin="24,0">
-                    <TextBlock Text="Search Local Installations and Launcher Libraries..."
-                               FontFamily="Segoe UI Variable" FontSize="14"
-                               Foreground="{StaticResource MutedTextBrush}"
-                               VerticalAlignment="Center" />
+                <Grid Margin="20,0">
+                    <Grid.ColumnDefinitions>
+                        <!-- Large Search Box occupies approximately 70% width -->
+                        <ColumnDefinition Width="70*" />
+                        <!-- Right Side Buttons aligned right -->
+                        <ColumnDefinition Width="30*" />
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Large Search Box with Placeholder and Search left icon -->
+                    <TextBox Grid.Column="0"
+                             Style="{StaticResource LargeSearchBoxStyle}"
+                             VerticalAlignment="Center" />
+
+                    <!-- Actions Aligned Right -->
+                    <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+                        <!-- Clear Search Button -->
+                        <Button Content="Clear"
+                                Style="{StaticResource ToolbarButtonStyle}"
+                                Tag="{StaticResource ClearSearchIconGeometry}"
+                                Margin="0,0,12,0" />
+
+                        <!-- Refresh Button -->
+                        <Button Content="Refresh"
+                                Style="{StaticResource ToolbarButtonStyle}"
+                                Tag="{StaticResource RefreshIconGeometry}"
+                                Margin="0,0,12,0" />
+
+                        <!-- Quick Filter Button -->
+                        <Button Content="Quick Filter"
+                                Style="{StaticResource ToolbarButtonStyle}"
+                                Tag="{StaticResource QuickFilterIconGeometry}" />
+                    </StackPanel>
                 </Grid>
             </Border>
 
-            <!-- SECTION 2: TOOLBAR -->
-            <Grid Grid.Row="1" Height="88" Margin="0,24,0,0">
-                <Grid.ColumnDefinitions>
-                    <!-- Launcher Scan (30%) -->
-                    <ColumnDefinition Width="30*" />
-                    <!-- Gap (16px) -->
-                    <ColumnDefinition Width="16" />
-                    <!-- Add (18%) -->
-                    <ColumnDefinition Width="18*" />
-                    <!-- Gap (16px) -->
-                    <ColumnDefinition Width="16" />
-                    <!-- Import / Export (22%) -->
-                    <ColumnDefinition Width="22*" />
-                    <!-- Gap (16px) -->
-                    <ColumnDefinition Width="16" />
-                    <!-- Synchronization (30%) -->
-                    <ColumnDefinition Width="30*" />
-                </Grid.ColumnDefinitions>
+            <!-- SECTION 2: TOOLBAR (Height: 88px, Margin Top: 24px, Rounded: 12px, Padding: 20px) -->
+            <Border Grid.Row="1" Height="88" Margin="0,24,0,0" Background="{StaticResource PrimarySurfaceBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="12" VerticalAlignment="Top">
+                <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled" SnapsToDevicePixels="True" VerticalAlignment="Center" Margin="20,0">
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
 
-                <!-- Group 1: Launcher Scan -->
-                <Border Grid.Column="0" Background="{StaticResource PrimarySurfaceBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="12">
-                    <Grid Margin="24,0">
-                        <StackPanel VerticalAlignment="Center">
-                            <TextBlock Text="Launcher Scan" FontFamily="Segoe UI Variable" FontSize="12" FontWeight="SemiBold" Foreground="{StaticResource PrimaryAccentBrush}" />
-                            <TextBlock Text="Scan and discover installed game platform clients" FontFamily="Segoe UI Variable" FontSize="12" Foreground="{StaticResource MutedTextBrush}" Margin="0,4,0,0" />
-                        </StackPanel>
-                    </Grid>
-                </Border>
-
-                <!-- Group 2: Add -->
-                <Border Grid.Column="2" Background="{StaticResource PrimarySurfaceBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="12">
-                    <Grid Margin="24,0">
-                        <StackPanel VerticalAlignment="Center">
-                            <TextBlock Text="Add" FontFamily="Segoe UI Variable" FontSize="12" FontWeight="SemiBold" Foreground="{StaticResource PrimaryAccentBrush}" />
-                            <TextBlock Text="Register custom executable paths" FontFamily="Segoe UI Variable" FontSize="12" Foreground="{StaticResource MutedTextBrush}" Margin="0,4,0,0" />
-                        </StackPanel>
-                    </Grid>
-                </Border>
-
-                <!-- Group 3: Import / Export -->
-                <Border Grid.Column="4" Background="{StaticResource PrimarySurfaceBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="12">
-                    <Grid Margin="24,0">
-                        <StackPanel VerticalAlignment="Center">
-                            <TextBlock Text="Import / Export" FontFamily="Segoe UI Variable" FontSize="12" FontWeight="SemiBold" Foreground="{StaticResource PrimaryAccentBrush}" />
-                            <TextBlock Text="Manage configuration JSON metadata" FontFamily="Segoe UI Variable" FontSize="12" Foreground="{StaticResource MutedTextBrush}" Margin="0,4,0,0" />
-                        </StackPanel>
-                    </Grid>
-                </Border>
-
-                <!-- Group 4: Synchronization -->
-                <Border Grid.Column="6" Background="{StaticResource PrimarySurfaceBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="12">
-                    <Grid Margin="24,0">
-                        <StackPanel VerticalAlignment="Center">
-                            <TextBlock Text="Synchronization" FontFamily="Segoe UI Variable" FontSize="12" FontWeight="SemiBold" Foreground="{StaticResource PrimaryAccentBrush}" />
-                            <TextBlock Text="Push, pull and match server library states" FontFamily="Segoe UI Variable" FontSize="12" Foreground="{StaticResource MutedTextBrush}" Margin="0,4,0,0" />
-                        </StackPanel>
-                    </Grid>
-                </Border>
-            </Grid>
-
-            <!-- SECTION 3: MAIN WORKSPACE -->
-            <Grid Grid.Row="2" Margin="0,24,0,0">
-                <Grid.ColumnDefinitions>
-                    <!-- Left Sidebar (260px Fixed) -->
-                    <ColumnDefinition Width="260" />
-                    <!-- Gap (24px) -->
-                    <ColumnDefinition Width="24" />
-                    <!-- Center Workspace (Flexible, MinWidth 900px) -->
-                    <ColumnDefinition Width="*" MinWidth="900" />
-                    <!-- Gap (24px) -->
-                    <ColumnDefinition Width="24" />
-                    <!-- Right Inspector (420px Fixed) -->
-                    <ColumnDefinition Width="420" />
-                </Grid.ColumnDefinitions>
-
-                <!-- LEFT SIDEBAR: Navigation Area -->
-                <Border Grid.Column="0" Background="{StaticResource PrimarySurfaceBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="12">
-                    <Grid Margin="24">
-                        <StackPanel>
-                            <TextBlock Text="Navigation Area" FontFamily="Segoe UI Variable" FontSize="14" FontWeight="SemiBold" Foreground="{StaticResource PrimaryAccentBrush}" />
-                            <TextBlock Text="Reserved for administrative categories" FontFamily="Segoe UI Variable" FontSize="12" Foreground="{StaticResource MutedTextBrush}" Margin="0,8,0,0" />
-                        </StackPanel>
-                    </Grid>
-                </Border>
-
-                <!-- CENTER PANEL: Primary Grid Container -->
-                <Border Grid.Column="2" Background="{StaticResource PrimarySurfaceBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="12">
-                    <Grid Margin="24">
-                        <Grid.RowDefinitions>
-                            <!-- Table Header -->
-                            <RowDefinition Height="Auto" />
-                            <!-- Divider -->
-                            <RowDefinition Height="Auto" />
-                            <!-- Data Area (Primary Focus) -->
-                            <RowDefinition Height="*" />
-                            <!-- Pagination Area -->
-                            <RowDefinition Height="Auto" />
-                        </Grid.RowDefinitions>
-
-                        <!-- Table Header Block -->
-                        <Grid Grid.Row="0">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="Auto" />
-                            </Grid.ColumnDefinitions>
-
-                            <!-- Header Info -->
-                            <StackPanel Grid.Column="0">
-                                <TextBlock Text="Registered Installations" FontFamily="Segoe UI Variable" FontSize="16" FontWeight="SemiBold" Foreground="{StaticResource PrimaryTextBrush}" />
-                                <TextBlock Text="Primary local application management grid" FontFamily="Segoe UI Variable" FontSize="12" Foreground="{StaticResource MutedTextBrush}" Margin="0,4,0,0" />
+                        <!-- GROUP 1: DISCOVERY -->
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <!-- Group heading left of buttons or just structured layout -->
+                            <StackPanel VerticalAlignment="Center" Margin="0,0,16,0" Width="80">
+                                <TextBlock Text="DISCOVERY" FontFamily="Segoe UI Variable, Segoe UI" FontSize="11" FontWeight="Bold" Foreground="{StaticResource MutedTextBrush}" HorizontalAlignment="Left" />
+                                <TextBlock Text="Platform scan" FontFamily="Segoe UI Variable, Segoe UI" FontSize="9" Foreground="{StaticResource MutedTextBrush}" Margin="0,2,0,0" HorizontalAlignment="Left" />
                             </StackPanel>
 
-                            <!-- Top-right Action Area -->
-                            <Border Grid.Column="1" Background="{StaticResource SecondarySurfaceBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="6" Padding="12,6" VerticalAlignment="Center">
-                                <TextBlock Text="Grid Settings" FontFamily="Segoe UI Variable" FontSize="12" Foreground="{StaticResource SecondaryTextBrush}" />
-                            </Border>
-                        </Grid>
+                            <!-- Scan All (Primary Accent Yellow) -->
+                            <Button Content="Scan All"
+                                    Style="{StaticResource PrimaryToolbarButtonStyle}"
+                                    Tag="{StaticResource ScanAllIconGeometry}"
+                                    Margin="0,0,12,0" />
 
-                        <!-- Header Divider -->
-                        <Border Grid.Row="1" Height="1" Background="{StaticResource DividerBrush}" Margin="0,16" />
+                            <!-- Steam (Brand Color) -->
+                            <Button Content="Steam"
+                                    Style="{StaticResource ToolbarButtonStyle}"
+                                    Tag="{StaticResource SteamIconGeometry}"
+                                    Foreground="#66C0F4"
+                                    Margin="0,0,12,0" />
 
-                        <!-- Data Area Placeholder -->
-                        <Grid Grid.Row="2">
-                            <Border BorderBrush="{StaticResource DividerBrush}" BorderThickness="1" CornerRadius="8" Background="{StaticResource SecondarySurfaceBrush}">
-                                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-                                    <TextBlock Text="Application Grid Area" FontFamily="Segoe UI Variable" FontSize="14" FontWeight="SemiBold" Foreground="{StaticResource SecondaryTextBrush}" HorizontalAlignment="Center" />
-                                    <TextBlock Text="Data row presentation layout" FontFamily="Segoe UI Variable" FontSize="12" Foreground="{StaticResource MutedTextBrush}" Margin="0,6,0,0" HorizontalAlignment="Center" />
-                                </StackPanel>
-                            </Border>
-                        </Grid>
+                            <!-- Epic Games (Brand Color) -->
+                            <Button Content="Epic Games"
+                                    Style="{StaticResource ToolbarButtonStyle}"
+                                    Tag="{StaticResource EpicGamesIconGeometry}"
+                                    Foreground="#FFFFFF"
+                                    Margin="0,0,12,0" />
 
-                        <!-- Pagination Block -->
-                        <Grid Grid.Row="3" Margin="0,16,0,0">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="Auto" />
-                            </Grid.ColumnDefinitions>
-                            <TextBlock Grid.Column="0" Text="Showing 0 - 0 of 0 entries" FontFamily="Segoe UI Variable" FontSize="12" Foreground="{StaticResource MutedTextBrush}" VerticalAlignment="Center" />
-                            <StackPanel Grid.Column="2" Orientation="Horizontal">
-                                <Border Background="{StaticResource SecondarySurfaceBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="6" Padding="12,6" Margin="0,0,8,0">
-                                    <TextBlock Text="Previous" FontFamily="Segoe UI Variable" FontSize="12" Foreground="{StaticResource DisabledTextBrush}" />
-                                </Border>
-                                <Border Background="{StaticResource SecondarySurfaceBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="6" Padding="12,6">
-                                    <TextBlock Text="Next" FontFamily="Segoe UI Variable" FontSize="12" Foreground="{StaticResource DisabledTextBrush}" />
-                                </Border>
-                            </StackPanel>
-                        </Grid>
-                    </Grid>
-                </Border>
+                            <!-- Riot Games (Brand Color) -->
+                            <Button Content="Riot Games"
+                                    Style="{StaticResource ToolbarButtonStyle}"
+                                    Tag="{StaticResource RiotGamesIconGeometry}"
+                                    Foreground="#EB0028"
+                                    Margin="0,0,12,0" />
 
-                <!-- RIGHT PANEL: Scrollable Property Inspector -->
-                <Border Grid.Column="4" Background="{StaticResource PrimarySurfaceBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="12">
-                    <Grid Margin="24">
-                        <Grid.RowDefinitions>
-                            <!-- Panel Title -->
-                            <RowDefinition Height="Auto" />
-                            <!-- Scrollable Property Inspector -->
-                            <RowDefinition Height="*" />
-                        </Grid.RowDefinitions>
+                            <!-- Battle.net (Brand Color) -->
+                            <Button Content="Battle.net"
+                                    Style="{StaticResource ToolbarButtonStyle}"
+                                    Tag="{StaticResource BattleNetIconGeometry}"
+                                    Foreground="#00AEFF"
+                                    Margin="0,0,12,0" />
 
-                        <!-- Panel Title -->
-                        <StackPanel Grid.Row="0" Margin="0,0,0,16">
-                            <TextBlock Text="Property Inspector" FontFamily="Segoe UI Variable" FontSize="16" FontWeight="SemiBold" Foreground="{StaticResource PrimaryTextBrush}" />
-                            <TextBlock Text="Selection parameters and configurations" FontFamily="Segoe UI Variable" FontSize="12" Foreground="{StaticResource MutedTextBrush}" Margin="0,4,0,0" />
+                            <!-- Ubisoft Connect (Brand Color) -->
+                            <Button Content="Ubisoft Connect"
+                                    Style="{StaticResource ToolbarButtonStyle}"
+                                    Tag="{StaticResource UbisoftIconGeometry}"
+                                    Foreground="#00C2FF"
+                                    Margin="0,0,12,0" />
+
+                            <!-- Xbox (Brand Color) -->
+                            <Button Content="Xbox"
+                                    Style="{StaticResource ToolbarButtonStyle}"
+                                    Tag="{StaticResource XboxIconGeometry}"
+                                    Foreground="#107C10"
+                                    Margin="0,0,12,0" />
+
+                            <!-- EA App (Brand Color) -->
+                            <Button Content="EA App"
+                                    Style="{StaticResource ToolbarButtonStyle}"
+                                    Tag="{StaticResource EaAppIconGeometry}"
+                                    Foreground="#F51E38"
+                                    Margin="0,0,12,0" />
+
+                            <!-- Custom Folder (Brand Color) -->
+                            <Button Content="Custom Folder"
+                                    Style="{StaticResource ToolbarButtonStyle}"
+                                    Tag="{StaticResource CustomFolderIconGeometry}"
+                                    Foreground="{StaticResource PrimaryAccentBrush}" />
                         </StackPanel>
 
-                        <!-- Scrollable Inspector -->
-                        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-                            <StackPanel>
-                                <!-- Section 1: General -->
-                                <Border Background="{StaticResource SecondarySurfaceBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="8" Padding="16" Margin="0,0,0,16">
-                                    <StackPanel>
-                                        <TextBlock Text="General" FontFamily="Segoe UI Variable" FontSize="12" FontWeight="SemiBold" Foreground="{StaticResource PrimaryAccentBrush}" />
-                                        <TextBlock Text="Core identifier and manifest settings" FontFamily="Segoe UI Variable" FontSize="12" Foreground="{StaticResource MutedTextBrush}" Margin="0,4,0,0" />
-                                    </StackPanel>
-                                </Border>
+                        <!-- Group Separator 1 -->
+                        <Border Width="1" Height="40" Background="{StaticResource DividerBrush}" Margin="20,0" />
 
-                                <!-- Section 2: Executable -->
-                                <Border Background="{StaticResource SecondarySurfaceBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="8" Padding="16" Margin="0,0,0,16">
-                                    <StackPanel>
-                                        <TextBlock Text="Executable" FontFamily="Segoe UI Variable" FontSize="12" FontWeight="SemiBold" Foreground="{StaticResource PrimaryAccentBrush}" />
-                                        <TextBlock Text="Launch binary validation properties" FontFamily="Segoe UI Variable" FontSize="12" Foreground="{StaticResource MutedTextBrush}" Margin="0,4,0,0" />
-                                    </StackPanel>
-                                </Border>
-
-                                <!-- Section 3: Launcher -->
-                                <Border Background="{StaticResource SecondarySurfaceBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="8" Padding="16" Margin="0,0,0,16">
-                                    <StackPanel>
-                                        <TextBlock Text="Launcher" FontFamily="Segoe UI Variable" FontSize="12" FontWeight="SemiBold" Foreground="{StaticResource PrimaryAccentBrush}" />
-                                        <TextBlock Text="Distribution platform associations" FontFamily="Segoe UI Variable" FontSize="12" Foreground="{StaticResource MutedTextBrush}" Margin="0,4,0,0" />
-                                    </StackPanel>
-                                </Border>
-
-                                <!-- Section 4: Launch Settings -->
-                                <Border Background="{StaticResource SecondarySurfaceBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="8" Padding="16" Margin="0,0,0,16">
-                                    <StackPanel>
-                                        <TextBlock Text="Launch Settings" FontFamily="Segoe UI Variable" FontSize="12" FontWeight="SemiBold" Foreground="{StaticResource PrimaryAccentBrush}" />
-                                        <TextBlock Text="Command line flags and argument parameters" FontFamily="Segoe UI Variable" FontSize="12" Foreground="{StaticResource MutedTextBrush}" Margin="0,4,0,0" />
-                                    </StackPanel>
-                                </Border>
-
-                                <!-- Section 5: Runtime -->
-                                <Border Background="{StaticResource SecondarySurfaceBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="8" Padding="16" Margin="0,0,0,16">
-                                    <StackPanel>
-                                        <TextBlock Text="Runtime" FontFamily="Segoe UI Variable" FontSize="12" FontWeight="SemiBold" Foreground="{StaticResource PrimaryAccentBrush}" />
-                                        <TextBlock Text="Environment context and dynamic library links" FontFamily="Segoe UI Variable" FontSize="12" Foreground="{StaticResource MutedTextBrush}" Margin="0,4,0,0" />
-                                    </StackPanel>
-                                </Border>
-
-                                <!-- Section 6: Images -->
-                                <Border Background="{StaticResource SecondarySurfaceBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="8" Padding="16" Margin="0,0,0,16">
-                                    <StackPanel>
-                                        <TextBlock Text="Images" FontFamily="Segoe UI Variable" FontSize="12" FontWeight="SemiBold" Foreground="{StaticResource PrimaryAccentBrush}" />
-                                        <TextBlock Text="Banners, background media, and asset files" FontFamily="Segoe UI Variable" FontSize="12" Foreground="{StaticResource MutedTextBrush}" Margin="0,4,0,0" />
-                                    </StackPanel>
-                                </Border>
-
-                                <!-- Section 7: Metadata -->
-                                <Border Background="{StaticResource SecondarySurfaceBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="8" Padding="16" Margin="0,0,0,16">
-                                    <StackPanel>
-                                        <TextBlock Text="Metadata" FontFamily="Segoe UI Variable" FontSize="12" FontWeight="SemiBold" Foreground="{StaticResource PrimaryAccentBrush}" />
-                                        <TextBlock Text="Publisher name, localized details, and metadata descriptors" FontFamily="Segoe UI Variable" FontSize="12" Foreground="{StaticResource MutedTextBrush}" Margin="0,4,0,0" />
-                                    </StackPanel>
-                                </Border>
-
-                                <!-- Section 8: Tags -->
-                                <Border Background="{StaticResource SecondarySurfaceBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="8" Padding="16" Margin="0,0,0,16">
-                                    <StackPanel>
-                                        <TextBlock Text="Tags" FontFamily="Segoe UI Variable" FontSize="12" FontWeight="SemiBold" Foreground="{StaticResource PrimaryAccentBrush}" />
-                                        <TextBlock Text="Custom labels and organization taxonomies" FontFamily="Segoe UI Variable" FontSize="12" Foreground="{StaticResource MutedTextBrush}" Margin="0,4,0,0" />
-                                    </StackPanel>
-                                </Border>
-
-                                <!-- Section 9: Security -->
-                                <Border Background="{StaticResource SecondarySurfaceBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="8" Padding="16" Margin="0,0,0,16">
-                                    <StackPanel>
-                                        <TextBlock Text="Security" FontFamily="Segoe UI Variable" FontSize="12" FontWeight="SemiBold" Foreground="{StaticResource PrimaryAccentBrush}" />
-                                        <TextBlock Text="Integrity signatures and sandboxing variables" FontFamily="Segoe UI Variable" FontSize="12" Foreground="{StaticResource MutedTextBrush}" Margin="0,4,0,0" />
-                                    </StackPanel>
-                                </Border>
-
-                                <!-- Section 10: Visibility -->
-                                <Border Background="{StaticResource SecondarySurfaceBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="8" Padding="16">
-                                    <StackPanel>
-                                        <TextBlock Text="Visibility" FontFamily="Segoe UI Variable" FontSize="12" FontWeight="SemiBold" Foreground="{StaticResource PrimaryAccentBrush}" />
-                                        <TextBlock Text="Client kiosk visibility parameters" FontFamily="Segoe UI Variable" FontSize="12" Foreground="{StaticResource MutedTextBrush}" Margin="0,4,0,0" />
-                                    </StackPanel>
-                                </Border>
+                        <!-- GROUP 2: MANAGEMENT -->
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <StackPanel VerticalAlignment="Center" Margin="0,0,16,0" Width="85">
+                                <TextBlock Text="MANAGEMENT" FontFamily="Segoe UI Variable, Segoe UI" FontSize="11" FontWeight="Bold" Foreground="{StaticResource MutedTextBrush}" HorizontalAlignment="Left" />
+                                <TextBlock Text="Local registry" FontFamily="Segoe UI Variable, Segoe UI" FontSize="9" Foreground="{StaticResource MutedTextBrush}" Margin="0,2,0,0" HorizontalAlignment="Left" />
                             </StackPanel>
-                        </ScrollViewer>
-                    </Grid>
-                </Border>
-            </Grid>
 
-            <!-- SECTION 4: BOTTOM STATUS AREA -->
-            <Grid Grid.Row="3" Height="80" Margin="0,24,0,0">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="16" />
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="16" />
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="16" />
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="16" />
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="16" />
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="16" />
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="16" />
-                    <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
+                            <!-- Add Game (Primary accent style -> Normal State Demo) -->
+                            <Button Content="Add Game"
+                                    Style="{StaticResource PrimaryToolbarButtonStyle}"
+                                    Tag="{StaticResource AddGameIconGeometry}"
+                                    Margin="0,0,12,0" />
 
-                <!-- Status Card 1 -->
-                <Border Grid.Column="0" Background="{StaticResource PrimarySurfaceBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="8" Padding="12">
-                    <StackPanel VerticalAlignment="Center">
-                        <TextBlock Text="Scan Status" FontFamily="Segoe UI Variable" FontSize="10" FontWeight="Medium" Foreground="{StaticResource MutedTextBrush}" />
-                        <TextBlock Text="COMPLETED" FontFamily="Segoe UI Variable" FontSize="12" FontWeight="Bold" Foreground="{StaticResource SuccessBrush}" Margin="0,2,0,0" />
+                            <!-- Add Application (Focused State Demo) -->
+                            <Button Content="Add Application"
+                                    Style="{StaticResource FocusedStaticDemoButtonStyle}"
+                                    Tag="{StaticResource AddAppIconGeometry}"
+                                    Margin="0,0,12,0" />
+
+                            <!-- Duplicate (Pressed State Demo) -->
+                            <Button Content="Duplicate"
+                                    Style="{StaticResource PressedStaticDemoButtonStyle}"
+                                    Tag="{StaticResource DuplicateIconGeometry}"
+                                    Margin="0,0,12,0" />
+
+                            <!-- Edit (Hover State Demo) -->
+                            <Button Content="Edit"
+                                    Style="{StaticResource HoverStaticDemoButtonStyle}"
+                                    Tag="{StaticResource EditIconGeometry}"
+                                    Margin="0,0,12,0" />
+
+                            <!-- Remove (Danger style -> Red State Demo) -->
+                            <Button Content="Remove"
+                                    Style="{StaticResource DangerToolbarButtonStyle}"
+                                    Tag="{StaticResource RemoveIconGeometry}"
+                                    Margin="0,0,12,0" />
+
+                            <!-- Enable (Normal Style -> Normal State Demo) -->
+                            <Button Content="Enable"
+                                    Style="{StaticResource ToolbarButtonStyle}"
+                                    Tag="{StaticResource EnableIconGeometry}"
+                                    Margin="0,0,12,0" />
+
+                            <!-- Disable (Disabled State Demo) -->
+                            <Button Content="Disable"
+                                    Style="{StaticResource ToolbarButtonStyle}"
+                                    Tag="{StaticResource DisableIconGeometry}"
+                                    IsEnabled="False" />
+                        </StackPanel>
+
+                        <!-- Group Separator 2 -->
+                        <Border Width="1" Height="40" Background="{StaticResource DividerBrush}" Margin="20,0" />
+
+                        <!-- GROUP 3: IMPORT / EXPORT -->
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <StackPanel VerticalAlignment="Center" Margin="0,0,16,0" Width="95">
+                                <TextBlock Text="IMPORT/EXPORT" FontFamily="Segoe UI Variable, Segoe UI" FontSize="11" FontWeight="Bold" Foreground="{StaticResource MutedTextBrush}" HorizontalAlignment="Left" />
+                                <TextBlock Text="JSON manifests" FontFamily="Segoe UI Variable, Segoe UI" FontSize="9" Foreground="{StaticResource MutedTextBrush}" Margin="0,2,0,0" HorizontalAlignment="Left" />
+                            </StackPanel>
+
+                            <!-- Import -->
+                            <Button Content="Import"
+                                    Style="{StaticResource ToolbarButtonStyle}"
+                                    Tag="{StaticResource ImportIconGeometry}"
+                                    Margin="0,0,12,0" />
+
+                            <!-- Export -->
+                            <Button Content="Export"
+                                    Style="{StaticResource ToolbarButtonStyle}"
+                                    Tag="{StaticResource ExportIconGeometry}"
+                                    Margin="0,0,12,0" />
+
+                            <!-- Backup -->
+                            <Button Content="Backup"
+                                    Style="{StaticResource ToolbarButtonStyle}"
+                                    Tag="{StaticResource BackupIconGeometry}"
+                                    Margin="0,0,12,0" />
+
+                            <!-- Restore (Disabled State Demo) -->
+                            <Button Content="Restore"
+                                    Style="{StaticResource ToolbarButtonStyle}"
+                                    Tag="{StaticResource RestoreIconGeometry}"
+                                    IsEnabled="False"
+                                    Margin="0,0,12,0" />
+
+                            <!-- Import Metadata -->
+                            <Button Content="Import Metadata"
+                                    Style="{StaticResource ToolbarButtonStyle}"
+                                    Tag="{StaticResource ImportIconGeometry}"
+                                    Margin="0,0,12,0" />
+
+                            <!-- Export Configuration -->
+                            <Button Content="Export Configuration"
+                                    Style="{StaticResource ToolbarButtonStyle}"
+                                    Tag="{StaticResource ExportIconGeometry}" />
+                        </StackPanel>
+
+                        <!-- Group Separator 3 -->
+                        <Border Width="1" Height="40" Background="{StaticResource DividerBrush}" Margin="20,0" />
+
+                        <!-- GROUP 4: SYNCHRONIZATION -->
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <StackPanel VerticalAlignment="Center" Margin="0,0,16,0" Width="105">
+                                <TextBlock Text="SYNCHRONIZATION" FontFamily="Segoe UI Variable, Segoe UI" FontSize="11" FontWeight="Bold" Foreground="{StaticResource MutedTextBrush}" HorizontalAlignment="Left" />
+                                <TextBlock Text="Server alignment" FontFamily="Segoe UI Variable, Segoe UI" FontSize="9" Foreground="{StaticResource MutedTextBrush}" Margin="0,2,0,0" HorizontalAlignment="Left" />
+                            </StackPanel>
+
+                            <!-- Sync From Server -->
+                            <Button Content="Sync From Server"
+                                    Style="{StaticResource ToolbarButtonStyle}"
+                                    Tag="{StaticResource ImportIconGeometry}"
+                                    Margin="0,0,12,0" />
+
+                            <!-- Sync To Server (Active Loading State Demo) -->
+                            <Button Content="Sync To Server"
+                                    Style="{StaticResource LoadingToolbarButtonStyle}"
+                                    Margin="0,0,12,0" />
+
+                            <!-- Compare -->
+                            <Button Content="Compare"
+                                    Style="{StaticResource ToolbarButtonStyle}"
+                                    Tag="{StaticResource CompareIconGeometry}"
+                                    Margin="0,0,12,0" />
+
+                            <!-- Validate -->
+                            <Button Content="Validate"
+                                    Style="{StaticResource ToolbarButtonStyle}"
+                                    Tag="{StaticResource ValidateIconGeometry}"
+                                    Margin="0,0,12,0" />
+
+                            <!-- Rescan -->
+                            <Button Content="Rescan"
+                                    Style="{StaticResource ToolbarButtonStyle}"
+                                    Tag="{StaticResource RescanIconGeometry}"
+                                    Margin="0,0,12,0" />
+
+                            <!-- Repair Metadata -->
+                            <Button Content="Repair Metadata"
+                                    Style="{StaticResource ToolbarButtonStyle}"
+                                    Tag="{StaticResource RepairIconGeometry}" />
+                        </StackPanel>
+
                     </StackPanel>
-                </Border>
-
-                <!-- Status Card 2 -->
-                <Border Grid.Column="2" Background="{StaticResource PrimarySurfaceBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="8" Padding="12">
-                    <StackPanel VerticalAlignment="Center">
-                        <TextBlock Text="Total Apps" FontFamily="Segoe UI Variable" FontSize="10" FontWeight="Medium" Foreground="{StaticResource MutedTextBrush}" />
-                        <TextBlock Text="48 Registered" FontFamily="Segoe UI Variable" FontSize="12" FontWeight="Bold" Foreground="{StaticResource PrimaryTextBrush}" Margin="0,2,0,0" />
-                    </StackPanel>
-                </Border>
-
-                <!-- Status Card 3 -->
-                <Border Grid.Column="4" Background="{StaticResource PrimarySurfaceBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="8" Padding="12">
-                    <StackPanel VerticalAlignment="Center">
-                        <TextBlock Text="Enabled" FontFamily="Segoe UI Variable" FontSize="10" FontWeight="Medium" Foreground="{StaticResource MutedTextBrush}" />
-                        <TextBlock Text="42 Active" FontFamily="Segoe UI Variable" FontSize="12" FontWeight="Bold" Foreground="{StaticResource SuccessBrush}" Margin="0,2,0,0" />
-                    </StackPanel>
-                </Border>
-
-                <!-- Status Card 4 -->
-                <Border Grid.Column="6" Background="{StaticResource PrimarySurfaceBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="8" Padding="12">
-                    <StackPanel VerticalAlignment="Center">
-                        <TextBlock Text="Disabled" FontFamily="Segoe UI Variable" FontSize="10" FontWeight="Medium" Foreground="{StaticResource MutedTextBrush}" />
-                        <TextBlock Text="6 Suspended" FontFamily="Segoe UI Variable" FontSize="12" FontWeight="Bold" Foreground="{StaticResource DangerBrush}" Margin="0,2,0,0" />
-                    </StackPanel>
-                </Border>
-
-                <!-- Status Card 5 -->
-                <Border Grid.Column="8" Background="{StaticResource PrimarySurfaceBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="8" Padding="12">
-                    <StackPanel VerticalAlignment="Center">
-                        <TextBlock Text="Validated" FontFamily="Segoe UI Variable" FontSize="10" FontWeight="Medium" Foreground="{StaticResource MutedTextBrush}" />
-                        <TextBlock Text="45 Verified" FontFamily="Segoe UI Variable" FontSize="12" FontWeight="Bold" Foreground="{StaticResource InformationBrush}" Margin="0,2,0,0" />
-                    </StackPanel>
-                </Border>
-
-                <!-- Status Card 6 -->
-                <Border Grid.Column="10" Background="{StaticResource PrimarySurfaceBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="8" Padding="12">
-                    <StackPanel VerticalAlignment="Center">
-                        <TextBlock Text="Sync State" FontFamily="Segoe UI Variable" FontSize="10" FontWeight="Medium" Foreground="{StaticResource MutedTextBrush}" />
-                        <TextBlock Text="SYNCHRONIZED" FontFamily="Segoe UI Variable" FontSize="12" FontWeight="Bold" Foreground="{StaticResource SuccessBrush}" Margin="0,2,0,0" />
-                    </StackPanel>
-                </Border>
-
-                <!-- Status Card 7 -->
-                <Border Grid.Column="12" Background="{StaticResource PrimarySurfaceBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="8" Padding="12">
-                    <StackPanel VerticalAlignment="Center">
-                        <TextBlock Text="Last Backup" FontFamily="Segoe UI Variable" FontSize="10" FontWeight="Medium" Foreground="{StaticResource MutedTextBrush}" />
-                        <TextBlock Text="2 hours ago" FontFamily="Segoe UI Variable" FontSize="12" FontWeight="Bold" Foreground="{StaticResource SecondaryTextBrush}" Margin="0,2,0,0" />
-                    </StackPanel>
-                </Border>
-
-                <!-- Status Card 8 -->
-                <Border Grid.Column="14" Background="{StaticResource PrimarySurfaceBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="8" Padding="12">
-                    <StackPanel VerticalAlignment="Center">
-                        <TextBlock Text="Integrity" FontFamily="Segoe UI Variable" FontSize="10" FontWeight="Medium" Foreground="{StaticResource MutedTextBrush}" />
-                        <TextBlock Text="SECURE" FontFamily="Segoe UI Variable" FontSize="12" FontWeight="Bold" Foreground="{StaticResource SuccessBrush}" Margin="0,2,0,0" />
-                    </StackPanel>
-                </Border>
-            </Grid>
+                </ScrollViewer>
+            </Border>
         </Grid>
 
         <!-- Floating Notification Overlay for Services -->
