@@ -98,7 +98,7 @@
 
                                 <!-- Text with Peyda Bold, Numbers/Buttons -->
                                 <TextBlock Grid.Column="2"
-                                           Text="پایان"
+                                           Text="پایان دادن به استفاده"
                                            Foreground="{DynamicResource RedBrush}"
                                            FontFamily="{StaticResource PeydaBold}"
                                            FontSize="15"
@@ -353,67 +353,139 @@
 
                             <Grid FlowDirection="RightToLeft">
                                 <Grid.RowDefinitions>
-                                    <!-- Row 0: End Session Button & Timer -->
+                                    <!-- Row 0: Header (PC Name & Session Info with Icon) -->
+                                    <RowDefinition Height="Auto" />
+                                    <!-- Row 1: Time Used & Timer (Left Aligned) -->
+                                    <RowDefinition Height="Auto" />
+                                    <!-- Row 2: Yellow Divider Line -->
+                                    <RowDefinition Height="Auto" />
+                                    <!-- Row 3: Stats Details Key/Value list -->
                                     <RowDefinition Height="*" />
-                                    <!-- Row 1: Sub stats (Start Time, Hourly Rate, Cost) -->
+                                    <!-- Row 4: Centered End Session Button -->
                                     <RowDefinition Height="Auto" />
                                 </Grid.RowDefinitions>
 
-                                <!-- Top area with Timer and End Session Button -->
-                                <Grid Grid.Row="0">
-                                    <Grid.ColumnDefinitions>
-                                        <!-- Right side (RTL Column 0): End Session Button -->
-                                        <ColumnDefinition Width="Auto" />
-                                        <!-- Spacer -->
-                                        <ColumnDefinition Width="*" />
-                                        <!-- Left side (RTL Column 2): Timer Display -->
-                                        <ColumnDefinition Width="Auto" />
-                                    </Grid.ColumnDefinitions>
+                                <!-- Row 0: Header -->
+                                <Grid Grid.Row="0" Margin="0,0,0,12">
+                                    <!-- Right: PC Name -->
+                                    <TextBlock Text="PC-08"
+                                               FontFamily="{StaticResource PeydaBold}"
+                                               FontSize="18"
+                                               Foreground="{DynamicResource PrimaryYellowBrush}"
+                                               HorizontalAlignment="Right"
+                                               VerticalAlignment="Center" />
 
-                                    <!-- End Session Button on the right -->
-                                    <Button Grid.Column="0"
-                                            Style="{StaticResource EndSessionButtonStyle}"
-                                            Click="EndSession_Click"
-                                            Width="120" Height="48"
-                                            VerticalAlignment="Center"/>
-
-                                    <!-- Timer Display on the left -->
-                                    <StackPanel Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Left">
-                                        <TextBlock Text="زمان گذرانده" FontFamily="{StaticResource PeydaMedium}" FontSize="13" Foreground="{DynamicResource SecondaryWhiteBrush}" Margin="0,0,0,6"/>
-                                        <TextBlock Text="{Binding SessionTime}" FontFamily="{StaticResource BlackOpsOne}" FontSize="36" Foreground="{DynamicResource WhiteBrush}">
-                                            <TextBlock.Effect>
-                                                <DropShadowEffect Color="#FFFFFF" BlurRadius="10" ShadowDepth="0" Opacity="0.3" />
-                                            </TextBlock.Effect>
-                                        </TextBlock>
+                                    <!-- Left: Session Information + Icon -->
+                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center">
+                                        <!-- Text -->
+                                        <TextBlock Text="session information"
+                                                   FontFamily="{StaticResource PeydaBold}"
+                                                   FontSize="16"
+                                                   Foreground="{DynamicResource WhiteBrush}"
+                                                   VerticalAlignment="Center"
+                                                   Margin="8,0,0,0" />
+                                        <!-- Suitable clock icon to the left -->
+                                        <Path Data="M12 6v6h4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                                              Stroke="{DynamicResource WhiteBrush}"
+                                              StrokeThickness="1.5"
+                                              StrokeStartLineCap="Round"
+                                              StrokeEndLineCap="Round"
+                                              Fill="Transparent"
+                                              Width="18" Height="18"
+                                              Stretch="Uniform"
+                                              VerticalAlignment="Center"/>
                                     </StackPanel>
                                 </Grid>
 
-                                <!-- Bottom area: Sub stats (Start Time, Hourly Rate, Cost) -->
-                                <Grid Grid.Row="1" Margin="0,20,0,10">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*" />
-                                        <ColumnDefinition Width="*" />
-                                        <ColumnDefinition Width="*" />
-                                    </Grid.ColumnDefinitions>
+                                <!-- Row 1: Time Used & Timer (Left Aligned) -->
+                                <StackPanel Grid.Row="1" HorizontalAlignment="Left" Margin="0,0,0,15">
+                                    <TextBlock Text="زمان استفاده شده"
+                                               FontFamily="{StaticResource PeydaMedium}"
+                                               FontSize="13"
+                                               Foreground="{DynamicResource SecondaryWhiteBrush}"
+                                               HorizontalAlignment="Left" />
+                                    <TextBlock Text="{Binding SessionTime}"
+                                               FontFamily="{StaticResource BlackOpsOne}"
+                                               FontSize="38"
+                                               Foreground="{DynamicResource WhiteBrush}"
+                                               HorizontalAlignment="Left"
+                                               Margin="0,4,0,0">
+                                        <TextBlock.Effect>
+                                            <DropShadowEffect Color="#FFFFFF" BlurRadius="10" ShadowDepth="0" Opacity="0.3" />
+                                        </TextBlock.Effect>
+                                    </TextBlock>
+                                </StackPanel>
 
-                                    <!-- Start Time -->
-                                    <StackPanel Grid.Column="0" HorizontalAlignment="Center">
-                                        <TextBlock Text="زمان شروع" FontFamily="{StaticResource PeydaMedium}" FontSize="12" Foreground="{DynamicResource SecondaryWhiteBrush}" HorizontalAlignment="Center"/>
-                                        <TextBlock Text="{Binding StartTime}" FontFamily="{StaticResource PeydaBlack}" FontSize="15" Foreground="{DynamicResource WhiteBrush}" Margin="0,6,0,0" HorizontalAlignment="Center"/>
-                                    </StackPanel>
+                                <!-- Row 2: Yellow Divider Line -->
+                                <Border Grid.Row="2"
+                                        Height="1.5"
+                                        Background="{DynamicResource PrimaryYellowBrush}"
+                                        Margin="0,0,0,15" />
+
+                                <!-- Row 3: Stats Details Key/Value list -->
+                                <Grid Grid.Row="3" Margin="0,0,0,15">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
 
                                     <!-- Hourly Rate -->
-                                    <StackPanel Grid.Column="1" HorizontalAlignment="Center">
-                                        <TextBlock Text="نرخ ساعتی" FontFamily="{StaticResource PeydaMedium}" FontSize="12" Foreground="{DynamicResource SecondaryWhiteBrush}" HorizontalAlignment="Center"/>
-                                        <TextBlock Text="{Binding HourlyRate}" FontFamily="{StaticResource PeydaBlack}" FontSize="15" Foreground="{DynamicResource WhiteBrush}" Margin="0,6,0,0" HorizontalAlignment="Center"/>
-                                    </StackPanel>
+                                    <Grid Grid.Row="0" Margin="0,0,0,10">
+                                        <TextBlock Text="نرخ ساعتی"
+                                                   FontFamily="{StaticResource PeydaMedium}"
+                                                   FontSize="14"
+                                                   Foreground="{DynamicResource SecondaryWhiteBrush}"
+                                                   HorizontalAlignment="Right"
+                                                   VerticalAlignment="Center" />
+                                        <TextBlock Text="{Binding HourlyRate}"
+                                                   FontFamily="{StaticResource PeydaBold}"
+                                                   FontSize="15"
+                                                   Foreground="{DynamicResource WhiteBrush}"
+                                                   HorizontalAlignment="Left"
+                                                   VerticalAlignment="Center" />
+                                    </Grid>
 
-                                    <!-- Current Cost -->
-                                    <StackPanel Grid.Column="2" HorizontalAlignment="Center">
-                                        <TextBlock Text="هزینه تاکنون" FontFamily="{StaticResource PeydaMedium}" FontSize="12" Foreground="{DynamicResource SecondaryWhiteBrush}" HorizontalAlignment="Center"/>
-                                        <TextBlock Text="{Binding CurrentCost}" FontFamily="{StaticResource PeydaBlack}" FontSize="15" Foreground="{DynamicResource WhiteBrush}" Margin="0,6,0,0" HorizontalAlignment="Center"/>
-                                    </StackPanel>
+                                    <!-- Cost so far -->
+                                    <Grid Grid.Row="1" Margin="0,0,0,10">
+                                        <TextBlock Text="هزینه تا کنون"
+                                                   FontFamily="{StaticResource PeydaMedium}"
+                                                   FontSize="14"
+                                                   Foreground="{DynamicResource SecondaryWhiteBrush}"
+                                                   HorizontalAlignment="Right"
+                                                   VerticalAlignment="Center" />
+                                        <TextBlock Text="{Binding CurrentCost}"
+                                                   FontFamily="{StaticResource PeydaBold}"
+                                                   FontSize="15"
+                                                   Foreground="{DynamicResource WhiteBrush}"
+                                                   HorizontalAlignment="Left"
+                                                   VerticalAlignment="Center" />
+                                    </Grid>
+
+                                    <!-- Start Time -->
+                                    <Grid Grid.Row="2" Margin="0,0,0,10">
+                                        <TextBlock Text="زمان شروع"
+                                                   FontFamily="{StaticResource PeydaMedium}"
+                                                   FontSize="14"
+                                                   Foreground="{DynamicResource SecondaryWhiteBrush}"
+                                                   HorizontalAlignment="Right"
+                                                   VerticalAlignment="Center" />
+                                        <TextBlock Text="{Binding StartTime}"
+                                                   FontFamily="{StaticResource PeydaBold}"
+                                                   FontSize="15"
+                                                   Foreground="{DynamicResource WhiteBrush}"
+                                                   HorizontalAlignment="Left"
+                                                   VerticalAlignment="Center" />
+                                    </Grid>
                                 </Grid>
+
+                                <!-- Row 4: Centered End Session Button -->
+                                <Button Grid.Row="4"
+                                        Style="{StaticResource EndSessionButtonStyle}"
+                                        Click="EndSession_Click"
+                                        Width="240" Height="48"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Bottom"/>
                             </Grid>
                         </Border>
 
