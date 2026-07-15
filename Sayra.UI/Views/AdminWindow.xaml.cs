@@ -1,5 +1,9 @@
 using System;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Input;
+using Sayra.UI.Models;
+using Sayra.UI.ViewModels;
 
 namespace Sayra.UI.Views
 {
@@ -8,7 +12,20 @@ namespace Sayra.UI.Views
         public AdminWindow()
         {
             InitializeComponent();
+            DataContext = new AdminWorkspaceViewModel();
             this.Closed += AdminWindow_Closed;
+        }
+
+        private void AppsDataGrid_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            if (sender is DataGrid grid && grid.SelectedItem is AdminAppItem selectedItem)
+            {
+                // Double click automatically executes the Launch Command
+                if (DataContext is AdminWorkspaceViewModel vm)
+                {
+                    vm.LaunchCommand.Execute(selectedItem);
+                }
+            }
         }
 
         private async void LogoutButton_Click(object sender, RoutedEventArgs e)
