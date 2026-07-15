@@ -99,6 +99,7 @@ builder.Services.AddHostedService<WatchdogService>();
 builder.Services.AddHostedService<AntiTamperService>();
 builder.Services.AddHostedService<WhitelistingService>();
 builder.Services.AddHostedService<UpdateManager>();
+builder.Services.AddHostedService<LauncherIntegrationService>();
 
 var host = builder.Build();
 host.Run();

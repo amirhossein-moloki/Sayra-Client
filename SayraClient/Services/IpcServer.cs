@@ -2,9 +2,17 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Sayra.Client.Shared.Ipc;
 using Sayra.Client.Shared.Models;
+using Sayra.Client.Launcher.Services;
+using Sayra.Client.GameLibrary.Services;
 using SayraClient.Services;
+using System;
+using System.Collections.Generic;
+using System.IO;
 using System.IO.Pipes;
+using System.Linq;
 using System.Text.Json;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace SayraClient.Services;
 
@@ -15,8 +23,9 @@ public class IpcServer : BackgroundService
     private readonly SessionManager _sessionManager;
     private readonly ClientStateManager _stateManager;
     private readonly KioskManager _kioskManager;
-    private readonly ProcessManager _processManager;
-    private readonly GameLauncher _gameLauncher;
+    private readonly IGameLauncherService _gameLauncher;
+    private readonly IProcessMonitorService _processMonitor;
+    private readonly IGameLibraryService _gameLibrary;
     private readonly List<NamedPipeServerStream> _activeConnections = new();
     private readonly object _connectionsLock = new();
 
@@ -25,15 +34,17 @@ public class IpcServer : BackgroundService
         SessionManager sessionManager,
         ClientStateManager stateManager,
         KioskManager kioskManager,
-        ProcessManager processManager,
-        GameLauncher gameLauncher)
+        IGameLauncherService gameLauncher,
+        IProcessMonitorService processMonitor,
+        IGameLibraryService gameLibrary)
     {
         _logger = logger;
         _sessionManager = sessionManager;
         _stateManager = stateManager;
         _kioskManager = kioskManager;
-        _processManager = processManager;
         _gameLauncher = gameLauncher;
+        _processMonitor = processMonitor;
+        _gameLibrary = gameLibrary;
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -124,7 +135,6 @@ public class IpcServer : BackgroundService
                     return new IpcCommandResponse { Success = true, Result = JsonSerializer.Serialize(state) };
 
                 case IpcMessageType.START_SESSION:
-                    // This normally comes from server, but UI might trigger a local guest session if allowed
                     return new IpcCommandResponse { Success = false, ErrorMessage = "START_SESSION must be initiated by server." };
 
                 case IpcMessageType.STOP_SESSION:
@@ -140,13 +150,32 @@ public class IpcServer : BackgroundService
                     return new IpcCommandResponse { Success = resumeResult.Status == "Executed", ErrorMessage = resumeResult.Result };
 
                 case IpcMessageType.LAUNCH_APP:
+                case IpcMessageType.LAUNCH_GAME:
                     var launchReq = JsonSerializer.Deserialize<LaunchAppRequest>(message.Payload ?? "{}");
                     if (launchReq != null && !string.IsNullOrEmpty(launchReq.GameId))
                     {
-                        _gameLauncher.LaunchGame(launchReq.GameId);
-                        return new IpcCommandResponse { Success = true };
+                        bool success = await _gameLauncher.LaunchGameAsync(launchReq.GameId);
+                        return new IpcCommandResponse { Success = success, ErrorMessage = success ? null : "Launch pipeline validation or startup failed." };
                     }
                     return new IpcCommandResponse { Success = false, ErrorMessage = "Invalid launch request: GameId is required." };
+
+                case IpcMessageType.STOP_GAME:
+                    var stopReq = JsonSerializer.Deserialize<LaunchAppRequest>(message.Payload ?? "{}");
+                    if (stopReq != null && !string.IsNullOrEmpty(stopReq.GameId))
+                    {
+                        await _gameLauncher.StopGameAsync(stopReq.GameId);
+                        return new IpcCommandResponse { Success = true };
+                    }
+                    return new IpcCommandResponse { Success = false, ErrorMessage = "Invalid stop request: GameId is required." };
+
+                case IpcMessageType.RESTART_GAME:
+                    var restartReq = JsonSerializer.Deserialize<LaunchAppRequest>(message.Payload ?? "{}");
+                    if (restartReq != null && !string.IsNullOrEmpty(restartReq.GameId))
+                    {
+                        await _gameLauncher.RestartGameAsync(restartReq.GameId);
+                        return new IpcCommandResponse { Success = true };
+                    }
+                    return new IpcCommandResponse { Success = false, ErrorMessage = "Invalid restart request: GameId is required." };
 
                 case IpcMessageType.KILL_APP:
                     var killReq = JsonSerializer.Deserialize<KillAppRequest>(message.Payload ?? "{}");
@@ -154,15 +183,15 @@ public class IpcServer : BackgroundService
                     {
                         if (killReq.Pid.HasValue)
                         {
-                            _processManager.KillProcess(killReq.Pid.Value);
+                            await _gameLauncher.KillProcessAsync(killReq.Pid.Value);
                         }
                         else if (!string.IsNullOrEmpty(killReq.GameId))
                         {
-                            _gameLauncher.KillGame(killReq.GameId);
+                            await _gameLauncher.KillGameAsync(killReq.GameId);
                         }
                         else if (!string.IsNullOrEmpty(killReq.ProcessName))
                         {
-                            _processManager.KillProcessByName(killReq.ProcessName);
+                            await _gameLauncher.KillProcessByNameAsync(killReq.ProcessName);
                         }
                         else
                         {
@@ -179,20 +208,47 @@ public class IpcServer : BackgroundService
                     return new IpcCommandResponse { Success = true };
 
                 case IpcMessageType.GET_APPS:
-                    var registeredGames = _gameLauncher.GetRegisteredGames();
+                    var registeredGames = await _gameLibrary.GetGames();
                     var appDtos = registeredGames.Select(g => new AppDto
                     {
-                        Id = g.GameId,
+                        Id = g.Id,
                         Name = g.Name,
-                        Category = g.Category,
+                        Category = g.Category?.Name ?? "Game",
                         IconPath = g.IconPath,
-                        IsFavorite = g.IsFavorite
+                        IsFavorite = false
                     }).ToList();
                     return new IpcCommandResponse { Success = true, Result = JsonSerializer.Serialize(appDtos) };
 
                 case IpcMessageType.GET_RUNNING_GAMES:
-                    var runningGames = _gameLauncher.GetRunningGames();
+                    var runningGames = _gameLauncher.GetRunningGames().Select(g => new ProcessEventPayload
+                    {
+                        Pid = g.Pid,
+                        GameId = g.GameId,
+                        Name = g.Name
+                    }).ToList();
                     return new IpcCommandResponse { Success = true, Result = JsonSerializer.Serialize(runningGames) };
+
+                case IpcMessageType.GET_RUNNING_STATISTICS:
+                    var statsList = _processMonitor.GetRunningProcesses();
+                    return new IpcCommandResponse { Success = true, Result = JsonSerializer.Serialize(statsList) };
+
+                case IpcMessageType.VALIDATE_EXECUTABLE:
+                    var pathPayload = JsonSerializer.Deserialize<Dictionary<string, string>>(message.Payload ?? "{}");
+                    if (pathPayload != null && pathPayload.TryGetValue("path", out var execPath))
+                    {
+                        bool exists = File.Exists(execPath);
+                        return new IpcCommandResponse { Success = exists, Result = exists ? "Valid" : "File not found" };
+                    }
+                    return new IpcCommandResponse { Success = false, ErrorMessage = "Path payload is missing." };
+
+                case IpcMessageType.LAUNCHER_STATUS:
+                    var statusObj = new
+                    {
+                        Launches = _processMonitor.GetTotalLaunches(),
+                        Crashes = _processMonitor.GetTotalCrashes(),
+                        Restarts = _processMonitor.GetTotalRestarts()
+                    };
+                    return new IpcCommandResponse { Success = true, Result = JsonSerializer.Serialize(statusObj) };
 
                 default:
                     return new IpcCommandResponse { Success = false, ErrorMessage = $"Unknown message type: {message.MessageType}" };
@@ -242,7 +298,6 @@ public class IpcServer : BackgroundService
         {
             try
             {
-                // We use the stream directly to avoid disposing issues with StreamWriter
                 var writer = new StreamWriter(stream, leaveOpen: true) { AutoFlush = true };
                 await writer.WriteLineAsync(json);
                 await writer.FlushAsync();

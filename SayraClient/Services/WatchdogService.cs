@@ -1,5 +1,6 @@
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Sayra.Client.Launcher.Services;
 
 namespace SayraClient.Services;
 
@@ -8,15 +9,18 @@ public class WatchdogService : BackgroundService
     private readonly ILogger<WatchdogService> _logger;
     private readonly RecoveryManager _recoveryManager;
     private readonly TcpClientManager _networkManager;
+    private readonly IGameLauncherService _gameLauncher;
 
     public WatchdogService(
         ILogger<WatchdogService> logger,
         RecoveryManager recoveryManager,
-        TcpClientManager networkManager)
+        TcpClientManager networkManager,
+        IGameLauncherService gameLauncher)
     {
         _logger = logger;
         _recoveryManager = recoveryManager;
         _networkManager = networkManager;
+        _gameLauncher = gameLauncher;
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -60,12 +64,7 @@ public class WatchdogService : BackgroundService
                 string guardianPath = System.IO.Path.Combine(AppContext.BaseDirectory, "Sayra.Client.Guardian.exe");
                 if (System.IO.File.Exists(guardianPath))
                 {
-                    System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
-                    {
-                        FileName = guardianPath,
-                        UseShellExecute = true,
-                        CreateNoWindow = true
-                    });
+                    _ = _gameLauncher.LaunchApplicationAsync(guardianPath, "", "", false, CancellationToken.None);
                 }
                 else
                 {
