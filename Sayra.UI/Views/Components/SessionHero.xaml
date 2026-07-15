@@ -44,7 +44,7 @@
             <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}" />
             <Setter Property="BorderThickness" Value="1.2" />
             <Setter Property="CornerRadius" Value="12" />
-            <Setter Property="Padding" Value="20,12" />
+            <Setter Property="Padding" Value="32,16" />
             <Setter Property="HorizontalAlignment" Value="Left" />
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
@@ -95,12 +95,12 @@
                     <!-- Session Timer - Numbers: BlackOpsOne -->
                     <TextBlock Text="{Binding SessionTime}"
                                FontFamily="{StaticResource BlackOpsOne}"
-                               FontSize="64"
-                               Foreground="{DynamicResource WhiteBrush}"
+                               FontSize="88"
+                               Foreground="{DynamicResource PrimaryBrush}"
                                HorizontalAlignment="Left"
                                Margin="0,0,0,14">
                         <TextBlock.Effect>
-                            <DropShadowEffect Color="#FFFFFF" BlurRadius="15" ShadowDepth="0" Opacity="0.35" />
+                            <DropShadowEffect Color="#ffff3d" BlurRadius="20" ShadowDepth="0" Opacity="0.45" />
                         </TextBlock.Effect>
                     </TextBlock>
 
@@ -119,10 +119,10 @@
                                       StrokeStartLineCap="Round"
                                       StrokeEndLineCap="Round"
                                       Fill="Transparent"
-                                      Width="24" Height="24"
+                                      Width="32" Height="32"
                                       Stretch="Uniform"
                                       VerticalAlignment="Center"
-                                      Margin="0,0,12,0">
+                                      Margin="0,0,16,0">
                                     <Path.Effect>
                                         <DropShadowEffect Color="#ffff3d" BlurRadius="6" ShadowDepth="0" Opacity="0.3"/>
                                     </Path.Effect>
@@ -133,19 +133,19 @@
                                     <!-- Label: Peyda-Medium, Muted -->
                                     <TextBlock Text="هزینه تاکنون"
                                                FontFamily="{StaticResource PeydaMedium}"
-                                               FontSize="11"
+                                               FontSize="14"
                                                Foreground="{DynamicResource SecondaryWhiteBrush}" />
-                                    <!-- Value: Peyda-Black, White -->
+                                    <!-- Value: Peyda-Black, Yellow -->
                                     <TextBlock Text="{Binding CurrentCost}"
                                                FontFamily="{StaticResource PeydaBlack}"
-                                               FontSize="15"
-                                               Foreground="{DynamicResource WhiteBrush}"
+                                               FontSize="22"
+                                               Foreground="{DynamicResource PrimaryBrush}"
                                                Margin="0,3,0,0" />
                                 </StackPanel>
                             </StackPanel>
 
                             <!-- Vertical Divider -->
-                            <Rectangle Width="1" Height="30" Fill="#33FFFFFF" Margin="24,0" VerticalAlignment="Center" />
+                            <Rectangle Width="1" Height="42" Fill="#33FFFFFF" Margin="36,0" VerticalAlignment="Center" />
 
                             <!-- Hourly Rate Section (نرخ ساعتی) -->
                             <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
@@ -156,10 +156,10 @@
                                       StrokeStartLineCap="Round"
                                       StrokeEndLineCap="Round"
                                       Fill="Transparent"
-                                      Width="24" Height="24"
+                                      Width="32" Height="32"
                                       Stretch="Uniform"
                                       VerticalAlignment="Center"
-                                      Margin="0,0,12,0">
+                                      Margin="0,0,16,0">
                                     <Path.Effect>
                                         <DropShadowEffect Color="#ffff3d" BlurRadius="6" ShadowDepth="0" Opacity="0.3"/>
                                     </Path.Effect>
@@ -170,18 +170,30 @@
                                     <!-- Label: Peyda-Medium, Muted -->
                                     <TextBlock Text="نرخ ساعتی"
                                                FontFamily="{StaticResource PeydaMedium}"
-                                               FontSize="11"
+                                               FontSize="14"
                                                Foreground="{DynamicResource SecondaryWhiteBrush}" />
-                                    <!-- Value: Peyda-Black, White -->
+                                    <!-- Value: Peyda-Black, Yellow -->
                                     <TextBlock Text="{Binding HourlyRate}"
                                                FontFamily="{StaticResource PeydaBlack}"
-                                               FontSize="15"
-                                               Foreground="{DynamicResource WhiteBrush}"
+                                               FontSize="22"
+                                               Foreground="{DynamicResource PrimaryBrush}"
                                                Margin="0,3,0,0" />
                                 </StackPanel>
                             </StackPanel>
                         </StackPanel>
                     </Border>
+                </StackPanel>
+
+                <!-- Align Right Side content vertically: PC Name -->
+                <StackPanel HorizontalAlignment="Right" VerticalAlignment="Center">
+                    <TextBlock Text="PC-08"
+                               FontFamily="{StaticResource BlackOpsOne}"
+                               FontSize="88"
+                               Foreground="{DynamicResource PrimaryBrush}">
+                        <TextBlock.Effect>
+                            <DropShadowEffect Color="#ffff3d" BlurRadius="20" ShadowDepth="0" Opacity="0.45" />
+                        </TextBlock.Effect>
+                    </TextBlock>
                 </StackPanel>
             </Grid>
         </Grid>

@@ -51,8 +51,21 @@
         <Border Grid.Row="1" CornerRadius="28" Background="#59181820" BorderBrush="#10FFFFFF" BorderThickness="1" Padding="39,20,36,20" ClipToBounds="True">
             <Border.Effect><DropShadowEffect Color="#000000" BlurRadius="38" ShadowDepth="14" Opacity=".42"/></Border.Effect>
             <Grid>
-                <StackPanel HorizontalAlignment="Left" VerticalAlignment="Top"><controls:SessionTimer TimeText="{Binding RemainingTimeText}"/><StackPanel Orientation="Horizontal" Margin="1,12,0,0"><controls:PriceCard Title="هزینه تاکنون" Value="110,000 تومان" Icon="◈" Margin="0,0,18,0"/><controls:PriceCard Title="نرخ ساعتی" Value="120,000 تومان" Icon="⌁"/></StackPanel></StackPanel>
-                <TextBlock Text="SAYRA" HorizontalAlignment="Right" VerticalAlignment="Center" FontSize="132" FontFamily="{StaticResource PeydaBlack}" Foreground="White" Opacity=".035"/>
+                <StackPanel HorizontalAlignment="Left" VerticalAlignment="Top">
+                    <controls:SessionTimer TimeText="{Binding RemainingTimeText}"/>
+                    <StackPanel Orientation="Horizontal" Margin="1,12,0,0">
+                        <controls:PriceCard Title="هزینه تاکنون" Value="110,000 تومان" Icon="◈" Margin="0,0,18,0"/>
+                        <controls:PriceCard Title="نرخ ساعتی" Value="120,000 تومان" Icon="⌁"/>
+                    </StackPanel>
+                </StackPanel>
+                <TextBlock Text="SAYRA" HorizontalAlignment="Right" VerticalAlignment="Center" FontSize="132" FontFamily="{StaticResource PeydaBlack}" Foreground="White" Opacity=".015"/>
+                <StackPanel HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,20,0">
+                    <TextBlock Text="PC-08" FontFamily="{StaticResource BlackOpsOne}" FontSize="88" Foreground="{StaticResource PrimaryAccentBrush}">
+                        <TextBlock.Effect>
+                            <DropShadowEffect Color="#F5FF00" BlurRadius="20" ShadowDepth="0" Opacity="0.45"/>
+                        </TextBlock.Effect>
+                    </TextBlock>
+                </StackPanel>
             </Grid>
         </Border>
 
