@@ -258,12 +258,6 @@
 
                                     <!-- Title / Genre -->
                                     <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Right" FlowDirection="LeftToRight" Margin="0,0,0,15">
-                                        <Path Data="M21,6H3C1.9,6 1,6.9 1,8V16C1,17.1 1.9,18 3,18H21C22.1,18 23,17.1 23,16V8C23,6.9 22.1,6 21,6M6,15H4V13H2V11H4V9H6V11H8V13H6V15M15,11A1.5,1.5 0 1,1 16.5,9.5A1.5,1.5 0 0,1 15,11M19,14A1.5,1.5 0 1,1 20.5,12.5A1.5,1.5 0 0,1 19,14Z"
-                                              Fill="{DynamicResource PrimaryYellowBrush}"
-                                              Width="36" Height="36"
-                                              Stretch="Uniform"
-                                              VerticalAlignment="Center"
-                                              Margin="0,0,16,0"/>
                                         <StackPanel VerticalAlignment="Center">
                                             <TextBlock x:Name="DetailTitle"
                                                        Text="عنوان بازی"
@@ -434,12 +428,27 @@
 
                                     <!-- Hourly Rate -->
                                     <Grid Grid.Row="0" Margin="0,0,0,10">
-                                        <TextBlock Text="نرخ ساعتی"
-                                                   FontFamily="{StaticResource PeydaMedium}"
-                                                   FontSize="19"
-                                                   Foreground="{DynamicResource PrimaryYellowBrush}"
-                                                   HorizontalAlignment="Left"
-                                                   VerticalAlignment="Center" />
+                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center">
+                                            <Path Data="{DynamicResource HourlyRateIconGeometry}"
+                                                  Stroke="{DynamicResource PrimaryYellowBrush}"
+                                                  StrokeThickness="1.5"
+                                                  StrokeStartLineCap="Round"
+                                                  StrokeEndLineCap="Round"
+                                                  Fill="Transparent"
+                                                  Width="18" Height="18"
+                                                  Stretch="Uniform"
+                                                  VerticalAlignment="Center"
+                                                  Margin="0,0,8,0">
+                                                <Path.Effect>
+                                                    <DropShadowEffect Color="#ffff3d" BlurRadius="6" ShadowDepth="0" Opacity="0.3"/>
+                                                </Path.Effect>
+                                            </Path>
+                                            <TextBlock Text="نرخ ساعتی"
+                                                       FontFamily="{StaticResource PeydaMedium}"
+                                                       FontSize="19"
+                                                       Foreground="{DynamicResource PrimaryYellowBrush}"
+                                                       VerticalAlignment="Center" />
+                                        </StackPanel>
                                         <TextBlock Text="{Binding HourlyRate}"
                                                    FontFamily="{StaticResource PeydaBold}"
                                                    FontSize="20"
@@ -450,12 +459,27 @@
 
                                     <!-- Cost so far -->
                                     <Grid Grid.Row="1" Margin="0,0,0,10">
-                                        <TextBlock Text="هزینه تا کنون"
-                                                   FontFamily="{StaticResource PeydaMedium}"
-                                                   FontSize="19"
-                                                   Foreground="{DynamicResource PrimaryYellowBrush}"
-                                                   HorizontalAlignment="Left"
-                                                   VerticalAlignment="Center" />
+                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center">
+                                            <Path Data="{DynamicResource CurrentCostIconGeometry}"
+                                                  Stroke="{DynamicResource PrimaryYellowBrush}"
+                                                  StrokeThickness="1.5"
+                                                  StrokeStartLineCap="Round"
+                                                  StrokeEndLineCap="Round"
+                                                  Fill="Transparent"
+                                                  Width="18" Height="18"
+                                                  Stretch="Uniform"
+                                                  VerticalAlignment="Center"
+                                                  Margin="0,0,8,0">
+                                                <Path.Effect>
+                                                    <DropShadowEffect Color="#ffff3d" BlurRadius="6" ShadowDepth="0" Opacity="0.3"/>
+                                                </Path.Effect>
+                                            </Path>
+                                            <TextBlock Text="هزینه تا کنون"
+                                                       FontFamily="{StaticResource PeydaMedium}"
+                                                       FontSize="19"
+                                                       Foreground="{DynamicResource PrimaryYellowBrush}"
+                                                       VerticalAlignment="Center" />
+                                        </StackPanel>
                                         <TextBlock Text="{Binding CurrentCost}"
                                                    FontFamily="{StaticResource PeydaBold}"
                                                    FontSize="20"
@@ -466,12 +490,27 @@
 
                                     <!-- Start Time -->
                                     <Grid Grid.Row="2" Margin="0,0,0,10">
-                                        <TextBlock Text="زمان شروع"
-                                                   FontFamily="{StaticResource PeydaMedium}"
-                                                   FontSize="19"
-                                                   Foreground="{DynamicResource PrimaryYellowBrush}"
-                                                   HorizontalAlignment="Left"
-                                                   VerticalAlignment="Center" />
+                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center">
+                                            <Path Data="{DynamicResource StartTimeIconGeometry}"
+                                                  Stroke="{DynamicResource PrimaryYellowBrush}"
+                                                  StrokeThickness="1.5"
+                                                  StrokeStartLineCap="Round"
+                                                  StrokeEndLineCap="Round"
+                                                  Fill="Transparent"
+                                                  Width="18" Height="18"
+                                                  Stretch="Uniform"
+                                                  VerticalAlignment="Center"
+                                                  Margin="0,0,8,0">
+                                                <Path.Effect>
+                                                    <DropShadowEffect Color="#ffff3d" BlurRadius="6" ShadowDepth="0" Opacity="0.3"/>
+                                                </Path.Effect>
+                                            </Path>
+                                            <TextBlock Text="زمان شروع"
+                                                       FontFamily="{StaticResource PeydaMedium}"
+                                                       FontSize="19"
+                                                       Foreground="{DynamicResource PrimaryYellowBrush}"
+                                                       VerticalAlignment="Center" />
+                                        </StackPanel>
                                         <TextBlock Text="{Binding StartTime}"
                                                    FontFamily="{StaticResource PeydaBold}"
                                                    FontSize="20"
