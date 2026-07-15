@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:Sayra.UI.Controls"
              mc:Ignorable="d"
              d:DesignHeight="700" d:DesignWidth="260">
     <Grid>
@@ -24,9 +25,8 @@
             <Grid>
                 <Grid.RowDefinitions>
                     <!-- Block 1: Navigation Header Placeholder (Height: 44px, Gap Below: 20px) -->
-                    <RowDefinition Height="44" />
-                    <!-- Gap between Block 1 and Block 2: 20px -->
-                    <RowDefinition Height="20" />
+                    <!-- We'll merge Block 1 RowDefinition with the NavigationHeader height to avoid duplicate gaps -->
+                    <RowDefinition Height="Auto" />
                     <!-- Block 2: Category List Placeholder (Flexible Height) -->
                     <RowDefinition Height="*" />
                     <!-- Block 3: Footer Placeholder (Height: 120px, Margin Top: 20px) -->
@@ -34,13 +34,11 @@
                     <RowDefinition Height="120" />
                 </Grid.RowDefinitions>
 
-                <!-- Block 1: Navigation Header Placeholder -->
-                <Grid Grid.Row="0">
-                    <!-- Empty placeholder for Navigation Header (Height: 44px) -->
-                </Grid>
+                <!-- Block 1: Navigation Header (Container Width: 228 px, Height: 44 px, Margin Bottom: 20px) -->
+                <local:NavigationHeader Grid.Row="0" />
 
                 <!-- Block 2: Category List Placeholder -->
-                <Grid Grid.Row="2">
+                <Grid Grid.Row="1">
                     <!-- Dashed border representing the empty placeholder -->
                     <Rectangle Stroke="#303641"
                                StrokeThickness="1"
@@ -50,7 +48,7 @@
                 </Grid>
 
                 <!-- Block 3: Footer Placeholder -->
-                <Border Grid.Row="4"
+                <Border Grid.Row="3"
                         BorderThickness="0,1,0,0"
                         BorderBrush="#2B3039">
                     <!-- Empty placeholder for Footer actions (Height: 120px) -->
