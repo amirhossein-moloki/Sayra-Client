@@ -1017,75 +1017,7 @@
             </Grid.RowDefinitions>
 
             <!-- LEFT NAVIGATION PANEL -->
-            <Border Grid.Row="0" Grid.RowSpan="3" Grid.Column="0" Width="260" Background="#171A20" BorderBrush="#2B3039" BorderThickness="0,0,1,0" CornerRadius="12" Padding="16,20">
-                <Border.Effect>
-                    <DropShadowEffect Color="Black" Direction="270" ShadowDepth="2" BlurRadius="12" Opacity="0.12"/>
-                </Border.Effect>
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <!-- Top Area -->
-                        <RowDefinition Height="Auto" />
-                        <!-- Category List -->
-                        <RowDefinition Height="*" />
-                        <!-- Divider & Bottom Section -->
-                        <RowDefinition Height="Auto" />
-                    </Grid.RowDefinitions>
-
-                    <!-- Top Area (Title & Categories Header) -->
-                    <Grid Grid.Row="0" Height="44" Margin="0,0,0,20">
-                        <TextBlock Text="Categories"
-                                   FontFamily="Segoe UI Variable, Segoe UI"
-                                   FontWeight="SemiBold"
-                                   FontSize="18"
-                                   Foreground="#FFFFFF"
-                                   VerticalAlignment="Center" />
-                    </Grid>
-
-                    <!-- Category ListBox -->
-                    <ListBox Grid.Row="1"
-                             ItemsSource="{Binding Categories}"
-                             SelectedItem="{Binding SelectedCategory}"
-                             ItemContainerStyle="{StaticResource CategoryItemStyle}"
-                             Background="Transparent"
-                             BorderBrush="Transparent"
-                             BorderThickness="0"
-                             ScrollViewer.VerticalScrollBarVisibility="Auto"
-                             ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                             ScrollViewer.CanContentScroll="True">
-                        <ListBox.Template>
-                            <ControlTemplate TargetType="ListBox">
-                                <ScrollViewer Style="{StaticResource CategoryScrollViewerStyle}">
-                                    <ItemsPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
-                                </ScrollViewer>
-                            </ControlTemplate>
-                        </ListBox.Template>
-                    </ListBox>
-
-                    <!-- Divider & Bottom Section -->
-                    <StackPanel Grid.Row="2" Margin="0,16,0,0">
-                        <!-- 1 px Divider of color #2B3039 -->
-                        <Border Height="1" Background="#2B3039" Margin="0,0,0,12" />
-
-                        <!-- Bottom Action items -->
-                        <Button Content="Manage Categories"
-                                Style="{StaticResource BottomActionButtonStyle}"
-                                Tag="M4 6h16M4 12h16M4 18h16"
-                                Command="{Binding ManageCategoriesCommand}" />
-                        <Button Content="Refresh Categories"
-                                Style="{StaticResource BottomActionButtonStyle}"
-                                Tag="M4 4v5h.582m15.356 2A8.001 8.001 0 1121.21 8H17"
-                                Command="{Binding RefreshCategoriesCommand}" />
-                        <Button Content="Collapse All"
-                                Style="{StaticResource BottomActionButtonStyle}"
-                                Tag="M5 15l7-7 7 7"
-                                Command="{Binding CollapseAllCommand}" />
-                        <Button Content="Settings"
-                                Style="{StaticResource BottomActionButtonStyle}"
-                                Tag="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
-                                Command="{Binding SettingsCommand}" />
-                    </StackPanel>
-                </Grid>
-            </Border>
+            <c:NavigationContainer Grid.Row="0" Grid.RowSpan="3" Grid.Column="0" Width="260" />
 
             <!-- SECTION 1: SEARCH AREA (Height: 64px, Padding: 20px, Rounded Corners: 12px) -->
             <Border Grid.Row="0" Grid.Column="2" Height="64" Background="{StaticResource PrimarySurfaceBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="12">
