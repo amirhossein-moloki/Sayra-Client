@@ -625,6 +625,329 @@
                 </Setter.Value>
             </Setter>
         </Style>
+
+        <!-- Custom Category Scrollbar Style -->
+        <Style x:Key="CategoryScrollThumbStyle" TargetType="Thumb">
+            <Setter Property="OverridesDefaultStyle" Value="True"/>
+            <Setter Property="IsTabStop" Value="False"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Thumb">
+                        <Border x:Name="rectangle"
+                                CornerRadius="4"
+                                Background="#3B4048"
+                                SnapsToDevicePixels="True" />
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="rectangle" Property="Background" Value="#525C6A" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="CategoryScrollbarStyle" TargetType="ScrollBar">
+            <Setter Property="OverridesDefaultStyle" Value="True"/>
+            <Setter Property="Width" Value="8"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ScrollBar">
+                        <Grid x:Name="Bg" SnapsToDevicePixels="true" Background="Transparent">
+                            <Track x:Name="PART_Track" IsDirectionReversed="true" HorizontalAlignment="Center">
+                                <Track.DecreaseRepeatButton>
+                                    <RepeatButton Command="{x:Static ScrollBar.LineUpCommand}" Opacity="0" Focusable="false" />
+                                </Track.DecreaseRepeatButton>
+                                <Track.IncreaseRepeatButton>
+                                    <RepeatButton Command="{x:Static ScrollBar.LineDownCommand}" Opacity="0" Focusable="false" />
+                                </Track.IncreaseRepeatButton>
+                                <Track.Thumb>
+                                    <Thumb Style="{StaticResource CategoryScrollThumbStyle}" />
+                                </Track.Thumb>
+                            </Track>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="CategoryScrollViewerStyle" TargetType="ScrollViewer">
+            <Setter Property="OverridesDefaultStyle" Value="True"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ScrollViewer">
+                        <Grid x:Name="Grid" Background="{TemplateBinding Background}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <ScrollContentPresenter Grid.Column="0" Margin="{TemplateBinding Padding}" Content="{TemplateBinding Content}" ContentTemplate="{TemplateBinding ContentTemplate}" CanContentScroll="{TemplateBinding CanContentScroll}"/>
+                            <ScrollBar Grid.Column="1" x:Name="PART_VerticalScrollBar"
+                                       Style="{StaticResource CategoryScrollbarStyle}"
+                                       Value="{TemplateBinding VerticalOffset}"
+                                       Maximum="{TemplateBinding ScrollableHeight}"
+                                       ViewportSize="{TemplateBinding ViewportHeight}"
+                                       Visibility="{TemplateBinding ComputedVerticalScrollBarVisibility}" />
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Category ListBoxItem Style -->
+        <Style x:Key="CategoryItemStyle" TargetType="ListBoxItem">
+            <Setter Property="Height" Value="42"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Foreground" Value="#C5CBD5"/>
+            <Setter Property="Padding" Value="12,0"/>
+            <Setter Property="Margin" Value="0,3"/> <!-- Total gap of 6 px between items (3 margin top/bottom) -->
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Focusable" Value="True"/>
+            <Setter Property="SnapsToDevicePixels" Value="True"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ListBoxItem">
+                        <Border x:Name="border"
+                                Background="#00171A20"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="8"
+                                SnapsToDevicePixels="True">
+                            <VisualStateManager.VisualStateGroups>
+                                <VisualStateGroup x:Name="CommonStates">
+                                    <VisualState x:Name="Normal"/>
+                                    <VisualState x:Name="MouseOver">
+                                        <Storyboard>
+                                            <ColorAnimation Storyboard.TargetName="border"
+                                                            Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)"
+                                                            To="#252932" Duration="0:0:0.12"/>
+                                        </Storyboard>
+                                    </VisualState>
+                                    <VisualState x:Name="Disabled">
+                                        <Storyboard>
+                                            <DoubleAnimation Storyboard.TargetProperty="Opacity" To="0.55" Duration="0"/>
+                                        </Storyboard>
+                                    </VisualState>
+                                </VisualStateGroup>
+                                <VisualStateGroup x:Name="SelectionStates">
+                                    <VisualState x:Name="Unselected"/>
+                                    <VisualState x:Name="Selected">
+                                        <Storyboard>
+                                            <ColorAnimation Storyboard.TargetName="border"
+                                                            Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)"
+                                                            To="#2B3039" Duration="0"/>
+                                            <ColorAnimation Storyboard.TargetName="IconPath"
+                                                            Storyboard.TargetProperty="(Path.Stroke).(SolidColorBrush.Color)"
+                                                            To="#FFFFFF" Duration="0"/>
+                                            <ColorAnimation Storyboard.TargetName="CategoryText"
+                                                            Storyboard.TargetProperty="(TextBlock.Foreground).(SolidColorBrush.Color)"
+                                                            To="#FFFFFF" Duration="0"/>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="AccentBar"
+                                                                            Storyboard.TargetProperty="Visibility">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Visible}"/>
+                                            </ObjectAnimationUsingKeyFrames>
+                                            <ColorAnimation Storyboard.TargetName="CounterBorder"
+                                                            Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)"
+                                                            To="#F7E733" Duration="0"/>
+                                            <ColorAnimation Storyboard.TargetName="CounterText"
+                                                            Storyboard.TargetProperty="(TextBlock.Foreground).(SolidColorBrush.Color)"
+                                                            To="#000000" Duration="0"/>
+                                        </Storyboard>
+                                    </VisualState>
+                                    <VisualState x:Name="SelectedUnfocused">
+                                        <Storyboard>
+                                            <ColorAnimation Storyboard.TargetName="border"
+                                                            Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)"
+                                                            To="#2B3039" Duration="0"/>
+                                            <ColorAnimation Storyboard.TargetName="IconPath"
+                                                            Storyboard.TargetProperty="(Path.Stroke).(SolidColorBrush.Color)"
+                                                            To="#FFFFFF" Duration="0"/>
+                                            <ColorAnimation Storyboard.TargetName="CategoryText"
+                                                            Storyboard.TargetProperty="(TextBlock.Foreground).(SolidColorBrush.Color)"
+                                                            To="#FFFFFF" Duration="0"/>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="AccentBar"
+                                                                            Storyboard.TargetProperty="Visibility">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Visible}"/>
+                                            </ObjectAnimationUsingKeyFrames>
+                                            <ColorAnimation Storyboard.TargetName="CounterBorder"
+                                                            Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)"
+                                                            To="#F7E733" Duration="0"/>
+                                            <ColorAnimation Storyboard.TargetName="CounterText"
+                                                            Storyboard.TargetProperty="(TextBlock.Foreground).(SolidColorBrush.Color)"
+                                                            To="#000000" Duration="0"/>
+                                        </Storyboard>
+                                    </VisualState>
+                                </VisualStateGroup>
+                            </VisualStateManager.VisualStateGroups>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+
+                                <!-- Left Accent Bar (Visible when Selected) -->
+                                <Border x:Name="AccentBar"
+                                        Grid.Column="0"
+                                        Width="4"
+                                        Height="24"
+                                        Background="#F7E733"
+                                        CornerRadius="2"
+                                        HorizontalAlignment="Left"
+                                        Visibility="Collapsed"
+                                        Margin="-12,0,0,0"/>
+
+                                <!-- Icon and Text Area -->
+                                <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center" Margin="12,0,0,0">
+                                    <!-- Icon Path -->
+                                    <Path x:Name="IconPath"
+                                          Data="{Binding IconGeometry}"
+                                          Stroke="#C5CBD5"
+                                          StrokeThickness="1.5"
+                                          StrokeStartLineCap="Round"
+                                          StrokeEndLineCap="Round"
+                                          Fill="Transparent"
+                                          Width="20" Height="20"
+                                          Stretch="Uniform"
+                                          VerticalAlignment="Center"
+                                          Margin="0,0,12,0" />
+
+                                    <!-- Text Content -->
+                                    <TextBlock x:Name="CategoryText"
+                                               Text="{Binding Name}"
+                                               Foreground="#C5CBD5"
+                                               FontFamily="Segoe UI Variable, Segoe UI"
+                                               FontSize="14"
+                                               FontWeight="Medium"
+                                               VerticalAlignment="Center"/>
+                                </StackPanel>
+
+                                <!-- Category Counter (Located on the right side) -->
+                                <Border x:Name="CounterBorder"
+                                        Grid.Column="2"
+                                        MinWidth="28"
+                                        Height="22"
+                                        CornerRadius="11"
+                                        Background="#252932"
+                                        VerticalAlignment="Center"
+                                        Padding="6,0"
+                                        Margin="0,0,12,0">
+                                    <TextBlock x:Name="CounterText"
+                                               Text="{Binding Count}"
+                                               Foreground="#C5CBD5"
+                                               FontFamily="Segoe UI Variable, Segoe UI"
+                                               FontSize="12"
+                                               FontWeight="Medium"
+                                               HorizontalAlignment="Center"
+                                               VerticalAlignment="Center"/>
+                                </Border>
+                            </Grid>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Bottom Action Button Style -->
+        <Style x:Key="BottomActionButtonStyle" TargetType="Button">
+            <Setter Property="Height" Value="40"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Foreground" Value="#C5CBD5"/>
+            <Setter Property="Padding" Value="12,0"/>
+            <Setter Property="Margin" Value="0,3"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Focusable" Value="True"/>
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border"
+                                Background="#00171A20"
+                                BorderThickness="0"
+                                CornerRadius="8"
+                                SnapsToDevicePixels="True">
+                            <Grid Margin="{TemplateBinding Padding}">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+
+                                <!-- Icon -->
+                                <Path x:Name="IconPath"
+                                      Grid.Column="0"
+                                      Data="{TemplateBinding Tag}"
+                                      Stroke="#C5CBD5"
+                                      StrokeThickness="1.5"
+                                      StrokeStartLineCap="Round"
+                                      StrokeEndLineCap="Round"
+                                      Fill="Transparent"
+                                      Width="20" Height="20"
+                                      Stretch="Uniform"
+                                      VerticalAlignment="Center"
+                                      Margin="0,0,12,0" />
+
+                                <!-- Text content -->
+                                <TextBlock x:Name="BtnText"
+                                           Grid.Column="1"
+                                           Text="{TemplateBinding Content}"
+                                           Foreground="#C5CBD5"
+                                           FontFamily="Segoe UI Variable, Segoe UI"
+                                           FontSize="14"
+                                           FontWeight="Medium"
+                                           VerticalAlignment="Center" />
+                            </Grid>
+                        </Border>
+
+                        <ControlTemplate.Triggers>
+                            <!-- Hover state with 120ms transition animation -->
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Trigger.EnterActions>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <ColorAnimation Storyboard.TargetName="border"
+                                                            Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)"
+                                                            To="#252932" Duration="0:0:0.12"/>
+                                            <ColorAnimation Storyboard.TargetName="IconPath"
+                                                            Storyboard.TargetProperty="(Path.Stroke).(SolidColorBrush.Color)"
+                                                            To="#FFFFFF" Duration="0:0:0.12"/>
+                                            <ColorAnimation Storyboard.TargetName="BtnText"
+                                                            Storyboard.TargetProperty="(TextBlock.Foreground).(SolidColorBrush.Color)"
+                                                            To="#FFFFFF" Duration="0:0:0.12"/>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </Trigger.EnterActions>
+                                <Trigger.ExitActions>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <ColorAnimation Storyboard.TargetName="border"
+                                                            Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)"
+                                                            To="Transparent" Duration="0:0:0.12"/>
+                                            <ColorAnimation Storyboard.TargetName="IconPath"
+                                                            Storyboard.TargetProperty="(Path.Stroke).(SolidColorBrush.Color)"
+                                                            To="#C5CBD5" Duration="0:0:0.12"/>
+                                            <ColorAnimation Storyboard.TargetName="BtnText"
+                                                            Storyboard.TargetProperty="(TextBlock.Foreground).(SolidColorBrush.Color)"
+                                                            To="#C5CBD5" Duration="0:0:0.12"/>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </Trigger.ExitActions>
+                            </Trigger>
+
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#2B3039" />
+                                <Setter TargetName="IconPath" Property="Stroke" Value="White" />
+                                <Setter TargetName="BtnText" Property="Foreground" Value="White" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
     </Window.Resources>
 
     <Grid x:Name="RootGrid" Background="{StaticResource AppBackgroundBrush}">
@@ -676,6 +999,14 @@
 
         <!-- Workspace Container -->
         <Grid Grid.Row="1" Margin="32">
+            <Grid.ColumnDefinitions>
+                <!-- Left Nav Panel -->
+                <ColumnDefinition Width="260" />
+                <!-- Spacing -->
+                <ColumnDefinition Width="24" />
+                <!-- Main Admin Workspace -->
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <!-- Section 1: Search Area -->
                 <RowDefinition Height="Auto" />
@@ -685,8 +1016,79 @@
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
 
+            <!-- LEFT NAVIGATION PANEL -->
+            <Border Grid.Row="0" Grid.RowSpan="3" Grid.Column="0" Width="260" Background="#171A20" BorderBrush="#2B3039" BorderThickness="0,0,1,0" CornerRadius="12" Padding="16,20">
+                <Border.Effect>
+                    <DropShadowEffect Color="Black" Direction="270" ShadowDepth="2" BlurRadius="12" Opacity="0.12"/>
+                </Border.Effect>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <!-- Top Area -->
+                        <RowDefinition Height="Auto" />
+                        <!-- Category List -->
+                        <RowDefinition Height="*" />
+                        <!-- Divider & Bottom Section -->
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <!-- Top Area (Title & Categories Header) -->
+                    <Grid Grid.Row="0" Height="44" Margin="0,0,0,20">
+                        <TextBlock Text="Categories"
+                                   FontFamily="Segoe UI Variable, Segoe UI"
+                                   FontWeight="SemiBold"
+                                   FontSize="18"
+                                   Foreground="#FFFFFF"
+                                   VerticalAlignment="Center" />
+                    </Grid>
+
+                    <!-- Category ListBox -->
+                    <ListBox Grid.Row="1"
+                             ItemsSource="{Binding Categories}"
+                             SelectedItem="{Binding SelectedCategory}"
+                             ItemContainerStyle="{StaticResource CategoryItemStyle}"
+                             Background="Transparent"
+                             BorderBrush="Transparent"
+                             BorderThickness="0"
+                             ScrollViewer.VerticalScrollBarVisibility="Auto"
+                             ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                             ScrollViewer.CanContentScroll="True">
+                        <ListBox.Template>
+                            <ControlTemplate TargetType="ListBox">
+                                <ScrollViewer Style="{StaticResource CategoryScrollViewerStyle}">
+                                    <ItemsPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+                                </ScrollViewer>
+                            </ControlTemplate>
+                        </ListBox.Template>
+                    </ListBox>
+
+                    <!-- Divider & Bottom Section -->
+                    <StackPanel Grid.Row="2" Margin="0,16,0,0">
+                        <!-- 1 px Divider of color #2B3039 -->
+                        <Border Height="1" Background="#2B3039" Margin="0,0,0,12" />
+
+                        <!-- Bottom Action items -->
+                        <Button Content="Manage Categories"
+                                Style="{StaticResource BottomActionButtonStyle}"
+                                Tag="M4 6h16M4 12h16M4 18h16"
+                                Command="{Binding ManageCategoriesCommand}" />
+                        <Button Content="Refresh Categories"
+                                Style="{StaticResource BottomActionButtonStyle}"
+                                Tag="M4 4v5h.582m15.356 2A8.001 8.001 0 1121.21 8H17"
+                                Command="{Binding RefreshCategoriesCommand}" />
+                        <Button Content="Collapse All"
+                                Style="{StaticResource BottomActionButtonStyle}"
+                                Tag="M5 15l7-7 7 7"
+                                Command="{Binding CollapseAllCommand}" />
+                        <Button Content="Settings"
+                                Style="{StaticResource BottomActionButtonStyle}"
+                                Tag="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
+                                Command="{Binding SettingsCommand}" />
+                    </StackPanel>
+                </Grid>
+            </Border>
+
             <!-- SECTION 1: SEARCH AREA (Height: 64px, Padding: 20px, Rounded Corners: 12px) -->
-            <Border Grid.Row="0" Height="64" Background="{StaticResource PrimarySurfaceBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="12">
+            <Border Grid.Row="0" Grid.Column="2" Height="64" Background="{StaticResource PrimarySurfaceBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="12">
                 <Grid Margin="20,0">
                     <Grid.ColumnDefinitions>
                         <!-- Large Search Box occupies approximately 70% width -->
@@ -726,7 +1128,7 @@
             </Border>
 
             <!-- SECTION 2: TOOLBAR (Height: 88px, Margin Top: 24px, Rounded: 12px, Padding: 20px) -->
-            <Border Grid.Row="1" Height="88" Margin="0,24,0,0" Background="{StaticResource PrimarySurfaceBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="12" VerticalAlignment="Top">
+            <Border Grid.Row="1" Grid.Column="2" Height="88" Margin="0,24,0,0" Background="{StaticResource PrimarySurfaceBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="12" VerticalAlignment="Top">
                 <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled" SnapsToDevicePixels="True" VerticalAlignment="Center" Margin="20,0">
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
 
@@ -950,7 +1352,7 @@
             </Border>
 
             <!-- SECTION 3: CENTRAL MANAGEMENT WORKSPACE (THE TABLE) -->
-            <Border Grid.Row="2" Margin="0,24,0,0" Background="{StaticResource PrimarySurfaceBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="12" Padding="16">
+            <Border Grid.Row="2" Grid.Column="2" Margin="0,24,0,0" Background="{StaticResource PrimarySurfaceBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="12" Padding="16">
                 <Grid>
                     <Grid.RowDefinitions>
                         <!-- Top Action Bar: Height 48px -->
