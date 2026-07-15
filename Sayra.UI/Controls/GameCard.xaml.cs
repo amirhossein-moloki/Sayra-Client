@@ -215,7 +215,7 @@ namespace Sayra.UI.Controls
             try
             {
                 Window parentWindow = Window.GetWindow(this);
-                if (parentWindow is Sayra.UI.Views.DashboardWindow dashboard)
+                if (parentWindow is Sayra.UI.Views.HomeWindow dashboard)
                 {
                     // Map the DataContext which is our GameItem model
                     if (this.DataContext is Sayra.UI.Models.GameItem gameItem)

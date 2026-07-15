@@ -11,9 +11,9 @@ namespace Sayra.UI.Views
     public partial class GameDetailWindow : Window
     {
         private readonly GameItem _game;
-        private readonly DashboardWindow _dashboard;
+        private readonly HomeWindow _dashboard;
 
-        public GameDetailWindow(GameItem game, DashboardWindow dashboard)
+        public GameDetailWindow(GameItem game, HomeWindow dashboard)
         {
             InitializeComponent();
             _game = game;

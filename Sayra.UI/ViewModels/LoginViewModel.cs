@@ -68,10 +68,10 @@ namespace Sayra.UI.ViewModels
                 GlobalExceptionHandler.LogTrace("LOGIN", "Authentication successful");
                 try
                 {
-                    GlobalExceptionHandler.CurrentOperation = "Creating DashboardWindow";
-                    GlobalExceptionHandler.LogTrace("DASHBOARD", "Creating DashboardWindow");
+                    GlobalExceptionHandler.CurrentOperation = "Creating HomeWindow";
+                    GlobalExceptionHandler.LogTrace("DASHBOARD", "Creating HomeWindow");
 
-                    var dashboard = new Sayra.UI.Views.DashboardWindow();
+                    var dashboard = new Sayra.UI.Views.HomeWindow();
 
                     GlobalExceptionHandler.CurrentOperation = "Showing window";
                     GlobalExceptionHandler.LogTrace("DASHBOARD", "Showing window");
