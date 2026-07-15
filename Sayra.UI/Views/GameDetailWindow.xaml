@@ -367,51 +367,51 @@
 
                                 <!-- Row 0: Header -->
                                 <Grid Grid.Row="0" Margin="0,0,0,12">
-                                    <!-- Right: PC Name -->
+                                    <!-- PC Name (Aligned to the physical right under RTL using HorizontalAlignment="Left") -->
                                     <TextBlock Text="PC-08"
                                                FontFamily="{StaticResource PeydaBold}"
-                                               FontSize="18"
+                                               FontSize="24"
                                                Foreground="{DynamicResource PrimaryYellowBrush}"
-                                               HorizontalAlignment="Right"
+                                               HorizontalAlignment="Left"
                                                VerticalAlignment="Center" />
 
-                                    <!-- Left: Session Information + Icon -->
-                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center">
-                                        <!-- Text -->
-                                        <TextBlock Text="session information"
-                                                   FontFamily="{StaticResource PeydaBold}"
-                                                   FontSize="16"
-                                                   Foreground="{DynamicResource WhiteBrush}"
-                                                   VerticalAlignment="Center"
-                                                   Margin="8,0,0,0" />
-                                        <!-- Suitable clock icon to the left -->
+                                    <!-- Session Information + Icon (Aligned to the physical left under RTL using HorizontalAlignment="Right") -->
+                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+                                        <!-- Suitable clock icon to the right of text in StackPanel -->
                                         <Path Data="M12 6v6h4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                                              Stroke="{DynamicResource WhiteBrush}"
-                                              StrokeThickness="1.5"
+                                              Stroke="{DynamicResource PrimaryYellowBrush}"
+                                              StrokeThickness="2"
                                               StrokeStartLineCap="Round"
                                               StrokeEndLineCap="Round"
                                               Fill="Transparent"
-                                              Width="18" Height="18"
+                                              Width="22" Height="22"
                                               Stretch="Uniform"
-                                              VerticalAlignment="Center"/>
+                                              VerticalAlignment="Center"
+                                              Margin="0,0,8,0"/>
+                                        <!-- Text -->
+                                        <TextBlock Text="session information"
+                                                   FontFamily="{StaticResource PeydaBold}"
+                                                   FontSize="20"
+                                                   Foreground="{DynamicResource PrimaryYellowBrush}"
+                                                   VerticalAlignment="Center" />
                                     </StackPanel>
                                 </Grid>
 
-                                <!-- Row 1: Time Used & Timer (Left Aligned) -->
-                                <StackPanel Grid.Row="1" HorizontalAlignment="Left" Margin="0,0,0,15">
+                                <!-- Row 1: Time Used & Timer (Aligned to physical left using HorizontalAlignment="Right") -->
+                                <StackPanel Grid.Row="1" HorizontalAlignment="Right" Margin="0,0,0,15">
                                     <TextBlock Text="زمان استفاده شده"
                                                FontFamily="{StaticResource PeydaMedium}"
-                                               FontSize="13"
-                                               Foreground="{DynamicResource SecondaryWhiteBrush}"
-                                               HorizontalAlignment="Left" />
+                                               FontSize="18"
+                                               Foreground="{DynamicResource PrimaryYellowBrush}"
+                                               HorizontalAlignment="Right" />
                                     <TextBlock Text="{Binding SessionTime}"
                                                FontFamily="{StaticResource BlackOpsOne}"
-                                               FontSize="38"
-                                               Foreground="{DynamicResource WhiteBrush}"
-                                               HorizontalAlignment="Left"
+                                               FontSize="54"
+                                               Foreground="{DynamicResource PrimaryYellowBrush}"
+                                               HorizontalAlignment="Right"
                                                Margin="0,4,0,0">
                                         <TextBlock.Effect>
-                                            <DropShadowEffect Color="#FFFFFF" BlurRadius="10" ShadowDepth="0" Opacity="0.3" />
+                                            <DropShadowEffect Color="#ffff3d" BlurRadius="15" ShadowDepth="0" Opacity="0.4" />
                                         </TextBlock.Effect>
                                     </TextBlock>
                                 </StackPanel>
@@ -434,15 +434,15 @@
                                     <Grid Grid.Row="0" Margin="0,0,0,10">
                                         <TextBlock Text="نرخ ساعتی"
                                                    FontFamily="{StaticResource PeydaMedium}"
-                                                   FontSize="14"
-                                                   Foreground="{DynamicResource SecondaryWhiteBrush}"
-                                                   HorizontalAlignment="Right"
+                                                   FontSize="19"
+                                                   Foreground="{DynamicResource PrimaryYellowBrush}"
+                                                   HorizontalAlignment="Left"
                                                    VerticalAlignment="Center" />
                                         <TextBlock Text="{Binding HourlyRate}"
                                                    FontFamily="{StaticResource PeydaBold}"
-                                                   FontSize="15"
-                                                   Foreground="{DynamicResource WhiteBrush}"
-                                                   HorizontalAlignment="Left"
+                                                   FontSize="20"
+                                                   Foreground="{DynamicResource PrimaryYellowBrush}"
+                                                   HorizontalAlignment="Right"
                                                    VerticalAlignment="Center" />
                                     </Grid>
 
@@ -450,15 +450,15 @@
                                     <Grid Grid.Row="1" Margin="0,0,0,10">
                                         <TextBlock Text="هزینه تا کنون"
                                                    FontFamily="{StaticResource PeydaMedium}"
-                                                   FontSize="14"
-                                                   Foreground="{DynamicResource SecondaryWhiteBrush}"
-                                                   HorizontalAlignment="Right"
+                                                   FontSize="19"
+                                                   Foreground="{DynamicResource PrimaryYellowBrush}"
+                                                   HorizontalAlignment="Left"
                                                    VerticalAlignment="Center" />
                                         <TextBlock Text="{Binding CurrentCost}"
                                                    FontFamily="{StaticResource PeydaBold}"
-                                                   FontSize="15"
-                                                   Foreground="{DynamicResource WhiteBrush}"
-                                                   HorizontalAlignment="Left"
+                                                   FontSize="20"
+                                                   Foreground="{DynamicResource PrimaryYellowBrush}"
+                                                   HorizontalAlignment="Right"
                                                    VerticalAlignment="Center" />
                                     </Grid>
 
@@ -466,15 +466,15 @@
                                     <Grid Grid.Row="2" Margin="0,0,0,10">
                                         <TextBlock Text="زمان شروع"
                                                    FontFamily="{StaticResource PeydaMedium}"
-                                                   FontSize="14"
-                                                   Foreground="{DynamicResource SecondaryWhiteBrush}"
-                                                   HorizontalAlignment="Right"
+                                                   FontSize="19"
+                                                   Foreground="{DynamicResource PrimaryYellowBrush}"
+                                                   HorizontalAlignment="Left"
                                                    VerticalAlignment="Center" />
                                         <TextBlock Text="{Binding StartTime}"
                                                    FontFamily="{StaticResource PeydaBold}"
-                                                   FontSize="15"
-                                                   Foreground="{DynamicResource WhiteBrush}"
-                                                   HorizontalAlignment="Left"
+                                                   FontSize="20"
+                                                   Foreground="{DynamicResource PrimaryYellowBrush}"
+                                                   HorizontalAlignment="Right"
                                                    VerticalAlignment="Center" />
                                     </Grid>
                                 </Grid>
