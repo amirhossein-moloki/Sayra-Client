@@ -28,7 +28,10 @@ namespace Sayra.UI.ViewModels
                 return;
             }
 
-            if (Username != "admin" || Password != "admin")
+            bool isValidAmir = Username == "amir" && Password == "amir";
+            bool isValidAdmin = (Username == "admin" || Username == "afmin") && Password == "admin";
+
+            if (!isValidAmir && !isValidAdmin)
             {
                 ErrorMessage = "نام کاربری یا رمز عبور اشتباه است.";
                 Sayra.UI.Services.NotificationService.Instance.ShowError("نام کاربری یا رمز عبور اشتباه است.");
@@ -68,21 +71,30 @@ namespace Sayra.UI.ViewModels
                 GlobalExceptionHandler.LogTrace("LOGIN", "Authentication successful");
                 try
                 {
-                    GlobalExceptionHandler.CurrentOperation = "Creating HomeWindow";
-                    GlobalExceptionHandler.LogTrace("DASHBOARD", "Creating HomeWindow");
-
-                    var dashboard = new Sayra.UI.Views.HomeWindow();
+                    Window targetWindow;
+                    if (isValidAmir)
+                    {
+                        GlobalExceptionHandler.CurrentOperation = "Creating HomeWindow";
+                        GlobalExceptionHandler.LogTrace("DASHBOARD", "Creating HomeWindow");
+                        targetWindow = new Sayra.UI.Views.HomeWindow();
+                    }
+                    else
+                    {
+                        GlobalExceptionHandler.CurrentOperation = "Creating AdminWindow";
+                        GlobalExceptionHandler.LogTrace("DASHBOARD", "Creating AdminWindow");
+                        targetWindow = new Sayra.UI.Views.AdminWindow();
+                    }
 
                     GlobalExceptionHandler.CurrentOperation = "Showing window";
                     GlobalExceptionHandler.LogTrace("DASHBOARD", "Showing window");
 
-                    dashboard.Show();
+                    targetWindow.Show();
 
                     GlobalExceptionHandler.CurrentOperation = "Window displayed";
                     GlobalExceptionHandler.LogTrace("DASHBOARD", "Window displayed");
 
                     var oldWindow = Application.Current.MainWindow;
-                    Application.Current.MainWindow = dashboard;
+                    Application.Current.MainWindow = targetWindow;
                     oldWindow?.Close();
                 }
                 catch (Exception ex)
