@@ -23,11 +23,11 @@ namespace Sayra.UI.Views
 
         private void LoginWindow_Closed(object? sender, EventArgs e)
         {
-            // Only shut down if the user closed the window and we are not transitioning to the dashboard
+            // Only shut down if the user closed the window and we are not transitioning to the home window
             bool isDashboardOpen = false;
             foreach (Window win in Application.Current.Windows)
             {
-                if (win is DashboardWindow)
+                if (win is HomeWindow)
                 {
                     isDashboardOpen = true;
                     break;

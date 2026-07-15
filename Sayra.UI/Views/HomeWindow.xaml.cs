@@ -5,9 +5,9 @@ using System.Windows.Media;
 
 namespace Sayra.UI.Views
 {
-    public partial class DashboardWindow : Window
+    public partial class HomeWindow : Window
     {
-        public DashboardWindow()
+        public HomeWindow()
         {
             var swConstructor = Stopwatch.StartNew();
             GlobalExceptionHandler.CurrentOperation = "InitializeComponent started";
@@ -60,14 +60,14 @@ namespace Sayra.UI.Views
             GlobalExceptionHandler.CurrentOperation = "ViewModel assigned";
             GlobalExceptionHandler.LogTrace("DASHBOARD", "ViewModel assigned");
 
-            this.Loaded += DashboardWindow_Loaded;
-            this.Closed += DashboardWindow_Closed;
+            this.Loaded += HomeWindow_Loaded;
+            this.Closed += HomeWindow_Closed;
 
             swConstructor.Stop();
-            GlobalExceptionHandler.LogTrace("DASHBOARD", $"DashboardWindow constructor completed in {swConstructor.ElapsedMilliseconds} ms");
+            GlobalExceptionHandler.LogTrace("DASHBOARD", $"HomeWindow constructor completed in {swConstructor.ElapsedMilliseconds} ms");
         }
 
-        private void DashboardWindow_Loaded(object sender, RoutedEventArgs e)
+        private void HomeWindow_Loaded(object sender, RoutedEventArgs e)
         {
             var swLoaded = Stopwatch.StartNew();
             GlobalExceptionHandler.LogTrace("DASHBOARD", "Loaded Event START");
@@ -119,7 +119,7 @@ namespace Sayra.UI.Views
             }
         }
 
-        private void DashboardWindow_Closed(object? sender, EventArgs e)
+        private void HomeWindow_Closed(object? sender, EventArgs e)
         {
             Log("Closed Event - Shutting down application...");
             Application.Current.Shutdown();
@@ -128,7 +128,7 @@ namespace Sayra.UI.Views
         private void Log(string message)
         {
             string timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff");
-            string formatted = $"[TRACE][DashboardWindow][{timestamp}] {message}";
+            string formatted = $"[TRACE][HomeWindow][{timestamp}] {message}";
             System.Diagnostics.Debug.WriteLine(formatted);
             Console.WriteLine(formatted);
         }
