@@ -513,6 +513,118 @@
                 </Setter.Value>
             </Setter>
         </Style>
+
+        <!-- Premium Dark CheckBox Style -->
+        <Style x:Key="DarkCheckBoxStyle" TargetType="CheckBox">
+            <Setter Property="Background" Value="#171A20" />
+            <Setter Property="BorderBrush" Value="#2B3039" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Width" Value="18" />
+            <Setter Property="Height" Value="18" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="CheckBox">
+                        <Grid>
+                            <Border x:Name="border" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="4" SnapsToDevicePixels="True" />
+                            <!-- CheckMark Vector Path -->
+                            <Path x:Name="checkMark" Data="M3 9l4 4L15 4" Stroke="#0E1015" StrokeThickness="2" StrokeStartLineCap="Round" StrokeEndLineCap="Round" Fill="Transparent" Margin="3" Visibility="Collapsed" Stretch="Uniform" />
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="BorderBrush" Value="#303641" />
+                                <Setter TargetName="border" Property="Background" Value="#252932" />
+                            </Trigger>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#F7E733" />
+                                <Setter TargetName="border" Property="BorderBrush" Value="#F7E733" />
+                                <Setter TargetName="checkMark" Property="Visibility" Value="Visible" />
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="border" Property="Opacity" Value="0.4" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Premium Dark ContextMenu Styles -->
+        <Style x:Key="DarkContextMenuStyle" TargetType="ContextMenu">
+            <Setter Property="Background" Value="#171A20" />
+            <Setter Property="BorderBrush" Value="#2B3039" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Padding" Value="4" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ContextMenu">
+                        <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="8">
+                            <Border.Effect>
+                                <DropShadowEffect BlurRadius="15" ShadowDepth="0" Color="Black" Opacity="0.5"/>
+                            </Border.Effect>
+                            <ItemsPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="DarkMenuSeparatorStyle" TargetType="Separator">
+            <Setter Property="Background" Value="#303641" />
+            <Setter Property="Height" Value="1" />
+            <Setter Property="Margin" Value="4,4" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Separator">
+                        <Border Height="1" Background="{TemplateBinding Background}" Margin="{TemplateBinding Margin}" />
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="DarkMenuItemStyle" TargetType="MenuItem">
+            <Setter Property="Foreground" Value="#FFFFFF" />
+            <Setter Property="Padding" Value="12,8" />
+            <Setter Property="FontFamily" Value="Segoe UI Variable, Segoe UI" />
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="MenuItem">
+                        <Border x:Name="border" Background="Transparent" CornerRadius="4" SnapsToDevicePixels="True" Margin="2,1">
+                            <Grid>
+                                <ContentPresenter ContentSource="Header" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                            </Grid>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsHighlighted" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#252932" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="DangerMenuItemStyle" TargetType="MenuItem" BasedOn="{StaticResource DarkMenuItemStyle}">
+            <Setter Property="Foreground" Value="#E65C5C" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="MenuItem">
+                        <Border x:Name="border" Background="Transparent" CornerRadius="4" SnapsToDevicePixels="True" Margin="2,1">
+                            <Grid>
+                                <ContentPresenter ContentSource="Header" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                            </Grid>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsHighlighted" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#3C1717" />
+                                <Setter Property="Foreground" Value="#E65C5C" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
     </Window.Resources>
 
     <Grid x:Name="RootGrid" Background="{StaticResource AppBackgroundBrush}">
@@ -569,6 +681,8 @@
                 <RowDefinition Height="Auto" />
                 <!-- Section 2: Toolbar -->
                 <RowDefinition Height="Auto" />
+                <!-- Section 3: Central Management Workspace (The Center Table) -->
+                <RowDefinition Height="*" />
             </Grid.RowDefinitions>
 
             <!-- SECTION 1: SEARCH AREA (Height: 64px, Padding: 20px, Rounded Corners: 12px) -->
@@ -584,6 +698,7 @@
                     <!-- Large Search Box with Placeholder and Search left icon -->
                     <TextBox Grid.Column="0"
                              Style="{StaticResource LargeSearchBoxStyle}"
+                             Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
                              VerticalAlignment="Center" />
 
                     <!-- Actions Aligned Right -->
@@ -592,12 +707,14 @@
                         <Button Content="Clear"
                                 Style="{StaticResource ToolbarButtonStyle}"
                                 Tag="{StaticResource ClearSearchIconGeometry}"
+                                Command="{Binding RefreshCommand}"
                                 Margin="0,0,12,0" />
 
                         <!-- Refresh Button -->
                         <Button Content="Refresh"
                                 Style="{StaticResource ToolbarButtonStyle}"
                                 Tag="{StaticResource RefreshIconGeometry}"
+                                Command="{Binding RefreshCommand}"
                                 Margin="0,0,12,0" />
 
                         <!-- Quick Filter Button -->
@@ -830,6 +947,716 @@
 
                     </StackPanel>
                 </ScrollViewer>
+            </Border>
+
+            <!-- SECTION 3: CENTRAL MANAGEMENT WORKSPACE (THE TABLE) -->
+            <Border Grid.Row="2" Margin="0,24,0,0" Background="{StaticResource PrimarySurfaceBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="12" Padding="16">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <!-- Top Action Bar: Height 48px -->
+                        <RowDefinition Height="48" />
+                        <!-- DataGrid / Main Area: Height * -->
+                        <RowDefinition Height="*" />
+                        <!-- Bottom Bar / Sticky Footer: Height 48px -->
+                        <RowDefinition Height="48" />
+                    </Grid.RowDefinitions>
+
+                    <!-- Row 0: Top Action Bar -->
+                    <Grid Grid.Row="0" Margin="4,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+
+                        <!-- Left Side: Title & Info -->
+                        <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
+                            <TextBlock Text="Installed Games &amp; Applications" FontFamily="Segoe UI Variable, Segoe UI" FontSize="16" FontWeight="Bold" Foreground="{StaticResource PrimaryTextBrush}" VerticalAlignment="Center" />
+                            <Border Width="1" Height="14" Background="{StaticResource DividerBrush}" Margin="12,0" VerticalAlignment="Center" />
+                            <TextBlock Text="{Binding ShowingText}" FontFamily="Segoe UI Variable, Segoe UI" FontSize="12" Foreground="{StaticResource SecondaryTextBrush}" VerticalAlignment="Center" />
+
+                            <!-- Demo Control Dropdown -->
+                            <Border Width="1" Height="14" Background="{StaticResource DividerBrush}" Margin="12,0" VerticalAlignment="Center" />
+                            <TextBlock Text="Demo State:" FontFamily="Segoe UI Variable, Segoe UI" FontSize="12" Foreground="{StaticResource MutedTextBrush}" VerticalAlignment="Center" Margin="0,0,8,0" />
+                            <ComboBox ItemsSource="{Binding DemoStates}" SelectedItem="{Binding SelectedDemoState}" Width="110" Height="28" Background="{StaticResource SecondarySurfaceBrush}" BorderBrush="{StaticResource BorderBrush}" Foreground="{StaticResource PrimaryTextBrush}" VerticalContentAlignment="Center" FontSize="12" Padding="8,0">
+                                <ComboBox.Resources>
+                                    <Style TargetType="ComboBoxItem">
+                                        <Setter Property="Background" Value="{StaticResource PrimarySurfaceBrush}" />
+                                        <Setter Property="Foreground" Value="{StaticResource PrimaryTextBrush}" />
+                                    </Style>
+                                </ComboBox.Resources>
+                            </ComboBox>
+                        </StackPanel>
+
+                        <!-- Right Side: View Controls & Switches -->
+                        <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                            <!-- View Switch (Segmented Buttons Style) -->
+                            <TextBlock Text="View:" FontFamily="Segoe UI Variable, Segoe UI" FontSize="12" Foreground="{StaticResource MutedTextBrush}" VerticalAlignment="Center" Margin="0,0,8,0" />
+                            <ListBox ItemsSource="{Binding ViewModes}" SelectedItem="{Binding SelectedViewMode}" Height="30" Background="{StaticResource SecondarySurfaceBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" Margin="0,0,16,0" VerticalAlignment="Center">
+                                <ListBox.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <StackPanel Orientation="Horizontal" />
+                                    </ItemsPanelTemplate>
+                                </ListBox.ItemsPanel>
+                                <ListBox.ItemContainerStyle>
+                                    <Style TargetType="ListBoxItem">
+                                        <Setter Property="Background" Value="Transparent" />
+                                        <Setter Property="Foreground" Value="{StaticResource SecondaryTextBrush}" />
+                                        <Setter Property="Padding" Value="10,0" />
+                                        <Setter Property="VerticalContentAlignment" Value="Center" />
+                                        <Setter Property="Cursor" Value="Hand" />
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="ListBoxItem">
+                                                    <Border x:Name="border" Background="{TemplateBinding Background}" CornerRadius="4" Margin="2">
+                                                        <ContentPresenter Margin="{TemplateBinding Padding}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                                    </Border>
+                                                    <ControlTemplate.Triggers>
+                                                        <Trigger Property="IsSelected" Value="True">
+                                                            <Setter TargetName="border" Property="Background" Value="{StaticResource SelectedBrush}" />
+                                                            <Setter Property="Foreground" Value="{StaticResource PrimaryTextBrush}" />
+                                                            <Setter Property="FontWeight" Value="SemiBold" />
+                                                        </Trigger>
+                                                        <Trigger Property="IsMouseOver" Value="True">
+                                                            <Setter TargetName="border" Property="Background" Value="{StaticResource HoverBrush}" />
+                                                        </Trigger>
+                                                    </ControlTemplate.Triggers>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Style>
+                                </ListBox.ItemContainerStyle>
+                            </ListBox>
+
+                            <!-- Density Selector -->
+                            <TextBlock Text="Density:" FontFamily="Segoe UI Variable, Segoe UI" FontSize="12" Foreground="{StaticResource MutedTextBrush}" VerticalAlignment="Center" Margin="0,0,8,0" />
+                            <ComboBox ItemsSource="{Binding PageSizes}" SelectedItem="{Binding SelectedPageSize}" Width="75" Height="30" Background="{StaticResource SecondarySurfaceBrush}" BorderBrush="{StaticResource BorderBrush}" Foreground="{StaticResource PrimaryTextBrush}" VerticalContentAlignment="Center" FontSize="12" Padding="8,0" Margin="0,0,16,0">
+                                <ComboBox.Resources>
+                                    <Style TargetType="ComboBoxItem">
+                                        <Setter Property="Background" Value="{StaticResource PrimarySurfaceBrush}" />
+                                        <Setter Property="Foreground" Value="{StaticResource PrimaryTextBrush}" />
+                                    </Style>
+                                </ComboBox.Resources>
+                            </ComboBox>
+
+                            <!-- Mini Toolbar Actions -->
+                            <Button Content="Refresh" Command="{Binding RefreshCommand}" Style="{StaticResource ToolbarButtonStyle}" Height="30" Padding="12,0" Margin="0,0,8,0" FontSize="12" />
+                            <Button Content="Columns" Style="{StaticResource ToolbarButtonStyle}" Height="30" Padding="12,0" Margin="0,0,8,0" FontSize="12" />
+                            <Button Content="Export CSV" Style="{StaticResource ToolbarButtonStyle}" Height="30" Padding="12,0" FontSize="12" />
+                        </StackPanel>
+                    </Grid>
+
+                    <!-- Divider -->
+                    <Border Grid.Row="1" Height="1" Background="{StaticResource DividerBrush}" VerticalAlignment="Top" />
+
+                    <!-- Row 1: Main Data Grid -->
+                    <Grid Grid.Row="1" Margin="0,12,0,12">
+                        <!-- Standard Data Grid showing 128 mock items -->
+                        <DataGrid x:Name="AppsDataGrid"
+                                  ItemsSource="{Binding VisibleItems}"
+                                  AutoGenerateColumns="False"
+                                  CanUserAddRows="False"
+                                  CanUserDeleteRows="False"
+                                  CanUserReorderColumns="True"
+                                  CanUserResizeColumns="True"
+                                  CanUserSortColumns="True"
+                                  GridLinesVisibility="Horizontal"
+                                  HorizontalGridLinesBrush="{StaticResource DividerBrush}"
+                                  VerticalGridLinesBrush="Transparent"
+                                  Background="Transparent"
+                                  RowBackground="{StaticResource SecondarySurfaceBrush}"
+                                  AlternatingRowBackground="{StaticResource SecondarySurfaceBrush}"
+                                  BorderThickness="0"
+                                  RowHeaderWidth="0"
+                                  SelectionMode="Extended"
+                                  SelectionUnit="FullRow"
+                                  IsReadOnly="True"
+                                  MouseDoubleClick="AppsDataGrid_MouseDoubleClick"
+                                  HeadersVisibility="Column"
+                                  VerticalScrollBarVisibility="Auto"
+                                  HorizontalScrollBarVisibility="Auto">
+
+                            <DataGrid.Resources>
+                                <!-- Context Menu -->
+                                <ContextMenu x:Key="RowContextMenu" Style="{StaticResource DarkContextMenuStyle}">
+                                    <MenuItem Header="Launch Application" Command="{Binding Path=PlacementTarget.Tag.LaunchCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}" CommandParameter="{Binding Path=PlacementTarget.DataContext, RelativeSource={RelativeSource AncestorType=ContextMenu}}" Style="{StaticResource DarkMenuItemStyle}" />
+                                    <MenuItem Header="Stop Process" Command="{Binding Path=PlacementTarget.Tag.StopCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}" CommandParameter="{Binding Path=PlacementTarget.DataContext, RelativeSource={RelativeSource AncestorType=ContextMenu}}" Style="{StaticResource DarkMenuItemStyle}" />
+                                    <MenuItem Header="Force Restart" Command="{Binding Path=PlacementTarget.Tag.RestartCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}" CommandParameter="{Binding Path=PlacementTarget.DataContext, RelativeSource={RelativeSource AncestorType=ContextMenu}}" Style="{StaticResource DarkMenuItemStyle}" />
+                                    <Separator Style="{StaticResource DarkMenuSeparatorStyle}" />
+                                    <MenuItem Header="Edit Properties" Command="{Binding Path=PlacementTarget.Tag.EditCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}" CommandParameter="{Binding Path=PlacementTarget.DataContext, RelativeSource={RelativeSource AncestorType=ContextMenu}}" Style="{StaticResource DarkMenuItemStyle}" />
+                                    <MenuItem Header="Open Installation Folder" Command="{Binding Path=PlacementTarget.Tag.OpenFolderCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}" CommandParameter="{Binding Path=PlacementTarget.DataContext, RelativeSource={RelativeSource AncestorType=ContextMenu}}" Style="{StaticResource DarkMenuItemStyle}" />
+                                    <MenuItem Header="Copy Executable Path" Command="{Binding Path=PlacementTarget.Tag.CopyPathCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}" CommandParameter="{Binding Path=PlacementTarget.DataContext, RelativeSource={RelativeSource AncestorType=ContextMenu}}" Style="{StaticResource DarkMenuItemStyle}" />
+                                    <Separator Style="{StaticResource DarkMenuSeparatorStyle}" />
+                                    <MenuItem Header="Validate Files Integrity" Command="{Binding Path=PlacementTarget.Tag.ValidateCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}" CommandParameter="{Binding Path=PlacementTarget.DataContext, RelativeSource={RelativeSource AncestorType=ContextMenu}}" Style="{StaticResource DarkMenuItemStyle}" />
+                                    <MenuItem Header="Scan Metadata" Command="{Binding Path=PlacementTarget.Tag.ScanMetadataCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}" CommandParameter="{Binding Path=PlacementTarget.DataContext, RelativeSource={RelativeSource AncestorType=ContextMenu}}" Style="{StaticResource DarkMenuItemStyle}" />
+                                    <MenuItem Header="Export Manifest Configuration" Command="{Binding Path=PlacementTarget.Tag.ExportCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}" CommandParameter="{Binding Path=PlacementTarget.DataContext, RelativeSource={RelativeSource AncestorType=ContextMenu}}" Style="{StaticResource DarkMenuItemStyle}" />
+                                    <Separator Style="{StaticResource DarkMenuSeparatorStyle}" />
+                                    <MenuItem Header="Delete Registry Entry" Command="{Binding Path=PlacementTarget.Tag.DeleteCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}" CommandParameter="{Binding Path=PlacementTarget.DataContext, RelativeSource={RelativeSource AncestorType=ContextMenu}}" Style="{StaticResource DangerMenuItemStyle}" />
+                                </ContextMenu>
+
+                                <!-- Header Column Style -->
+                                <Style TargetType="DataGridColumnHeader">
+                                    <Setter Property="Height" Value="48" />
+                                    <Setter Property="Background" Value="#13161C" />
+                                    <Setter Property="BorderBrush" Value="{StaticResource DividerBrush}" />
+                                    <Setter Property="BorderThickness" Value="0,0,0,1" />
+                                    <Setter Property="Foreground" Value="{StaticResource SecondaryTextBrush}" />
+                                    <Setter Property="HorizontalContentAlignment" Value="Left" />
+                                    <Setter Property="VerticalContentAlignment" Value="Center" />
+                                    <Setter Property="Padding" Value="12,0" />
+                                    <Setter Property="FontSize" Value="13" />
+                                    <Setter Property="FontWeight" Value="Bold" />
+                                    <Setter Property="FontFamily" Value="Segoe UI Variable, Segoe UI" />
+                                </Style>
+
+                                <!-- Cell Style -->
+                                <Style TargetType="DataGridCell">
+                                    <Setter Property="Background" Value="Transparent" />
+                                    <Setter Property="BorderThickness" Value="0" />
+                                    <Setter Property="Foreground" Value="{StaticResource PrimaryTextBrush}" />
+                                    <Setter Property="VerticalAlignment" Value="Center" />
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="DataGridCell">
+                                                <Border Background="{TemplateBinding Background}" BorderThickness="0" SnapsToDevicePixels="True">
+                                                    <ContentPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="Center" />
+                                                </Border>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+
+                                <!-- Row Style -->
+                                <Style TargetType="DataGridRow">
+                                    <Setter Property="Height" Value="56" />
+                                    <Setter Property="Background" Value="{StaticResource SecondarySurfaceBrush}" />
+                                    <Setter Property="BorderBrush" Value="{StaticResource DividerBrush}" />
+                                    <Setter Property="BorderThickness" Value="0,0,0,1" />
+                                    <Setter Property="Tag" Value="{Binding DataContext, RelativeSource={RelativeSource AncestorType=DataGrid}}" />
+                                    <Setter Property="ContextMenu" Value="{StaticResource RowContextMenu}" />
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="DataGridRow">
+                                                <Border x:Name="DgrowBorder" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" SnapsToDevicePixels="True">
+                                                    <Grid>
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="Auto" />
+                                                            <ColumnDefinition Width="*" />
+                                                        </Grid.ColumnDefinitions>
+                                                        <!-- Left border yellow selected accent indicator -->
+                                                        <Border x:Name="SelectedIndicator" Grid.Column="0" Width="4" Background="#F7E733" Visibility="Collapsed" />
+                                                        <DataGridCellsPresenter Grid.Column="1" ItemsPanel="{TemplateBinding ItemsPanel}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                                                    </Grid>
+                                                </Border>
+                                                <ControlTemplate.Triggers>
+                                                    <Trigger Property="IsSelected" Value="True">
+                                                        <Setter TargetName="SelectedIndicator" Property="Visibility" Value="Visible" />
+                                                        <Setter TargetName="DgrowBorder" Property="Background" Value="#343D4A" />
+                                                    </Trigger>
+                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                        <Setter TargetName="DgrowBorder" Property="Background" Value="#252932" />
+                                                    </Trigger>
+                                                </ControlTemplate.Triggers>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </DataGrid.Resources>
+
+                            <!-- Columns Definition (13 columns properly aligned) -->
+                            <DataGrid.Columns>
+                                <!-- Checkbox & App Icon column -->
+                                <DataGridTemplateColumn Width="75" CanUserResize="False" CanUserSort="False">
+                                    <DataGridTemplateColumn.HeaderTemplate>
+                                        <DataTemplate>
+                                            <CheckBox HorizontalAlignment="Center" VerticalAlignment="Center" Style="{StaticResource DarkCheckBoxStyle}" IsEnabled="False" />
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.HeaderTemplate>
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="8,0">
+                                                <CheckBox IsChecked="{Binding IsChecked, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource DarkCheckBoxStyle}" Margin="0,0,10,0" VerticalAlignment="Center" />
+                                                <Border Width="32" Height="32" Background="#10FFFFFF" CornerRadius="6" Padding="6" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                    <Path Data="{Binding IconGeometry}" Stroke="{StaticResource PrimaryTextBrush}" StrokeThickness="1.5" Stretch="Uniform" Fill="Transparent" />
+                                                </Border>
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+
+                                <!-- Name & Executable -->
+                                <DataGridTemplateColumn Header="Name &amp; Executable" Width="260" SortMemberPath="Name">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <StackPanel VerticalAlignment="Center" Margin="12,0">
+                                                <TextBlock Text="{Binding Name}" FontWeight="Bold" Foreground="{StaticResource PrimaryTextBrush}" FontSize="13" />
+                                                <TextBlock Text="{Binding Executable}" Foreground="{StaticResource MutedTextBrush}" FontSize="11" Margin="0,2,0,0" />
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+
+                                <!-- Category -->
+                                <DataGridTextColumn Header="Category" Binding="{Binding Category}" Width="140">
+                                    <DataGridTextColumn.ElementStyle>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="Foreground" Value="{StaticResource SecondaryTextBrush}" />
+                                            <Setter Property="VerticalAlignment" Value="Center" />
+                                            <Setter Property="Padding" Value="12,0" />
+                                            <Setter Property="FontSize" Value="13" />
+                                        </Style>
+                                    </DataGridTextColumn.ElementStyle>
+                                </DataGridTextColumn>
+
+                                <!-- Launcher (colored badge) -->
+                                <DataGridTemplateColumn Header="Launcher" Width="140" SortMemberPath="Launcher">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Border x:Name="BadgeBorder" CornerRadius="6" BorderThickness="1" HorizontalAlignment="Left" Padding="8,4" Margin="12,0" VerticalAlignment="Center">
+                                                <TextBlock x:Name="BadgeText" Text="{Binding Launcher}" FontSize="11" FontWeight="Bold" />
+                                            </Border>
+                                            <DataTemplate.Triggers>
+                                                <DataTrigger Binding="{Binding Launcher}" Value="Steam">
+                                                    <Setter TargetName="BadgeBorder" Property="Background" Value="#132535" />
+                                                    <Setter TargetName="BadgeBorder" Property="BorderBrush" Value="#1B3B54" />
+                                                    <Setter TargetName="BadgeText" Property="Foreground" Value="#66C0F4" />
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding Launcher}" Value="Epic">
+                                                    <Setter TargetName="BadgeBorder" Property="Background" Value="#1C1C1F" />
+                                                    <Setter TargetName="BadgeBorder" Property="BorderBrush" Value="#303035" />
+                                                    <Setter TargetName="BadgeText" Property="Foreground" Value="#FFFFFF" />
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding Launcher}" Value="Battle.net">
+                                                    <Setter TargetName="BadgeBorder" Property="Background" Value="#0C2333" />
+                                                    <Setter TargetName="BadgeBorder" Property="BorderBrush" Value="#133852" />
+                                                    <Setter TargetName="BadgeText" Property="Foreground" Value="#00AEFF" />
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding Launcher}" Value="Riot">
+                                                    <Setter TargetName="BadgeBorder" Property="Background" Value="#330C12" />
+                                                    <Setter TargetName="BadgeBorder" Property="BorderBrush" Value="#52131C" />
+                                                    <Setter TargetName="BadgeText" Property="Foreground" Value="#EB0028" />
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding Launcher}" Value="EA">
+                                                    <Setter TargetName="BadgeBorder" Property="Background" Value="#330C12" />
+                                                    <Setter TargetName="BadgeBorder" Property="BorderBrush" Value="#52131C" />
+                                                    <Setter TargetName="BadgeText" Property="Foreground" Value="#F51E38" />
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding Launcher}" Value="Ubisoft">
+                                                    <Setter TargetName="BadgeBorder" Property="Background" Value="#0C2333" />
+                                                    <Setter TargetName="BadgeBorder" Property="BorderBrush" Value="#133852" />
+                                                    <Setter TargetName="BadgeText" Property="Foreground" Value="#00C2FF" />
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding Launcher}" Value="Xbox">
+                                                    <Setter TargetName="BadgeBorder" Property="Background" Value="#0E230E" />
+                                                    <Setter TargetName="BadgeBorder" Property="BorderBrush" Value="#163B16" />
+                                                    <Setter TargetName="BadgeText" Property="Foreground" Value="#107C10" />
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding Launcher}" Value="Custom">
+                                                    <Setter TargetName="BadgeBorder" Property="Background" Value="#26230C" />
+                                                    <Setter TargetName="BadgeBorder" Property="BorderBrush" Value="#3D3813" />
+                                                    <Setter TargetName="BadgeText" Property="Foreground" Value="{StaticResource PrimaryAccentBrush}" />
+                                                </DataTrigger>
+                                            </DataTemplate.Triggers>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+
+                                <!-- Version -->
+                                <DataGridTextColumn Header="Version" Binding="{Binding Version}" Width="90">
+                                    <DataGridTextColumn.ElementStyle>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="Foreground" Value="{StaticResource MutedTextBrush}" />
+                                            <Setter Property="VerticalAlignment" Value="Center" />
+                                            <Setter Property="Padding" Value="12,0" />
+                                            <Setter Property="FontSize" Value="12" />
+                                        </Style>
+                                    </DataGridTextColumn.ElementStyle>
+                                </DataGridTextColumn>
+
+                                <!-- Publisher -->
+                                <DataGridTextColumn Header="Publisher" Binding="{Binding Publisher}" Width="160">
+                                    <DataGridTextColumn.ElementStyle>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="Foreground" Value="{StaticResource SecondaryTextBrush}" />
+                                            <Setter Property="VerticalAlignment" Value="Center" />
+                                            <Setter Property="Padding" Value="12,0" />
+                                            <Setter Property="FontSize" Value="13" />
+                                        </Style>
+                                    </DataGridTextColumn.ElementStyle>
+                                </DataGridTextColumn>
+
+                                <!-- Installation Path (character ellipsis) -->
+                                <DataGridTemplateColumn Header="Installation Path" Width="280">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding InstallationPath}" Foreground="{StaticResource MutedTextBrush}" FontSize="12" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" ToolTip="{Binding InstallationPath}" Margin="12,0" />
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+
+                                <!-- Installation Source -->
+                                <DataGridTextColumn Header="Installation Source" Binding="{Binding InstallationSource}" Width="150">
+                                    <DataGridTextColumn.ElementStyle>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="Foreground" Value="{StaticResource MutedTextBrush}" />
+                                            <Setter Property="VerticalAlignment" Value="Center" />
+                                            <Setter Property="Padding" Value="12,0" />
+                                            <Setter Property="FontSize" Value="12" />
+                                        </Style>
+                                    </DataGridTextColumn.ElementStyle>
+                                </DataGridTextColumn>
+
+                                <!-- Status Badge -->
+                                <DataGridTemplateColumn Header="Status" Width="160" SortMemberPath="Status">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Border x:Name="StatusBorder" CornerRadius="6" BorderThickness="1" HorizontalAlignment="Left" Padding="8,4" Margin="12,0" VerticalAlignment="Center">
+                                                <TextBlock x:Name="StatusText" Text="{Binding Status}" FontSize="11" FontWeight="Bold" />
+                                            </Border>
+                                            <DataTemplate.Triggers>
+                                                <DataTrigger Binding="{Binding Status}" Value="Installed">
+                                                    <Setter TargetName="StatusBorder" Property="Background" Value="#123C27" />
+                                                    <Setter TargetName="StatusBorder" Property="BorderBrush" Value="#1D5C3C" />
+                                                    <Setter TargetName="StatusText" Property="Foreground" Value="{StaticResource SuccessBrush}" />
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding Status}" Value="Missing">
+                                                    <Setter TargetName="StatusBorder" Property="Background" Value="#3C1717" />
+                                                    <Setter TargetName="StatusBorder" Property="BorderBrush" Value="#5C2424" />
+                                                    <Setter TargetName="StatusText" Property="Foreground" Value="{StaticResource DangerBrush}" />
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding Status}" Value="Disabled">
+                                                    <Setter TargetName="StatusBorder" Property="Background" Value="#252932" />
+                                                    <Setter TargetName="StatusBorder" Property="BorderBrush" Value="#303641" />
+                                                    <Setter TargetName="StatusText" Property="Foreground" Value="{StaticResource MutedTextBrush}" />
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding Status}" Value="Updating">
+                                                    <Setter TargetName="StatusBorder" Property="Background" Value="#12324C" />
+                                                    <Setter TargetName="StatusBorder" Property="BorderBrush" Value="#1E4E75" />
+                                                    <Setter TargetName="StatusText" Property="Foreground" Value="{StaticResource InformationBrush}" />
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding Status}" Value="Corrupted">
+                                                    <Setter TargetName="StatusBorder" Property="Background" Value="#3C1717" />
+                                                    <Setter TargetName="StatusBorder" Property="BorderBrush" Value="#5C2424" />
+                                                    <Setter TargetName="StatusText" Property="Foreground" Value="{StaticResource DangerBrush}" />
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding Status}" Value="Validation Required">
+                                                    <Setter TargetName="StatusBorder" Property="Background" Value="#302E0C" />
+                                                    <Setter TargetName="StatusBorder" Property="BorderBrush" Value="#4C4913" />
+                                                    <Setter TargetName="StatusText" Property="Foreground" Value="{StaticResource PrimaryAccentBrush}" />
+                                                </DataTrigger>
+                                            </DataTemplate.Triggers>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+
+                                <!-- Last Updated -->
+                                <DataGridTextColumn Header="Last Updated" Binding="{Binding LastUpdated}" Width="150">
+                                    <DataGridTextColumn.ElementStyle>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="Foreground" Value="{StaticResource MutedTextBrush}" />
+                                            <Setter Property="VerticalAlignment" Value="Center" />
+                                            <Setter Property="Padding" Value="12,0" />
+                                            <Setter Property="FontSize" Value="12" />
+                                        </Style>
+                                    </DataGridTextColumn.ElementStyle>
+                                </DataGridTextColumn>
+
+                                <!-- Modified By -->
+                                <DataGridTextColumn Header="Modified By" Binding="{Binding ModifiedBy}" Width="130">
+                                    <DataGridTextColumn.ElementStyle>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="Foreground" Value="{StaticResource SecondaryTextBrush}" />
+                                            <Setter Property="VerticalAlignment" Value="Center" />
+                                            <Setter Property="Padding" Value="12,0" />
+                                            <Setter Property="FontSize" Value="13" />
+                                        </Style>
+                                    </DataGridTextColumn.ElementStyle>
+                                </DataGridTextColumn>
+
+                                <!-- Size -->
+                                <DataGridTextColumn Header="Size" Binding="{Binding Size}" Width="100">
+                                    <DataGridTextColumn.ElementStyle>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="Foreground" Value="{StaticResource SecondaryTextBrush}" />
+                                            <Setter Property="VerticalAlignment" Value="Center" />
+                                            <Setter Property="Padding" Value="12,0" />
+                                            <Setter Property="FontSize" Value="13" />
+                                        </Style>
+                                    </DataGridTextColumn.ElementStyle>
+                                </DataGridTextColumn>
+
+                                <!-- License -->
+                                <DataGridTextColumn Header="License" Binding="{Binding License}" Width="120">
+                                    <DataGridTextColumn.ElementStyle>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="Foreground" Value="{StaticResource SecondaryTextBrush}" />
+                                            <Setter Property="VerticalAlignment" Value="Center" />
+                                            <Setter Property="Padding" Value="12,0" />
+                                            <Setter Property="FontSize" Value="13" />
+                                        </Style>
+                                    </DataGridTextColumn.ElementStyle>
+                                </DataGridTextColumn>
+
+                            </DataGrid.Columns>
+                        </DataGrid>
+
+                        <!-- SKELETON / LOADING STATE OVERLAY -->
+                        <Border Background="{StaticResource PrimarySurfaceBrush}" CornerRadius="8" SnapsToDevicePixels="True" Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}">
+                            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                                <!-- Infinite rotating loader spinner -->
+                                <Path x:Name="loadingStateSpinner"
+                                      Data="M12 4V2m0 20v-2m8-8h2M2 12h2m13.657-5.657l1.414-1.414M5.657 16.343l1.414-1.414m11.314 11.314l-1.414-1.414M5.657 5.657L7.07 7.07"
+                                      Stroke="{StaticResource PrimaryAccentBrush}"
+                                      StrokeThickness="3"
+                                      StrokeStartLineCap="Round"
+                                      StrokeEndLineCap="Round"
+                                      Fill="Transparent"
+                                      Width="48" Height="48"
+                                      Stretch="Uniform"
+                                      HorizontalAlignment="Center"
+                                      RenderTransformOrigin="0.5,0.5">
+                                    <Path.RenderTransform>
+                                        <RotateTransform x:Name="loadingOverlayRotate" Angle="0" />
+                                    </Path.RenderTransform>
+                                    <Path.Triggers>
+                                        <EventTrigger RoutedEvent="FrameworkElement.Loaded">
+                                            <BeginStoryboard>
+                                                <Storyboard>
+                                                    <DoubleAnimation Storyboard.TargetName="loadingOverlayRotate"
+                                                                     Storyboard.TargetProperty="Angle"
+                                                                     From="0" To="360" Duration="0:0:1"
+                                                                     RepeatBehavior="Forever" />
+                                                </Storyboard>
+                                            </BeginStoryboard>
+                                        </EventTrigger>
+                                    </Path.Triggers>
+                                </Path>
+
+                                <TextBlock Text="Loading applications catalog..." FontFamily="Segoe UI Variable, Segoe UI" FontSize="16" FontWeight="SemiBold" Foreground="{StaticResource PrimaryTextBrush}" HorizontalAlignment="Center" Margin="0,16,0,8" />
+                                <TextBlock Text="Synchronizing server databases and local system registry keys" FontFamily="Segoe UI Variable, Segoe UI" FontSize="13" Foreground="{StaticResource MutedTextBrush}" HorizontalAlignment="Center" Margin="0,0,0,24" />
+
+                                <!-- Animated Horizontal Progress Bar -->
+                                <Border Width="400" Height="6" Background="{StaticResource SecondarySurfaceBrush}" CornerRadius="3" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" HorizontalAlignment="Center">
+                                    <Grid HorizontalAlignment="Left">
+                                        <Border Height="4" Background="{StaticResource PrimaryAccentBrush}" CornerRadius="2" Margin="1,0">
+                                            <Border.Style>
+                                                <Style TargetType="Border">
+                                                    <Setter Property="Width" Value="0" />
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding LoadingProgress}" Value="0">
+                                                            <Setter Property="Width" Value="0" />
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding LoadingProgress}" Value="5">
+                                                            <Setter Property="Width" Value="20" />
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding LoadingProgress}" Value="10">
+                                                            <Setter Property="Width" Value="40" />
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding LoadingProgress}" Value="15">
+                                                            <Setter Property="Width" Value="60" />
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding LoadingProgress}" Value="20">
+                                                            <Setter Property="Width" Value="80" />
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding LoadingProgress}" Value="25">
+                                                            <Setter Property="Width" Value="100" />
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding LoadingProgress}" Value="30">
+                                                            <Setter Property="Width" Value="120" />
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding LoadingProgress}" Value="35">
+                                                            <Setter Property="Width" Value="140" />
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding LoadingProgress}" Value="40">
+                                                            <Setter Property="Width" Value="160" />
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding LoadingProgress}" Value="45">
+                                                            <Setter Property="Width" Value="180" />
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding LoadingProgress}" Value="50">
+                                                            <Setter Property="Width" Value="200" />
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding LoadingProgress}" Value="55">
+                                                            <Setter Property="Width" Value="220" />
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding LoadingProgress}" Value="60">
+                                                            <Setter Property="Width" Value="240" />
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding LoadingProgress}" Value="65">
+                                                            <Setter Property="Width" Value="260" />
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding LoadingProgress}" Value="70">
+                                                            <Setter Property="Width" Value="280" />
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding LoadingProgress}" Value="75">
+                                                            <Setter Property="Width" Value="300" />
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding LoadingProgress}" Value="80">
+                                                            <Setter Property="Width" Value="320" />
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding LoadingProgress}" Value="85">
+                                                            <Setter Property="Width" Value="340" />
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding LoadingProgress}" Value="90">
+                                                            <Setter Property="Width" Value="360" />
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding LoadingProgress}" Value="95">
+                                                            <Setter Property="Width" Value="380" />
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding LoadingProgress}" Value="100">
+                                                            <Setter Property="Width" Value="396" />
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Border.Style>
+                                        </Border>
+                                    </Grid>
+                                </Border>
+
+                                <TextBlock Text="{Binding LoadingProgress, StringFormat='{}{0}% Completed'}" FontFamily="Segoe UI Variable, Segoe UI" FontSize="13" FontWeight="Bold" Foreground="{StaticResource PrimaryAccentBrush}" HorizontalAlignment="Center" Margin="0,12,0,0" />
+                            </StackPanel>
+                        </Border>
+
+                        <!-- EMPTY STATE OVERLAY -->
+                        <Border Background="{StaticResource PrimarySurfaceBrush}" CornerRadius="8" SnapsToDevicePixels="True">
+                            <Border.Style>
+                                <Style TargetType="Border">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding SelectedDemoState}" Value="Empty">
+                                            <Setter Property="Visibility" Value="Visible" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Border.Style>
+                            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                                <!-- Magnifying glass icon vector -->
+                                <Border Width="64" Height="64" Background="#0CFFFFFF" CornerRadius="16" Padding="14" HorizontalAlignment="Center" Margin="0,0,0,16">
+                                    <Path Data="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" Stroke="{StaticResource MutedTextBrush}" StrokeThickness="2.5" Stretch="Uniform" Fill="Transparent" />
+                                </Border>
+                                <TextBlock Text="No applications found" FontFamily="Segoe UI Variable, Segoe UI" FontSize="18" FontWeight="Bold" Foreground="{StaticResource PrimaryTextBrush}" HorizontalAlignment="Center" />
+                                <TextBlock Text="Registry scan returned no items and search results are empty." FontFamily="Segoe UI Variable, Segoe UI" FontSize="13" Foreground="{StaticResource MutedTextBrush}" HorizontalAlignment="Center" Margin="0,8,0,24" />
+                                <Button Content="Scan Computer" Command="{Binding ScanComputerCommand}" Style="{StaticResource PrimaryToolbarButtonStyle}" Padding="24,12" Height="Auto" HorizontalAlignment="Center" />
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+
+                    <!-- Divider -->
+                    <Border Grid.Row="2" Height="1" Background="{StaticResource DividerBrush}" VerticalAlignment="Top" />
+
+                    <!-- Row 2: Bottom Bar / Sticky Footer -->
+                    <Grid Grid.Row="2" Margin="4,0">
+                        <Grid.ColumnDefinitions>
+                            <!-- Left: Showing x of y -->
+                            <ColumnDefinition Width="*" />
+                            <!-- Center: Pagination -->
+                            <ColumnDefinition Width="Auto" />
+                            <!-- Right: Page sizes & selected rows count -->
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <!-- Left: Record range text -->
+                        <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
+                            <TextBlock Text="{Binding ShowingText}" FontFamily="Segoe UI Variable, Segoe UI" FontSize="13" Foreground="{StaticResource SecondaryTextBrush}" />
+                        </StackPanel>
+
+                        <!-- Center: Pagination Controls -->
+                        <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                            <!-- Prev Button -->
+                            <Button Content="Previous" Command="{Binding PrevPageCommand}" Style="{StaticResource ToolbarButtonStyle}" Height="32" Padding="12,0" Margin="0,0,8,0" FontSize="12" />
+
+                            <!-- Pages buttons (standard flat square buttons) -->
+                            <Button Content="1" Command="{Binding SetPageCommand}" CommandParameter="{Binding Number1, FallbackValue=1}" Height="32" Width="32" Padding="0" Margin="0,0,4,0" FontSize="12">
+                                <Button.Style>
+                                    <Style TargetType="Button" BasedOn="{StaticResource ToolbarButtonStyle}">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding CurrentPage}" Value="1">
+                                                <Setter Property="Background" Value="{StaticResource SelectedBrush}" />
+                                                <Setter Property="BorderBrush" Value="{StaticResource PrimaryAccentBrush}" />
+                                                <Setter Property="Foreground" Value="{StaticResource PrimaryAccentBrush}" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Button.Style>
+                            </Button>
+
+                            <Button Content="2" Command="{Binding SetPageCommand}" CommandParameter="{Binding Number2, FallbackValue=2}" Height="32" Width="32" Padding="0" Margin="0,0,4,0" FontSize="12">
+                                <Button.Style>
+                                    <Style TargetType="Button" BasedOn="{StaticResource ToolbarButtonStyle}">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding CurrentPage}" Value="2">
+                                                <Setter Property="Background" Value="{StaticResource SelectedBrush}" />
+                                                <Setter Property="BorderBrush" Value="{StaticResource PrimaryAccentBrush}" />
+                                                <Setter Property="Foreground" Value="{StaticResource PrimaryAccentBrush}" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Button.Style>
+                            </Button>
+
+                            <Button Content="3" Command="{Binding SetPageCommand}" CommandParameter="{Binding Number3, FallbackValue=3}" Height="32" Width="32" Padding="0" Margin="0,0,4,0" FontSize="12">
+                                <Button.Style>
+                                    <Style TargetType="Button" BasedOn="{StaticResource ToolbarButtonStyle}">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding CurrentPage}" Value="3">
+                                                <Setter Property="Background" Value="{StaticResource SelectedBrush}" />
+                                                <Setter Property="BorderBrush" Value="{StaticResource PrimaryAccentBrush}" />
+                                                <Setter Property="Foreground" Value="{StaticResource PrimaryAccentBrush}" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Button.Style>
+                            </Button>
+
+                            <Button Content="4" Command="{Binding SetPageCommand}" CommandParameter="{Binding Number4, FallbackValue=4}" Height="32" Width="32" Padding="0" Margin="0,0,8,0" FontSize="12">
+                                <Button.Style>
+                                    <Style TargetType="Button" BasedOn="{StaticResource ToolbarButtonStyle}">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding CurrentPage}" Value="4">
+                                                <Setter Property="Background" Value="{StaticResource SelectedBrush}" />
+                                                <Setter Property="BorderBrush" Value="{StaticResource PrimaryAccentBrush}" />
+                                                <Setter Property="Foreground" Value="{StaticResource PrimaryAccentBrush}" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Button.Style>
+                            </Button>
+
+                            <!-- Next Button -->
+                            <Button Content="Next" Command="{Binding NextPageCommand}" Style="{StaticResource ToolbarButtonStyle}" Height="32" Padding="12,0" FontSize="12" />
+                        </StackPanel>
+
+                        <!-- Right: Selected Count and Page Size Selector -->
+                        <StackPanel Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+                            <!-- Selected items bubble indicator (visible only if SelectedCount > 0) -->
+                            <Border CornerRadius="12" Background="#1AFFFFFF" BorderBrush="{StaticResource DividerBrush}" BorderThickness="1" Padding="10,4" Margin="0,0,16,0" VerticalAlignment="Center">
+                                <Border.Style>
+                                    <Style TargetType="Border">
+                                        <Setter Property="Visibility" Value="Collapsed" />
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding SelectedCount}" Value="0">
+                                                <Setter Property="Visibility" Value="Collapsed" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Border.Style>
+                                <StackPanel Orientation="Horizontal">
+                                    <Border Width="8" Height="8" Background="{StaticResource PrimaryAccentBrush}" CornerRadius="4" VerticalAlignment="Center" Margin="0,0,6,0" />
+                                    <TextBlock Text="{Binding SelectedCount, StringFormat='{}{0} items selected'}" FontFamily="Segoe UI Variable, Segoe UI" FontSize="12" FontWeight="SemiBold" Foreground="{StaticResource PrimaryAccentBrush}" />
+                                </StackPanel>
+                            </Border>
+
+                            <TextBlock Text="Rows per page:" FontFamily="Segoe UI Variable, Segoe UI" FontSize="12" Foreground="{StaticResource MutedTextBrush}" VerticalAlignment="Center" Margin="0,0,8,0" />
+                            <ComboBox ItemsSource="{Binding PageSizes}" SelectedItem="{Binding SelectedPageSize}" Width="70" Height="32" Background="{StaticResource SecondarySurfaceBrush}" BorderBrush="{StaticResource BorderBrush}" Foreground="{StaticResource PrimaryTextBrush}" VerticalContentAlignment="Center" FontSize="12" Padding="8,0">
+                                <ComboBox.Resources>
+                                    <Style TargetType="ComboBoxItem">
+                                        <Setter Property="Background" Value="{StaticResource PrimarySurfaceBrush}" />
+                                        <Setter Property="Foreground" Value="{StaticResource PrimaryTextBrush}" />
+                                    </Style>
+                                </ComboBox.Resources>
+                            </ComboBox>
+                        </StackPanel>
+                    </Grid>
+                </Grid>
             </Border>
         </Grid>
 
