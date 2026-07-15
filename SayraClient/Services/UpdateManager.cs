@@ -6,6 +6,7 @@ using Sayra.Client.Shared.Models;
 using System.Net.Http.Json;
 using System.Text.Json;
 using System.Diagnostics;
+using Sayra.Client.Launcher.Services;
 
 namespace SayraClient.Services;
 
@@ -17,6 +18,7 @@ public class UpdateManager : BackgroundService
     private readonly UpdateVerificationService _verificationService;
     private readonly BackupService _backupService;
     private readonly IpcServer _ipcServer;
+    private readonly IGameLauncherService _gameLauncher;
     private readonly string _currentVersion;
     private readonly HttpClient _httpClient;
     private readonly string _updateWorkDir;
@@ -27,7 +29,8 @@ public class UpdateManager : BackgroundService
         SessionManager sessionManager,
         UpdateVerificationService verificationService,
         BackupService backupService,
-        IpcServer ipcServer)
+        IpcServer ipcServer,
+        IGameLauncherService gameLauncher)
     {
         _logger = logger;
         _configuration = configuration;
@@ -35,6 +38,7 @@ public class UpdateManager : BackgroundService
         _verificationService = verificationService;
         _backupService = backupService;
         _ipcServer = ipcServer;
+        _gameLauncher = gameLauncher;
         _currentVersion = typeof(UpdateManager).Assembly.GetName().Version?.ToString() ?? "1.0.0";
         _httpClient = new HttpClient();
         _updateWorkDir = Path.Combine(AppContext.BaseDirectory, "Updates");
@@ -209,14 +213,7 @@ public class UpdateManager : BackgroundService
             return;
         }
 
-        var startInfo = new ProcessStartInfo
-        {
-            FileName = updaterExe,
-            Arguments = $"--package \"{packagePath}\" --backup \"{backupPath}\" --service \"Sayra Client\"",
-            UseShellExecute = true,
-            Verb = "runas" // Request elevation
-        };
-
-        Process.Start(startInfo);
+        string arguments = $"--package \"{packagePath}\" --backup \"{backupPath}\" --service \"Sayra Client\"";
+        _ = _gameLauncher.LaunchApplicationAsync(updaterExe, arguments, AppContext.BaseDirectory, true, CancellationToken.None);
     }
 }

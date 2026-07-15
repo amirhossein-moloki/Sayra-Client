@@ -4,10 +4,11 @@ using SayraClient.Models;
 using System.Text.Json;
 using System.Timers;
 using Timer = System.Timers.Timer;
+using Sayra.Client.Launcher.Services;
 
 namespace SayraClient.Services;
 
-public class SessionManager : IDisposable
+public class SessionManager : ISessionStateProvider, IDisposable
 {
     private readonly ILogger<SessionManager> _logger;
     private readonly IServiceProvider _serviceProvider;
@@ -18,6 +19,21 @@ public class SessionManager : IDisposable
     private readonly object _sessionLock = new();
 
     public string CurrentStatus => _currentSession?.Status ?? "IDLE";
+
+    public bool IsSessionActive()
+    {
+        lock (_sessionLock)
+        {
+            return _currentSession != null && _currentSession.Status == "ACTIVE";
+        }
+    }
+
+    public bool IsWhitelisted(string executablePath)
+    {
+        if (string.IsNullOrWhiteSpace(executablePath)) return false;
+        string name = Path.GetFileName(executablePath).ToLowerInvariant();
+        return name == "notepad.exe" || name == "calc.exe" || name == "sayra.client.guardian.exe" || name == "sayraupdater.exe" || name == "cmd.exe" || name == "sayra.client.guardian" || name == "sayraupdater";
+    }
 
     public SessionManager(ILogger<SessionManager> logger, IServiceProvider serviceProvider, KioskManager kioskManager)
     {

@@ -45,7 +45,15 @@ namespace Sayra.Client.Shared.Ipc
         PROCESS_BLOCKED,
         KIOSK_POLICY_REAPPLIED,
         DEBUGGER_DETECTED,
-        SERVICE_TAMPER_ATTEMPT
+        SERVICE_TAMPER_ATTEMPT,
+
+        // Launcher Extensions
+        LAUNCH_GAME,
+        STOP_GAME,
+        RESTART_GAME,
+        GET_RUNNING_STATISTICS,
+        VALIDATE_EXECUTABLE,
+        LAUNCHER_STATUS
     }
 
     public class IpcMessage

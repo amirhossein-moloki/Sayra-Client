@@ -1,26 +1,29 @@
+using System;
+using System.IO;
+using System.Linq;
 using System.Text.Json;
+using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using SayraClient.Models;
-using SayraClient.Services;
+using Sayra.Client.Launcher.Services;
+using Sayra.Client.GameLibrary.Services;
 
 namespace SayraClient.Commands;
 
 public class AppCommandHandler : ICommandHandler
 {
-    private readonly GameLauncher _gameLauncher;
-    private readonly ProcessManager _processManager;
-    private readonly ProcessMonitor _processMonitor;
+    private readonly IGameLauncherService _gameLauncher;
+    private readonly IGameLibraryService _gameLibrary;
     private readonly ILogger<AppCommandHandler> _logger;
 
     public AppCommandHandler(
-        GameLauncher gameLauncher,
-        ProcessManager processManager,
-        ProcessMonitor processMonitor,
+        IGameLauncherService gameLauncher,
+        IGameLibraryService gameLibrary,
         ILogger<AppCommandHandler> logger)
     {
         _gameLauncher = gameLauncher;
-        _processManager = processManager;
-        _processMonitor = processMonitor;
+        _gameLibrary = gameLibrary;
         _logger = logger;
     }
 
@@ -39,8 +42,8 @@ public class AppCommandHandler : ICommandHandler
 
         var result = command.Action.ToUpper() switch
         {
-            "RUN_APP" => HandleRunApp(command.Payload),
-            "KILL_APP" => HandleKillApp(command.Payload),
+            "RUN_APP" => await HandleRunAppAsync(command.Payload, cancellationToken),
+            "KILL_APP" => await HandleKillAppAsync(command.Payload),
             "LIST_PROCESSES" => HandleListProcesses(),
             _ => ExecutionResult.Error(command.Action, "Unsupported action")
         };
@@ -53,7 +56,7 @@ public class AppCommandHandler : ICommandHandler
         return result;
     }
 
-    private ExecutionResult HandleRunApp(object? payload)
+    private async Task<ExecutionResult> HandleRunAppAsync(object? payload, CancellationToken cancellationToken)
     {
         try
         {
@@ -62,24 +65,31 @@ public class AppCommandHandler : ICommandHandler
                 if (element.TryGetProperty("gameId", out var gameIdProp))
                 {
                     string gameId = gameIdProp.GetString() ?? throw new Exception("gameId is null");
-                    _gameLauncher.LaunchGame(gameId);
-                    return ExecutionResult.Success("RUN_APP", "Application started");
+                    bool success = await _gameLauncher.LaunchGameAsync(gameId, cancellationToken);
+                    if (success)
+                    {
+                        return ExecutionResult.Success("RUN_APP", "Application started");
+                    }
+                    else
+                    {
+                        return ExecutionResult.Error("RUN_APP", "Failed to start application.");
+                    }
                 }
 
                 if (element.TryGetProperty("path", out var pathProperty))
                 {
-                    // Fallback or legacy support if needed, but registry is preferred
                     string path = pathProperty.GetString() ?? throw new Exception("Path is null");
-                    // We might want to restrict this for security, but keeping it for now
-                    // if it matches a registered game by path?
-                    // Better to enforce registry.
-                    var registered = _gameLauncher.GetRegisteredGames()
+                    var games = await _gameLibrary.GetGames();
+                    var registered = games
                         .FirstOrDefault(g => g.ExecutablePath.Equals(path, StringComparison.OrdinalIgnoreCase));
 
                     if (registered != null)
                     {
-                        _gameLauncher.LaunchGame(registered.GameId);
-                        return ExecutionResult.Success("RUN_APP", "Application started from registry");
+                        bool success = await _gameLauncher.LaunchGameAsync(registered.Id, cancellationToken);
+                        if (success)
+                        {
+                            return ExecutionResult.Success("RUN_APP", "Application started from registry");
+                        }
                     }
 
                     return ExecutionResult.Error("RUN_APP", "Direct path execution is not allowed. Please use GameId.");
@@ -95,7 +105,7 @@ public class AppCommandHandler : ICommandHandler
         }
     }
 
-    private ExecutionResult HandleKillApp(object? payload)
+    private async Task<ExecutionResult> HandleKillAppAsync(object? payload)
     {
         try
         {
@@ -103,14 +113,14 @@ public class AppCommandHandler : ICommandHandler
             {
                 if (element.TryGetProperty("pid", out var pidProperty) && pidProperty.TryGetInt32(out int pid))
                 {
-                    _processManager.KillProcess(pid);
+                    await _gameLauncher.KillProcessAsync(pid);
                     return ExecutionResult.Success("KILL_APP");
                 }
 
                 if (element.TryGetProperty("name", out var nameProperty))
                 {
                     string name = nameProperty.GetString() ?? throw new Exception("Name is null");
-                    _processManager.KillProcessByName(name);
+                    await _gameLauncher.KillProcessByNameAsync(name);
                     return ExecutionResult.Success("KILL_APP");
                 }
             }
@@ -128,7 +138,7 @@ public class AppCommandHandler : ICommandHandler
     {
         try
         {
-            var processes = _processMonitor.GetRunningProcesses();
+            var processes = _gameLauncher.GetRunningGames();
             return ExecutionResult.Success("LIST_PROCESSES", result: JsonSerializer.Serialize(processes));
         }
         catch (Exception ex)
