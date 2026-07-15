@@ -8,126 +8,460 @@
         xmlns:svgc="http://sharpvectors.codeplex.com/svgc/"
         xmlns:suis="clr-namespace:Sayra.UI.Services"
         mc:Ignorable="d"
-        Title="SAYRA Admin Panel"
+        Title="SAYRA Admin Workspace"
         Height="1080" Width="1920"
         WindowStyle="None"
         AllowsTransparency="True"
         Background="Transparent"
-        WindowState="Maximized"
+        WindowState="Normal"
         WindowStartupLocation="CenterScreen"
-        FlowDirection="RightToLeft">
-
-    <Window.Resources>
-        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
-        <!-- Fade-in animation for Window content -->
-        <Storyboard x:Key="WindowFadeInStoryboard">
-            <DoubleAnimation Storyboard.TargetProperty="Opacity" From="0" To="1" Duration="0:0:1.0" />
-        </Storyboard>
-    </Window.Resources>
+        FlowDirection="LeftToRight">
 
     <Window.Triggers>
         <EventTrigger RoutedEvent="Window.Loaded">
-            <BeginStoryboard Storyboard="{StaticResource WindowFadeInStoryboard}" />
+            <BeginStoryboard>
+                <Storyboard>
+                    <DoubleAnimation Storyboard.TargetProperty="Opacity" From="0" To="1" Duration="0:0:0.5" />
+                </Storyboard>
+            </BeginStoryboard>
         </EventTrigger>
     </Window.Triggers>
 
-    <Grid x:Name="RootGrid">
-        <!-- Background accents -->
-        <Grid.Background>
-            <RadialGradientBrush Center="0.5,0.5" RadiusX="0.8" RadiusY="0.8">
-                <GradientStop Color="#150E1A1A" Offset="0"/>
-                <GradientStop Color="#08090D" Offset="1"/>
-            </RadialGradientBrush>
-        </Grid.Background>
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
 
-        <!-- Top Header Bar -->
-        <Grid Height="80" VerticalAlignment="Top" Background="#A6020305" Panel.ZIndex="10">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="Auto" />
-            </Grid.ColumnDefinitions>
+        <!-- Premium Theme Brushes -->
+        <SolidColorBrush x:Key="AppBackgroundBrush" Color="#0E1015"/>
+        <SolidColorBrush x:Key="PrimarySurfaceBrush" Color="#171A20"/>
+        <SolidColorBrush x:Key="SecondarySurfaceBrush" Color="#1D2027"/>
+        <SolidColorBrush x:Key="BorderBrush" Color="#2B3039"/>
+        <SolidColorBrush x:Key="DividerBrush" Color="#303641"/>
+        <SolidColorBrush x:Key="HoverBrush" Color="#252932"/>
+        <SolidColorBrush x:Key="SelectedBrush" Color="#343D4A"/>
+        <SolidColorBrush x:Key="PrimaryAccentBrush" Color="#F7E733"/>
+        <SolidColorBrush x:Key="AccentHoverBrush" Color="#FFE84F"/>
+        <SolidColorBrush x:Key="DangerBrush" Color="#E65C5C"/>
+        <SolidColorBrush x:Key="SuccessBrush" Color="#35D07F"/>
+        <SolidColorBrush x:Key="InformationBrush" Color="#59C4FF"/>
+        <SolidColorBrush x:Key="PrimaryTextBrush" Color="#FFFFFF"/>
+        <SolidColorBrush x:Key="SecondaryTextBrush" Color="#C5CBD5"/>
+        <SolidColorBrush x:Key="MutedTextBrush" Color="#8E95A1"/>
+        <SolidColorBrush x:Key="DisabledTextBrush" Color="#6D737D"/>
+    </Window.Resources>
 
-            <!-- App Logo / Branding -->
-            <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center" Margin="30,0,0,0">
-                <svgc:SvgViewbox Source="/Assets/sayra.svg" Width="100" Height="25" VerticalAlignment="Center"/>
-                <Border Width="1" Height="20" Background="#33FFFFFF" Margin="15,0"/>
-                <TextBlock Text="پنل مدیریت سایرا" FontFamily="{StaticResource PeydaBold}" FontSize="18" Foreground="White" VerticalAlignment="Center"/>
-                <TextBlock Text="[ADMIN CONTROL PANEL]" FontFamily="{StaticResource PeydaLight}" FontSize="11" Foreground="#F5FF00" Margin="10,0,0,0" VerticalAlignment="Center" Opacity="0.8"/>
-            </StackPanel>
+    <Grid x:Name="RootGrid" Background="{StaticResource AppBackgroundBrush}">
+        <Grid.RowDefinitions>
+            <!-- Header Bar -->
+            <RowDefinition Height="80" />
+            <!-- Workspace Content Area -->
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
 
-            <!-- Exit / Logout buttons -->
-            <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,30,0">
-                <Button Content="خروج از پنل" Click="LogoutButton_Click" Height="40" Padding="20,0" Cursor="Hand" Foreground="White" FontSize="13" FontFamily="{StaticResource PeydaMedium}">
-                    <Button.Template>
-                        <ControlTemplate TargetType="Button">
-                            <Border x:Name="border" Background="#1AF46B6B" BorderBrush="#33F46B6B" BorderThickness="1" CornerRadius="8">
-                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                            </Border>
-                            <ControlTemplate.Triggers>
-                                <Trigger Property="IsMouseOver" Value="True">
-                                    <Setter TargetName="border" Property="Background" Value="#33F46B6B"/>
-                                    <Setter TargetName="border" Property="BorderBrush" Value="#F46B6B"/>
-                                </Trigger>
-                            </ControlTemplate.Triggers>
-                        </ControlTemplate>
-                    </Button.Template>
-                </Button>
-            </StackPanel>
-        </Grid>
+        <!-- Top Header Bar (Flat surface, subtle border divider on bottom) -->
+        <Border Grid.Row="0" Background="{StaticResource PrimarySurfaceBrush}" BorderBrush="{StaticResource DividerBrush}" BorderThickness="0,0,0,1" Panel.ZIndex="10">
+            <Grid Margin="32,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
 
-        <!-- Main Content Area -->
-        <Grid Margin="50,130,50,50">
+                <!-- Branding & Module Title -->
+                <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
+                    <svgc:SvgViewbox Source="/Assets/sayra.svg" Width="100" Height="25" VerticalAlignment="Center"/>
+                    <Border Width="1" Height="20" Background="{StaticResource DividerBrush}" Margin="16,0"/>
+                    <TextBlock Text="Local Administration" FontFamily="Segoe UI Variable, Segoe UI" FontWeight="Bold" FontSize="14" Foreground="{StaticResource PrimaryTextBrush}" VerticalAlignment="Center"/>
+                    <Border Width="1" Height="20" Background="{StaticResource DividerBrush}" Margin="16,0"/>
+                    <TextBlock Text="Game &amp; Application Manager" FontFamily="Segoe UI Variable, Segoe UI" FontWeight="SemiBold" FontSize="14" Foreground="{StaticResource PrimaryAccentBrush}" VerticalAlignment="Center"/>
+                </StackPanel>
+
+                <!-- Action Button (Return to Login) -->
+                <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                    <Button Content="Exit Panel" Click="LogoutButton_Click" Height="36" Padding="20,0" Cursor="Hand" Foreground="{StaticResource SecondaryTextBrush}" FontSize="12" FontFamily="Segoe UI Variable, Segoe UI" FontWeight="Medium">
+                        <Button.Template>
+                            <ControlTemplate TargetType="Button">
+                                <Border x:Name="border" Background="{StaticResource PrimarySurfaceBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="6">
+                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter TargetName="border" Property="Background" Value="{StaticResource HoverBrush}"/>
+                                        <Setter TargetName="border" Property="BorderBrush" Value="{StaticResource DividerBrush}"/>
+                                        <Setter Property="Foreground" Value="{StaticResource PrimaryTextBrush}"/>
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Button.Template>
+                    </Button>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- Workspace Container -->
+        <Grid Grid.Row="1" Margin="32">
             <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="*"/>
+                <!-- Section 1: Search Area -->
+                <RowDefinition Height="Auto" />
+                <!-- Section 2: Toolbar -->
+                <RowDefinition Height="Auto" />
+                <!-- Section 3: Main Workspace -->
+                <RowDefinition Height="*" />
+                <!-- Section 4: Bottom Status Area -->
+                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
-            <!-- Page Title -->
-            <StackPanel Grid.Row="0" Margin="0,0,0,30">
-                <TextBlock Text="داشبورد مدیریت" FontFamily="{StaticResource PeydaBold}" FontSize="28" Foreground="White"/>
-                <TextBlock Text="به پنل کاربری مدیریت سیستم سایرا خوش آمدید. این صفحه در حال حاضر خالی است." FontFamily="{StaticResource PeydaLight}" FontSize="14" Foreground="#A1A1AA" Margin="0,8,0,0"/>
-            </StackPanel>
-
-            <!-- Center Empty State Panel -->
-            <Border Grid.Row="1" Background="#A60A0A0A" BorderBrush="#1AFFFFFF" BorderThickness="1" CornerRadius="16">
-                <Grid>
-                    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" MaxWidth="500">
-                        <!-- Icon Placeholder -->
-                        <Border Width="80" Height="80" CornerRadius="40" Background="#0AFFFFFF" BorderBrush="#1AFFFFFF" BorderThickness="1" Margin="0,0,0,25" HorizontalAlignment="Center">
-                            <Path Data="M19.43 12.98c.04-.32.07-.64.07-.98s-.03-.66-.07-.98l2.11-1.65c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.3-.61-.22l-2.49 1c-.52-.4-1.08-.73-1.69-.98l-.38-2.65C14.46 2.18 14.25 2 14 2h-4c-.25 0-.46.18-.49.42l-.38 2.65c-.61.25-1.17.59-1.69.98l-2.49-1c-.23-.09-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64l2.11 1.65c-.04.32-.07.65-.07.98s.03.66.07.98l-2.11 1.65c-.19.15-.24.42-.12.64l2 3.46c.12.22.39.3.61.22l2.49-1c.52.4 1.08.73 1.69.98l.38 2.65c.03.24.24.42.49.42h4c.25 0 .46-.18.49-.42l.38-2.65c.61-.25 1.17-.59 1.69-.98l2.49 1c.23.09.49 0 .61-.22l2-3.46c.12-.22.07-.49-.12-.64l-2.11-1.65zM12 15.5c-1.93 0-3.5-1.57-3.5-3.5s1.57-3.5 3.5-3.5 3.5 1.57 3.5 3.5-1.57 3.5-3.5 3.5z"
-                                  Fill="#F5FF00" Width="36" Height="36" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                        </Border>
-
-                        <TextBlock Text="صفحه ادمین خالی" FontFamily="{StaticResource PeydaBold}" FontSize="20" Foreground="White" HorizontalAlignment="Center"/>
-
-                        <TextBlock Text="تمام دسترسی‌های مدیریتی، پیکربندی سیستم، مدیریت کلاینت‌ها و گزارش‌گیری در این بخش قرار خواهند گرفت."
-                                   FontFamily="{StaticResource PeydaLight}" FontSize="14" Foreground="#A1A1AA" TextAlignment="Center" Margin="0,15,0,30" LineHeight="22"/>
-
-                        <!-- Interactive Back Button to return to Login Window -->
-                        <Button Content="بازگشت به صفحه ورود" Click="LogoutButton_Click" Height="48" Cursor="Hand" Foreground="#08090D" FontSize="14" FontFamily="{StaticResource PeydaBold}">
-                            <Button.Template>
-                                <ControlTemplate TargetType="Button">
-                                    <Border x:Name="border" Background="#F5FF00" CornerRadius="10">
-                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                    </Border>
-                                    <ControlTemplate.Triggers>
-                                        <Trigger Property="IsMouseOver" Value="True">
-                                            <Setter TargetName="border" Property="Background" Value="#DDE500"/>
-                                        </Trigger>
-                                        <Trigger Property="IsPressed" Value="True">
-                                            <Setter TargetName="border" Property="Background" Value="#BCC200"/>
-                                        </Trigger>
-                                    </ControlTemplate.Triggers>
-                                </ControlTemplate>
-                            </Button.Template>
-                        </Button>
-                    </StackPanel>
+            <!-- SECTION 1: SEARCH AREA -->
+            <Border Grid.Row="0" Height="64" Background="{StaticResource PrimarySurfaceBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="12">
+                <Grid Margin="24,0">
+                    <TextBlock Text="Search Local Installations and Launcher Libraries..."
+                               FontFamily="Segoe UI Variable" FontSize="14"
+                               Foreground="{StaticResource MutedTextBrush}"
+                               VerticalAlignment="Center" />
                 </Grid>
             </Border>
+
+            <!-- SECTION 2: TOOLBAR -->
+            <Grid Grid.Row="1" Height="88" Margin="0,24,0,0">
+                <Grid.ColumnDefinitions>
+                    <!-- Launcher Scan (30%) -->
+                    <ColumnDefinition Width="30*" />
+                    <!-- Gap (16px) -->
+                    <ColumnDefinition Width="16" />
+                    <!-- Add (18%) -->
+                    <ColumnDefinition Width="18*" />
+                    <!-- Gap (16px) -->
+                    <ColumnDefinition Width="16" />
+                    <!-- Import / Export (22%) -->
+                    <ColumnDefinition Width="22*" />
+                    <!-- Gap (16px) -->
+                    <ColumnDefinition Width="16" />
+                    <!-- Synchronization (30%) -->
+                    <ColumnDefinition Width="30*" />
+                </Grid.ColumnDefinitions>
+
+                <!-- Group 1: Launcher Scan -->
+                <Border Grid.Column="0" Background="{StaticResource PrimarySurfaceBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="12">
+                    <Grid Margin="24,0">
+                        <StackPanel VerticalAlignment="Center">
+                            <TextBlock Text="Launcher Scan" FontFamily="Segoe UI Variable" FontSize="12" FontWeight="SemiBold" Foreground="{StaticResource PrimaryAccentBrush}" />
+                            <TextBlock Text="Scan and discover installed game platform clients" FontFamily="Segoe UI Variable" FontSize="12" Foreground="{StaticResource MutedTextBrush}" Margin="0,4,0,0" />
+                        </StackPanel>
+                    </Grid>
+                </Border>
+
+                <!-- Group 2: Add -->
+                <Border Grid.Column="2" Background="{StaticResource PrimarySurfaceBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="12">
+                    <Grid Margin="24,0">
+                        <StackPanel VerticalAlignment="Center">
+                            <TextBlock Text="Add" FontFamily="Segoe UI Variable" FontSize="12" FontWeight="SemiBold" Foreground="{StaticResource PrimaryAccentBrush}" />
+                            <TextBlock Text="Register custom executable paths" FontFamily="Segoe UI Variable" FontSize="12" Foreground="{StaticResource MutedTextBrush}" Margin="0,4,0,0" />
+                        </StackPanel>
+                    </Grid>
+                </Border>
+
+                <!-- Group 3: Import / Export -->
+                <Border Grid.Column="4" Background="{StaticResource PrimarySurfaceBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="12">
+                    <Grid Margin="24,0">
+                        <StackPanel VerticalAlignment="Center">
+                            <TextBlock Text="Import / Export" FontFamily="Segoe UI Variable" FontSize="12" FontWeight="SemiBold" Foreground="{StaticResource PrimaryAccentBrush}" />
+                            <TextBlock Text="Manage configuration JSON metadata" FontFamily="Segoe UI Variable" FontSize="12" Foreground="{StaticResource MutedTextBrush}" Margin="0,4,0,0" />
+                        </StackPanel>
+                    </Grid>
+                </Border>
+
+                <!-- Group 4: Synchronization -->
+                <Border Grid.Column="6" Background="{StaticResource PrimarySurfaceBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="12">
+                    <Grid Margin="24,0">
+                        <StackPanel VerticalAlignment="Center">
+                            <TextBlock Text="Synchronization" FontFamily="Segoe UI Variable" FontSize="12" FontWeight="SemiBold" Foreground="{StaticResource PrimaryAccentBrush}" />
+                            <TextBlock Text="Push, pull and match server library states" FontFamily="Segoe UI Variable" FontSize="12" Foreground="{StaticResource MutedTextBrush}" Margin="0,4,0,0" />
+                        </StackPanel>
+                    </Grid>
+                </Border>
+            </Grid>
+
+            <!-- SECTION 3: MAIN WORKSPACE -->
+            <Grid Grid.Row="2" Margin="0,24,0,0">
+                <Grid.ColumnDefinitions>
+                    <!-- Left Sidebar (260px Fixed) -->
+                    <ColumnDefinition Width="260" />
+                    <!-- Gap (24px) -->
+                    <ColumnDefinition Width="24" />
+                    <!-- Center Workspace (Flexible, MinWidth 900px) -->
+                    <ColumnDefinition Width="*" MinWidth="900" />
+                    <!-- Gap (24px) -->
+                    <ColumnDefinition Width="24" />
+                    <!-- Right Inspector (420px Fixed) -->
+                    <ColumnDefinition Width="420" />
+                </Grid.ColumnDefinitions>
+
+                <!-- LEFT SIDEBAR: Navigation Area -->
+                <Border Grid.Column="0" Background="{StaticResource PrimarySurfaceBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="12">
+                    <Grid Margin="24">
+                        <StackPanel>
+                            <TextBlock Text="Navigation Area" FontFamily="Segoe UI Variable" FontSize="14" FontWeight="SemiBold" Foreground="{StaticResource PrimaryAccentBrush}" />
+                            <TextBlock Text="Reserved for administrative categories" FontFamily="Segoe UI Variable" FontSize="12" Foreground="{StaticResource MutedTextBrush}" Margin="0,8,0,0" />
+                        </StackPanel>
+                    </Grid>
+                </Border>
+
+                <!-- CENTER PANEL: Primary Grid Container -->
+                <Border Grid.Column="2" Background="{StaticResource PrimarySurfaceBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="12">
+                    <Grid Margin="24">
+                        <Grid.RowDefinitions>
+                            <!-- Table Header -->
+                            <RowDefinition Height="Auto" />
+                            <!-- Divider -->
+                            <RowDefinition Height="Auto" />
+                            <!-- Data Area (Primary Focus) -->
+                            <RowDefinition Height="*" />
+                            <!-- Pagination Area -->
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+
+                        <!-- Table Header Block -->
+                        <Grid Grid.Row="0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+
+                            <!-- Header Info -->
+                            <StackPanel Grid.Column="0">
+                                <TextBlock Text="Registered Installations" FontFamily="Segoe UI Variable" FontSize="16" FontWeight="SemiBold" Foreground="{StaticResource PrimaryTextBrush}" />
+                                <TextBlock Text="Primary local application management grid" FontFamily="Segoe UI Variable" FontSize="12" Foreground="{StaticResource MutedTextBrush}" Margin="0,4,0,0" />
+                            </StackPanel>
+
+                            <!-- Top-right Action Area -->
+                            <Border Grid.Column="1" Background="{StaticResource SecondarySurfaceBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="6" Padding="12,6" VerticalAlignment="Center">
+                                <TextBlock Text="Grid Settings" FontFamily="Segoe UI Variable" FontSize="12" Foreground="{StaticResource SecondaryTextBrush}" />
+                            </Border>
+                        </Grid>
+
+                        <!-- Header Divider -->
+                        <Border Grid.Row="1" Height="1" Background="{StaticResource DividerBrush}" Margin="0,16" />
+
+                        <!-- Data Area Placeholder -->
+                        <Grid Grid.Row="2">
+                            <Border BorderBrush="{StaticResource DividerBrush}" BorderThickness="1" CornerRadius="8" Background="{StaticResource SecondarySurfaceBrush}">
+                                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                                    <TextBlock Text="Application Grid Area" FontFamily="Segoe UI Variable" FontSize="14" FontWeight="SemiBold" Foreground="{StaticResource SecondaryTextBrush}" HorizontalAlignment="Center" />
+                                    <TextBlock Text="Data row presentation layout" FontFamily="Segoe UI Variable" FontSize="12" Foreground="{StaticResource MutedTextBrush}" Margin="0,6,0,0" HorizontalAlignment="Center" />
+                                </StackPanel>
+                            </Border>
+                        </Grid>
+
+                        <!-- Pagination Block -->
+                        <Grid Grid.Row="3" Margin="0,16,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Text="Showing 0 - 0 of 0 entries" FontFamily="Segoe UI Variable" FontSize="12" Foreground="{StaticResource MutedTextBrush}" VerticalAlignment="Center" />
+                            <StackPanel Grid.Column="2" Orientation="Horizontal">
+                                <Border Background="{StaticResource SecondarySurfaceBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="6" Padding="12,6" Margin="0,0,8,0">
+                                    <TextBlock Text="Previous" FontFamily="Segoe UI Variable" FontSize="12" Foreground="{StaticResource DisabledTextBrush}" />
+                                </Border>
+                                <Border Background="{StaticResource SecondarySurfaceBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="6" Padding="12,6">
+                                    <TextBlock Text="Next" FontFamily="Segoe UI Variable" FontSize="12" Foreground="{StaticResource DisabledTextBrush}" />
+                                </Border>
+                            </StackPanel>
+                        </Grid>
+                    </Grid>
+                </Border>
+
+                <!-- RIGHT PANEL: Scrollable Property Inspector -->
+                <Border Grid.Column="4" Background="{StaticResource PrimarySurfaceBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="12">
+                    <Grid Margin="24">
+                        <Grid.RowDefinitions>
+                            <!-- Panel Title -->
+                            <RowDefinition Height="Auto" />
+                            <!-- Scrollable Property Inspector -->
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+
+                        <!-- Panel Title -->
+                        <StackPanel Grid.Row="0" Margin="0,0,0,16">
+                            <TextBlock Text="Property Inspector" FontFamily="Segoe UI Variable" FontSize="16" FontWeight="SemiBold" Foreground="{StaticResource PrimaryTextBrush}" />
+                            <TextBlock Text="Selection parameters and configurations" FontFamily="Segoe UI Variable" FontSize="12" Foreground="{StaticResource MutedTextBrush}" Margin="0,4,0,0" />
+                        </StackPanel>
+
+                        <!-- Scrollable Inspector -->
+                        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                            <StackPanel>
+                                <!-- Section 1: General -->
+                                <Border Background="{StaticResource SecondarySurfaceBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="8" Padding="16" Margin="0,0,0,16">
+                                    <StackPanel>
+                                        <TextBlock Text="General" FontFamily="Segoe UI Variable" FontSize="12" FontWeight="SemiBold" Foreground="{StaticResource PrimaryAccentBrush}" />
+                                        <TextBlock Text="Core identifier and manifest settings" FontFamily="Segoe UI Variable" FontSize="12" Foreground="{StaticResource MutedTextBrush}" Margin="0,4,0,0" />
+                                    </StackPanel>
+                                </Border>
+
+                                <!-- Section 2: Executable -->
+                                <Border Background="{StaticResource SecondarySurfaceBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="8" Padding="16" Margin="0,0,0,16">
+                                    <StackPanel>
+                                        <TextBlock Text="Executable" FontFamily="Segoe UI Variable" FontSize="12" FontWeight="SemiBold" Foreground="{StaticResource PrimaryAccentBrush}" />
+                                        <TextBlock Text="Launch binary validation properties" FontFamily="Segoe UI Variable" FontSize="12" Foreground="{StaticResource MutedTextBrush}" Margin="0,4,0,0" />
+                                    </StackPanel>
+                                </Border>
+
+                                <!-- Section 3: Launcher -->
+                                <Border Background="{StaticResource SecondarySurfaceBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="8" Padding="16" Margin="0,0,0,16">
+                                    <StackPanel>
+                                        <TextBlock Text="Launcher" FontFamily="Segoe UI Variable" FontSize="12" FontWeight="SemiBold" Foreground="{StaticResource PrimaryAccentBrush}" />
+                                        <TextBlock Text="Distribution platform associations" FontFamily="Segoe UI Variable" FontSize="12" Foreground="{StaticResource MutedTextBrush}" Margin="0,4,0,0" />
+                                    </StackPanel>
+                                </Border>
+
+                                <!-- Section 4: Launch Settings -->
+                                <Border Background="{StaticResource SecondarySurfaceBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="8" Padding="16" Margin="0,0,0,16">
+                                    <StackPanel>
+                                        <TextBlock Text="Launch Settings" FontFamily="Segoe UI Variable" FontSize="12" FontWeight="SemiBold" Foreground="{StaticResource PrimaryAccentBrush}" />
+                                        <TextBlock Text="Command line flags and argument parameters" FontFamily="Segoe UI Variable" FontSize="12" Foreground="{StaticResource MutedTextBrush}" Margin="0,4,0,0" />
+                                    </StackPanel>
+                                </Border>
+
+                                <!-- Section 5: Runtime -->
+                                <Border Background="{StaticResource SecondarySurfaceBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="8" Padding="16" Margin="0,0,0,16">
+                                    <StackPanel>
+                                        <TextBlock Text="Runtime" FontFamily="Segoe UI Variable" FontSize="12" FontWeight="SemiBold" Foreground="{StaticResource PrimaryAccentBrush}" />
+                                        <TextBlock Text="Environment context and dynamic library links" FontFamily="Segoe UI Variable" FontSize="12" Foreground="{StaticResource MutedTextBrush}" Margin="0,4,0,0" />
+                                    </StackPanel>
+                                </Border>
+
+                                <!-- Section 6: Images -->
+                                <Border Background="{StaticResource SecondarySurfaceBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="8" Padding="16" Margin="0,0,0,16">
+                                    <StackPanel>
+                                        <TextBlock Text="Images" FontFamily="Segoe UI Variable" FontSize="12" FontWeight="SemiBold" Foreground="{StaticResource PrimaryAccentBrush}" />
+                                        <TextBlock Text="Banners, background media, and asset files" FontFamily="Segoe UI Variable" FontSize="12" Foreground="{StaticResource MutedTextBrush}" Margin="0,4,0,0" />
+                                    </StackPanel>
+                                </Border>
+
+                                <!-- Section 7: Metadata -->
+                                <Border Background="{StaticResource SecondarySurfaceBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="8" Padding="16" Margin="0,0,0,16">
+                                    <StackPanel>
+                                        <TextBlock Text="Metadata" FontFamily="Segoe UI Variable" FontSize="12" FontWeight="SemiBold" Foreground="{StaticResource PrimaryAccentBrush}" />
+                                        <TextBlock Text="Publisher name, localized details, and metadata descriptors" FontFamily="Segoe UI Variable" FontSize="12" Foreground="{StaticResource MutedTextBrush}" Margin="0,4,0,0" />
+                                    </StackPanel>
+                                </Border>
+
+                                <!-- Section 8: Tags -->
+                                <Border Background="{StaticResource SecondarySurfaceBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="8" Padding="16" Margin="0,0,0,16">
+                                    <StackPanel>
+                                        <TextBlock Text="Tags" FontFamily="Segoe UI Variable" FontSize="12" FontWeight="SemiBold" Foreground="{StaticResource PrimaryAccentBrush}" />
+                                        <TextBlock Text="Custom labels and organization taxonomies" FontFamily="Segoe UI Variable" FontSize="12" Foreground="{StaticResource MutedTextBrush}" Margin="0,4,0,0" />
+                                    </StackPanel>
+                                </Border>
+
+                                <!-- Section 9: Security -->
+                                <Border Background="{StaticResource SecondarySurfaceBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="8" Padding="16" Margin="0,0,0,16">
+                                    <StackPanel>
+                                        <TextBlock Text="Security" FontFamily="Segoe UI Variable" FontSize="12" FontWeight="SemiBold" Foreground="{StaticResource PrimaryAccentBrush}" />
+                                        <TextBlock Text="Integrity signatures and sandboxing variables" FontFamily="Segoe UI Variable" FontSize="12" Foreground="{StaticResource MutedTextBrush}" Margin="0,4,0,0" />
+                                    </StackPanel>
+                                </Border>
+
+                                <!-- Section 10: Visibility -->
+                                <Border Background="{StaticResource SecondarySurfaceBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="8" Padding="16">
+                                    <StackPanel>
+                                        <TextBlock Text="Visibility" FontFamily="Segoe UI Variable" FontSize="12" FontWeight="SemiBold" Foreground="{StaticResource PrimaryAccentBrush}" />
+                                        <TextBlock Text="Client kiosk visibility parameters" FontFamily="Segoe UI Variable" FontSize="12" Foreground="{StaticResource MutedTextBrush}" Margin="0,4,0,0" />
+                                    </StackPanel>
+                                </Border>
+                            </StackPanel>
+                        </ScrollViewer>
+                    </Grid>
+                </Border>
+            </Grid>
+
+            <!-- SECTION 4: BOTTOM STATUS AREA -->
+            <Grid Grid.Row="3" Height="80" Margin="0,24,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="16" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="16" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="16" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="16" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="16" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="16" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="16" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <!-- Status Card 1 -->
+                <Border Grid.Column="0" Background="{StaticResource PrimarySurfaceBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="8" Padding="12">
+                    <StackPanel VerticalAlignment="Center">
+                        <TextBlock Text="Scan Status" FontFamily="Segoe UI Variable" FontSize="10" FontWeight="Medium" Foreground="{StaticResource MutedTextBrush}" />
+                        <TextBlock Text="COMPLETED" FontFamily="Segoe UI Variable" FontSize="12" FontWeight="Bold" Foreground="{StaticResource SuccessBrush}" Margin="0,2,0,0" />
+                    </StackPanel>
+                </Border>
+
+                <!-- Status Card 2 -->
+                <Border Grid.Column="2" Background="{StaticResource PrimarySurfaceBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="8" Padding="12">
+                    <StackPanel VerticalAlignment="Center">
+                        <TextBlock Text="Total Apps" FontFamily="Segoe UI Variable" FontSize="10" FontWeight="Medium" Foreground="{StaticResource MutedTextBrush}" />
+                        <TextBlock Text="48 Registered" FontFamily="Segoe UI Variable" FontSize="12" FontWeight="Bold" Foreground="{StaticResource PrimaryTextBrush}" Margin="0,2,0,0" />
+                    </StackPanel>
+                </Border>
+
+                <!-- Status Card 3 -->
+                <Border Grid.Column="4" Background="{StaticResource PrimarySurfaceBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="8" Padding="12">
+                    <StackPanel VerticalAlignment="Center">
+                        <TextBlock Text="Enabled" FontFamily="Segoe UI Variable" FontSize="10" FontWeight="Medium" Foreground="{StaticResource MutedTextBrush}" />
+                        <TextBlock Text="42 Active" FontFamily="Segoe UI Variable" FontSize="12" FontWeight="Bold" Foreground="{StaticResource SuccessBrush}" Margin="0,2,0,0" />
+                    </StackPanel>
+                </Border>
+
+                <!-- Status Card 4 -->
+                <Border Grid.Column="6" Background="{StaticResource PrimarySurfaceBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="8" Padding="12">
+                    <StackPanel VerticalAlignment="Center">
+                        <TextBlock Text="Disabled" FontFamily="Segoe UI Variable" FontSize="10" FontWeight="Medium" Foreground="{StaticResource MutedTextBrush}" />
+                        <TextBlock Text="6 Suspended" FontFamily="Segoe UI Variable" FontSize="12" FontWeight="Bold" Foreground="{StaticResource DangerBrush}" Margin="0,2,0,0" />
+                    </StackPanel>
+                </Border>
+
+                <!-- Status Card 5 -->
+                <Border Grid.Column="8" Background="{StaticResource PrimarySurfaceBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="8" Padding="12">
+                    <StackPanel VerticalAlignment="Center">
+                        <TextBlock Text="Validated" FontFamily="Segoe UI Variable" FontSize="10" FontWeight="Medium" Foreground="{StaticResource MutedTextBrush}" />
+                        <TextBlock Text="45 Verified" FontFamily="Segoe UI Variable" FontSize="12" FontWeight="Bold" Foreground="{StaticResource InformationBrush}" Margin="0,2,0,0" />
+                    </StackPanel>
+                </Border>
+
+                <!-- Status Card 6 -->
+                <Border Grid.Column="10" Background="{StaticResource PrimarySurfaceBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="8" Padding="12">
+                    <StackPanel VerticalAlignment="Center">
+                        <TextBlock Text="Sync State" FontFamily="Segoe UI Variable" FontSize="10" FontWeight="Medium" Foreground="{StaticResource MutedTextBrush}" />
+                        <TextBlock Text="SYNCHRONIZED" FontFamily="Segoe UI Variable" FontSize="12" FontWeight="Bold" Foreground="{StaticResource SuccessBrush}" Margin="0,2,0,0" />
+                    </StackPanel>
+                </Border>
+
+                <!-- Status Card 7 -->
+                <Border Grid.Column="12" Background="{StaticResource PrimarySurfaceBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="8" Padding="12">
+                    <StackPanel VerticalAlignment="Center">
+                        <TextBlock Text="Last Backup" FontFamily="Segoe UI Variable" FontSize="10" FontWeight="Medium" Foreground="{StaticResource MutedTextBrush}" />
+                        <TextBlock Text="2 hours ago" FontFamily="Segoe UI Variable" FontSize="12" FontWeight="Bold" Foreground="{StaticResource SecondaryTextBrush}" Margin="0,2,0,0" />
+                    </StackPanel>
+                </Border>
+
+                <!-- Status Card 8 -->
+                <Border Grid.Column="14" Background="{StaticResource PrimarySurfaceBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="8" Padding="12">
+                    <StackPanel VerticalAlignment="Center">
+                        <TextBlock Text="Integrity" FontFamily="Segoe UI Variable" FontSize="10" FontWeight="Medium" Foreground="{StaticResource MutedTextBrush}" />
+                        <TextBlock Text="SECURE" FontFamily="Segoe UI Variable" FontSize="12" FontWeight="Bold" Foreground="{StaticResource SuccessBrush}" Margin="0,2,0,0" />
+                    </StackPanel>
+                </Border>
+            </Grid>
         </Grid>
 
-        <!-- Floating Horizontal Notification Card -->
-        <Grid VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="0,0,0,40" Panel.ZIndex="1000" IsHitTestVisible="True"
+        <!-- Floating Notification Overlay for Services -->
+        <Grid Grid.RowSpan="2" VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="0,0,0,40" Panel.ZIndex="1000" IsHitTestVisible="True"
               DataContext="{Binding Source={x:Static suis:NotificationService.Instance}}"
               Visibility="{Binding IsNotificationVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
             <c:NotificationCard DataContext="{Binding CurrentNotification}" />
