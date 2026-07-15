@@ -3,6 +3,7 @@ using SayraClient.Commands;
 using SayraClient.Services;
 using Sayra.Client.Discovery.Services;
 using Sayra.Client.GameLibrary;
+using Sayra.Client.LocalAdmin;
 using Microsoft.Extensions.Hosting.WindowsServices;
 using Serilog;
 
@@ -37,6 +38,9 @@ builder.Services.AddSingleton<ClientStateManager>();
 
 // Register Game Library Component
 builder.Services.AddGameLibrary();
+
+// Register Local Admin Component
+builder.Services.AddLocalAdmin();
 
 // Register Application Services
 builder.Services.AddSingleton<ProcessManager>();
