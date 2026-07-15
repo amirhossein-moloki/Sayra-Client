@@ -37,15 +37,8 @@
                 <!-- Block 1: Navigation Header (Container Width: 228 px, Height: 44 px, Margin Bottom: 20px) -->
                 <local:NavigationHeader Grid.Row="0" />
 
-                <!-- Block 2: Category List Placeholder -->
-                <Grid Grid.Row="1">
-                    <!-- Dashed border representing the empty placeholder -->
-                    <Rectangle Stroke="#303641"
-                               StrokeThickness="1"
-                               StrokeDashArray="4,4"
-                               RadiusX="8"
-                               RadiusY="8" />
-                </Grid>
+                <!-- Block 2: Category List Placeholder (Category List Container) -->
+                <local:CategoryListContainer Grid.Row="1" />
 
                 <!-- Block 3: Footer Placeholder -->
                 <Border Grid.Row="3"
