@@ -338,14 +338,14 @@
                 </Grid.ColumnDefinitions>
 
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="40" />  <!-- Row 0: Search Area (2/3 of 48px is ~32px, we use 40px for comfortable design) -->
-                    <RowDefinition Height="48" />  <!-- Row 1: Action Area Level / Toolbar -->
-                    <RowDefinition Height="*" />   <!-- Row 2: Content Level (Stretch) -->
+                    <RowDefinition Height="Auto" />  <!-- Row 0: Search Area -->
+                    <RowDefinition Height="Auto" />  <!-- Row 1: Action Area Level / Toolbar -->
+                    <RowDefinition Height="*" />     <!-- Row 2: Content Level (Stretch) -->
                 </Grid.RowDefinitions>
 
                 <!-- 07. CATEGORY SIDEBAR -->
-                <!-- Category Sidebar spans from the top of WorkspaceGrid (below Header) to the bottom (above Footer) -->
-                <Grid Grid.Column="0" Grid.Row="0" Grid.RowSpan="3" Margin="24,8,0,12">
+                <!-- Category Sidebar aligned with Main DataGrid in Row 2 -->
+                <Grid Grid.Column="0" Grid.Row="2" Grid.RowSpan="1" Margin="24,12,0,12">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*" />
                         <RowDefinition Height="Auto" />
@@ -407,9 +407,9 @@
                     </Border>
                 </Grid>
 
-                <!-- 02. SEARCH (Inside Central Column) -->
-                <!-- Shorter Search Box (Height: 32px instead of 48px, Margin: 8px top, 0px bottom) -->
-                <Grid Grid.Column="2" Grid.Row="0" Margin="0,8,0,0" Height="32">
+                <!-- 02. SEARCH (Full width) -->
+                <!-- Shorter Search Box (Height: 38px, Margin: 12px top, 24px left/right) -->
+                <Grid Grid.Column="0" Grid.ColumnSpan="5" Grid.Row="0" Margin="24,12,24,0" Height="38">
                     <Border CornerRadius="8" Background="#181A20" BorderBrush="#2A2D36" BorderThickness="1.5">
                         <Grid>
                             <Grid.ColumnDefinitions>
@@ -460,9 +460,9 @@
                     </Border>
                 </Grid>
 
-                <!-- 03. TOOLBAR (Inside Central Column) -->
-                <!-- Shorter Toolbar (Height: 40px, Margin: 8px top, 0px bottom) -->
-                <Border Grid.Column="2" Grid.Row="1" Height="40" Margin="0,8,0,0" Background="#181A20" BorderBrush="#2A2D36" BorderThickness="1" CornerRadius="8" Padding="12,0">
+                <!-- 03. TOOLBAR (Full width) -->
+                <!-- Shorter Toolbar (Height: 46px, Margin: 8px top, 24px left/right) -->
+                <Border Grid.Column="0" Grid.ColumnSpan="5" Grid.Row="1" Height="46" Margin="24,8,24,0" Background="#181A20" BorderBrush="#2A2D36" BorderThickness="1" CornerRadius="8" Padding="12,0">
                     <Grid VerticalAlignment="Center">
                         <Grid.ColumnDefinitions>
                             <!-- Left aligned categories -->
@@ -703,8 +703,8 @@
                 <!-- Old game details pane removed as requested (we now use a centered modal) -->
 
                 <!-- 11. RIGHT SIDEBAR -->
-                <!-- Right Sidebar spans from the top of WorkspaceGrid (below Header) to the bottom (above Footer) -->
-                <Border Grid.Column="4" Grid.Row="0" Grid.RowSpan="3" Margin="0,8,24,12" Background="#14161C" BorderBrush="#2A2D36" BorderThickness="1" CornerRadius="10" Padding="12">
+                <!-- Right Sidebar aligned with Main DataGrid in Row 2 -->
+                <Border Grid.Column="4" Grid.Row="2" Grid.RowSpan="1" Margin="0,12,24,12" Background="#14161C" BorderBrush="#2A2D36" BorderThickness="1" CornerRadius="10" Padding="12">
                     <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                         <Grid x:Name="RightSidebarGrid">
                             <Grid.RowDefinitions>
