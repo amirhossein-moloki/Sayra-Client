@@ -231,14 +231,14 @@
 
             <Grid x:Name="RootGrid">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="80" />  <!-- Row 0: Header (Fixed to 80px as requested) -->
+                <RowDefinition Height="85" />  <!-- Row 0: Header (Fixed to 85px to match Home/Dashboard) -->
                     <RowDefinition Height="*" />   <!-- Row 1: Workspace (Stretch) -->
                     <RowDefinition Height="50" />  <!-- Row 2: Footer (Fixed to 50px) -->
                 </Grid.RowDefinitions>
 
             <!-- 01. HEADER -->
-            <!-- Width: Stretch to full window width. Height: 80px. Background panel color #181A20 with border #2A2D36 -->
-            <Border Grid.Row="0" Height="80" Background="#181A20" BorderBrush="#2A2D36" BorderThickness="0,0,0,1" Padding="24,10,24,10">
+            <!-- Width: Stretch to full window width. Height: 85px. Background panel color #181A20 with border #2A2D36 -->
+            <Border Grid.Row="0" Height="85" Background="#181A20" BorderBrush="#2A2D36" BorderThickness="0,0,0,1" Padding="24,10,24,10">
                 <Grid VerticalAlignment="Center">
                     <Grid.ColumnDefinitions>
                         <!-- Branding & Breadcrumb Area on the left. Width: Auto -->
@@ -251,9 +251,9 @@
 
                     <!-- BRANDING & BREADCRUMB AREA -->
                     <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
-                        <!-- Application Logo: 40x40px, existing asset sayra.svg -->
+                        <!-- Application Logo: 140px width, matching TopBar in Home/Dashboard -->
                         <svgc:SvgViewbox Source="/Assets/sayra.svg"
-                                         Width="40" Height="40"
+                                         Width="140"
                                          HorizontalAlignment="Left"
                                          VerticalAlignment="Center" />
 
@@ -571,11 +571,23 @@
                                 <!-- Version Column -->
                                 <DataGridTextColumn Header="Version" Binding="{Binding Version}" Width="90" ElementStyle="{StaticResource {x:Type TextBlock}}"/>
 
-                                <!-- Publisher Column -->
-                                <DataGridTextColumn Header="Publisher" Binding="{Binding Publisher}" Width="140" ElementStyle="{StaticResource {x:Type TextBlock}}"/>
+                                <!-- Enabled Checkbox Column -->
+                                <DataGridTemplateColumn Header="Enabled" Width="80">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <CheckBox IsChecked="{Binding IsEnabled, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
 
                                 <!-- Path Column -->
-                                <DataGridTextColumn Header="Path" Binding="{Binding InstallationPath}" Width="250" ElementStyle="{StaticResource {x:Type TextBlock}}"/>
+                                <DataGridTemplateColumn Header="Path" Width="250">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding InstallationPath}" ToolTip="{Binding InstallationPath}" TextTrimming="CharacterEllipsis" VerticalAlignment="Center"/>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
 
                                 <!-- Source Column -->
                                 <DataGridTextColumn Header="Source" Binding="{Binding InstallationSource}" Width="110" ElementStyle="{StaticResource {x:Type TextBlock}}"/>
