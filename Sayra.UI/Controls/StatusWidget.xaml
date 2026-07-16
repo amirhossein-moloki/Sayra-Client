@@ -1,0 +1,53 @@
+<UserControl x:Class="Sayra.UI.Controls.StatusWidget"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             x:Name="Widget"
+             Height="48"
+             VerticalAlignment="Center">
+    <Grid VerticalAlignment="Center">
+        <Grid.ColumnDefinitions>
+            <!-- Column 0: Icon (fixed) -->
+            <ColumnDefinition Width="Auto" />
+            <!-- Gap -->
+            <ColumnDefinition Width="10" />
+            <!-- Column 1: Labels & Values -->
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <!-- Icon -->
+        <Path Grid.Column="0"
+              Data="{Binding Icon, ElementName=Widget}"
+              Stroke="#9A9A9A"
+              StrokeThickness="1.5"
+              StrokeStartLineCap="Round"
+              StrokeEndLineCap="Round"
+              Width="18"
+              Height="18"
+              Stretch="Uniform"
+              VerticalAlignment="Center" />
+
+        <!-- Vertical Stack for Labels and Value -->
+        <StackPanel Grid.Column="2" VerticalAlignment="Center">
+            <!-- Label: Uppercase, Small, SemiBold, Single line -->
+            <TextBlock Text="{Binding Label, ElementName=Widget}"
+                       FontFamily="{StaticResource PeydaBold}"
+                       FontSize="10"
+                       Foreground="#9A9A9A"
+                       FontWeight="SemiBold"
+                       LineHeight="12"
+                       TextTrimming="CharacterEllipsis" />
+
+            <!-- Value: Displayed below the label -->
+            <TextBlock Text="{Binding Value, ElementName=Widget}"
+                       FontFamily="{StaticResource PeydaMedium}"
+                       FontSize="13"
+                       Foreground="#FFFFFF"
+                       LineHeight="16"
+                       Margin="0,2,0,0"
+                       TextTrimming="CharacterEllipsis" />
+        </StackPanel>
+    </Grid>
+</UserControl>

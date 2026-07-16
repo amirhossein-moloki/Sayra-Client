@@ -4,6 +4,8 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Sayra.UI.Views"
+        xmlns:controls="clr-namespace:Sayra.UI.Controls"
+        xmlns:svgc="http://sharpvectors.codeplex.com/svgc/"
         mc:Ignorable="d"
         Title="SAYRA Admin Workspace"
         Height="948" Width="1659"
@@ -16,6 +18,13 @@
 
     <!-- Define premium dark style resources for layout placeholders -->
     <Window.Resources>
+        <!-- Reusable Fluent/Monochrome Icons (Pure stroke-based geometries for crispness and uniform visual weight) -->
+        <Geometry x:Key="PCNameIcon">M2 4h20v11H2zm3 15h14M12 15v4</Geometry>
+        <Geometry x:Key="ServerStatusIcon">M3 4h18v5H3zm0 8h18v5H3zm3-5.5h.01M6 14.5h.01</Geometry>
+        <Geometry x:Key="LastScanIcon">M12 2a10 10 0 1 1 0 20 10 10 0 0 1 0-20zm0 4v6l4 2</Geometry>
+        <Geometry x:Key="GameCountIcon">M3 8h18a3 3 0 0 1 3 3v4a5 5 0 0 1-5 5h-2a2 2 0 0 1-2-2H9a2 2 0 0 1-2 2H5a5 5 0 0 1-5-5v-4a3 3 0 0 1 3-3zm3 4h2m-1-1v2m9-1h.01m1.99 0h.01</Geometry>
+        <Geometry x:Key="AppCountIcon">M3 3h18v18H3zm0 5h18M8 8v13</Geometry>
+
         <Style x:Key="PlaceholderBorder" TargetType="Border">
             <Setter Property="Background" Value="#1C1F26"/>
             <Setter Property="BorderBrush" Value="#4DFFFFFF"/>
@@ -46,13 +55,92 @@
             </Grid.RowDefinitions>
 
             <!-- 01. HEADER -->
-            <!-- X=0, Y=0, Width=1659, Height=70. Spans Row 0, full width -->
-            <Border Grid.Row="0" Style="{StaticResource PlaceholderBorder}" Height="70" Background="#261A1F26" BorderBrush="#80252528">
-                <TextBlock Style="{StaticResource PlaceholderText}" FontWeight="Bold" FontSize="13">
-                    <Run Text="[01] HEADER" Foreground="#ffff3d"/><LineBreak/>
-                    <Run Text="X: 0 | Y: 0 | Width: 1659 | Height: 70" FontSize="10"/><LineBreak/>
-                    <Run Text="Row: 0 | Column: 0 | RowSpan: 1 | ColumnSpan: 1 (Root) | Fixed Height" FontSize="9" Foreground="#9A9A9A"/>
-                </TextBlock>
+            <!-- Width: Stretch to full window width. Height: 70px. Padding - Left: 16px, Right: 16px, Top: 10px, Bottom: 10px. -->
+            <Border Grid.Row="0" Height="70" Background="#14161C" BorderBrush="#1F242F" BorderThickness="0,0,0,1" Padding="16,10,16,10">
+                <Grid VerticalAlignment="Center">
+                    <Grid.ColumnDefinitions>
+                        <!-- Branding Area on the left. Width: ~320px -->
+                        <ColumnDefinition Width="320" />
+                        <!-- Empty center space that shrinks when window is small -->
+                        <ColumnDefinition Width="*" />
+                        <!-- Status Area on the right -->
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+
+                    <!-- BRANDING AREA (Horizontal Stack) -->
+                    <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
+                        <!-- Application Logo: 40x40px, existing asset sayra.svg -->
+                        <svgc:SvgViewbox Source="/Assets/sayra.svg"
+                                         Width="40" Height="40"
+                                         HorizontalAlignment="Left"
+                                         VerticalAlignment="Center" />
+
+                        <!-- Spacing after logo: 12px -->
+                        <Border Width="12" />
+
+                        <!-- Application Title (Two lines: GAME & \n APPLICATION MANAGER, vertically centered relative to logo) -->
+                        <StackPanel VerticalAlignment="Center">
+                            <TextBlock Text="GAME &amp;"
+                                       FontFamily="{StaticResource PeydaBold}"
+                                       FontSize="14"
+                                       Foreground="#FFFF3D"
+                                       FontWeight="Bold"
+                                       LineHeight="16" />
+                            <TextBlock Text="APPLICATION MANAGER"
+                                       FontFamily="{StaticResource PeydaMedium}"
+                                       FontSize="11"
+                                       Foreground="#FFFFFF"
+                                       FontWeight="SemiBold"
+                                       LineHeight="14" />
+                        </StackPanel>
+                    </StackPanel>
+
+                    <!-- STATUS AREA (Horizontal Stack, Align Right, Vertically Center, Spacing between widgets: 20px) -->
+                    <!-- Order from RIGHT to LEFT: APP COUNT, GAME COUNT, LAST SCAN, SERVER STATUS, PC NAME -->
+                    <StackPanel Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+                        <!-- PC NAME (~170px width) -->
+                        <controls:StatusWidget Width="170"
+                                               Icon="{StaticResource PCNameIcon}"
+                                               Label="PC NAME"
+                                               Value="DESKTOP-GAMING" />
+
+                        <!-- Spacing: 20px -->
+                        <Border Width="20" />
+
+                        <!-- SERVER STATUS (~130px width) -->
+                        <controls:StatusWidget Width="130"
+                                               Icon="{StaticResource ServerStatusIcon}"
+                                               Label="SERVER STATUS"
+                                               Value="ONLINE" />
+
+                        <!-- Spacing: 20px -->
+                        <Border Width="20" />
+
+                        <!-- LAST SCAN (~150px width) -->
+                        <controls:StatusWidget Width="150"
+                                               Icon="{StaticResource LastScanIcon}"
+                                               Label="LAST SCAN"
+                                               Value="Today 14:32" />
+
+                        <!-- Spacing: 20px -->
+                        <Border Width="20" />
+
+                        <!-- GAME COUNT (~110px width) -->
+                        <controls:StatusWidget Width="110"
+                                               Icon="{StaticResource GameCountIcon}"
+                                               Label="GAME COUNT"
+                                               Value="73" />
+
+                        <!-- Spacing: 20px -->
+                        <Border Width="20" />
+
+                        <!-- APP COUNT (~110px width) -->
+                        <controls:StatusWidget Width="110"
+                                               Icon="{StaticResource AppCountIcon}"
+                                               Label="APP COUNT"
+                                               Value="125" />
+                    </StackPanel>
+                </Grid>
             </Border>
 
             <!-- 02. SEARCH -->
