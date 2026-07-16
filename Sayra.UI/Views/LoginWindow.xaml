@@ -10,7 +10,6 @@
         xmlns:suis="clr-namespace:Sayra.UI.Services"
         mc:Ignorable="d"
         Title="SAYRA"
-        Height="1080" Width="1920"
         WindowStyle="None"
         AllowsTransparency="True"
         Background="Transparent"

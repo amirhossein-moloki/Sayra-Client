@@ -9,11 +9,10 @@
         xmlns:svgc="http://sharpvectors.codeplex.com/svgc/"
         mc:Ignorable="d"
         Title="SAYRA Admin Workspace"
-        Height="948" Width="1659"
         WindowStyle="None"
         AllowsTransparency="True"
         Background="Transparent"
-        WindowState="Normal"
+        WindowState="Maximized"
         WindowStartupLocation="CenterScreen"
         FlowDirection="LeftToRight">
 
@@ -396,13 +395,13 @@
             <!-- Background is omitted ({x:Null}) to allow hit-testing to pass through to underlying elements (Header, Search, Top Actions) -->
             <Grid Grid.Row="0" Grid.RowSpan="4" x:Name="WorkspaceGrid" Margin="10,0,0,0">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="250" /> <!-- Column 0: Category Sidebar -->
+                    <ColumnDefinition Width="2.5*" MinWidth="180" MaxWidth="250" /> <!-- Column 0: Category Sidebar -->
                     <ColumnDefinition Width="16" />  <!-- Gap -->
-                    <ColumnDefinition Width="*" />   <!-- Column 1: Games Panel (Stretches) -->
+                    <ColumnDefinition Width="6.5*" />   <!-- Column 1: Games Panel (Stretches) -->
                     <ColumnDefinition Width="16" />  <!-- Gap -->
-                    <ColumnDefinition Width="420" /> <!-- Column 2: Game Details -->
+                    <ColumnDefinition Width="4.2*" MinWidth="300" MaxWidth="420" /> <!-- Column 2: Game Details -->
                     <ColumnDefinition Width="16" />  <!-- Gap -->
-                    <ColumnDefinition Width="260" /> <!-- Column 3: Right Sidebar -->
+                    <ColumnDefinition Width="2.6*" MinWidth="200" MaxWidth="260" /> <!-- Column 3: Right Sidebar -->
                 </Grid.ColumnDefinitions>
 
                 <Grid.RowDefinitions>

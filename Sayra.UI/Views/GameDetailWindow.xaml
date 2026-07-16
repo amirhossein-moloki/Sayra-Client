@@ -9,7 +9,6 @@
         xmlns:vm="clr-namespace:Sayra.UI.ViewModels"
         mc:Ignorable="d"
         Title="Game Details"
-        Height="1080" Width="1920"
         WindowStyle="None"
         AllowsTransparency="True"
         Background="Transparent"

@@ -49,7 +49,7 @@ namespace Sayra.UI.Controls
             double availableWidth = e.NewSize.Width - 10; // 10px safety buffer
             int cols = (int)(availableWidth / cardWidthWithMargin);
             if (cols < 1) cols = 1;
-            if (cols > 6) cols = 6; // Max 6 columns as required for a premium layout
+            // Removed upper bound limit of 6 to support unlimited responsive scaling on 2K/4K resolutions.
             GridColumns = cols;
         }
 
