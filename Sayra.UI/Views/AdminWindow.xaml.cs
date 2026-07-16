@@ -1,12 +1,18 @@
 using System;
 using System.Windows;
+using Sayra.UI.ViewModels;
 
 namespace Sayra.UI.Views
 {
     public partial class AdminWindow : Window
     {
+        public AdminWorkspaceViewModel ViewModel { get; }
+
         public AdminWindow()
         {
+            ViewModel = new AdminWorkspaceViewModel();
+            this.DataContext = ViewModel;
+
             InitializeComponent();
             this.Closed += AdminWindow_Closed;
         }
