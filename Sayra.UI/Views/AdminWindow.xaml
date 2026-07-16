@@ -843,7 +843,7 @@
         </Grid>
 
         <!-- MODAL DIALOG OVERLAY (Semi-transparent black overlay 45% & Blur focus controller) -->
-        <Grid x:Name="ModalOverlay" Background="#73000000" Panel.ZIndex="9000" Visibility="Collapsed" IsVisibleChanged="ModalOverlay_IsVisibleChanged" MouseDown="ModalOverlay_MouseDown">
+        <Grid x:Name="ModalOverlay" DataContext="{x:Null}" Background="#73000000" Panel.ZIndex="9000" Visibility="Collapsed" IsVisibleChanged="ModalOverlay_IsVisibleChanged" MouseDown="ModalOverlay_MouseDown">
             <!-- Centered Modal dialog container -->
             <Border x:Name="ModalCard"
                     Width="1100" Height="740"
