@@ -95,10 +95,10 @@
             <Setter Property="Foreground" Value="#E1E1E6"/>
             <Setter Property="BorderBrush" Value="#2A2D36"/>
             <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="Height" Value="40"/>
+            <Setter Property="Height" Value="30"/>
             <Setter Property="Padding" Value="12,0"/>
             <Setter Property="FontFamily" Value="{StaticResource PeydaMedium}"/>
-            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="FontSize" Value="11"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
@@ -232,10 +232,8 @@
             <Grid x:Name="RootGrid">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="80" />  <!-- Row 0: Header (Fixed to 80px as requested) -->
-                    <RowDefinition Height="64" />  <!-- Row 1: Search (Fixed, accommodates 48px height search and margins) -->
-                    <RowDefinition Height="72" />  <!-- Row 2: Action Area / Toolbar (Fixed, accommodates 56px height) -->
-                    <RowDefinition Height="*" />   <!-- Row 3: Workspace (Stretch) -->
-                    <RowDefinition Height="80" />  <!-- Row 4: Footer (Fixed to 70px + margin) -->
+                    <RowDefinition Height="*" />   <!-- Row 1: Workspace (Stretch) -->
+                    <RowDefinition Height="50" />  <!-- Row 2: Footer (Fixed to 50px) -->
                 </Grid.RowDefinitions>
 
             <!-- 01. HEADER -->
@@ -328,124 +326,9 @@
                 </Grid>
             </Border>
 
-            <!-- 02. SEARCH -->
-            <Grid Grid.Row="1" Margin="24,16,24,0" Height="48">
-                <Border CornerRadius="10" Background="#181A20" BorderBrush="#2A2D36" BorderThickness="1.5">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="48" />
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
-                        <!-- Search Icon -->
-                        <Path Grid.Column="0" Data="{StaticResource SearchIconGeometry}"
-                              Stroke="#9A9A9A" StrokeThickness="2" Width="18" Height="18"
-                              Stretch="Uniform" VerticalAlignment="Center" HorizontalAlignment="Center" />
-
-                        <!-- Search TextBox -->
-                        <TextBox Grid.Column="1" x:Name="SearchBox"
-                                 Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
-                                 Background="Transparent" BorderThickness="0"
-                                 Foreground="#FFFFFF" CaretBrush="#63E6FF"
-                                 VerticalContentAlignment="Center" FontSize="13"
-                                 FontFamily="{StaticResource PeydaMedium}" Padding="4,0,0,0"/>
-
-                        <!-- Placeholder Text block (Visible only when text is empty) -->
-                        <TextBlock Grid.Column="1" Text="Search by name, publisher, executable or category..."
-                                   Foreground="#55FFFFFF" IsHitTestVisible="False"
-                                   VerticalAlignment="Center" HorizontalAlignment="Left" Margin="8,0,0,0"
-                                   FontSize="13" FontFamily="{StaticResource PeydaMedium}">
-                            <TextBlock.Style>
-                                <Style TargetType="TextBlock">
-                                    <Setter Property="Visibility" Value="Collapsed"/>
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding Text, ElementName=SearchBox}" Value="">
-                                            <Setter Property="Visibility" Value="Visible"/>
-                                        </DataTrigger>
-                                        <DataTrigger Binding="{Binding Text, ElementName=SearchBox}" Value="{x:Null}">
-                                            <Setter Property="Visibility" Value="Visible"/>
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </TextBlock.Style>
-                        </TextBlock>
-
-                        <!-- Total items badge on the right -->
-                        <StackPanel Grid.Column="2" Orientation="Horizontal" Margin="0,0,16,0" VerticalAlignment="Center">
-                            <Border Background="#252A34" CornerRadius="4" Padding="10,5" VerticalAlignment="Center">
-                                <TextBlock Text="{Binding TotalItemsCount, StringFormat='{}{0} items found'}" Foreground="#63E6FF" FontSize="11" FontFamily="{StaticResource PeydaBold}"/>
-                            </Border>
-                        </StackPanel>
-                    </Grid>
-                </Border>
-            </Grid>
-
-            <!-- 03. TOOLBAR -->
-            <Border Grid.Row="2" Height="56" Margin="24,16,24,0" Background="#181A20" BorderBrush="#2A2D36" BorderThickness="1" CornerRadius="10" Padding="16,0">
-                <Grid VerticalAlignment="Center">
-                    <Grid.ColumnDefinitions>
-                        <!-- Left aligned categories -->
-                        <ColumnDefinition Width="*" />
-                        <!-- Right aligned category (Sync) -->
-                        <ColumnDefinition Width="Auto" />
-                    </Grid.ColumnDefinitions>
-
-                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                        <!-- GROUP: SCAN -->
-                        <TextBlock Text="SCAN" FontFamily="{StaticResource PeydaBold}" FontSize="10" Foreground="#14BE78" VerticalAlignment="Center" Margin="0,0,10,0"/>
-                        <Button Style="{StaticResource ToolbarButtonStyle}" Content="Scan All" Command="{Binding ScanComputerCommand}" />
-                        <Border Width="4"/>
-                        <Button Style="{StaticResource ToolbarButtonStyle}" Content="Steam" Command="{Binding ScanComputerCommand}" />
-                        <Border Width="4"/>
-                        <Button Style="{StaticResource ToolbarButtonStyle}" Content="Epic" Command="{Binding ScanComputerCommand}" />
-                        <Border Width="4"/>
-                        <Button Style="{StaticResource ToolbarButtonStyle}" Content="Riot" Command="{Binding ScanComputerCommand}" />
-                        <Border Width="4"/>
-                        <Button Style="{StaticResource ToolbarButtonStyle}" Content="Battle.net" Command="{Binding ScanComputerCommand}" />
-                        <Border Width="4"/>
-                        <Button Style="{StaticResource ToolbarButtonStyle}" Content="Ubisoft" Command="{Binding ScanComputerCommand}" />
-                        <Border Width="4"/>
-                        <Button Style="{StaticResource ToolbarButtonStyle}" Content="Custom Folder" Command="{Binding ScanComputerCommand}" />
-
-                        <!-- Group Separator -->
-                        <Border BorderBrush="#2A2D36" BorderThickness="1,0,0,0" Margin="16,8" Height="24"/>
-
-                        <!-- GROUP: ADD -->
-                        <TextBlock Text="ADD" FontFamily="{StaticResource PeydaBold}" FontSize="10" Foreground="#ffff3d" VerticalAlignment="Center" Margin="0,0,10,0"/>
-                        <Button Style="{StaticResource ToolbarButtonStyle}" Content="Add Game" Command="{Binding ManageCategoriesCommand}" />
-                        <Border Width="4"/>
-                        <Button Style="{StaticResource ToolbarButtonStyle}" Content="Add Application" Command="{Binding ManageCategoriesCommand}" />
-
-                        <!-- Group Separator -->
-                        <Border BorderBrush="#2A2D36" BorderThickness="1,0,0,0" Margin="16,8" Height="24"/>
-
-                        <!-- GROUP: IMPORT/EXPORT -->
-                        <TextBlock Text="DATA" FontFamily="{StaticResource PeydaBold}" FontSize="10" Foreground="#8A5CFF" VerticalAlignment="Center" Margin="0,0,10,0"/>
-                        <Button Style="{StaticResource ToolbarButtonStyle}" Content="Import" Command="{Binding RefreshCategoriesCommand}" />
-                        <Border Width="4"/>
-                        <Button Style="{StaticResource ToolbarButtonStyle}" Content="Export" Command="{Binding RefreshCategoriesCommand}" />
-                        <Border Width="4"/>
-                        <Button Style="{StaticResource ToolbarButtonStyle}" Content="Backup" Command="{Binding RefreshCategoriesCommand}" />
-                        <Border Width="4"/>
-                        <Button Style="{StaticResource ToolbarButtonStyle}" Content="Restore" Command="{Binding RefreshCategoriesCommand}" />
-                    </StackPanel>
-
-                    <!-- GROUP: SYNC (Align Right) -->
-                    <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
-                        <TextBlock Text="SYNC" FontFamily="{StaticResource PeydaBold}" FontSize="10" Foreground="#63E6FF" VerticalAlignment="Center" Margin="0,0,10,0"/>
-                        <Button Style="{StaticResource ToolbarButtonStyle}" Content="Sync From Server" Command="{Binding RefreshCommand}" />
-                        <Border Width="4"/>
-                        <Button Style="{StaticResource ToolbarButtonStyle}" Content="Sync To Server" Command="{Binding RefreshCommand}" />
-                        <Border Width="4"/>
-                        <Button Style="{StaticResource ToolbarButtonStyle}" Content="Compare" Command="{Binding RefreshCommand}" />
-                    </StackPanel>
-                </Grid>
-            </Border>
-
             <!-- NESTED GRID: Workspace -->
-            <!-- Workspace spans Rows 0, 1, 2, 3 of Root Grid (RowSpan 4) to accommodate elements with top coordinates (Right Sidebar at Y=20, Game Details at Y=80) -->
-            <!-- Background is omitted ({x:Null}) to allow hit-testing to pass through to underlying elements (Header, Search, Top Actions) -->
-            <Grid Grid.Row="0" Grid.RowSpan="4" x:Name="WorkspaceGrid" Margin="10,0,0,0">
+            <!-- Background is omitted ({x:Null}) to allow hit-testing to pass through to underlying elements -->
+            <Grid Grid.Row="1" x:Name="WorkspaceGrid" Margin="0,0,0,0">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="2.5*" MinWidth="180" MaxWidth="250" /> <!-- Column 0: Category Sidebar -->
                     <ColumnDefinition Width="16" />  <!-- Gap -->
@@ -455,14 +338,14 @@
                 </Grid.ColumnDefinitions>
 
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="80" />  <!-- Row 0: Header Level -->
-                    <RowDefinition Height="64" />  <!-- Row 1: Search Level -->
-                    <RowDefinition Height="72" />  <!-- Row 2: Action Area Level -->
-                    <RowDefinition Height="*" />   <!-- Row 3: Content Level (Stretch) -->
+                    <RowDefinition Height="40" />  <!-- Row 0: Search Area (2/3 of 48px is ~32px, we use 40px for comfortable design) -->
+                    <RowDefinition Height="48" />  <!-- Row 1: Action Area Level / Toolbar -->
+                    <RowDefinition Height="*" />   <!-- Row 2: Content Level (Stretch) -->
                 </Grid.RowDefinitions>
 
                 <!-- 07. CATEGORY SIDEBAR -->
-                <Grid Grid.Column="0" Grid.Row="3" Margin="14,20,0,0">
+                <!-- Category Sidebar spans from the top of WorkspaceGrid (below Header) to the bottom (above Footer) -->
+                <Grid Grid.Column="0" Grid.Row="0" Grid.RowSpan="3" Margin="24,8,0,12">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*" />
                         <RowDefinition Height="Auto" />
@@ -524,10 +407,132 @@
                     </Border>
                 </Grid>
 
+                <!-- 02. SEARCH (Inside Central Column) -->
+                <!-- Shorter Search Box (Height: 32px instead of 48px, Margin: 8px top, 0px bottom) -->
+                <Grid Grid.Column="2" Grid.Row="0" Margin="0,8,0,0" Height="32">
+                    <Border CornerRadius="8" Background="#181A20" BorderBrush="#2A2D36" BorderThickness="1.5">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="36" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <!-- Search Icon -->
+                            <Path Grid.Column="0" Data="{StaticResource SearchIconGeometry}"
+                                  Stroke="#9A9A9A" StrokeThickness="1.5" Width="14" Height="14"
+                                  Stretch="Uniform" VerticalAlignment="Center" HorizontalAlignment="Center" />
+
+                            <!-- Search TextBox -->
+                            <TextBox Grid.Column="1" x:Name="SearchBox"
+                                     Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
+                                     Background="Transparent" BorderThickness="0"
+                                     Foreground="#FFFFFF" CaretBrush="#63E6FF"
+                                     VerticalContentAlignment="Center" FontSize="12"
+                                     FontFamily="{StaticResource PeydaMedium}" Padding="4,0,0,0"/>
+
+                            <!-- Placeholder Text block (Visible only when text is empty) -->
+                            <TextBlock Grid.Column="1" Text="Search by name, publisher, executable or category..."
+                                       Foreground="#55FFFFFF" IsHitTestVisible="False"
+                                       VerticalAlignment="Center" HorizontalAlignment="Left" Margin="8,0,0,0"
+                                       FontSize="12" FontFamily="{StaticResource PeydaMedium}">
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Text, ElementName=SearchBox}" Value="">
+                                                <Setter Property="Visibility" Value="Visible"/>
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding Text, ElementName=SearchBox}" Value="{x:Null}">
+                                                <Setter Property="Visibility" Value="Visible"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+
+                            <!-- Total items badge on the right -->
+                            <StackPanel Grid.Column="2" Orientation="Horizontal" Margin="0,0,12,0" VerticalAlignment="Center">
+                                <Border Background="#252A34" CornerRadius="4" Padding="8,4" VerticalAlignment="Center">
+                                    <TextBlock Text="{Binding TotalItemsCount, StringFormat='{}{0} items found'}" Foreground="#63E6FF" FontSize="10" FontFamily="{StaticResource PeydaBold}"/>
+                                </Border>
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+                </Grid>
+
+                <!-- 03. TOOLBAR (Inside Central Column) -->
+                <!-- Shorter Toolbar (Height: 40px, Margin: 8px top, 0px bottom) -->
+                <Border Grid.Column="2" Grid.Row="1" Height="40" Margin="0,8,0,0" Background="#181A20" BorderBrush="#2A2D36" BorderThickness="1" CornerRadius="8" Padding="12,0">
+                    <Grid VerticalAlignment="Center">
+                        <Grid.ColumnDefinitions>
+                            <!-- Left aligned categories -->
+                            <ColumnDefinition Width="*" />
+                            <!-- Right aligned category (Sync) -->
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <!-- GROUP: SCAN -->
+                            <TextBlock Text="SCAN" FontFamily="{StaticResource PeydaBold}" FontSize="9" Foreground="#14BE78" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                            <Button Style="{StaticResource ToolbarButtonStyle}" Content="Scan All" Command="{Binding ScanComputerCommand}" />
+                            <Border Width="4"/>
+                            <Button Style="{StaticResource ToolbarButtonStyle}" Content="Steam" Command="{Binding ScanComputerCommand}" />
+                            <Border Width="4"/>
+                            <Button Style="{StaticResource ToolbarButtonStyle}" Content="Epic" Command="{Binding ScanComputerCommand}" />
+                            <Border Width="4"/>
+                            <Button Style="{StaticResource ToolbarButtonStyle}" Content="Riot" Command="{Binding ScanComputerCommand}" />
+                            <Border Width="4"/>
+                            <Button Style="{StaticResource ToolbarButtonStyle}" Content="Battle.net" Command="{Binding ScanComputerCommand}" />
+                            <Border Width="4"/>
+                            <Button Style="{StaticResource ToolbarButtonStyle}" Content="Ubisoft" Command="{Binding ScanComputerCommand}" />
+                            <Border Width="4"/>
+                            <Button Style="{StaticResource ToolbarButtonStyle}" Content="Custom" Command="{Binding ScanComputerCommand}" />
+
+                            <!-- Group Separator -->
+                            <Border BorderBrush="#2A2D36" BorderThickness="1,0,0,0" Margin="12,6" Height="18"/>
+
+                            <!-- GROUP: ADD -->
+                            <TextBlock Text="ADD" FontFamily="{StaticResource PeydaBold}" FontSize="9" Foreground="#ffff3d" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                            <Button Style="{StaticResource ToolbarButtonStyle}" Content="Add Game" Command="{Binding ManageCategoriesCommand}" />
+                            <Border Width="4"/>
+                            <Button Style="{StaticResource ToolbarButtonStyle}" Content="Add App" Command="{Binding ManageCategoriesCommand}" />
+
+                            <!-- Group Separator -->
+                            <Border BorderBrush="#2A2D36" BorderThickness="1,0,0,0" Margin="12,6" Height="18"/>
+
+                            <!-- GROUP: DATA -->
+                            <TextBlock Text="DATA" FontFamily="{StaticResource PeydaBold}" FontSize="9" Foreground="#8A5CFF" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                            <Button Style="{StaticResource ToolbarButtonStyle}" Content="Import" Command="{Binding RefreshCategoriesCommand}" />
+                            <Border Width="4"/>
+                            <Button Style="{StaticResource ToolbarButtonStyle}" Content="Export" Command="{Binding RefreshCategoriesCommand}" />
+                            <Border Width="4"/>
+                            <Button Style="{StaticResource ToolbarButtonStyle}" Content="Backup" Command="{Binding RefreshCategoriesCommand}" />
+                            <Border Width="4"/>
+                            <Button Style="{StaticResource ToolbarButtonStyle}" Content="Restore" Command="{Binding RefreshCategoriesCommand}" />
+                        </StackPanel>
+
+                        <!-- GROUP: SYNC (Align Right) -->
+                        <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                            <TextBlock Text="SYNC" FontFamily="{StaticResource PeydaBold}" FontSize="9" Foreground="#63E6FF" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                            <Button Style="{StaticResource ToolbarButtonStyle}" Content="Sync From Server" Command="{Binding RefreshCommand}" />
+                            <Border Width="4"/>
+                            <Button Style="{StaticResource ToolbarButtonStyle}" Content="Sync To Server" Command="{Binding RefreshCommand}" />
+                            <Border Width="4"/>
+                            <Button Style="{StaticResource ToolbarButtonStyle}" Content="Compare" Command="{Binding RefreshCommand}" />
+                        </StackPanel>
+                    </Grid>
+                </Border>
+
                 <!-- 09. GAMES PANEL -->
-                <Border Grid.Column="2" Grid.Row="3" Background="#181A20" BorderBrush="#2A2D36" BorderThickness="1" CornerRadius="10" Margin="0,20,0,0">
+                <!-- Main DataGrid Container with integrated sticky pagination footer -->
+                <Border Grid.Column="2" Grid.Row="2" Background="#181A20" BorderBrush="#2A2D36" BorderThickness="1" CornerRadius="10" Margin="0,12,0,12">
                     <Grid>
-                        <DataGrid x:Name="GamesDataGrid"
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="Auto" /> <!-- Local sticky pagination footer inside Games Panel -->
+                        </Grid.RowDefinitions>
+
+                        <DataGrid Grid.Row="0" x:Name="GamesDataGrid"
                                   ItemsSource="{Binding VisibleItems}"
                                   Style="{StaticResource PremiumDataGridStyle}"
                                   SelectionMode="Single"
@@ -642,15 +647,52 @@
                                 <DataGridTextColumn Header="Last Updated" Binding="{Binding LastUpdated}" Width="130" ElementStyle="{StaticResource {x:Type TextBlock}}"/>
                             </DataGrid.Columns>
                         </DataGrid>
+
+                        <!-- Local Sticky Footer for Pagination under Main DataGrid -->
+                        <Border Grid.Row="1" Background="#1C1F26" BorderBrush="#2A2D36" BorderThickness="0,1,0,0" Padding="16,8">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <!-- Left: Info Text -->
+                                    <ColumnDefinition Width="*" />
+                                    <!-- Right: Pagination & Demo State Controls -->
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+
+                                <TextBlock Grid.Column="0" Text="{Binding ShowingText}" Foreground="#9A9A9A" FontSize="11" FontFamily="{StaticResource PeydaMedium}" VerticalAlignment="Center"/>
+
+                                <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                                    <!-- Demo State Selector -->
+                                    <TextBlock Text="Demo State:" Foreground="#9A9A9A" FontSize="11" FontFamily="{StaticResource PeydaMedium}" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                    <ComboBox ItemsSource="{Binding DemoStates}" SelectedItem="{Binding SelectedDemoState}" Width="100" Height="26" Background="#14161C" Foreground="White" BorderBrush="#2A2D36" FontFamily="{StaticResource PeydaMedium}" FontSize="11" VerticalContentAlignment="Center"/>
+
+                                    <Border Width="16"/>
+
+                                    <!-- Page Size Selector -->
+                                    <TextBlock Text="Show:" Foreground="#9A9A9A" FontSize="11" FontFamily="{StaticResource PeydaMedium}" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                    <ComboBox x:Name="PageSizeCombo" ItemsSource="{Binding PageSizes}" SelectedItem="{Binding SelectedPageSize}" Width="60" Height="26" Background="#14161C" Foreground="White" BorderBrush="#2A2D36" FontFamily="{StaticResource PeydaMedium}" FontSize="11" VerticalContentAlignment="Center"/>
+
+                                    <Border Width="16"/>
+
+                                    <!-- Pagination Buttons -->
+                                    <Button Style="{StaticResource ToolbarButtonStyle}" Content="Prev" Command="{Binding PrevPageCommand}" Height="26" Width="50" Padding="0"/>
+                                    <Border Width="4"/>
+                                    <!-- Current Page Counter -->
+                                    <Border Background="#252A34" CornerRadius="4" Width="26" Height="26" VerticalAlignment="Center">
+                                        <TextBlock Text="{Binding CurrentPage}" Foreground="#63E6FF" FontSize="11" FontFamily="{StaticResource PeydaBold}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </Border>
+                                    <Border Width="4"/>
+                                    <Button Style="{StaticResource ToolbarButtonStyle}" Content="Next" Command="{Binding NextPageCommand}" Height="26" Width="50" Padding="0"/>
+                                </StackPanel>
+                            </Grid>
+                        </Border>
                     </Grid>
                 </Border>
 
                 <!-- Old game details pane removed as requested (we now use a centered modal) -->
 
                 <!-- 11. RIGHT SIDEBAR -->
-                <!-- Aligned to Row 3 (Content Level) of Workspace to match Category Sidebar and Games Panel. Dynamic height. -->
-                <!-- This container holds the nested Right Sidebar Grid -->
-                <Border Grid.Column="4" Grid.Row="3" Margin="0,20,10,0" Background="#14161C" BorderBrush="#2A2D36" BorderThickness="1" CornerRadius="10" Padding="12">
+                <!-- Right Sidebar spans from the top of WorkspaceGrid (below Header) to the bottom (above Footer) -->
+                <Border Grid.Column="4" Grid.Row="0" Grid.RowSpan="3" Margin="0,8,24,12" Background="#14161C" BorderBrush="#2A2D36" BorderThickness="1" CornerRadius="10" Padding="12">
                     <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                         <Grid x:Name="RightSidebarGrid">
                             <Grid.RowDefinitions>
@@ -721,13 +763,11 @@
             </Grid>
 
             <!-- 12. FOOTER -->
-            <Border Grid.Row="4" Background="#181A20" BorderBrush="#2A2D36" BorderThickness="0,1,0,0" Padding="24,10">
+            <Border Grid.Row="2" Background="#181A20" BorderBrush="#2A2D36" BorderThickness="0,1,0,0" Padding="24,10">
                 <Grid VerticalAlignment="Center">
                     <Grid.ColumnDefinitions>
-                        <!-- Left: Status Stat Cards -->
+                        <!-- Full-width: Status Stat Cards -->
                         <ColumnDefinition Width="*" />
-                        <!-- Right: Pagination & Demo Controls -->
-                        <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
 
                     <!-- Left: Status Stat Cards -->
@@ -787,34 +827,6 @@
                                 <TextBlock Text="{Binding Categories[14].Count}" Foreground="#9A9A9A" FontSize="11" FontFamily="{StaticResource PeydaBold}"/>
                             </StackPanel>
                         </Border>
-                    </StackPanel>
-
-                    <!-- Right: Pagination & Demo Controls -->
-                    <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
-                        <!-- Demo State Selector -->
-                        <TextBlock Text="Demo State:" Foreground="#9A9A9A" FontSize="11" FontFamily="{StaticResource PeydaMedium}" VerticalAlignment="Center" Margin="0,0,8,0"/>
-                        <ComboBox ItemsSource="{Binding DemoStates}" SelectedItem="{Binding SelectedDemoState}" Width="100" Height="28" Background="#1C1F26" Foreground="White" BorderBrush="#2A2D36" FontFamily="{StaticResource PeydaMedium}" FontSize="11" VerticalContentAlignment="Center"/>
-
-                        <Border Width="16"/>
-
-                        <!-- Page Size Selector -->
-                        <TextBlock Text="Show:" Foreground="#9A9A9A" FontSize="11" FontFamily="{StaticResource PeydaMedium}" VerticalAlignment="Center" Margin="0,0,8,0"/>
-                        <ComboBox x:Name="PageSizeCombo" ItemsSource="{Binding PageSizes}" SelectedItem="{Binding SelectedPageSize}" Width="60" Height="28" Background="#1C1F26" Foreground="White" BorderBrush="#2A2D36" FontFamily="{StaticResource PeydaMedium}" FontSize="11" VerticalContentAlignment="Center"/>
-
-                        <Border Width="16"/>
-
-                        <!-- Page Text -->
-                        <TextBlock Text="{Binding ShowingText}" Foreground="White" FontSize="12" FontFamily="{StaticResource PeydaMedium}" VerticalAlignment="Center" Margin="0,0,12,0"/>
-
-                        <!-- Pagination Buttons -->
-                        <Button Style="{StaticResource ToolbarButtonStyle}" Content="Prev" Command="{Binding PrevPageCommand}" Height="28" Width="50" Padding="0"/>
-                        <Border Width="4"/>
-                        <!-- Current Page Counter -->
-                        <Border Background="#252A34" CornerRadius="4" Width="28" Height="28" VerticalAlignment="Center">
-                            <TextBlock Text="{Binding CurrentPage}" Foreground="#63E6FF" FontSize="12" FontFamily="{StaticResource PeydaBold}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                        </Border>
-                        <Border Width="4"/>
-                        <Button Style="{StaticResource ToolbarButtonStyle}" Content="Next" Command="{Binding NextPageCommand}" Height="28" Width="50" Padding="0"/>
                     </StackPanel>
                 </Grid>
             </Border>
