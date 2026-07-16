@@ -648,73 +648,75 @@
                 <!-- Old game details pane removed as requested (we now use a centered modal) -->
 
                 <!-- 11. RIGHT SIDEBAR -->
-                <!-- Spans Row 0 to Row 3 (RowSpan 4) of Workspace. Width: 260px, Height: 890. Row 0 starts at Y=0, so Top margin is 20px -->
+                <!-- Aligned to Row 3 (Content Level) of Workspace to match Category Sidebar and Games Panel. Dynamic height. -->
                 <!-- This container holds the nested Right Sidebar Grid -->
-                <Border Grid.Column="4" Grid.Row="0" Grid.RowSpan="4" Height="890" Margin="0,20,10,0" VerticalAlignment="Top" Background="#14161C" BorderBrush="#2A2D36" BorderThickness="1" CornerRadius="10" Padding="12">
-                    <Grid x:Name="RightSidebarGrid">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto" /> <!-- 11.1 Add New Game -->
-                            <RowDefinition Height="Auto" /> <!-- 11.2 Scanner Result -->
-                            <RowDefinition Height="Auto" /> <!-- 11.3 Validation Result -->
-                            <RowDefinition Height="Auto" /> <!-- 11.4 Import Games -->
-                            <RowDefinition Height="Auto" /> <!-- 11.5 Sync Conflict Resolver -->
-                        </Grid.RowDefinitions>
+                <Border Grid.Column="4" Grid.Row="3" Margin="0,20,10,0" Background="#14161C" BorderBrush="#2A2D36" BorderThickness="1" CornerRadius="10" Padding="12">
+                    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                        <Grid x:Name="RightSidebarGrid">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" /> <!-- 11.1 Add New Game -->
+                                <RowDefinition Height="Auto" /> <!-- 11.2 Scanner Result -->
+                                <RowDefinition Height="Auto" /> <!-- 11.3 Validation Result -->
+                                <RowDefinition Height="Auto" /> <!-- 11.4 Import Games -->
+                                <RowDefinition Height="Auto" /> <!-- 11.5 Sync Conflict Resolver -->
+                            </Grid.RowDefinitions>
 
-                        <!-- 11.1 ADD NEW GAME -->
-                        <Border Grid.Row="0" Background="#181A20" BorderBrush="#2A2D36" BorderThickness="1" CornerRadius="8" Padding="12" Margin="0,0,0,12">
-                            <StackPanel>
-                                <TextBlock Text="QUICK ADD" FontFamily="{StaticResource PeydaBold}" FontSize="11" Foreground="#ffff3d" Margin="0,0,0,8"/>
-                                <TextBlock Text="Title" Foreground="#9A9A9A" FontSize="11" Margin="0,0,0,4"/>
-                                <Border Background="#1C1F26" BorderBrush="#2A2D36" BorderThickness="1" CornerRadius="4" Height="28" Padding="6,2" Margin="0,0,0,8">
-                                    <TextBox Background="Transparent" BorderThickness="0" Foreground="White" FontSize="11" VerticalContentAlignment="Center"/>
-                                </Border>
-                                <TextBlock Text="Category" Foreground="#9A9A9A" FontSize="11" Margin="0,0,0,4"/>
-                                <Border Background="#1C1F26" BorderBrush="#2A2D36" BorderThickness="1" CornerRadius="4" Height="28" Padding="6,2" Margin="0,0,0,12">
-                                    <TextBox Background="Transparent" BorderThickness="0" Foreground="White" FontSize="11" VerticalContentAlignment="Center"/>
-                                </Border>
-                                <Button Style="{StaticResource ToolbarButtonStyle}" Content="Add to Library" Height="30" Width="210" Command="{Binding ManageCategoriesCommand}"/>
-                            </StackPanel>
-                        </Border>
+                            <!-- 11.1 ADD NEW GAME -->
+                            <Border Grid.Row="0" Background="#181A20" BorderBrush="#2A2D36" BorderThickness="1" CornerRadius="8" Padding="12" Margin="0,0,0,12">
+                                <StackPanel>
+                                    <TextBlock Text="QUICK ADD" FontFamily="{StaticResource PeydaBold}" FontSize="11" Foreground="#ffff3d" Margin="0,0,0,8"/>
+                                    <TextBlock Text="Title" Foreground="#9A9A9A" FontSize="11" Margin="0,0,0,4"/>
+                                    <Border Background="#1C1F26" BorderBrush="#2A2D36" BorderThickness="1" CornerRadius="4" Height="28" Padding="6,2" Margin="0,0,0,8">
+                                        <TextBox Background="Transparent" BorderThickness="0" Foreground="White" FontSize="11" VerticalContentAlignment="Center"/>
+                                    </Border>
+                                    <TextBlock Text="Category" Foreground="#9A9A9A" FontSize="11" Margin="0,0,0,4"/>
+                                    <Border Background="#1C1F26" BorderBrush="#2A2D36" BorderThickness="1" CornerRadius="4" Height="28" Padding="6,2" Margin="0,0,0,12">
+                                        <TextBox Background="Transparent" BorderThickness="0" Foreground="White" FontSize="11" VerticalContentAlignment="Center"/>
+                                    </Border>
+                                    <Button Style="{StaticResource ToolbarButtonStyle}" Content="Add to Library" Height="30" Width="210" Command="{Binding ManageCategoriesCommand}"/>
+                                </StackPanel>
+                            </Border>
 
-                        <!-- 11.2 SCANNER RESULT -->
-                        <Border Grid.Row="1" Background="#181A20" BorderBrush="#2A2D36" BorderThickness="1" CornerRadius="8" Padding="12" Margin="0,0,0,12">
-                            <StackPanel>
-                                <TextBlock Text="SCANNER RESULT" FontFamily="{StaticResource PeydaBold}" FontSize="11" Foreground="#14BE78" Margin="0,0,0,8"/>
-                                <TextBlock Text="Last scan completed today 14:25." Foreground="White" FontSize="11" Margin="0,0,0,4" TextWrapping="Wrap"/>
-                                <TextBlock Text="128 entries identified." Foreground="#9A9A9A" FontSize="11" Margin="0,0,0,12"/>
-                                <Button Style="{StaticResource ToolbarButtonStyle}" Content="Rescan System" Height="30" Width="210" Command="{Binding ScanComputerCommand}"/>
-                            </StackPanel>
-                        </Border>
+                            <!-- 11.2 SCANNER RESULT -->
+                            <Border Grid.Row="1" Background="#181A20" BorderBrush="#2A2D36" BorderThickness="1" CornerRadius="8" Padding="12" Margin="0,0,0,12">
+                                <StackPanel>
+                                    <TextBlock Text="SCANNER RESULT" FontFamily="{StaticResource PeydaBold}" FontSize="11" Foreground="#14BE78" Margin="0,0,0,8"/>
+                                    <TextBlock Text="Last scan completed today 14:25." Foreground="White" FontSize="11" Margin="0,0,0,4" TextWrapping="Wrap"/>
+                                    <TextBlock Text="128 entries identified." Foreground="#9A9A9A" FontSize="11" Margin="0,0,0,12"/>
+                                    <Button Style="{StaticResource ToolbarButtonStyle}" Content="Rescan System" Height="30" Width="210" Command="{Binding ScanComputerCommand}"/>
+                                </StackPanel>
+                            </Border>
 
-                        <!-- 11.3 VALIDATION RESULT -->
-                        <Border Grid.Row="2" Background="#181A20" BorderBrush="#2A2D36" BorderThickness="1" CornerRadius="8" Padding="12" Margin="0,0,0,12">
-                            <StackPanel>
-                                <TextBlock Text="VALIDATION RESULT" FontFamily="{StaticResource PeydaBold}" FontSize="11" Foreground="#8A5CFF" Margin="0,0,0,8"/>
-                                <TextBlock Text="No corrupt or broken files detected." Foreground="White" FontSize="11" Margin="0,0,0,4" TextWrapping="Wrap"/>
-                                <TextBlock Text="0 validation conflicts pending." Foreground="#9A9A9A" FontSize="11" Margin="0,0,0,12"/>
-                                <Button Style="{StaticResource ToolbarButtonStyle}" Content="Verify Integrity" Height="30" Width="210" Command="{Binding RefreshCategoriesCommand}"/>
-                            </StackPanel>
-                        </Border>
+                            <!-- 11.3 VALIDATION RESULT -->
+                            <Border Grid.Row="2" Background="#181A20" BorderBrush="#2A2D36" BorderThickness="1" CornerRadius="8" Padding="12" Margin="0,0,0,12">
+                                <StackPanel>
+                                    <TextBlock Text="VALIDATION RESULT" FontFamily="{StaticResource PeydaBold}" FontSize="11" Foreground="#8A5CFF" Margin="0,0,0,8"/>
+                                    <TextBlock Text="No corrupt or broken files detected." Foreground="White" FontSize="11" Margin="0,0,0,4" TextWrapping="Wrap"/>
+                                    <TextBlock Text="0 validation conflicts pending." Foreground="#9A9A9A" FontSize="11" Margin="0,0,0,12"/>
+                                    <Button Style="{StaticResource ToolbarButtonStyle}" Content="Verify Integrity" Height="30" Width="210" Command="{Binding RefreshCategoriesCommand}"/>
+                                </StackPanel>
+                            </Border>
 
-                        <!-- 11.4 IMPORT DATA -->
-                        <Border Grid.Row="3" Background="#181A20" BorderBrush="#2A2D36" BorderThickness="1" CornerRadius="8" Padding="12" Margin="0,0,0,12">
-                            <StackPanel>
-                                <TextBlock Text="IMPORT DATA" FontFamily="{StaticResource PeydaBold}" FontSize="11" Foreground="#63E6FF" Margin="0,0,0,8"/>
-                                <TextBlock Text="Select a JSON database to import." Foreground="White" FontSize="11" Margin="0,0,0,12" TextWrapping="Wrap"/>
-                                <Button Style="{StaticResource ToolbarButtonStyle}" Content="Browse &amp; Import" Height="30" Width="210" Command="{Binding RefreshCategoriesCommand}"/>
-                            </StackPanel>
-                        </Border>
+                            <!-- 11.4 IMPORT DATA -->
+                            <Border Grid.Row="3" Background="#181A20" BorderBrush="#2A2D36" BorderThickness="1" CornerRadius="8" Padding="12" Margin="0,0,0,12">
+                                <StackPanel>
+                                    <TextBlock Text="IMPORT DATA" FontFamily="{StaticResource PeydaBold}" FontSize="11" Foreground="#63E6FF" Margin="0,0,0,8"/>
+                                    <TextBlock Text="Select a JSON database to import." Foreground="White" FontSize="11" Margin="0,0,0,12" TextWrapping="Wrap"/>
+                                    <Button Style="{StaticResource ToolbarButtonStyle}" Content="Browse &amp; Import" Height="30" Width="210" Command="{Binding RefreshCategoriesCommand}"/>
+                                </StackPanel>
+                            </Border>
 
-                        <!-- 11.5 SYNC CONFLICT RESOLVER -->
-                        <Border Grid.Row="4" Background="#181A20" BorderBrush="#2A2D36" BorderThickness="1" CornerRadius="8" Padding="12">
-                            <StackPanel>
-                                <TextBlock Text="SYNC CONFLICT RESOLVER" FontFamily="{StaticResource PeydaBold}" FontSize="11" Foreground="#ffff3d" Margin="0,0,0,8"/>
-                                <TextBlock Text="All items synchronized successfully." Foreground="White" FontSize="11" Margin="0,0,0,4" TextWrapping="Wrap"/>
-                                <TextBlock Text="0 conflict resolvents needed." Foreground="#9A9A9A" FontSize="11" Margin="0,0,0,12"/>
-                                <Button Style="{StaticResource ToolbarButtonStyle}" Content="Resolve Conflicts" Height="30" Width="210" Command="{Binding RefreshCommand}"/>
-                            </StackPanel>
-                        </Border>
-                    </Grid>
+                            <!-- 11.5 SYNC CONFLICT RESOLVER -->
+                            <Border Grid.Row="4" Background="#181A20" BorderBrush="#2A2D36" BorderThickness="1" CornerRadius="8" Padding="12">
+                                <StackPanel>
+                                    <TextBlock Text="SYNC CONFLICT RESOLVER" FontFamily="{StaticResource PeydaBold}" FontSize="11" Foreground="#ffff3d" Margin="0,0,0,8"/>
+                                    <TextBlock Text="All items synchronized successfully." Foreground="White" FontSize="11" Margin="0,0,0,4" TextWrapping="Wrap"/>
+                                    <TextBlock Text="0 conflict resolvents needed." Foreground="#9A9A9A" FontSize="11" Margin="0,0,0,12"/>
+                                    <Button Style="{StaticResource ToolbarButtonStyle}" Content="Resolve Conflicts" Height="30" Width="210" Command="{Binding RefreshCommand}"/>
+                                </StackPanel>
+                            </Border>
+                        </Grid>
+                    </ScrollViewer>
                 </Border>
             </Grid>
 
