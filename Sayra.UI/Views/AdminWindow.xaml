@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:Sayra.UI.Views"
         mc:Ignorable="d"
         Title="SAYRA Admin Workspace"
-        Height="1080" Width="1920"
+        Height="948" Width="1659"
         WindowStyle="None"
         AllowsTransparency="True"
         Background="Transparent"
@@ -14,7 +14,242 @@
         WindowStartupLocation="CenterScreen"
         FlowDirection="LeftToRight">
 
+    <!-- Define premium dark style resources for layout placeholders -->
+    <Window.Resources>
+        <Style x:Key="PlaceholderBorder" TargetType="Border">
+            <Setter Property="Background" Value="#1C1F26"/>
+            <Setter Property="BorderBrush" Value="#4DFFFFFF"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="4"/>
+            <Setter Property="Margin" Value="0"/>
+        </Style>
+        <Style x:Key="PlaceholderText" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontFamily" Value="Segoe UI"/>
+            <Setter Property="FontSize" Value="11"/>
+            <Setter Property="TextWrapping" Value="Wrap"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="TextAlignment" Value="Center"/>
+        </Style>
+    </Window.Resources>
+
     <Grid Background="#0E1015">
-        <!-- empty page as requested -->
+        <!-- ROOT GRID -->
+        <Grid x:Name="RootGrid">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="70" />  <!-- Row 0: Header (Fixed) -->
+                <RowDefinition Height="45" />  <!-- Row 1: Search (Fixed) -->
+                <RowDefinition Height="95" />  <!-- Row 2: Action Area (Fixed) -->
+                <RowDefinition Height="*" />   <!-- Row 3: Workspace (Stretch) -->
+                <RowDefinition Height="33" />  <!-- Row 4: Footer (Fixed) -->
+            </Grid.RowDefinitions>
+
+            <!-- 01. HEADER -->
+            <!-- X=0, Y=0, Width=1659, Height=70. Spans Row 0, full width -->
+            <Border Grid.Row="0" Style="{StaticResource PlaceholderBorder}" Height="70" Background="#261A1F26" BorderBrush="#80252528">
+                <TextBlock Style="{StaticResource PlaceholderText}" FontWeight="Bold" FontSize="13">
+                    <Run Text="[01] HEADER" Foreground="#ffff3d"/><LineBreak/>
+                    <Run Text="X: 0 | Y: 0 | Width: 1659 | Height: 70" FontSize="10"/><LineBreak/>
+                    <Run Text="Row: 0 | Column: 0 | RowSpan: 1 | ColumnSpan: 1 (Root) | Fixed Height" FontSize="9" Foreground="#9A9A9A"/>
+                </TextBlock>
+            </Border>
+
+            <!-- 02. SEARCH -->
+            <!-- X=10, Y=80, Width=980, Height=35. Row 1 of Root Grid. Top margin 10px (70 + 10 = 80) -->
+            <Border Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Top" Width="980" Height="35" Margin="10,10,0,0" Style="{StaticResource PlaceholderBorder}" Background="#331A1F26">
+                <TextBlock Style="{StaticResource PlaceholderText}">
+                    <Run Text="[02] SEARCH" Foreground="#ffff3d"/><Span xml:space="preserve">  -  </Span>
+                    <Run Text="X: 10 | Y: 80 | Width: 980 | Height: 35" FontSize="10"/>
+                    <Run Text=" (Row: 1 | Col: 0 | ColumnSpan: 1 | Fixed Height)" FontSize="9" Foreground="#9A9A9A"/>
+                </TextBlock>
+            </Border>
+
+            <!-- NESTED GRID: TopActions (Action Area) -->
+            <!-- Row 2. X=10, Y=125, Height=95. Top margin 10px (115 + 10 = 125) -->
+            <Grid Grid.Row="2" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,10,0,0" Height="95">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="430"/> <!-- 03. Scan -->
+                    <ColumnDefinition Width="10"/>  <!-- Gap -->
+                    <ColumnDefinition Width="160"/> <!-- 04. Add -->
+                    <ColumnDefinition Width="10"/>  <!-- Gap -->
+                    <ColumnDefinition Width="185"/> <!-- 05. Import -->
+                    <ColumnDefinition Width="10"/>  <!-- Gap -->
+                    <ColumnDefinition Width="175"/> <!-- 06. Sync -->
+                </Grid.ColumnDefinitions>
+
+                <!-- 03. SCAN -->
+                <Border Grid.Column="0" Style="{StaticResource PlaceholderBorder}" Background="#4D14BE78" BorderBrush="#14BE78">
+                    <TextBlock Style="{StaticResource PlaceholderText}">
+                        <Run Text="[03] SCAN" FontWeight="Bold" Foreground="#14BE78"/><LineBreak/>
+                        <Run Text="X: 10 | Y: 125 | Width: 430 | Height: 95" FontSize="10"/><LineBreak/>
+                        <Run Text="Action Area - Col 0 (Fixed)" FontSize="9" Foreground="#E1E1E6"/>
+                    </TextBlock>
+                </Border>
+
+                <!-- 04. ADD -->
+                <Border Grid.Column="2" Style="{StaticResource PlaceholderBorder}">
+                    <TextBlock Style="{StaticResource PlaceholderText}">
+                        <Run Text="[04] ADD" FontWeight="Bold" Foreground="#ffff3d"/><LineBreak/>
+                        <Run Text="X: 450 | Y: 125 | Width: 160 | Height: 95" FontSize="10"/><LineBreak/>
+                        <Run Text="Action Area - Col 1 (Fixed)" FontSize="9" Foreground="#9A9A9A"/>
+                    </TextBlock>
+                </Border>
+
+                <!-- 05. IMPORT -->
+                <Border Grid.Column="4" Style="{StaticResource PlaceholderBorder}">
+                    <TextBlock Style="{StaticResource PlaceholderText}">
+                        <Run Text="[05] IMPORT" FontWeight="Bold" Foreground="#ffff3d"/><LineBreak/>
+                        <Run Text="X: 620 | Y: 125 | Width: 185 | Height: 95" FontSize="10"/><LineBreak/>
+                        <Run Text="Action Area - Col 2 (Fixed)" FontSize="9" Foreground="#9A9A9A"/>
+                    </TextBlock>
+                </Border>
+
+                <!-- 06. SYNC -->
+                <Border Grid.Column="6" Style="{StaticResource PlaceholderBorder}">
+                    <TextBlock Style="{StaticResource PlaceholderText}">
+                        <Run Text="[06] SYNC" FontWeight="Bold" Foreground="#ffff3d"/><LineBreak/>
+                        <Run Text="X: 815 | Y: 125 | Width: 175 | Height: 95" FontSize="10"/><LineBreak/>
+                        <Run Text="Action Area - Col 3 (Fixed)" FontSize="9" Foreground="#9A9A9A"/>
+                    </TextBlock>
+                </Border>
+            </Grid>
+
+            <!-- NESTED GRID: Workspace -->
+            <!-- Workspace spans Rows 0, 1, 2, 3 of Root Grid (RowSpan 4) to accommodate elements with top coordinates (Right Sidebar at Y=20, Game Details at Y=80) -->
+            <!-- Background is omitted ({x:Null}) to allow hit-testing to pass through to underlying elements (Header, Search, Top Actions) -->
+            <Grid Grid.Row="0" Grid.RowSpan="4" x:Name="WorkspaceGrid" Margin="10,0,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="160" /> <!-- Column 0: Category Sidebar -->
+                    <ColumnDefinition Width="10" />  <!-- Gap -->
+                    <ColumnDefinition Width="*" />   <!-- Column 1: Games Panel (Stretches, standard design width 810) -->
+                    <ColumnDefinition Width="10" />  <!-- Gap -->
+                    <ColumnDefinition Width="390" /> <!-- Column 2: Game Details -->
+                    <ColumnDefinition Width="8" />   <!-- Gap -->
+                    <ColumnDefinition Width="250" /> <!-- Column 3: Right Sidebar -->
+                </Grid.ColumnDefinitions>
+
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="70" />  <!-- Row 0: Header Level -->
+                    <RowDefinition Height="45" />  <!-- Row 1: Search Level -->
+                    <RowDefinition Height="95" />  <!-- Row 2: Action Area Level -->
+                    <RowDefinition Height="*" />   <!-- Row 3: Content Level (Stretch) -->
+                </Grid.RowDefinitions>
+
+                <!-- 07. CATEGORY SIDEBAR -->
+                <!-- Row 3. X=10, Y=230, Width=160, Height=570. Top margin 20px (210 + 20 = 230) -->
+                <Border Grid.Column="0" Grid.Row="3" VerticalAlignment="Top" Height="570" Margin="0,20,0,0" Style="{StaticResource PlaceholderBorder}">
+                    <TextBlock Style="{StaticResource PlaceholderText}">
+                        <Run Text="[07] CATEGORY SIDEBAR" FontWeight="Bold" Foreground="#ffff3d"/><LineBreak/>
+                        <Run Text="X: 10 | Y: 230" FontSize="10"/><LineBreak/>
+                        <Run Text="160 x 570 (Fixed)" FontSize="10"/><LineBreak/>
+                        <Run Text="Workspace - Col 0, Row 3" FontSize="9" Foreground="#9A9A9A"/>
+                    </TextBlock>
+                </Border>
+
+                <!-- 08. QUICK FILTER -->
+                <!-- Row 3. X=10, Y=805, Height=105. Top margin 595px (210 + 595 = 805) -->
+                <Border Grid.Column="0" Grid.Row="3" VerticalAlignment="Top" Height="105" Margin="0,595,0,0" Style="{StaticResource PlaceholderBorder}">
+                    <TextBlock Style="{StaticResource PlaceholderText}">
+                        <Run Text="[08] QUICK FILTER" FontWeight="Bold" Foreground="#ffff3d"/><LineBreak/>
+                        <Run Text="X: 10 | Y: 805" FontSize="10"/><LineBreak/>
+                        <Run Text="160 x 105 (Fixed)" FontSize="10"/><LineBreak/>
+                        <Run Text="Workspace - Col 0, Row 3" FontSize="9" Foreground="#9A9A9A"/>
+                    </TextBlock>
+                </Border>
+
+                <!-- 09. GAMES PANEL -->
+                <!-- Row 3. X=180, Y=230, Width=810, Height=680. Top margin 20px (210 + 20 = 230). Stretches horizontally -->
+                <Border Grid.Column="2" Grid.Row="3" VerticalAlignment="Top" Height="680" Margin="0,20,0,0" Style="{StaticResource PlaceholderBorder}" BorderBrush="#FFFF3D" BorderThickness="1.5" Background="#26FFFF3D">
+                    <TextBlock Style="{StaticResource PlaceholderText}">
+                        <Run Text="[09] GAMES PANEL" FontWeight="Bold" Foreground="#ffff3d" FontSize="13"/><LineBreak/>
+                        <Run Text="X: 180 | Y: 230 | Width: 810 (Stretches) | Height: 680" FontSize="11"/><LineBreak/>
+                        <Run Text="Workspace - Col 1 (Stretch), Row 3 | Primary Content Area" FontSize="9" Foreground="#E1E1E6"/>
+                    </TextBlock>
+                </Border>
+
+                <!-- 10. GAME DETAILS -->
+                <!-- Spans Row 1 to Row 3 (RowSpan 3) of Workspace. X=1000, Y=80, Width=390, Height=830. Row 1 starts at Y=70, so Top margin is 10px (70 + 10 = 80) -->
+                <Border Grid.Column="4" Grid.Row="1" Grid.RowSpan="3" VerticalAlignment="Top" Height="830" Margin="0,10,0,0" Style="{StaticResource PlaceholderBorder}">
+                    <TextBlock Style="{StaticResource PlaceholderText}">
+                        <Run Text="[10] GAME DETAILS" FontWeight="Bold" Foreground="#ffff3d" FontSize="12"/><LineBreak/>
+                        <Run Text="X: 1000 | Y: 80 | Width: 390 | Height: 830" FontSize="10"/><LineBreak/>
+                        <Run Text="Workspace - Col 2, Row 1 (RowSpan 3) | Fixed Width" FontSize="9" Foreground="#9A9A9A"/>
+                    </TextBlock>
+                </Border>
+
+                <!-- 11. RIGHT SIDEBAR -->
+                <!-- Spans Row 0 to Row 3 (RowSpan 4) of Workspace. X=1398, Y=20, Width=250, Height=890. Row 0 starts at Y=0, so Top margin is 20px -->
+                <!-- This container holds the nested Right Sidebar Grid -->
+                <Border Grid.Column="6" Grid.Row="0" Grid.RowSpan="4" VerticalAlignment="Top" Height="890" Margin="0,20,0,0" Style="{StaticResource PlaceholderBorder}" BorderThickness="1" BorderBrush="#4D9A9A9A">
+                    <Grid x:Name="RightSidebarGrid">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="265" /> <!-- 11.1 Add New Game -->
+                            <RowDefinition Height="175" /> <!-- 11.2 Scanner Result -->
+                            <RowDefinition Height="150" /> <!-- 11.3 Validation Result -->
+                            <RowDefinition Height="140" /> <!-- 11.4 Import Games -->
+                            <RowDefinition Height="145" /> <!-- 11.5 Sync Conflict Resolver -->
+                        </Grid.RowDefinitions>
+
+                        <!-- 11.1 ADD NEW GAME -->
+                        <Border Grid.Row="0" Style="{StaticResource PlaceholderBorder}" Background="#1EFFFFFF" Margin="2">
+                            <TextBlock Style="{StaticResource PlaceholderText}">
+                                <Run Text="[11.1] ADD NEW GAME" FontWeight="Bold" Foreground="#ffff3d"/><LineBreak/>
+                                <Run Text="Width: 250 | Height: 265" FontSize="10"/><LineBreak/>
+                                <Run Text="Sidebar Row 0 (Fixed)" FontSize="9" Foreground="#9A9A9A"/>
+                            </TextBlock>
+                        </Border>
+
+                        <!-- 11.2 SCANNER RESULT -->
+                        <Border Grid.Row="1" Style="{StaticResource PlaceholderBorder}" Background="#1EFFFFFF" Margin="2">
+                            <TextBlock Style="{StaticResource PlaceholderText}">
+                                <Run Text="[11.2] SCANNER RESULT" FontWeight="Bold" Foreground="#ffff3d"/><LineBreak/>
+                                <Run Text="Width: 250 | Height: 175" FontSize="10"/><LineBreak/>
+                                <Run Text="Sidebar Row 1 (Fixed)" FontSize="9" Foreground="#9A9A9A"/>
+                            </TextBlock>
+                        </Border>
+
+                        <!-- 11.3 VALIDATION RESULT -->
+                        <Border Grid.Row="2" Style="{StaticResource PlaceholderBorder}" Background="#1EFFFFFF" Margin="2">
+                            <TextBlock Style="{StaticResource PlaceholderText}">
+                                <Run Text="[11.3] VALIDATION RESULT" FontWeight="Bold" Foreground="#ffff3d"/><LineBreak/>
+                                <Run Text="Width: 250 | Height: 150" FontSize="10"/><LineBreak/>
+                                <Run Text="Sidebar Row 2 (Fixed)" FontSize="9" Foreground="#9A9A9A"/>
+                            </TextBlock>
+                        </Border>
+
+                        <!-- 11.4 IMPORT GAMES -->
+                        <Border Grid.Row="3" Style="{StaticResource PlaceholderBorder}" Background="#1EFFFFFF" Margin="2">
+                            <TextBlock Style="{StaticResource PlaceholderText}">
+                                <Run Text="[11.4] IMPORT GAMES" FontWeight="Bold" Foreground="#ffff3d"/><LineBreak/>
+                                <Run Text="Width: 250 | Height: 140" FontSize="10"/><LineBreak/>
+                                <Run Text="Sidebar Row 3 (Fixed)" FontSize="9" Foreground="#9A9A9A"/>
+                            </TextBlock>
+                        </Border>
+
+                        <!-- 11.5 SYNC CONFLICT RESOLVER -->
+                        <Border Grid.Row="4" Style="{StaticResource PlaceholderBorder}" Background="#1EFFFFFF" Margin="2">
+                            <TextBlock Style="{StaticResource PlaceholderText}">
+                                <Run Text="[11.5] SYNC CONFLICT RESOLVER" FontWeight="Bold" Foreground="#ffff3d"/><LineBreak/>
+                                <Run Text="Width: 250 | Height: 145" FontSize="10"/><LineBreak/>
+                                <Run Text="Sidebar Row 4 (Fixed)" FontSize="9" Foreground="#9A9A9A"/>
+                            </TextBlock>
+                        </Border>
+                    </Grid>
+                </Border>
+            </Grid>
+
+            <!-- 12. FOOTER -->
+            <!-- Row 4 of Root Grid. X=0, Y=915, Width=1659, Height=33 -->
+            <Border Grid.Row="4" Style="{StaticResource PlaceholderBorder}" Height="33" Background="#261A1F26" BorderBrush="#80252528">
+                <TextBlock Style="{StaticResource PlaceholderText}">
+                    <Run Text="[12] FOOTER" Foreground="#9A9A9A"/>
+                    <Span xml:space="preserve">  |  </Span>
+                    <Run Text="X: 0 | Y: 915 | Width: 1659 | Height: 33" FontSize="10"/>
+                    <Span xml:space="preserve">  |  </Span>
+                    <Run Text="Row: 4 | Column: 0 | Fixed Height" FontSize="9" Foreground="#9A9A9A"/>
+                </TextBlock>
+            </Border>
+        </Grid>
     </Grid>
 </Window>
