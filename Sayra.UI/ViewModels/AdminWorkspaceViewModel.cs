@@ -275,6 +275,7 @@ namespace Sayra.UI.ViewModels
                     InstallationPath = path,
                     InstallationSource = temp.Src,
                     Status = status,
+                    IsEnabled = (status != "Disabled"),
                     LastUpdated = DateTime.Now.AddDays(-i % 30).AddHours(-i % 24).ToString("yyyy-MM-dd HH:mm"),
                     ModifiedBy = (i % 3 == 0) ? "Administrator" : ((i % 3 == 1) ? "System Sync" : "Deploy Service"),
                     Size = temp.Size,
@@ -287,15 +288,60 @@ namespace Sayra.UI.ViewModels
             }
         }
 
+        private bool _isSyncingProperties = false;
+
         private void Item_PropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
+            if (sender is not AdminAppItem item) return;
+
             if (e.PropertyName == nameof(AdminAppItem.IsChecked))
             {
                 UpdateSelectedCount();
             }
-            if (e.PropertyName == nameof(AdminAppItem.Status))
+
+            if (_isSyncingProperties) return;
+
+            if (e.PropertyName == nameof(AdminAppItem.IsEnabled))
             {
+                _isSyncingProperties = true;
+                try
+                {
+                    if (item.IsEnabled && item.Status == "Disabled")
+                    {
+                        item.Status = "Installed";
+                    }
+                    else if (!item.IsEnabled && item.Status != "Disabled")
+                    {
+                        item.Status = "Disabled";
+                    }
+                }
+                finally
+                {
+                    _isSyncingProperties = false;
+                }
                 RecalculateCategoryCounts();
+                ApplyFilterAndPagination();
+            }
+            else if (e.PropertyName == nameof(AdminAppItem.Status))
+            {
+                _isSyncingProperties = true;
+                try
+                {
+                    if (item.Status == "Disabled" && item.IsEnabled)
+                    {
+                        item.IsEnabled = false;
+                    }
+                    else if (item.Status != "Disabled" && !item.IsEnabled)
+                    {
+                        item.IsEnabled = true;
+                    }
+                }
+                finally
+                {
+                    _isSyncingProperties = false;
+                }
+                RecalculateCategoryCounts();
+                ApplyFilterAndPagination();
             }
         }
 

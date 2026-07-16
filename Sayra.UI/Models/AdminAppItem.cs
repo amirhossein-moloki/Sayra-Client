@@ -8,6 +8,9 @@ namespace Sayra.UI.Models
         private bool _isChecked;
 
         [ObservableProperty]
+        private bool _isEnabled = true;
+
+        [ObservableProperty]
         private string _id = string.Empty;
 
         [ObservableProperty]
