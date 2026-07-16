@@ -42,6 +42,53 @@
             <Setter Property="TextAlignment" Value="Center"/>
         </Style>
 
+        <!-- Modal Storyboards -->
+        <Storyboard x:Key="OpenModalStoryboard">
+            <DoubleAnimation Storyboard.TargetName="ModalOverlay" Storyboard.TargetProperty="Opacity" From="0" To="1" Duration="0:0:0.18">
+                <DoubleAnimation.EasingFunction>
+                    <CubicEase EasingMode="EaseOut"/>
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+            <DoubleAnimation Storyboard.TargetName="ModalScaleTransform" Storyboard.TargetProperty="ScaleX" From="0.95" To="1.0" Duration="0:0:0.18">
+                <DoubleAnimation.EasingFunction>
+                    <CubicEase EasingMode="EaseOut"/>
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+            <DoubleAnimation Storyboard.TargetName="ModalScaleTransform" Storyboard.TargetProperty="ScaleY" From="0.95" To="1.0" Duration="0:0:0.18">
+                <DoubleAnimation.EasingFunction>
+                    <CubicEase EasingMode="EaseOut"/>
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+            <DoubleAnimation Storyboard.TargetName="BgBlurEffect" Storyboard.TargetProperty="Radius" From="0" To="18" Duration="0:0:0.18">
+                <DoubleAnimation.EasingFunction>
+                    <CubicEase EasingMode="EaseOut"/>
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+        </Storyboard>
+
+        <Storyboard x:Key="CloseModalStoryboard">
+            <DoubleAnimation Storyboard.TargetName="ModalOverlay" Storyboard.TargetProperty="Opacity" From="1" To="0" Duration="0:0:0.18">
+                <DoubleAnimation.EasingFunction>
+                    <CubicEase EasingMode="EaseIn"/>
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+            <DoubleAnimation Storyboard.TargetName="ModalScaleTransform" Storyboard.TargetProperty="ScaleX" From="1.0" To="0.95" Duration="0:0:0.18">
+                <DoubleAnimation.EasingFunction>
+                    <CubicEase EasingMode="EaseIn"/>
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+            <DoubleAnimation Storyboard.TargetName="ModalScaleTransform" Storyboard.TargetProperty="ScaleY" From="1.0" To="0.95" Duration="0:0:0.18">
+                <DoubleAnimation.EasingFunction>
+                    <CubicEase EasingMode="EaseIn"/>
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+            <DoubleAnimation Storyboard.TargetName="BgBlurEffect" Storyboard.TargetProperty="Radius" From="18" To="0" Duration="0:0:0.18">
+                <DoubleAnimation.EasingFunction>
+                    <CubicEase EasingMode="EaseIn"/>
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+        </Storyboard>
+
         <!-- Premium Dark Custom Styles for Button & TextBox -->
         <Style x:Key="ToolbarButtonStyle" TargetType="Button">
             <Setter Property="Background" Value="#1E2026"/>
@@ -176,15 +223,20 @@
     </Window.Resources>
 
     <Grid Background="#0F1014">
-        <!-- ROOT GRID -->
-        <Grid x:Name="RootGrid">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="80" />  <!-- Row 0: Header (Fixed to 80px as requested) -->
-                <RowDefinition Height="64" />  <!-- Row 1: Search (Fixed, accommodates 48px height search and margins) -->
-                <RowDefinition Height="72" />  <!-- Row 2: Action Area / Toolbar (Fixed, accommodates 56px height) -->
-                <RowDefinition Height="*" />   <!-- Row 3: Workspace (Stretch) -->
-                <RowDefinition Height="80" />  <!-- Row 4: Footer (Fixed to 70px + margin) -->
-            </Grid.RowDefinitions>
+        <!-- ROOT GRID (Wrapped in a container with an effect) -->
+        <Grid x:Name="MainContentContainer">
+            <Grid.Effect>
+                <BlurEffect x:Name="BgBlurEffect" Radius="0" KernelType="Box"/>
+            </Grid.Effect>
+
+            <Grid x:Name="RootGrid">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="80" />  <!-- Row 0: Header (Fixed to 80px as requested) -->
+                    <RowDefinition Height="64" />  <!-- Row 1: Search (Fixed, accommodates 48px height search and margins) -->
+                    <RowDefinition Height="72" />  <!-- Row 2: Action Area / Toolbar (Fixed, accommodates 56px height) -->
+                    <RowDefinition Height="*" />   <!-- Row 3: Workspace (Stretch) -->
+                    <RowDefinition Height="80" />  <!-- Row 4: Footer (Fixed to 70px + margin) -->
+                </Grid.RowDefinitions>
 
             <!-- 01. HEADER -->
             <!-- Width: Stretch to full window width. Height: 80px. Background panel color #181A20 with border #2A2D36 -->
@@ -397,11 +449,9 @@
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="2.5*" MinWidth="180" MaxWidth="250" /> <!-- Column 0: Category Sidebar -->
                     <ColumnDefinition Width="16" />  <!-- Gap -->
-                    <ColumnDefinition Width="6.5*" />   <!-- Column 1: Games Panel (Stretches) -->
+                    <ColumnDefinition Width="10.7*" />   <!-- Column 1: Games Panel (Stretches) -->
                     <ColumnDefinition Width="16" />  <!-- Gap -->
-                    <ColumnDefinition Width="4.2*" MinWidth="300" MaxWidth="420" /> <!-- Column 2: Game Details -->
-                    <ColumnDefinition Width="16" />  <!-- Gap -->
-                    <ColumnDefinition Width="2.6*" MinWidth="200" MaxWidth="260" /> <!-- Column 3: Right Sidebar -->
+                    <ColumnDefinition Width="2.6*" MinWidth="200" MaxWidth="260" /> <!-- Column 2: Right Sidebar -->
                 </Grid.ColumnDefinitions>
 
                 <Grid.RowDefinitions>
@@ -481,7 +531,8 @@
                                   ItemsSource="{Binding VisibleItems}"
                                   Style="{StaticResource PremiumDataGridStyle}"
                                   SelectionMode="Single"
-                                  SelectionUnit="FullRow">
+                                  SelectionUnit="FullRow"
+                                  SelectionChanged="GamesDataGrid_SelectionChanged">
                             <DataGrid.Columns>
                                 <!-- Checkbox Column -->
                                 <DataGridTemplateColumn Width="45">
@@ -594,283 +645,12 @@
                     </Grid>
                 </Border>
 
-                <!-- 10. GAME DETAILS -->
-                <!-- Spans Row 1 to Row 3 (RowSpan 3) of Workspace. Width: 420px. Fixed Width -->
-                <Border Grid.Column="4" Grid.Row="1" Grid.RowSpan="3" Background="#181A20" BorderBrush="#2A2D36" BorderThickness="1" CornerRadius="10" Margin="0,10,0,0">
-                    <Grid>
-                        <!-- PLACEHOLDER WHEN NO SELECTION -->
-                        <Grid x:Name="NoSelectionPresenter" VerticalAlignment="Center" HorizontalAlignment="Center">
-                            <Grid.Style>
-                                <Style TargetType="Grid">
-                                    <Setter Property="Visibility" Value="Collapsed"/>
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding ElementName=GamesDataGrid, Path=SelectedItem}" Value="{x:Null}">
-                                            <Setter Property="Visibility" Value="Visible"/>
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </Grid.Style>
-                            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-                                <Path Data="M9.813 15.904L9 21l5.096-.813m-4.283-4.283L19.5 6.228a2.33 2.33 0 113.272 3.272L13.096 19.18m-3.283-3.283L13.096 19.18"
-                                      Stroke="#9A9A9A" StrokeThickness="1.5" Width="48" Height="48" Stretch="Uniform" HorizontalAlignment="Center" Margin="0,0,0,16"/>
-                                <TextBlock Text="No Application Selected" Foreground="White" FontSize="14" FontFamily="{StaticResource PeydaBold}" HorizontalAlignment="Center"/>
-                                <TextBlock Text="Select an entry from the list to view and manage its configuration details." Foreground="#9A9A9A" FontSize="11" FontFamily="{StaticResource PeydaMedium}" TextAlignment="Center" Margin="0,8,0,0" TextWrapping="Wrap"/>
-                            </StackPanel>
-                        </Grid>
-
-                        <!-- COMPONENT DETAILS WHEN SELECTION EXISTS -->
-                        <Grid x:Name="SelectionDetailsPresenter" DataContext="{Binding ElementName=GamesDataGrid, Path=SelectedItem}">
-                            <Grid.Style>
-                                <Style TargetType="Grid">
-                                    <Setter Property="Visibility" Value="Visible"/>
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding}" Value="{x:Null}">
-                                            <Setter Property="Visibility" Value="Collapsed"/>
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </Grid.Style>
-
-                            <Grid.RowDefinitions>
-                                <!-- Top title and status summary -->
-                                <RowDefinition Height="Auto" />
-                                <!-- Action Buttons Toolbar -->
-                                <RowDefinition Height="Auto" />
-                                <!-- Scrollable Sections -->
-                                <RowDefinition Height="*" />
-                            </Grid.RowDefinitions>
-
-                            <!-- Header Section -->
-                            <Border Grid.Row="0" Padding="16,16,16,12" BorderBrush="#2A2D36" BorderThickness="0,0,0,1">
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="Auto" />
-                                        <ColumnDefinition Width="*" />
-                                    </Grid.ColumnDefinitions>
-                                    <Border Grid.Column="0" Width="40" Height="40" Background="#1A63E6FF" BorderBrush="#3363E6FF" BorderThickness="1" CornerRadius="8" Margin="0,0,12,0">
-                                        <Path Data="{Binding IconGeometry}" Stroke="#63E6FF" StrokeThickness="2" Width="18" Height="18" Stretch="Uniform" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                    </Border>
-                                    <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                                        <TextBlock Text="{Binding Name}" Foreground="White" FontSize="15" FontFamily="{StaticResource PeydaBold}" TextTrimming="CharacterEllipsis"/>
-                                        <TextBlock Text="{Binding Category}" Foreground="#63E6FF" FontSize="11" FontFamily="{StaticResource PeydaMedium}" Margin="0,2,0,0"/>
-                                    </StackPanel>
-                                </Grid>
-                            </Border>
-
-                            <!-- Quick Action Buttons Grid -->
-                            <Border Grid.Row="1" Background="#14161C" Padding="12,8" BorderBrush="#2A2D36" BorderThickness="0,0,0,1">
-                                <WrapPanel ItemWidth="88" ItemHeight="36" HorizontalAlignment="Center">
-                                    <Button Style="{StaticResource ToolbarButtonStyle}" Content="Launch" Height="30" Margin="2"
-                                            Command="{Binding DataContext.LaunchCommand, RelativeSource={RelativeSource AncestorType=Window}}" CommandParameter="{Binding}" Background="#1E3F30" BorderBrush="#14BE78" Foreground="#14BE78"/>
-                                    <Button Style="{StaticResource ToolbarButtonStyle}" Content="Stop" Height="30" Margin="2"
-                                            Command="{Binding DataContext.StopCommand, RelativeSource={RelativeSource AncestorType=Window}}" CommandParameter="{Binding}" Background="#3F1E1E" BorderBrush="#F46B6B" Foreground="#F46B6B"/>
-                                    <Button Style="{StaticResource ToolbarButtonStyle}" Content="Restart" Height="30" Margin="2"
-                                            Command="{Binding DataContext.RestartCommand, RelativeSource={RelativeSource AncestorType=Window}}" CommandParameter="{Binding}"/>
-                                    <Button Style="{StaticResource ToolbarButtonStyle}" Content="Edit" Height="30" Margin="2"
-                                            Command="{Binding DataContext.EditCommand, RelativeSource={RelativeSource AncestorType=Window}}" CommandParameter="{Binding}"/>
-                                    <Button Style="{StaticResource ToolbarButtonStyle}" Content="Folder" Height="30" Margin="2"
-                                            Command="{Binding DataContext.OpenFolderCommand, RelativeSource={RelativeSource AncestorType=Window}}" CommandParameter="{Binding}"/>
-                                    <Button Style="{StaticResource ToolbarButtonStyle}" Content="Validate" Height="30" Margin="2"
-                                            Command="{Binding DataContext.ValidateCommand, RelativeSource={RelativeSource AncestorType=Window}}" CommandParameter="{Binding}"/>
-                                    <Button Style="{StaticResource ToolbarButtonStyle}" Content="Export" Height="30" Margin="2"
-                                            Command="{Binding DataContext.ExportCommand, RelativeSource={RelativeSource AncestorType=Window}}" CommandParameter="{Binding}"/>
-                                    <Button Style="{StaticResource ToolbarButtonStyle}" Content="Delete" Height="30" Margin="2"
-                                            Command="{Binding DataContext.DeleteCommand, RelativeSource={RelativeSource AncestorType=Window}}" CommandParameter="{Binding}"/>
-                                </WrapPanel>
-                            </Border>
-
-                            <!-- Scrollable Detail Sections -->
-                            <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-                                <StackPanel Margin="16,8,16,16">
-
-                                    <!-- SECTION 1: General -->
-                                    <StackPanel Margin="0,0,0,16">
-                                        <TextBlock Text="GENERAL" FontFamily="{StaticResource PeydaBold}" FontSize="11" Foreground="#63E6FF" Margin="0,0,0,8"/>
-                                        <Border Background="#1C1F26" CornerRadius="6" Padding="12">
-                                            <Grid>
-                                                <Grid.RowDefinitions>
-                                                    <RowDefinition Height="Auto"/>
-                                                    <RowDefinition Height="Auto"/>
-                                                    <RowDefinition Height="Auto"/>
-                                                    <RowDefinition Height="Auto"/>
-                                                </Grid.RowDefinitions>
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="Auto" />
-                                                    <ColumnDefinition Width="*" />
-                                                </Grid.ColumnDefinitions>
-
-                                                <TextBlock Grid.Row="0" Grid.Column="0" Text="ID:" Foreground="#9A9A9A" FontSize="12" Margin="0,0,0,4"/>
-                                                <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding Id}" Foreground="White" FontSize="12" HorizontalAlignment="Right" FontWeight="SemiBold"/>
-
-                                                <TextBlock Grid.Row="1" Grid.Column="0" Text="Size on Disk:" Foreground="#9A9A9A" FontSize="12" Margin="0,4,0,4"/>
-                                                <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding Size}" Foreground="White" FontSize="12" HorizontalAlignment="Right"/>
-
-                                                <TextBlock Grid.Row="2" Grid.Column="0" Text="License:" Foreground="#9A9A9A" FontSize="12" Margin="0,4,0,4"/>
-                                                <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding License}" Foreground="White" FontSize="12" HorizontalAlignment="Right"/>
-
-                                                <TextBlock Grid.Row="3" Grid.Column="0" Text="Last Modified By:" Foreground="#9A9A9A" FontSize="12" Margin="0,4,0,0"/>
-                                                <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding ModifiedBy}" Foreground="White" FontSize="12" HorizontalAlignment="Right"/>
-                                            </Grid>
-                                        </Border>
-                                    </StackPanel>
-
-                                    <!-- SECTION 2: Executable -->
-                                    <StackPanel Margin="0,0,0,16">
-                                        <TextBlock Text="EXECUTABLE" FontFamily="{StaticResource PeydaBold}" FontSize="11" Foreground="#63E6FF" Margin="0,0,0,8"/>
-                                        <Border Background="#1C1F26" CornerRadius="6" Padding="12">
-                                            <StackPanel>
-                                                <TextBlock Text="Executable Name" Foreground="#9A9A9A" FontSize="11" Margin="0,0,0,4"/>
-                                                <TextBlock Text="{Binding Executable}" Foreground="White" FontSize="12" FontWeight="SemiBold"/>
-
-                                                <Border BorderBrush="#2A2D36" BorderThickness="0,0,0,1" Margin="0,6"/>
-
-                                                <TextBlock Text="Path" Foreground="#9A9A9A" FontSize="11" Margin="0,0,0,4"/>
-                                                <TextBox Text="{Binding InstallationPath, Mode=OneWay}" Background="Transparent" BorderThickness="0" Foreground="White" FontSize="11" IsReadOnly="True" TextWrapping="Wrap"/>
-                                            </StackPanel>
-                                        </Border>
-                                    </StackPanel>
-
-                                    <!-- SECTION 3: Launcher -->
-                                    <StackPanel Margin="0,0,0,16">
-                                        <TextBlock Text="LAUNCHER" FontFamily="{StaticResource PeydaBold}" FontSize="11" Foreground="#63E6FF" Margin="0,0,0,8"/>
-                                        <Border Background="#1C1F26" CornerRadius="6" Padding="12">
-                                            <Grid>
-                                                <TextBlock Text="Platform Launcher" Foreground="#9A9A9A" FontSize="12" VerticalAlignment="Center"/>
-                                                <TextBlock Text="{Binding Launcher}" Foreground="White" FontSize="12" FontWeight="Bold" HorizontalAlignment="Right" VerticalAlignment="Center"/>
-                                            </Grid>
-                                        </Border>
-                                    </StackPanel>
-
-                                    <!-- SECTION 4: Launch Settings -->
-                                    <StackPanel Margin="0,0,0,16">
-                                        <TextBlock Text="LAUNCH SETTINGS" FontFamily="{StaticResource PeydaBold}" FontSize="11" Foreground="#63E6FF" Margin="0,0,0,8"/>
-                                        <Border Background="#1C1F26" CornerRadius="6" Padding="12">
-                                            <StackPanel>
-                                                <Grid Margin="0,0,0,4">
-                                                    <TextBlock Text="Parameters / Arguments" Foreground="#9A9A9A" FontSize="12"/>
-                                                    <TextBlock Text="--nosplash --noborder" Foreground="#63E6FF" FontSize="11" HorizontalAlignment="Right" FontFamily="Consolas"/>
-                                                </Grid>
-                                                <Border BorderBrush="#2A2D36" BorderThickness="0,0,0,1" Margin="0,6"/>
-                                                <Grid>
-                                                    <TextBlock Text="Run as Admin" Foreground="#9A9A9A" FontSize="12"/>
-                                                    <CheckBox IsChecked="True" IsEnabled="False" HorizontalAlignment="Right"/>
-                                                </Grid>
-                                            </StackPanel>
-                                        </Border>
-                                    </StackPanel>
-
-                                    <!-- SECTION 5: Runtime -->
-                                    <StackPanel Margin="0,0,0,16">
-                                        <TextBlock Text="RUNTIME" FontFamily="{StaticResource PeydaBold}" FontSize="11" Foreground="#63E6FF" Margin="0,0,0,8"/>
-                                        <Border Background="#1C1F26" CornerRadius="6" Padding="12">
-                                            <Grid>
-                                                <Grid.RowDefinitions>
-                                                    <RowDefinition Height="Auto"/>
-                                                    <RowDefinition Height="Auto"/>
-                                                </Grid.RowDefinitions>
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="Auto"/>
-                                                    <ColumnDefinition Width="*"/>
-                                                </Grid.ColumnDefinitions>
-                                                <TextBlock Grid.Row="0" Grid.Column="0" Text="Optimization Level:" Foreground="#9A9A9A" FontSize="12" Margin="0,0,0,4"/>
-                                                <TextBlock Grid.Row="0" Grid.Column="1" Text="High Priority Class" Foreground="#14BE78" FontSize="12" HorizontalAlignment="Right"/>
-
-                                                <TextBlock Grid.Row="1" Grid.Column="0" Text="CPU Affinity:" Foreground="#9A9A9A" FontSize="12"/>
-                                                <TextBlock Grid.Row="1" Grid.Column="1" Text="All Cores (0-15)" Foreground="White" FontSize="12" HorizontalAlignment="Right"/>
-                                            </Grid>
-                                        </Border>
-                                    </StackPanel>
-
-                                    <!-- SECTION 6: Images & Resources -->
-                                    <StackPanel Margin="0,0,0,16">
-                                        <TextBlock Text="IMAGES &amp; RESOURCES" FontFamily="{StaticResource PeydaBold}" FontSize="11" Foreground="#63E6FF" Margin="0,0,0,8"/>
-                                        <Border Background="#1C1F26" CornerRadius="6" Padding="12">
-                                            <Grid>
-                                                <TextBlock Text="Asset Directory Path" Foreground="#9A9A9A" FontSize="12"/>
-                                                <TextBlock Text="Default Local Store" Foreground="White" FontSize="11" HorizontalAlignment="Right"/>
-                                            </Grid>
-                                        </Border>
-                                    </StackPanel>
-
-                                    <!-- SECTION 7: Metadata -->
-                                    <StackPanel Margin="0,0,0,16">
-                                        <TextBlock Text="METADATA" FontFamily="{StaticResource PeydaBold}" FontSize="11" Foreground="#63E6FF" Margin="0,0,0,8"/>
-                                        <Border Background="#1C1F26" CornerRadius="6" Padding="12">
-                                            <Grid>
-                                                <Grid.RowDefinitions>
-                                                    <RowDefinition Height="Auto"/>
-                                                    <RowDefinition Height="Auto"/>
-                                                </Grid.RowDefinitions>
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="Auto"/>
-                                                    <ColumnDefinition Width="*"/>
-                                                </Grid.ColumnDefinitions>
-                                                <TextBlock Grid.Row="0" Grid.Column="0" Text="Developer / Pub:" Foreground="#9A9A9A" FontSize="12" Margin="0,0,0,4"/>
-                                                <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding Publisher}" Foreground="White" FontSize="12" HorizontalAlignment="Right"/>
-
-                                                <TextBlock Grid.Row="1" Grid.Column="0" Text="Source Type:" Foreground="#9A9A9A" FontSize="12"/>
-                                                <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding InstallationSource}" Foreground="White" FontSize="12" HorizontalAlignment="Right"/>
-                                            </Grid>
-                                        </Border>
-                                    </StackPanel>
-
-                                    <!-- SECTION 8: Tags -->
-                                    <StackPanel Margin="0,0,0,16">
-                                        <TextBlock Text="TAGS" FontFamily="{StaticResource PeydaBold}" FontSize="11" Foreground="#63E6FF" Margin="0,0,0,8"/>
-                                        <Border Background="#1C1F26" CornerRadius="6" Padding="12">
-                                            <WrapPanel>
-                                                <Border Background="#252A34" CornerRadius="4" Padding="6,2" Margin="2">
-                                                    <TextBlock Text="LAN Play" FontSize="10" Foreground="White"/>
-                                                </Border>
-                                                <Border Background="#252A34" CornerRadius="4" Padding="6,2" Margin="2">
-                                                    <TextBlock Text="CyberCafe Recommended" FontSize="10" Foreground="#FFFF3D"/>
-                                                </Border>
-                                                <Border Background="#252A34" CornerRadius="4" Padding="6,2" Margin="2">
-                                                    <TextBlock Text="Online" FontSize="10" Foreground="#14BE78"/>
-                                                </Border>
-                                            </WrapPanel>
-                                        </Border>
-                                    </StackPanel>
-
-                                    <!-- SECTION 9: Security -->
-                                    <StackPanel Margin="0,0,0,16">
-                                        <TextBlock Text="SECURITY" FontFamily="{StaticResource PeydaBold}" FontSize="11" Foreground="#63E6FF" Margin="0,0,0,8"/>
-                                        <Border Background="#1C1F26" CornerRadius="6" Padding="12">
-                                            <StackPanel>
-                                                <Grid>
-                                                    <TextBlock Text="Sandbox Execution" Foreground="#9A9A9A" FontSize="12"/>
-                                                    <TextBlock Text="Enforced" Foreground="#14BE78" FontSize="11" HorizontalAlignment="Right"/>
-                                                </Grid>
-                                                <Border BorderBrush="#2A2D36" BorderThickness="0,0,0,1" Margin="0,6"/>
-                                                <Grid>
-                                                    <TextBlock Text="Whitelisting Mode" Foreground="#9A9A9A" FontSize="12"/>
-                                                    <TextBlock Text="Strict" Foreground="#63E6FF" FontSize="11" HorizontalAlignment="Right"/>
-                                                </Grid>
-                                            </StackPanel>
-                                        </Border>
-                                    </StackPanel>
-
-                                    <!-- SECTION 10: Visibility -->
-                                    <StackPanel Margin="0,0,0,16">
-                                        <TextBlock Text="VISIBILITY" FontFamily="{StaticResource PeydaBold}" FontSize="11" Foreground="#63E6FF" Margin="0,0,0,8"/>
-                                        <Border Background="#1C1F26" CornerRadius="6" Padding="12">
-                                            <Grid>
-                                                <TextBlock Text="Listed in Library" Foreground="#9A9A9A" FontSize="12" VerticalAlignment="Center"/>
-                                                <CheckBox IsChecked="True" IsEnabled="False" HorizontalAlignment="Right"/>
-                                            </Grid>
-                                        </Border>
-                                    </StackPanel>
-
-                                </StackPanel>
-                            </ScrollViewer>
-                        </Grid>
-                    </Grid>
-                </Border>
+                <!-- Old game details pane removed as requested (we now use a centered modal) -->
 
                 <!-- 11. RIGHT SIDEBAR -->
                 <!-- Spans Row 0 to Row 3 (RowSpan 4) of Workspace. Width: 260px, Height: 890. Row 0 starts at Y=0, so Top margin is 20px -->
                 <!-- This container holds the nested Right Sidebar Grid -->
-                <Border Grid.Column="6" Grid.Row="0" Grid.RowSpan="4" Height="890" Margin="0,20,10,0" VerticalAlignment="Top" Background="#14161C" BorderBrush="#2A2D36" BorderThickness="1" CornerRadius="10" Padding="12">
+                <Border Grid.Column="4" Grid.Row="0" Grid.RowSpan="4" Height="890" Margin="0,20,10,0" VerticalAlignment="Top" Background="#14161C" BorderBrush="#2A2D36" BorderThickness="1" CornerRadius="10" Padding="12">
                     <Grid x:Name="RightSidebarGrid">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto" /> <!-- 11.1 Add New Game -->
@@ -1037,6 +817,7 @@
                 </Grid>
             </Border>
         </Grid>
+        </Grid>
 
         <!-- FULL-SCREEN LOADING OVERLAY -->
         <Grid Background="#88000000" Panel.ZIndex="10000">
@@ -1058,6 +839,606 @@
                     <!-- Progress Text -->
                     <TextBlock Text="{Binding LoadingProgress, StringFormat='{}{0}% Completed'}" Foreground="#63E6FF" FontSize="12" FontFamily="{StaticResource PeydaMedium}" HorizontalAlignment="Center" Margin="0,8,0,0"/>
                 </StackPanel>
+            </Border>
+        </Grid>
+
+        <!-- MODAL DIALOG OVERLAY (Semi-transparent black overlay 45% & Blur focus controller) -->
+        <Grid x:Name="ModalOverlay" Background="#73000000" Panel.ZIndex="9000" Visibility="Collapsed" IsVisibleChanged="ModalOverlay_IsVisibleChanged" MouseDown="ModalOverlay_MouseDown">
+            <!-- Centered Modal dialog container -->
+            <Border x:Name="ModalCard"
+                    Width="1100" Height="740"
+                    HorizontalAlignment="Center" VerticalAlignment="Center"
+                    CornerRadius="18" BorderBrush="#252528" BorderThickness="1"
+                    RenderTransformOrigin="0.5,0.5"
+                    MouseDown="ModalCard_MouseDown">
+                <Border.Background>
+                    <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
+                        <GradientStop Color="#1B1B1F" Offset="0"/>
+                        <GradientStop Color="#101014" Offset="1"/>
+                    </LinearGradientBrush>
+                </Border.Background>
+                <Border.Effect>
+                    <DropShadowEffect Color="#000000" BlurRadius="40" ShadowDepth="8" Opacity="0.65"/>
+                </Border.Effect>
+                <Border.RenderTransform>
+                    <ScaleTransform x:Name="ModalScaleTransform" ScaleX="1.0" ScaleY="1.0"/>
+                </Border.RenderTransform>
+
+                <Grid Margin="24">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" /> <!-- Header -->
+                        <RowDefinition Height="*" />    <!-- Body/Split columns -->
+                    </Grid.RowDefinitions>
+
+                    <!-- HEADER -->
+                    <Grid Grid.Row="0" Margin="0,0,0,24">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+
+                        <!-- Left Column: Game Cover & Metadata -->
+                        <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
+                            <!-- Game Cover: 96x96 glassmorphic -->
+                            <Border Width="96" Height="96" Background="#13FFFFFF" BorderBrush="#252528" BorderThickness="1" CornerRadius="12" Margin="0,0,20,0">
+                                <Grid>
+                                    <Path Data="{Binding IconGeometry, FallbackValue='M12 2a10 10 0 100 20 10 10 0 000-20z'}"
+                                          Stroke="#63E6FF" StrokeThickness="2" Width="48" Height="48" Stretch="Uniform"
+                                          VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                </Grid>
+                            </Border>
+
+                            <!-- Game Metadata Stack -->
+                            <StackPanel VerticalAlignment="Center">
+                                <TextBlock Text="{Binding Name, FallbackValue='Game Name'}" Foreground="White" FontSize="24" FontFamily="{StaticResource PeydaBold}" FontWeight="Bold"/>
+
+                                <WrapPanel Margin="0,6,0,0" VerticalAlignment="Center">
+                                    <!-- Category Badge -->
+                                    <Border Background="#252A34" CornerRadius="4" Padding="8,4" Margin="0,0,8,0">
+                                        <TextBlock Text="{Binding Category, FallbackValue='Action'}" Foreground="#9A9A9A" FontSize="11" FontFamily="{StaticResource PeydaMedium}"/>
+                                    </Border>
+
+                                    <!-- Platform Launcher -->
+                                    <Border Background="#1C1F26" CornerRadius="4" Padding="8,4" Margin="0,0,8,0">
+                                        <TextBlock Text="{Binding Launcher, FallbackValue='Steam'}" Foreground="#63E6FF" FontSize="11" FontFamily="{StaticResource PeydaBold}"/>
+                                    </Border>
+
+                                    <!-- Installed Status Badge -->
+                                    <Border CornerRadius="4" Padding="8,4" Margin="0,0,8,0">
+                                        <Border.Style>
+                                            <Style TargetType="Border">
+                                                <Setter Property="Background" Value="#2214BE78"/>
+                                                <Setter Property="BorderBrush" Value="#4414BE78"/>
+                                                <Setter Property="BorderThickness" Value="1"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding Status}" Value="Disabled">
+                                                        <Setter Property="Background" Value="#229A9A9A"/>
+                                                        <Setter Property="BorderBrush" Value="#449A9A9A"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding Status}" Value="Corrupted">
+                                                        <Setter Property="Background" Value="#22F46B6B"/>
+                                                        <Setter Property="BorderBrush" Value="#44F46B6B"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding Status}" Value="Missing">
+                                                        <Setter Property="Background" Value="#22F46B6B"/>
+                                                        <Setter Property="BorderBrush" Value="#44F46B6B"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding Status}" Value="Updating">
+                                                        <Setter Property="Background" Value="#22ffff3d"/>
+                                                        <Setter Property="BorderBrush" Value="#44ffff3d"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding Status}" Value="Validation Required">
+                                                        <Setter Property="Background" Value="#228A5CFF"/>
+                                                        <Setter Property="BorderBrush" Value="#448A5CFF"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Border.Style>
+                                        <TextBlock Text="{Binding Status, FallbackValue='Installed'}" FontSize="11" FontFamily="{StaticResource PeydaBold}">
+                                            <TextBlock.Style>
+                                                <Style TargetType="TextBlock">
+                                                    <Setter Property="Foreground" Value="#14BE78"/>
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding Status}" Value="Disabled">
+                                                            <Setter Property="Foreground" Value="#9A9A9A"/>
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding Status}" Value="Corrupted">
+                                                            <Setter Property="Foreground" Value="#F46B6B"/>
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding Status}" Value="Missing">
+                                                            <Setter Property="Foreground" Value="#F46B6B"/>
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding Status}" Value="Updating">
+                                                            <Setter Property="Foreground" Value="#ffff3d"/>
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding Status}" Value="Validation Required">
+                                                            <Setter Property="Foreground" Value="#8A5CFF"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </TextBlock.Style>
+                                        </TextBlock>
+                                    </Border>
+
+                                    <!-- Version -->
+                                    <TextBlock Text="{Binding Version, FallbackValue='1.0.0'}" Foreground="#9A9A9A" FontSize="11" FontFamily="{StaticResource PeydaMedium}" Margin="0,0,8,0" VerticalAlignment="Center"/>
+
+                                    <!-- Developer -->
+                                    <TextBlock Text="{Binding Publisher, FallbackValue='Developer'}" Foreground="#9A9A9A" FontSize="11" FontFamily="{StaticResource PeydaMedium}" VerticalAlignment="Center"/>
+                                </WrapPanel>
+                            </StackPanel>
+                        </StackPanel>
+
+                        <!-- Right Column: X Close Button -->
+                        <Button Grid.Column="1" Width="36" Height="36" VerticalAlignment="Top" Click="CloseModal_Click">
+                            <Button.Template>
+                                <ControlTemplate TargetType="Button">
+                                    <Border x:Name="CloseBorder" Background="Transparent" CornerRadius="18" BorderThickness="0">
+                                        <Path x:Name="CrossPath" Data="M10 10L26 26M26 10L10 26" Stroke="#9A9A9A" StrokeThickness="2" Width="14" Height="14" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </Border>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter TargetName="CloseBorder" Property="Background" Value="#D9383A"/>
+                                            <Setter TargetName="CrossPath" Property="Stroke" Value="White"/>
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </Button.Template>
+                        </Button>
+                    </Grid>
+
+                    <!-- BODY/SPLIT COLUMNS -->
+                    <Grid Grid.Row="1">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="6.5*" /> <!-- Left 65% Column -->
+                            <ColumnDefinition Width="20" />  <!-- Spacing gap 20px -->
+                            <ColumnDefinition Width="3.5*" /> <!-- Right 35% Column -->
+                        </Grid.ColumnDefinitions>
+
+                        <!-- LEFT COLUMN (65%) -->
+                        <ScrollViewer Grid.Column="0" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                            <StackPanel Margin="0,0,10,0">
+
+                                <!-- General Info Card -->
+                                <Border Background="#121216" BorderBrush="#252528" BorderThickness="1" CornerRadius="12" Padding="16" Margin="0,0,0,20">
+                                    <StackPanel>
+                                        <TextBlock Text="GENERAL" FontFamily="{StaticResource PeydaBold}" FontSize="12" Foreground="#63E6FF" Margin="0,0,0,12" FontWeight="Bold"/>
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="1.5*" />
+                                                <ColumnDefinition Width="2*" />
+                                            </Grid.ColumnDefinitions>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto" />
+                                                <RowDefinition Height="12" />
+                                                <RowDefinition Height="Auto" />
+                                                <RowDefinition Height="12" />
+                                                <RowDefinition Height="Auto" />
+                                                <RowDefinition Height="12" />
+                                                <RowDefinition Height="Auto" />
+                                            </Grid.RowDefinitions>
+
+                                            <!-- ID -->
+                                            <TextBlock Grid.Row="0" Grid.Column="0" Text="Application ID" Foreground="#9A9A9A" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
+                                            <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding Id, FallbackValue='N/A'}" Foreground="White" FontSize="12" FontFamily="{StaticResource PeydaBold}"/>
+
+                                            <!-- Size -->
+                                            <TextBlock Grid.Row="2" Grid.Column="0" Text="Size on Disk" Foreground="#9A9A9A" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
+                                            <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding Size, FallbackValue='0 GB'}" Foreground="White" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
+
+                                            <!-- License -->
+                                            <TextBlock Grid.Row="4" Grid.Column="0" Text="License Model" Foreground="#9A9A9A" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
+                                            <TextBlock Grid.Row="4" Grid.Column="1" Text="{Binding License, FallbackValue='Free'}" Foreground="White" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
+
+                                            <!-- Last Updated -->
+                                            <TextBlock Grid.Row="6" Grid.Column="0" Text="Last Synced / Modified" Foreground="#9A9A9A" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
+                                            <TextBlock Grid.Row="6" Grid.Column="1" Text="{Binding LastUpdated, FallbackValue='N/A'}" Foreground="White" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
+                                        </Grid>
+                                    </StackPanel>
+                                </Border>
+
+                                <!-- Executable & Directory Settings Card -->
+                                <Border Background="#121216" BorderBrush="#252528" BorderThickness="1" CornerRadius="12" Padding="16" Margin="0,0,0,20">
+                                    <StackPanel>
+                                        <TextBlock Text="EXECUTABLE &amp; LAUNCH SETTINGS" FontFamily="{StaticResource PeydaBold}" FontSize="12" Foreground="#ffff3d" Margin="0,0,0,12" FontWeight="Bold"/>
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="1.5*" />
+                                                <ColumnDefinition Width="2*" />
+                                            </Grid.ColumnDefinitions>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto" />
+                                                <RowDefinition Height="12" />
+                                                <RowDefinition Height="Auto" />
+                                                <RowDefinition Height="12" />
+                                                <RowDefinition Height="Auto" />
+                                                <RowDefinition Height="12" />
+                                                <RowDefinition Height="Auto" />
+                                                <RowDefinition Height="12" />
+                                                <RowDefinition Height="Auto" />
+                                            </Grid.RowDefinitions>
+
+                                            <!-- Executable -->
+                                            <TextBlock Grid.Row="0" Grid.Column="0" Text="Executable" Foreground="#9A9A9A" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
+                                            <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding Executable, FallbackValue='launcher.exe'}" Foreground="White" FontSize="12" FontFamily="{StaticResource PeydaBold}" TextWrapping="Wrap"/>
+
+                                            <!-- Install Folder / Path -->
+                                            <TextBlock Grid.Row="2" Grid.Column="0" Text="Install Directory" Foreground="#9A9A9A" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
+                                            <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding InstallationPath, FallbackValue='C:\\'}" Foreground="White" FontSize="12" FontFamily="{StaticResource PeydaMedium}" TextWrapping="Wrap"/>
+
+                                            <!-- Arguments -->
+                                            <TextBlock Grid.Row="4" Grid.Column="0" Text="Arguments / Params" Foreground="#9A9A9A" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
+                                            <TextBlock Grid.Row="4" Grid.Column="1" Text="--nosplash --noborder --fullscreen" Foreground="#63E6FF" FontSize="12" FontFamily="Consolas"/>
+
+                                            <!-- Working Directory -->
+                                            <TextBlock Grid.Row="6" Grid.Column="0" Text="Working Directory" Foreground="#9A9A9A" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
+                                            <TextBlock Grid.Row="6" Grid.Column="1" Text="{Binding InstallationPath, FallbackValue='C:\\'}" Foreground="White" FontSize="12" FontFamily="{StaticResource PeydaMedium}" TextWrapping="Wrap"/>
+
+                                            <!-- Image Paths / Asset Directory -->
+                                            <TextBlock Grid.Row="8" Grid.Column="0" Text="Asset Directory Path" Foreground="#9A9A9A" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
+                                            <TextBlock Grid.Row="8" Grid.Column="1" Text="Default Local Store / Assets / Games" Foreground="White" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
+                                        </Grid>
+                                    </StackPanel>
+                                </Border>
+
+                                <!-- Integrated Platforms Store IDs Card -->
+                                <Border Background="#121216" BorderBrush="#252528" BorderThickness="1" CornerRadius="12" Padding="16" Margin="0,0,0,20">
+                                    <StackPanel>
+                                        <TextBlock Text="INTEGRATION APIS" FontFamily="{StaticResource PeydaBold}" FontSize="12" Foreground="#8A5CFF" Margin="0,0,0,12" FontWeight="Bold"/>
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="1.5*" />
+                                                <ColumnDefinition Width="2*" />
+                                            </Grid.ColumnDefinitions>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto" />
+                                                <RowDefinition Height="12" />
+                                                <RowDefinition Height="Auto" />
+                                                <RowDefinition Height="12" />
+                                                <RowDefinition Height="Auto" />
+                                            </Grid.RowDefinitions>
+
+                                            <!-- Steam ID -->
+                                            <TextBlock Grid.Row="0" Grid.Column="0" Text="Steam AppID" Foreground="#9A9A9A" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
+                                            <TextBlock Grid.Row="0" Grid.Column="1" Text="730 (CS2)" Foreground="White" FontSize="12" FontFamily="Consolas"/>
+
+                                            <!-- Epic ID -->
+                                            <TextBlock Grid.Row="2" Grid.Column="0" Text="Epic Games Catalog Namespace" Foreground="#9A9A9A" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
+                                            <TextBlock Grid.Row="2" Grid.Column="1" Text="fn_prod_fn10291_epic" Foreground="White" FontSize="12" FontFamily="Consolas"/>
+
+                                            <!-- Riot ID -->
+                                            <TextBlock Grid.Row="4" Grid.Column="0" Text="Riot Client Project ID" Foreground="#9A9A9A" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
+                                            <TextBlock Grid.Row="4" Grid.Column="1" Text="valorant_prod_client" Foreground="White" FontSize="12" FontFamily="Consolas"/>
+                                        </Grid>
+                                    </StackPanel>
+                                </Border>
+
+                                <!-- Description Card -->
+                                <Border Background="#121216" BorderBrush="#252528" BorderThickness="1" CornerRadius="12" Padding="16" Margin="0,0,0,20">
+                                    <StackPanel>
+                                        <TextBlock Text="DESCRIPTION &amp; BRIEF" FontFamily="{StaticResource PeydaBold}" FontSize="12" Foreground="#14BE78" Margin="0,0,0,12" FontWeight="Bold"/>
+                                        <TextBlock Text="The client launcher application system sync handles execution pipeline, anti-tamper constraints, sandbox boundaries, and process monitoring rules defined by Sayra core server configurations."
+                                                   Foreground="#D1D1D6" FontSize="12" FontFamily="{StaticResource PeydaLight}" TextWrapping="Wrap" LineHeight="20"/>
+                                    </StackPanel>
+                                </Border>
+
+                                <!-- Danger Zone -->
+                                <Border BorderBrush="#F46B6B" BorderThickness="1.5" CornerRadius="12" Background="#1A1212" Padding="16" Margin="0,0,0,20">
+                                    <StackPanel>
+                                        <TextBlock Text="DANGER ZONE" FontFamily="{StaticResource PeydaBold}" FontSize="12" Foreground="#F46B6B" Margin="0,0,0,8" FontWeight="Bold"/>
+                                        <TextBlock Text="These actions can result in permanent loss of local app states, metadata configuration, or image cache. Please execute with high caution."
+                                                   Foreground="#9A9A9A" FontSize="11" FontFamily="{StaticResource PeydaMedium}" Margin="0,0,0,16" TextWrapping="Wrap"/>
+
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*" />
+                                                <ColumnDefinition Width="*" />
+                                                <ColumnDefinition Width="*" />
+                                            </Grid.ColumnDefinitions>
+
+                                            <!-- Reset Config -->
+                                            <Button Grid.Column="0" Content="Reset Config" Height="36" Margin="0,0,8,0" Click="ResetConfig_Click" Foreground="#F46B6B">
+                                                <Button.Style>
+                                                    <Style TargetType="Button" BasedOn="{StaticResource ToolbarButtonStyle}">
+                                                        <Setter Property="BorderBrush" Value="#44F46B6B"/>
+                                                        <Setter Property="Background" Value="Transparent"/>
+                                                    </Style>
+                                                </Button.Style>
+                                            </Button>
+
+                                            <!-- Remove Images -->
+                                            <Button Grid.Column="1" Content="Remove Images" Height="36" Margin="0,0,8,0" Click="RemoveImages_Click" Foreground="#F46B6B">
+                                                <Button.Style>
+                                                    <Style TargetType="Button" BasedOn="{StaticResource ToolbarButtonStyle}">
+                                                        <Setter Property="BorderBrush" Value="#44F46B6B"/>
+                                                        <Setter Property="Background" Value="Transparent"/>
+                                                    </Style>
+                                                </Button.Style>
+                                            </Button>
+
+                                            <!-- Delete Game -->
+                                            <Button Grid.Column="2" Content="Delete Entry" Height="36" Command="{Binding DataContext.DeleteCommand, RelativeSource={RelativeSource AncestorType=Window}}" CommandParameter="{Binding}" Foreground="White">
+                                                <Button.Style>
+                                                    <Style TargetType="Button" BasedOn="{StaticResource ToolbarButtonStyle}">
+                                                        <Setter Property="Background" Value="#F46B6B"/>
+                                                        <Setter Property="BorderBrush" Value="#F46B6B"/>
+                                                        <Style.Triggers>
+                                                            <Trigger Property="IsMouseOver" Value="True">
+                                                                <Setter Property="Background" Value="#D9383A"/>
+                                                                <Setter Property="BorderBrush" Value="#D9383A"/>
+                                                            </Trigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Button.Style>
+                                            </Button>
+                                        </Grid>
+                                    </StackPanel>
+                                </Border>
+                            </StackPanel>
+                        </ScrollViewer>
+
+                        <!-- RIGHT COLUMN (35%) -->
+                        <Grid Grid.Column="2" VerticalAlignment="Top">
+                            <StackPanel>
+                                <TextBlock Text="QUICK ACTIONS" FontFamily="{StaticResource PeydaBold}" FontSize="12" Foreground="#63E6FF" Margin="0,0,0,16" FontWeight="Bold"/>
+
+                                <!-- Launch Button -->
+                                <Button Content="Launch Application" Command="{Binding DataContext.LaunchCommand, RelativeSource={RelativeSource AncestorType=Window}}" CommandParameter="{Binding}" Height="42" Margin="0,0,0,12">
+                                    <Button.Style>
+                                        <Style TargetType="Button" BasedOn="{StaticResource ToolbarButtonStyle}">
+                                            <Setter Property="Background" Value="#2214BE78"/>
+                                            <Setter Property="BorderBrush" Value="#4414BE78"/>
+                                            <Setter Property="Foreground" Value="#14BE78"/>
+                                            <Setter Property="Template">
+                                                <Setter.Value>
+                                                    <ControlTemplate TargetType="Button">
+                                                        <Border x:Name="border" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="1" CornerRadius="10">
+                                                            <Grid Margin="12,0">
+                                                                <Grid.ColumnDefinitions>
+                                                                    <ColumnDefinition Width="Auto" />
+                                                                    <ColumnDefinition Width="*" />
+                                                                </Grid.ColumnDefinitions>
+                                                                <!-- Play Icon Geometry -->
+                                                                <Path Data="M8 5v14l11-7z" Fill="#14BE78" Width="14" Height="14" Stretch="Uniform" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                                                                <ContentPresenter Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                                                            </Grid>
+                                                        </Border>
+                                                        <ControlTemplate.Triggers>
+                                                            <Trigger Property="IsMouseOver" Value="True">
+                                                                <Setter TargetName="border" Property="Background" Value="#3314BE78"/>
+                                                                <Setter TargetName="border" Property="BorderBrush" Value="#14BE78"/>
+                                                            </Trigger>
+                                                        </ControlTemplate.Triggers>
+                                                    </ControlTemplate>
+                                                </Setter.Value>
+                                            </Setter>
+                                        </Style>
+                                    </Button.Style>
+                                </Button>
+
+                                <!-- Stop Button -->
+                                <Button Content="Stop Execution" Command="{Binding DataContext.StopCommand, RelativeSource={RelativeSource AncestorType=Window}}" CommandParameter="{Binding}" Height="42" Margin="0,0,0,12">
+                                    <Button.Style>
+                                        <Style TargetType="Button" BasedOn="{StaticResource ToolbarButtonStyle}">
+                                            <Setter Property="Background" Value="#22F46B6B"/>
+                                            <Setter Property="BorderBrush" Value="#44F46B6B"/>
+                                            <Setter Property="Foreground" Value="#F46B6B"/>
+                                            <Setter Property="Template">
+                                                <Setter.Value>
+                                                    <ControlTemplate TargetType="Button">
+                                                        <Border x:Name="border" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="1" CornerRadius="10">
+                                                            <Grid Margin="12,0">
+                                                                <Grid.ColumnDefinitions>
+                                                                    <ColumnDefinition Width="Auto" />
+                                                                    <ColumnDefinition Width="*" />
+                                                                </Grid.ColumnDefinitions>
+                                                                <!-- Stop Icon Geometry -->
+                                                                <Path Data="M6 6h12v12H6z" Fill="#F46B6B" Width="14" Height="14" Stretch="Uniform" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                                                                <ContentPresenter Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                                                            </Grid>
+                                                        </Border>
+                                                        <ControlTemplate.Triggers>
+                                                            <Trigger Property="IsMouseOver" Value="True">
+                                                                <Setter TargetName="border" Property="Background" Value="#33F46B6B"/>
+                                                                <Setter TargetName="border" Property="BorderBrush" Value="#F46B6B"/>
+                                                            </Trigger>
+                                                        </ControlTemplate.Triggers>
+                                                    </ControlTemplate>
+                                                </Setter.Value>
+                                            </Setter>
+                                        </Style>
+                                    </Button.Style>
+                                </Button>
+
+                                <!-- Restart Button -->
+                                <Button Content="Restart App" Command="{Binding DataContext.RestartCommand, RelativeSource={RelativeSource AncestorType=Window}}" CommandParameter="{Binding}" Height="42" Margin="0,0,0,12">
+                                    <Button.Style>
+                                        <Style TargetType="Button" BasedOn="{StaticResource ToolbarButtonStyle}">
+                                            <Setter Property="Template">
+                                                <Setter.Value>
+                                                    <ControlTemplate TargetType="Button">
+                                                        <Border x:Name="border" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="1" CornerRadius="10">
+                                                            <Grid Margin="12,0">
+                                                                <Grid.ColumnDefinitions>
+                                                                    <ColumnDefinition Width="Auto" />
+                                                                    <ColumnDefinition Width="*" />
+                                                                </Grid.ColumnDefinitions>
+                                                                <!-- Restart Sync Icon -->
+                                                                <Path Data="M19 8l-4 4h3c0 3.31-2.69 6-6 6a5.87 5.87 0 01-2.8-.7l-1.01 1.01A7.9 7.9 0 0012 20c4.42 0 8-3.58 8-8h3l-4-4zM6 12c0-3.31 2.69-6 6-6 1.01 0 1.97.25 2.8.7l1.01-1.01A7.9 7.9 0 0012 4c-4.42 0-8 3.58-8 8H1l4 4 4-4H6z" Fill="#9A9A9A" Width="14" Height="14" Stretch="Uniform" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                                                                <ContentPresenter Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                                                            </Grid>
+                                                        </Border>
+                                                        <ControlTemplate.Triggers>
+                                                            <Trigger Property="IsMouseOver" Value="True">
+                                                                <Setter TargetName="border" Property="Background" Value="#252A34"/>
+                                                                <Setter TargetName="border" Property="BorderBrush" Value="#63E6FF"/>
+                                                            </Trigger>
+                                                        </ControlTemplate.Triggers>
+                                                    </ControlTemplate>
+                                                </Setter.Value>
+                                            </Setter>
+                                        </Style>
+                                    </Button.Style>
+                                </Button>
+
+                                <!-- Verify Button -->
+                                <Button Content="Verify Files" Command="{Binding DataContext.ValidateCommand, RelativeSource={RelativeSource AncestorType=Window}}" CommandParameter="{Binding}" Height="42" Margin="0,0,0,12">
+                                    <Button.Style>
+                                        <Style TargetType="Button" BasedOn="{StaticResource ToolbarButtonStyle}">
+                                            <Setter Property="Template">
+                                                <Setter.Value>
+                                                    <ControlTemplate TargetType="Button">
+                                                        <Border x:Name="border" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="1" CornerRadius="10">
+                                                            <Grid Margin="12,0">
+                                                                <Grid.ColumnDefinitions>
+                                                                    <ColumnDefinition Width="Auto" />
+                                                                    <ColumnDefinition Width="*" />
+                                                                </Grid.ColumnDefinitions>
+                                                                <!-- Shield/Check Icon -->
+                                                                <Path Data="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" Fill="#9A9A9A" Width="14" Height="14" Stretch="Uniform" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                                                                <ContentPresenter Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                                                            </Grid>
+                                                        </Border>
+                                                        <ControlTemplate.Triggers>
+                                                            <Trigger Property="IsMouseOver" Value="True">
+                                                                <Setter TargetName="border" Property="Background" Value="#252A34"/>
+                                                                <Setter TargetName="border" Property="BorderBrush" Value="#63E6FF"/>
+                                                            </Trigger>
+                                                        </ControlTemplate.Triggers>
+                                                    </ControlTemplate>
+                                                </Setter.Value>
+                                            </Setter>
+                                        </Style>
+                                    </Button.Style>
+                                </Button>
+
+                                <!-- Open Folder Button -->
+                                <Button Content="Open Install Folder" Command="{Binding DataContext.OpenFolderCommand, RelativeSource={RelativeSource AncestorType=Window}}" CommandParameter="{Binding}" Height="42" Margin="0,0,0,12">
+                                    <Button.Style>
+                                        <Style TargetType="Button" BasedOn="{StaticResource ToolbarButtonStyle}">
+                                            <Setter Property="Template">
+                                                <Setter.Value>
+                                                    <ControlTemplate TargetType="Button">
+                                                        <Border x:Name="border" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="1" CornerRadius="10">
+                                                            <Grid Margin="12,0">
+                                                                <Grid.ColumnDefinitions>
+                                                                    <ColumnDefinition Width="Auto" />
+                                                                    <ColumnDefinition Width="*" />
+                                                                </Grid.ColumnDefinitions>
+                                                                <!-- Folder Icon -->
+                                                                <Path Data="M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z" Fill="#9A9A9A" Width="14" Height="14" Stretch="Uniform" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                                                                <ContentPresenter Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                                                            </Grid>
+                                                        </Border>
+                                                        <ControlTemplate.Triggers>
+                                                            <Trigger Property="IsMouseOver" Value="True">
+                                                                <Setter TargetName="border" Property="Background" Value="#252A34"/>
+                                                                <Setter TargetName="border" Property="BorderBrush" Value="#63E6FF"/>
+                                                            </Trigger>
+                                                        </ControlTemplate.Triggers>
+                                                    </ControlTemplate>
+                                                </Setter.Value>
+                                            </Setter>
+                                        </Style>
+                                    </Button.Style>
+                                </Button>
+
+                                <!-- Browse Files Button -->
+                                <Button Content="Browse Files" Command="{Binding DataContext.OpenFolderCommand, RelativeSource={RelativeSource AncestorType=Window}}" CommandParameter="{Binding}" Height="42" Margin="0,0,0,12">
+                                    <Button.Style>
+                                        <Style TargetType="Button" BasedOn="{StaticResource ToolbarButtonStyle}">
+                                            <Setter Property="Template">
+                                                <Setter.Value>
+                                                    <ControlTemplate TargetType="Button">
+                                                        <Border x:Name="border" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="1" CornerRadius="10">
+                                                            <Grid Margin="12,0">
+                                                                <Grid.ColumnDefinitions>
+                                                                    <ColumnDefinition Width="Auto" />
+                                                                    <ColumnDefinition Width="*" />
+                                                                </Grid.ColumnDefinitions>
+                                                                <!-- Search Eye/Magnifier Icon -->
+                                                                <Path Data="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" Fill="#9A9A9A" Width="14" Height="14" Stretch="Uniform" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                                                                <ContentPresenter Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                                                            </Grid>
+                                                        </Border>
+                                                        <ControlTemplate.Triggers>
+                                                            <Trigger Property="IsMouseOver" Value="True">
+                                                                <Setter TargetName="border" Property="Background" Value="#252A34"/>
+                                                                <Setter TargetName="border" Property="BorderBrush" Value="#63E6FF"/>
+                                                            </Trigger>
+                                                        </ControlTemplate.Triggers>
+                                                    </ControlTemplate>
+                                                </Setter.Value>
+                                            </Setter>
+                                        </Style>
+                                    </Button.Style>
+                                </Button>
+
+                                <!-- Export Button -->
+                                <Button Content="Export Config" Command="{Binding DataContext.ExportCommand, RelativeSource={RelativeSource AncestorType=Window}}" CommandParameter="{Binding}" Height="42" Margin="0,0,0,12">
+                                    <Button.Style>
+                                        <Style TargetType="Button" BasedOn="{StaticResource ToolbarButtonStyle}">
+                                            <Setter Property="Template">
+                                                <Setter.Value>
+                                                    <ControlTemplate TargetType="Button">
+                                                        <Border x:Name="border" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="1" CornerRadius="10">
+                                                            <Grid Margin="12,0">
+                                                                <Grid.ColumnDefinitions>
+                                                                    <ColumnDefinition Width="Auto" />
+                                                                    <ColumnDefinition Width="*" />
+                                                                </Grid.ColumnDefinitions>
+                                                                <!-- Share/Upload Icon -->
+                                                                <Path Data="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z" Fill="#9A9A9A" Width="14" Height="14" Stretch="Uniform" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                                                                <ContentPresenter Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                                                            </Grid>
+                                                        </Border>
+                                                        <ControlTemplate.Triggers>
+                                                            <Trigger Property="IsMouseOver" Value="True">
+                                                                <Setter TargetName="border" Property="Background" Value="#252A34"/>
+                                                                <Setter TargetName="border" Property="BorderBrush" Value="#63E6FF"/>
+                                                            </Trigger>
+                                                        </ControlTemplate.Triggers>
+                                                    </ControlTemplate>
+                                                </Setter.Value>
+                                            </Setter>
+                                        </Style>
+                                    </Button.Style>
+                                </Button>
+
+                                <!-- Delete Button -->
+                                <Button Content="Remove App" Command="{Binding DataContext.DeleteCommand, RelativeSource={RelativeSource AncestorType=Window}}" CommandParameter="{Binding}" Height="42" Margin="0,0,0,12">
+                                    <Button.Style>
+                                        <Style TargetType="Button" BasedOn="{StaticResource ToolbarButtonStyle}">
+                                            <Setter Property="Template">
+                                                <Setter.Value>
+                                                    <ControlTemplate TargetType="Button">
+                                                        <Border x:Name="border" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="1" CornerRadius="10">
+                                                            <Grid Margin="12,0">
+                                                                <Grid.ColumnDefinitions>
+                                                                    <ColumnDefinition Width="Auto" />
+                                                                    <ColumnDefinition Width="*" />
+                                                                </Grid.ColumnDefinitions>
+                                                                <!-- Delete Icon -->
+                                                                <Path Data="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z" Fill="#9A9A9A" Width="14" Height="14" Stretch="Uniform" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                                                                <ContentPresenter Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                                                            </Grid>
+                                                        </Border>
+                                                        <ControlTemplate.Triggers>
+                                                            <Trigger Property="IsMouseOver" Value="True">
+                                                                <Setter TargetName="border" Property="Background" Value="#252A34"/>
+                                                                <Setter TargetName="border" Property="BorderBrush" Value="#F46B6B"/>
+                                                            </Trigger>
+                                                        </ControlTemplate.Triggers>
+                                                    </ControlTemplate>
+                                                </Setter.Value>
+                                            </Setter>
+                                        </Style>
+                                    </Button.Style>
+                                </Button>
+                            </StackPanel>
+                        </Grid>
+                    </Grid>
+                </Grid>
             </Border>
         </Grid>
 
