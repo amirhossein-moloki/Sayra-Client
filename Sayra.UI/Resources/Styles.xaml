@@ -119,7 +119,7 @@
                                     <Storyboard>
                                         <ColorAnimation Storyboard.TargetName="ThumbBrush"
                                                         Storyboard.TargetProperty="Color"
-                                                        To="{DynamicResource Theme.Brushes.Primary}" Duration="0:0:0.15"/>
+                                                        To="{DynamicResource Theme.Colors.Primary}" Duration="0:0:0.15"/>
                                     </Storyboard>
                                 </BeginStoryboard>
                             </Trigger.EnterActions>

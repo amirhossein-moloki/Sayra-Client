@@ -55,7 +55,7 @@
                                         <Storyboard>
                                             <ColorAnimation Storyboard.TargetName="border"
                                                             Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)"
-                                                            To="{DynamicResource Theme.Brushes.Navigation.ItemHover}" Duration="0:0:0.12"/>
+                                                            To="{DynamicResource Theme.Colors.Navigation.ItemHover}" Duration="0:0:0.12"/>
                                         </Storyboard>
                                     </BeginStoryboard>
                                 </Trigger.EnterActions>
