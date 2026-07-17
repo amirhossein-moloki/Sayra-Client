@@ -54,7 +54,7 @@
             VerticalAlignment="Top">
         <Border.Effect>
             <!-- Soft Cinematic Shadow -->
-            <DropShadowEffect Color="#000000" BlurRadius="25" ShadowDepth="4" Opacity="0.5" />
+            <DropShadowEffect Color="{DynamicResource Theme.Colors.Shadow}" BlurRadius="25" ShadowDepth="4" Opacity="0.5" />
         </Border.Effect>
 
         <Grid>
@@ -85,7 +85,7 @@
                           VerticalAlignment="Center"
                           Margin="0,0,8,0">
                         <Path.Effect>
-                            <DropShadowEffect Color="#ffff3d" BlurRadius="6" ShadowDepth="0" Opacity="0.3"/>
+                            <DropShadowEffect Color="{DynamicResource Theme.Colors.Primary}" BlurRadius="6" ShadowDepth="0" Opacity="0.3"/>
                         </Path.Effect>
                     </Path>
                     <TextBlock Text="System Detail"
@@ -174,7 +174,7 @@
                                           VerticalAlignment="Center"
                                           Margin="0,0,4,0">
                                         <Path.Effect>
-                                            <DropShadowEffect Color="#ffff3d" BlurRadius="6" ShadowDepth="0" Opacity="0.3"/>
+                                            <DropShadowEffect Color="{DynamicResource Theme.Colors.Primary}" BlurRadius="6" ShadowDepth="0" Opacity="0.3"/>
                                         </Path.Effect>
                                     </Path>
 
@@ -189,7 +189,7 @@
                                 <!-- Middle: Separator line (subtle low-opacity dotted line) -->
                                 <Border Grid.Column="2"
                                         BorderThickness="0,0,0,1"
-                                        BorderBrush="#19FFFFFF"
+                                        BorderBrush="{DynamicResource Theme.Brushes.White.Opacity10}"
                                         Height="1"
                                         VerticalAlignment="Center"
                                         Margin="0,4,0,0"/>
@@ -209,8 +209,8 @@
                         <DataTemplate.Triggers>
                             <!-- Hover state: subtle background highlight -->
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="RowBorder" Property="Background" Value="#0DFFFFFF"/>
-                                <Setter TargetName="RowBorder" Property="BorderBrush" Value="#15FFFFFF"/>
+                                <Setter TargetName="RowBorder" Property="Background" Value="{DynamicResource Theme.Brushes.White.Opacity10}"/>
+                                <Setter TargetName="RowBorder" Property="BorderBrush" Value="{DynamicResource Theme.Brushes.White.Opacity10}"/>
                             </Trigger>
                         </DataTemplate.Triggers>
                     </DataTemplate>

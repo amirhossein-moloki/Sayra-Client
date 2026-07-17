@@ -17,7 +17,7 @@
                             <Trigger Property="IsMouseOver" Value="True">
                                 <Setter TargetName="B" Property="Effect">
                                     <Setter.Value>
-                                        <DropShadowEffect Color="#F5FF00" BlurRadius="14" ShadowDepth="0" Opacity=".45"/>
+                                        <DropShadowEffect Color="{DynamicResource Theme.Colors.Primary}" BlurRadius="14" ShadowDepth="0" Opacity=".45"/>
                                     </Setter.Value>
                                 </Setter>
                             </Trigger>
@@ -25,12 +25,12 @@
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
-            <Style.Triggers><DataTrigger Binding="{Binding State}" Value="{x:Static m:GameState.Playing}"><Setter Property="Background" Value="White"/></DataTrigger><DataTrigger Binding="{Binding State}" Value="{x:Static m:GameState.Unavailable}"><Setter Property="Background" Value="#55555A"/><Setter Property="Foreground" Value="#D1D1D5"/></DataTrigger></Style.Triggers>
+            <Style.Triggers><DataTrigger Binding="{Binding State}" Value="{x:Static m:GameState.Playing}"><Setter Property="Background" Value="White"/></DataTrigger><DataTrigger Binding="{Binding State}" Value="{x:Static m:GameState.Unavailable}"><Setter Property="Background" Value="{DynamicResource Theme.Brushes.Text.Disabled}"/><Setter Property="Foreground" Value="{DynamicResource Theme.Brushes.Text.Secondary}"/></DataTrigger></Style.Triggers>
         </Style>
     </UserControl.Resources>
-    <Border x:Name="Root" Background="#050507" BorderBrush="#24FFFFFF" BorderThickness="1" CornerRadius="16" ClipToBounds="True">
+    <Border x:Name="Root" Background="{DynamicResource Theme.Brushes.Surface.Card}" BorderBrush="{DynamicResource Theme.Brushes.Border.Translucent}" BorderThickness="1" CornerRadius="16" ClipToBounds="True">
         <Grid><Grid.RowDefinitions><RowDefinition Height="132"/><RowDefinition Height="*"/></Grid.RowDefinitions>
-            <Grid><Border CornerRadius="16,16,5,5" ClipToBounds="True"><Image Source="{Binding Cover}" Stretch="UniformToFill" RenderOptions.BitmapScalingMode="HighQuality"/></Border><Rectangle><Rectangle.Fill><LinearGradientBrush StartPoint="0,0" EndPoint="0,1"><GradientStop Color="#00000000" Offset=".34"/><GradientStop Color="#D8000000" Offset="1"/></LinearGradientBrush></Rectangle.Fill></Rectangle></Grid>
+            <Grid><Border CornerRadius="16,16,5,5" ClipToBounds="True"><Image Source="{Binding Cover}" Stretch="UniformToFill" RenderOptions.BitmapScalingMode="HighQuality"/></Border><Rectangle><Rectangle.Fill><LinearGradientBrush StartPoint="0,0" EndPoint="0,1"><GradientStop Color="{DynamicResource Transparent}" Offset=".34"/><GradientStop Color="{DynamicResource Theme.Colors.Background.Primary}" Offset="1"/></LinearGradientBrush></Rectangle.Fill></Rectangle></Grid>
             <StackPanel Grid.Row="1"><TextBlock Text="{Binding Title}" FontSize="16" FontFamily="{StaticResource PeydaBold}" Margin="12,9,12,0" TextTrimming="CharacterEllipsis"/><TextBlock Text="{Binding Category}" FontSize="11" Foreground="{StaticResource SecondaryTextBrush}" FontFamily="{StaticResource PeydaLight}" Margin="12,1,12,0"/><Button Content="{Binding ActionText}" Style="{StaticResource PlayButton}"/></StackPanel>
         </Grid>
     </Border>

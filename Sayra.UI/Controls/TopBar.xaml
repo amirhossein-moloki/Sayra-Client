@@ -36,7 +36,7 @@
                                 Width="40"
                                 Height="40">
                             <Border.Effect>
-                                <DropShadowEffect x:Name="glow" Color="#F46B6B" BlurRadius="0" ShadowDepth="0" Opacity="0"/>
+                                <DropShadowEffect x:Name="glow" Color="{DynamicResource Theme.Colors.Status.Error}" BlurRadius="0" ShadowDepth="0" Opacity="0"/>
                             </Border.Effect>
                             <!-- Power icon path (End Session Button Icon) -->
                             <Path x:Name="icon"
@@ -53,7 +53,7 @@
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Background" Value="#1AF46B6B"/>
+                                <Setter Property="Background" Value="{DynamicResource Theme.Brushes.Status.Error.Opacity10}"/>
                                 <Setter Property="BorderThickness" Value="1.5"/>
                                 <Trigger.EnterActions>
                                     <BeginStoryboard>
@@ -116,7 +116,7 @@
             CornerRadius="0"
             Height="85">
         <Border.Effect>
-            <DropShadowEffect Color="#000000" BlurRadius="20" ShadowDepth="4" Opacity="0.45"/>
+            <DropShadowEffect Color="{DynamicResource Theme.Colors.Shadow}" BlurRadius="20" ShadowDepth="4" Opacity="0.45"/>
         </Border.Effect>
 
         <Grid Margin="30,0">
@@ -148,7 +148,7 @@
                         Padding="14,5"
                         Margin="16,0,0,0"
                         VerticalAlignment="Center"
-                        Background="#0814BE78">
+                        Background="{DynamicResource Theme.Brushes.Status.Success}">
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                         <Ellipse Width="8" Height="8" Fill="{DynamicResource SuccessBrush}" Margin="0,0,8,0" VerticalAlignment="Center"/>
                         <TextBlock Text="Connected"

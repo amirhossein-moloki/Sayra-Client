@@ -1,0 +1,28 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <!-- Primitive Color Palette (Scale-based) -->
+    <!-- Dark Neutrals -->
+    <Color x:Key="Primitive.Neutral.900">#101014</Color>
+    <Color x:Key="Primitive.Neutral.850">#181A20</Color>
+    <Color x:Key="Primitive.Neutral.800">#1F1F23</Color>
+    <Color x:Key="Primitive.Neutral.750">#252528</Color>
+
+    <!-- Light Neutrals / Typography -->
+    <Color x:Key="Primitive.Neutral.100">#ffffff</Color>
+    <Color x:Key="Primitive.Neutral.200">#E1E1E6</Color>
+    <Color x:Key="Primitive.Neutral.400">#9A9A9A</Color>
+
+    <!-- Primary Yellow Accent -->
+    <Color x:Key="Primitive.Primary.Yellow">#ffff3d</Color>
+    <Color x:Key="Primitive.Primary.YellowHover">#f4f46b</Color>
+    <Color x:Key="Primitive.Primary.YellowPressed">#E5A000</Color>
+
+    <!-- Secondary Cyan Accent (Used in Admin UI) -->
+    <Color x:Key="Primitive.Secondary.Cyan">#63E6FF</Color>
+    <Color x:Key="Primitive.Secondary.CyanHover">#82EFFF</Color>
+
+    <!-- Status / Semantic Colors -->
+    <Color x:Key="Primitive.Status.Success">#14BE78</Color>
+    <Color x:Key="Primitive.Status.Error">#F46B6B</Color>
+    <Color x:Key="Primitive.Status.ErrorHover">#EF4444</Color>
+</ResourceDictionary>

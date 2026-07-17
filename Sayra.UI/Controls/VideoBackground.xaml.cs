@@ -22,6 +22,19 @@ namespace Sayra.UI.Controls
 
             Loaded += VideoBackground_Loaded;
             Unloaded += VideoBackground_Unloaded;
+
+            // Apply semantic centralized theme brush if not explicitly set
+            try
+            {
+                if (ReadLocalValue(OverlayBackgroundProperty) == DependencyProperty.UnsetValue)
+                {
+                    OverlayBackground = (Brush)FindResource("Theme.Brushes.Surface.Card");
+                }
+            }
+            catch (Exception ex)
+            {
+                Log($"[VideoBackground] Exception applying centralized theme brush: {ex.Message}");
+            }
         }
 
         private void VideoBackground_Unloaded(object sender, RoutedEventArgs e)
@@ -53,7 +66,7 @@ namespace Sayra.UI.Controls
 
         public static readonly DependencyProperty OverlayBackgroundProperty =
             DependencyProperty.Register(nameof(OverlayBackground), typeof(Brush), typeof(VideoBackground),
-                new PropertyMetadata(new SolidColorBrush((Color)ColorConverter.ConvertFromString("#CC050507"))));
+                new PropertyMetadata(null));
 
         public Brush OverlayBackground
         {

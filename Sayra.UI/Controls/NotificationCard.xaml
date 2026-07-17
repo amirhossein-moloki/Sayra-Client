@@ -45,12 +45,12 @@
                 <Setter Property="Background">
                     <Setter.Value>
                         <LinearGradientBrush StartPoint="0,0.5" EndPoint="1,0.5">
-                            <GradientStop Color="#2D2D31" Offset="0"/>
-                            <GradientStop Color="#3A3A40" Offset="1"/>
+                            <GradientStop Color="{DynamicResource Theme.Colors.Notification.Info.Start}" Offset="0"/>
+                            <GradientStop Color="{DynamicResource Theme.Colors.Notification.Info.End}" Offset="1"/>
                         </LinearGradientBrush>
                     </Setter.Value>
                 </Setter>
-                <Setter Property="BorderBrush" Value="#3A3A40"/>
+                <Setter Property="BorderBrush" Value="{DynamicResource Theme.Brushes.Notification.Info.End}"/>
 
                 <Style.Triggers>
                     <!-- TYPE 1: ERROR -->
@@ -58,12 +58,12 @@
                         <Setter Property="Background">
                             <Setter.Value>
                                 <LinearGradientBrush StartPoint="0,0.5" EndPoint="1,0.5">
-                                    <GradientStop Color="#341B1B" Offset="0"/>
-                                    <GradientStop Color="#F46B6B" Offset="1"/>
+                                    <GradientStop Color="{DynamicResource Theme.Colors.Notification.Error.Start}" Offset="0"/>
+                                    <GradientStop Color="{DynamicResource Theme.Colors.Status.Error}" Offset="1"/>
                                 </LinearGradientBrush>
                             </Setter.Value>
                         </Setter>
-                        <Setter Property="BorderBrush" Value="#F46B6B"/>
+                        <Setter Property="BorderBrush" Value="{DynamicResource Theme.Brushes.Status.Error}"/>
                     </DataTrigger>
 
                     <!-- TYPE 2: SUCCESS -->
@@ -71,12 +71,12 @@
                         <Setter Property="Background">
                             <Setter.Value>
                                 <LinearGradientBrush StartPoint="0,0.5" EndPoint="1,0.5">
-                                    <GradientStop Color="#12461F" Offset="0"/>
-                                    <GradientStop Color="#2EE15B" Offset="1"/>
+                                    <GradientStop Color="{DynamicResource Theme.Colors.Notification.Success.Start}" Offset="0"/>
+                                    <GradientStop Color="{DynamicResource Theme.Colors.Notification.Success.End}" Offset="1"/>
                                 </LinearGradientBrush>
                             </Setter.Value>
                         </Setter>
-                        <Setter Property="BorderBrush" Value="#2EE15B"/>
+                        <Setter Property="BorderBrush" Value="{DynamicResource Theme.Brushes.Notification.Success.End}"/>
                     </DataTrigger>
 
                     <!-- TYPE 3: WARNING / INFO -->
@@ -84,12 +84,12 @@
                         <Setter Property="Background">
                             <Setter.Value>
                                 <LinearGradientBrush StartPoint="0,0.5" EndPoint="1,0.5">
-                                    <GradientStop Color="#6D3F03" Offset="0"/>
-                                    <GradientStop Color="#FFA023" Offset="1"/>
+                                    <GradientStop Color="{DynamicResource Theme.Colors.Notification.Warning.Start}" Offset="0"/>
+                                    <GradientStop Color="{DynamicResource Theme.Colors.Notification.Warning.End}" Offset="1"/>
                                 </LinearGradientBrush>
                             </Setter.Value>
                         </Setter>
-                        <Setter Property="BorderBrush" Value="#FFA023"/>
+                        <Setter Property="BorderBrush" Value="{DynamicResource Theme.Brushes.Notification.Warning.End}"/>
                     </DataTrigger>
 
                     <!-- TYPE 4: LOADING -->
@@ -97,12 +97,12 @@
                         <Setter Property="Background">
                             <Setter.Value>
                                 <LinearGradientBrush StartPoint="0,0.5" EndPoint="1,0.5">
-                                    <GradientStop Color="#5E5E5E" Offset="0"/>
-                                    <GradientStop Color="#FFFFFF" Offset="1"/>
+                                    <GradientStop Color="{DynamicResource Theme.Colors.Notification.Loading.Start}" Offset="0"/>
+                                    <GradientStop Color="{DynamicResource Theme.Colors.Text.Primary}" Offset="1"/>
                                 </LinearGradientBrush>
                             </Setter.Value>
                         </Setter>
-                        <Setter Property="BorderBrush" Value="#FFFFFF"/>
+                        <Setter Property="BorderBrush" Value="{DynamicResource Theme.Brushes.Text.Primary}"/>
                     </DataTrigger>
                 </Style.Triggers>
             </Style>

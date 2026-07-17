@@ -10,7 +10,7 @@
     <UserControl.Resources>
         <!-- Standard Button Template/Style with explicit internal Foreground binding -->
         <Style x:Key="AdButtonStyle" TargetType="Button">
-            <Setter Property="Background" Value="#ffff3d"/>
+            <Setter Property="Background" Value="{DynamicResource Theme.Brushes.Primary}"/>
             <Setter Property="Foreground" Value="Black"/>
             <Setter Property="Height" Value="46"/>
             <Setter Property="Cursor" Value="Hand"/>
@@ -21,7 +21,7 @@
                                 Background="{TemplateBinding Background}"
                                 CornerRadius="12">
                             <Border.Effect>
-                                <DropShadowEffect x:Name="Glow" Color="#ffff3d" BlurRadius="12" ShadowDepth="0" Opacity="0" />
+                                <DropShadowEffect x:Name="Glow" Color="{DynamicResource Theme.Colors.Primary}" BlurRadius="12" ShadowDepth="0" Opacity="0" />
                             </Border.Effect>
                             <ContentPresenter x:Name="ContentPresenter"
                                               HorizontalAlignment="Center"
@@ -36,7 +36,7 @@
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Background" Value="#f4f46b"/>
+                                <Setter Property="Background" Value="{DynamicResource Theme.Brushes.PrimaryHover}"/>
                                 <Trigger.EnterActions>
                                     <BeginStoryboard>
                                         <Storyboard>
@@ -64,15 +64,15 @@
     </UserControl.Resources>
 
     <!-- Main Glass Container mimicking the original GameSidebar layout -->
-    <Border Background="#0DFFFFFF"
-            BorderBrush="#1EFFFFFF"
+    <Border Background="{DynamicResource Theme.Brushes.White.Opacity10}"
+            BorderBrush="{DynamicResource Theme.Brushes.White.Opacity10}"
             BorderThickness="1"
             CornerRadius="22"
             Padding="16,20"
             HorizontalAlignment="Stretch"
             VerticalAlignment="Stretch">
         <Border.Effect>
-            <DropShadowEffect Color="#000000" BlurRadius="20" ShadowDepth="3" Opacity="0.4" />
+            <DropShadowEffect Color="{DynamicResource Theme.Colors.Shadow}" BlurRadius="20" ShadowDepth="3" Opacity="0.4" />
         </Border.Effect>
 
         <Grid FlowDirection="RightToLeft">
@@ -85,7 +85,7 @@
 
             <!-- 1. HEADER SECTION -->
             <StackPanel Grid.Row="0" Orientation="Horizontal" VerticalAlignment="Center">
-                <Border Width="4" Height="16" Background="#F5FF00" CornerRadius="2" Margin="0,0,8,0"/>
+                <Border Width="4" Height="16" Background="{DynamicResource Theme.Brushes.Primary}" CornerRadius="2" Margin="0,0,8,0"/>
                 <TextBlock Text="پیشنهاد ویژه سایرا"
                            FontFamily="{StaticResource PeydaBold}"
                            FontSize="16"
@@ -105,13 +105,13 @@
                     <TextBlock Text="شارژ کیف پول با ۲۰٪ هدیه"
                                FontFamily="{StaticResource PeydaBold}"
                                FontSize="18"
-                               Foreground="#ffff3d"
+                               Foreground="{DynamicResource Theme.Brushes.Primary}"
                                TextAlignment="Right"
                                TextWrapping="Wrap" />
                     <TextBlock Text="به مدت محدود"
                                FontFamily="{StaticResource PeydaLight}"
                                FontSize="11"
-                               Foreground="#9A9A9A"
+                               Foreground="{DynamicResource Theme.Brushes.Text.Secondary}"
                                TextAlignment="Right"
                                Margin="0,4,0,0" />
                 </StackPanel>
@@ -121,7 +121,7 @@
                            Text="با شارژ حساب خود در جشنواره تابستانه سایرا، از ۲۰٪ اعتبار هدیه بدون سقف بهره‌مند شوید. این اعتبار بلافاصله فعال شده و برای تمام بازی‌ها قابل استفاده است."
                            FontFamily="{StaticResource PeydaMedium}"
                            FontSize="13"
-                           Foreground="#E1E1E6"
+                           Foreground="{DynamicResource Theme.Brushes.Text.Primary}"
                            TextAlignment="Right"
                            TextWrapping="Wrap"
                            LineHeight="20" />
@@ -129,19 +129,19 @@
                 <!-- Stylized decorative container illustrating cafe buffet / buffet ordering -->
                 <Border Grid.Row="2"
                         Margin="0,15,0,0"
-                        Background="#15FFFFFF"
-                        BorderBrush="#15FFFFFF"
+                        Background="{DynamicResource Theme.Brushes.White.Opacity10}"
+                        BorderBrush="{DynamicResource Theme.Brushes.White.Opacity10}"
                         BorderThickness="1"
                         CornerRadius="14"
                         Padding="12">
                     <Grid>
                         <!-- Neon glow decorative background effect -->
-                        <Border Background="#ffff3d" Opacity="0.03" CornerRadius="12"/>
+                        <Border Background="{DynamicResource Theme.Brushes.Primary}" Opacity="0.03" CornerRadius="12"/>
 
                         <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
                             <!-- SVG Path / Buffet symbol placeholder -->
                             <Path Data="M11 9H9V2H7V9H5V2H3V9C3 11.12 4.66 12.84 6.75 12.97V22H9.25V12.97C11.34 12.84 13 11.12 13 9M16 6V14H18.5V22H21V2C18.24 2 16 4.24 16 6Z"
-                                  Fill="#ffff3d"
+                                  Fill="{DynamicResource Theme.Brushes.Primary}"
                                   Width="42" Height="42"
                                   Stretch="Uniform"
                                   HorizontalAlignment="Center" />
@@ -154,7 +154,7 @@
                             <TextBlock Text="انواع نوشیدنی و خوراکی درب سیستم شما"
                                        FontFamily="{StaticResource PeydaLight}"
                                        FontSize="11"
-                                       Foreground="#9A9A9A"
+                                       Foreground="{DynamicResource Theme.Brushes.Text.Secondary}"
                                        TextAlignment="Center" />
                         </StackPanel>
                     </Grid>

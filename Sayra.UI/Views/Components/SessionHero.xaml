@@ -19,7 +19,7 @@
             <Setter Property="Opacity" Value="0.15" />
             <Setter Property="Effect">
                 <Setter.Value>
-                    <DropShadowEffect x:Name="HeroLogoGlow" Color="#ffff3d" BlurRadius="20" ShadowDepth="0" Opacity="0.3" />
+                    <DropShadowEffect x:Name="HeroLogoGlow" Color="{DynamicResource Theme.Colors.Primary}" BlurRadius="20" ShadowDepth="0" Opacity="0.3" />
                 </Setter.Value>
             </Setter>
             <Style.Triggers>
@@ -100,14 +100,14 @@
                                HorizontalAlignment="Left"
                                Margin="0,0,0,14">
                         <TextBlock.Effect>
-                            <DropShadowEffect Color="#FFFFFF" BlurRadius="15" ShadowDepth="0" Opacity="0.35" />
+                            <DropShadowEffect Color="{DynamicResource Theme.Colors.Text.Primary}" BlurRadius="15" ShadowDepth="0" Opacity="0.35" />
                         </TextBlock.Effect>
                     </TextBlock>
 
                     <!-- Merged Pricing Container -->
                     <Border Style="{StaticResource MergedPricingContainerStyle}">
                         <Border.Effect>
-                            <DropShadowEffect Color="#ffff3d" BlurRadius="12" ShadowDepth="0" Opacity="0.12" />
+                            <DropShadowEffect Color="{DynamicResource Theme.Colors.Primary}" BlurRadius="12" ShadowDepth="0" Opacity="0.12" />
                         </Border.Effect>
                         <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                             <!-- Cost Section (هزینه تاکنون) -->
@@ -124,7 +124,7 @@
                                       VerticalAlignment="Center"
                                       Margin="0,0,12,0">
                                     <Path.Effect>
-                                        <DropShadowEffect Color="#ffff3d" BlurRadius="6" ShadowDepth="0" Opacity="0.3"/>
+                                        <DropShadowEffect Color="{DynamicResource Theme.Colors.Primary}" BlurRadius="6" ShadowDepth="0" Opacity="0.3"/>
                                     </Path.Effect>
                                 </Path>
 
@@ -145,7 +145,7 @@
                             </StackPanel>
 
                             <!-- Vertical Divider -->
-                            <Rectangle Width="1" Height="30" Fill="#33FFFFFF" Margin="24,0" VerticalAlignment="Center" />
+                            <Rectangle Width="1" Height="30" Fill="{DynamicResource Theme.Brushes.White.Opacity20}" Margin="24,0" VerticalAlignment="Center" />
 
                             <!-- Hourly Rate Section (نرخ ساعتی) -->
                             <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
@@ -161,7 +161,7 @@
                                       VerticalAlignment="Center"
                                       Margin="0,0,12,0">
                                     <Path.Effect>
-                                        <DropShadowEffect Color="#ffff3d" BlurRadius="6" ShadowDepth="0" Opacity="0.3"/>
+                                        <DropShadowEffect Color="{DynamicResource Theme.Colors.Primary}" BlurRadius="6" ShadowDepth="0" Opacity="0.3"/>
                                     </Path.Effect>
                                 </Path>
 

@@ -37,7 +37,7 @@
                             <!-- Chevron Left Icon -->
                             <Path x:Name="icon"
                                   Data="M15 19l-7-7 7-7"
-                                  Stroke="#BFC5D0"
+                                  Stroke="{DynamicResource Theme.Brushes.Text.Primary}"
                                   StrokeThickness="1.5"
                                   StrokeStartLineCap="Round"
                                   StrokeEndLineCap="Round"
@@ -55,7 +55,7 @@
                                         <Storyboard>
                                             <ColorAnimation Storyboard.TargetName="border"
                                                             Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)"
-                                                            To="#252932" Duration="0:0:0.12"/>
+                                                            To="{DynamicResource Theme.Brushes.Navigation.ItemHover}" Duration="0:0:0.12"/>
                                         </Storyboard>
                                     </BeginStoryboard>
                                 </Trigger.EnterActions>
@@ -70,7 +70,7 @@
                                 </Trigger.ExitActions>
                             </Trigger>
                             <Trigger Property="IsPressed" Value="True">
-                                <Setter TargetName="border" Property="Background" Value="#303641" />
+                                <Setter TargetName="border" Property="Background" Value="{DynamicResource Theme.Brushes.Navigation.ItemActive}" />
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -104,7 +104,7 @@
                            FontFamily="Segoe UI Variable"
                            FontWeight="SemiBold"
                            FontSize="18"
-                           Foreground="#FFFFFF"
+                           Foreground="{DynamicResource Theme.Brushes.Text.Primary}"
                            MaxHeight="24"
                            TextTrimming="CharacterEllipsis"
                            VerticalAlignment="Center"/>
@@ -112,7 +112,7 @@
                            FontFamily="Segoe UI Variable"
                            FontWeight="Regular"
                            FontSize="12"
-                           Foreground="#8E95A1"
+                           Foreground="{DynamicResource Theme.Brushes.Text.Secondary}"
                            MaxHeight="16"
                            TextTrimming="CharacterEllipsis"
                            Margin="0,2,0,0"
@@ -131,7 +131,7 @@
         <!-- Bottom Divider -->
         <Border Grid.Row="2"
                 Height="1"
-                Background="#2B3039"
+                Background="{DynamicResource Theme.Brushes.Border.Default}"
                 HorizontalAlignment="Stretch"
                 Margin="-4,0,-4,0" />
     </Grid>

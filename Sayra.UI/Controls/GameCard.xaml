@@ -16,23 +16,23 @@
                 ClipToBounds="True"
                 RenderTransformOrigin="0.5,0.5">
             <Border.BorderBrush>
-                <SolidColorBrush x:Name="CardBorderBrushInstance" Color="#252528" />
+                <SolidColorBrush x:Name="CardBorderBrushInstance" Color="{DynamicResource Theme.Colors.Border.Default}" />
             </Border.BorderBrush>
             <Border.RenderTransform>
                 <ScaleTransform x:Name="CardScaleTransform" ScaleX="1.0" ScaleY="1.0" />
             </Border.RenderTransform>
             <Border.Effect>
-                <DropShadowEffect x:Name="CardShadowInstance" Color="#000000" BlurRadius="15" ShadowDepth="4" Opacity="0.5" />
+                <DropShadowEffect x:Name="CardShadowInstance" Color="{DynamicResource Theme.Colors.Shadow}" BlurRadius="15" ShadowDepth="4" Opacity="0.5" />
             </Border.Effect>
 
             <Grid>
                 <!-- 1. COVER IMAGE AREA filling entire card background: CornerRadius 8px to avoid overflow -->
-                <Border CornerRadius="8" ClipToBounds="True" Background="#15FFFFFF">
+                <Border CornerRadius="8" ClipToBounds="True" Background="{DynamicResource Theme.Brushes.White.Opacity10}">
                     <Grid>
                         <!-- Fallback Placeholder Gamepad Icon -->
-                        <Grid Background="#10FFFFFF">
+                        <Grid Background="{DynamicResource Theme.Brushes.White.Opacity10}">
                             <Path Data="M21,6H3C1.9,6 1,6.9 1,8V16C1,17.1 1.9,18 3,18H21C22.1,18 23,17.1 23,16V8C23,6.9 22.1,6 21,6M6,15H4V13H2V11H4V9H6V11H8V13H6V15M15,11A1.5,1.5 0 1,1 16.5,9.5A1.5,1.5 0 0,1 15,11M19,14A1.5,1.5 0 1,1 20.5,12.5A1.5,1.5 0 0,1 19,14Z"
-                                  Fill="#33FFFFFF"
+                                  Fill="{DynamicResource Theme.Brushes.White.Opacity20}"
                                   Width="50" Height="50"
                                   Stretch="Uniform"
                                   HorizontalAlignment="Center"
@@ -83,7 +83,7 @@
                         CornerRadius="5"
                         Background="#CC101014"
                         BorderThickness="1"
-                        BorderBrush="#33FFFFFF"
+                        BorderBrush="{DynamicResource Theme.Brushes.White.Opacity20}"
                         IsHitTestVisible="False">
                     <TextBlock x:Name="LauncherText"
                                Text="{Binding DataContext.Launcher, ElementName=self}"
@@ -174,7 +174,7 @@
                         Margin="12"
                         Opacity="0.0">
                     <Border.Effect>
-                        <DropShadowEffect Color="#ffff3d" BlurRadius="8" ShadowDepth="0" Opacity="1.0" />
+                        <DropShadowEffect Color="{DynamicResource Theme.Colors.Primary}" BlurRadius="8" ShadowDepth="0" Opacity="1.0" />
                     </Border.Effect>
                 </Border>
 

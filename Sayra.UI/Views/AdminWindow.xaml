@@ -29,15 +29,15 @@
                                 CornerRadius="2"
                                 SnapsToDevicePixels="True">
                             <Border.Background>
-                                <SolidColorBrush x:Name="ThumbBrush" Color="#4063E6FF"/>
+                                <SolidColorBrush x:Name="ThumbBrush" Color="{DynamicResource Theme.Colors.SecondaryTranslucent26}"/>
                             </Border.Background>
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="ThumbBorder" Property="Background" Value="#63E6FF"/>
+                                <Setter TargetName="ThumbBorder" Property="Background" Value="{DynamicResource Theme.Brushes.Secondary}"/>
                             </Trigger>
                             <Trigger Property="IsDragging" Value="True">
-                                <Setter TargetName="ThumbBorder" Property="Background" Value="#63E6FF"/>
+                                <Setter TargetName="ThumbBorder" Property="Background" Value="{DynamicResource Theme.Brushes.Secondary}"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -122,15 +122,15 @@
                                 SnapsToDevicePixels="True"
                                 Margin="1">
                             <Border.Background>
-                                <SolidColorBrush x:Name="ThumbBrush" Color="#4063E6FF"/>
+                                <SolidColorBrush x:Name="ThumbBrush" Color="{DynamicResource Theme.Colors.SecondaryTranslucent26}"/>
                             </Border.Background>
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="ThumbBorder" Property="Background" Value="#63E6FF"/>
+                                <Setter TargetName="ThumbBorder" Property="Background" Value="{DynamicResource Theme.Brushes.Secondary}"/>
                             </Trigger>
                             <Trigger Property="IsDragging" Value="True">
-                                <Setter TargetName="ThumbBorder" Property="Background" Value="#63E6FF"/>
+                                <Setter TargetName="ThumbBorder" Property="Background" Value="{DynamicResource Theme.Brushes.Secondary}"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -147,7 +147,7 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type ScrollBar}">
-                        <Grid x:Name="Bg" SnapsToDevicePixels="True" Background="#06FFFFFF">
+                        <Grid x:Name="Bg" SnapsToDevicePixels="True" Background="{DynamicResource Theme.Brushes.Track.Default}">
                             <Track x:Name="PART_Track" IsDirectionReversed="True" IsEnabled="{TemplateBinding IsEnabled}">
                                 <Track.DecreaseRepeatButton>
                                     <RepeatButton Command="{x:Static ScrollBar.PageUpCommand}" Style="{StaticResource ThinScrollBarPageButtonStyle}"/>
@@ -162,7 +162,7 @@
                         </Grid>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="Bg" Property="Background" Value="#12FFFFFF" />
+                                <Setter TargetName="Bg" Property="Background" Value="{DynamicResource Theme.Brushes.Track.Hover}" />
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -175,7 +175,7 @@
                     <Setter Property="Template">
                         <Setter.Value>
                             <ControlTemplate TargetType="{x:Type ScrollBar}">
-                                <Grid x:Name="Bg" SnapsToDevicePixels="True" Background="#06FFFFFF">
+                                <Grid x:Name="Bg" SnapsToDevicePixels="True" Background="{DynamicResource Theme.Brushes.Track.Default}">
                                     <Track x:Name="PART_Track" IsDirectionReversed="False" IsEnabled="{TemplateBinding IsEnabled}">
                                         <Track.DecreaseRepeatButton>
                                             <RepeatButton Command="{x:Static ScrollBar.PageLeftCommand}" Style="{StaticResource ThinScrollBarPageButtonStyle}"/>
@@ -190,7 +190,7 @@
                                 </Grid>
                                 <ControlTemplate.Triggers>
                                     <Trigger Property="IsMouseOver" Value="True">
-                                        <Setter TargetName="Bg" Property="Background" Value="#12FFFFFF" />
+                                        <Setter TargetName="Bg" Property="Background" Value="{DynamicResource Theme.Brushes.Track.Hover}" />
                                     </Trigger>
                                 </ControlTemplate.Triggers>
                             </ControlTemplate>
@@ -202,8 +202,8 @@
 
         <!-- Custom Expander Style for Admin Right Sidebar -->
         <Style x:Key="SidebarExpanderStyle" TargetType="{x:Type Expander}">
-            <Setter Property="Background" Value="#181A20"/>
-            <Setter Property="BorderBrush" Value="#2A2D36"/>
+            <Setter Property="Background" Value="{DynamicResource Theme.Brushes.Surface.Panel}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource Theme.Brushes.Border.Default}"/>
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="Margin" Value="0,0,0,16"/>
             <Setter Property="IsExpanded" Value="False"/>
@@ -242,7 +242,7 @@
                                                     <!-- Chevron Arrow -->
                                                     <Path Grid.Column="1" x:Name="Arrow"
                                                           Data="M1 1l4 4 4-4"
-                                                          Stroke="#9A9A9A"
+                                                          Stroke="{DynamicResource Theme.Brushes.Text.Secondary}"
                                                           StrokeThickness="1.5"
                                                           Width="10" Height="6"
                                                           Stretch="Uniform"
@@ -261,7 +261,7 @@
                                                             <RotateTransform Angle="180"/>
                                                         </Setter.Value>
                                                     </Setter>
-                                                    <Setter TargetName="Arrow" Property="Stroke" Value="#63E6FF"/>
+                                                    <Setter TargetName="Arrow" Property="Stroke" Value="{DynamicResource Theme.Brushes.Secondary}"/>
                                                 </Trigger>
                                                 <Trigger Property="IsMouseOver" Value="True">
                                                     <Setter TargetName="Arrow" Property="Stroke" Value="White"/>
@@ -276,7 +276,7 @@
                                         Visibility="Collapsed"
                                         Padding="14,16,14,14"
                                         Background="Transparent"
-                                        BorderBrush="#2A2D36"
+                                        BorderBrush="{DynamicResource Theme.Brushes.Border.Default}"
                                         BorderThickness="0,1,0,0">
                                     <ContentPresenter />
                                 </Border>
@@ -321,7 +321,7 @@
 
         <Style x:Key="PlaceholderBorder" TargetType="Border">
             <Setter Property="Background" Value="#1C1F26"/>
-            <Setter Property="BorderBrush" Value="#4DFFFFFF"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource Theme.Brushes.White.Opacity30}"/>
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="CornerRadius" Value="4"/>
             <Setter Property="Margin" Value="0"/>
@@ -385,9 +385,9 @@
 
         <!-- Premium Dark Custom Styles for Button & TextBox -->
         <Style x:Key="ToolbarButtonStyle" TargetType="Button">
-            <Setter Property="Background" Value="#1E2026"/>
-            <Setter Property="Foreground" Value="#E1E1E6"/>
-            <Setter Property="BorderBrush" Value="#2A2D36"/>
+            <Setter Property="Background" Value="{DynamicResource Theme.Brushes.Background.Secondary}"/>
+            <Setter Property="Foreground" Value="{DynamicResource Theme.Brushes.Text.Primary}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource Theme.Brushes.Border.Default}"/>
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="Height" Value="30"/>
             <Setter Property="Padding" Value="12,0"/>
@@ -404,12 +404,12 @@
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="border" Property="Background" Value="#262933"/>
-                                <Setter TargetName="border" Property="BorderBrush" Value="#63E6FF"/>
-                                <Setter Property="Foreground" Value="#FFFFFF"/>
+                                <Setter TargetName="border" Property="Background" Value="{DynamicResource Theme.Brushes.Background.Secondary}"/>
+                                <Setter TargetName="border" Property="BorderBrush" Value="{DynamicResource Theme.Brushes.Secondary}"/>
+                                <Setter Property="Foreground" Value="{DynamicResource Theme.Brushes.Text.Primary}"/>
                             </Trigger>
                             <Trigger Property="IsPressed" Value="True">
-                                <Setter TargetName="border" Property="Background" Value="#101215"/>
+                                <Setter TargetName="border" Property="Background" Value="{DynamicResource Theme.Brushes.Background.Primary}"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -455,11 +455,11 @@
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
                                 <Setter TargetName="border" Property="Background" Value="#1C1F26"/>
-                                <Setter TargetName="border" Property="BorderBrush" Value="#4463E6FF"/>
+                                <Setter TargetName="border" Property="BorderBrush" Value="{DynamicResource Theme.Brushes.SecondaryTranslucent26}"/>
                             </Trigger>
                             <Trigger Property="IsSelected" Value="True">
                                 <Setter TargetName="border" Property="Background" Value="#252A34"/>
-                                <Setter TargetName="border" Property="BorderBrush" Value="#63E6FF"/>
+                                <Setter TargetName="border" Property="BorderBrush" Value="{DynamicResource Theme.Brushes.Secondary}"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -469,9 +469,9 @@
 
         <!-- DataGrid Styles -->
         <Style x:Key="PremiumDataGridHeaderStyle" TargetType="DataGridColumnHeader">
-            <Setter Property="Background" Value="#1E2026"/>
-            <Setter Property="Foreground" Value="#9A9A9A"/>
-            <Setter Property="BorderBrush" Value="#2A2D36"/>
+            <Setter Property="Background" Value="{DynamicResource Theme.Brushes.Background.Secondary}"/>
+            <Setter Property="Foreground" Value="{DynamicResource Theme.Brushes.Text.Secondary}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource Theme.Brushes.Border.Default}"/>
             <Setter Property="BorderThickness" Value="0,0,0,1"/>
             <Setter Property="Padding" Value="12,10"/>
             <Setter Property="FontFamily" Value="{StaticResource PeydaBold}"/>
@@ -492,14 +492,14 @@
             <Setter Property="VerticalAlignment" Value="Center"/>
             <Style.Triggers>
                 <Trigger Property="IsSelected" Value="True">
-                    <Setter Property="Background" Value="#2663E6FF"/>
+                    <Setter Property="Background" Value="{DynamicResource Theme.Brushes.SecondaryTranslucent13}"/>
                     <Setter Property="Foreground" Value="White"/>
                 </Trigger>
             </Style.Triggers>
         </Style>
 
         <Style x:Key="PremiumDataGridRowStyle" TargetType="DataGridRow">
-            <Setter Property="Background" Value="#181A20"/>
+            <Setter Property="Background" Value="{DynamicResource Theme.Brushes.Surface.Panel}"/>
             <Setter Property="Foreground" Value="White"/>
             <Setter Property="Height" Value="48"/>
             <Setter Property="SnapsToDevicePixels" Value="True"/>
@@ -508,7 +508,7 @@
                     <Setter Property="Background" Value="#252A34"/>
                 </Trigger>
                 <Trigger Property="IsSelected" Value="True">
-                    <Setter Property="Background" Value="#2D3440"/>
+                    <Setter Property="Background" Value="{DynamicResource Theme.Brushes.Background.Secondary}"/>
                 </Trigger>
             </Style.Triggers>
         </Style>
@@ -568,10 +568,10 @@
                     </Setter>
                 </Style>
             </Style.Resources>
-            <Setter Property="Background" Value="#181A20"/>
-            <Setter Property="RowBackground" Value="#181A20"/>
+            <Setter Property="Background" Value="{DynamicResource Theme.Brushes.Surface.Panel}"/>
+            <Setter Property="RowBackground" Value="{DynamicResource Theme.Brushes.Surface.Panel}"/>
             <Setter Property="AlternatingRowBackground" Value="#1C1F26"/>
-            <Setter Property="BorderBrush" Value="#2A2D36"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource Theme.Brushes.Border.Default}"/>
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="GridLinesVisibility" Value="None"/>
             <Setter Property="HeadersVisibility" Value="Column"/>
@@ -589,7 +589,7 @@
         </Style>
     </Window.Resources>
 
-    <Grid Background="#0F1014">
+    <Grid Background="{DynamicResource Theme.Brushes.Background.Primary}">
         <!-- ROOT GRID (Wrapped in a container with an effect) -->
         <Grid x:Name="MainContentContainer">
             <Grid.Effect>
@@ -605,7 +605,7 @@
 
             <!-- 01. HEADER -->
             <!-- Width: Stretch to full window width. Height: 56px. Background panel color #181A20 with border #2A2D36 -->
-            <Border Grid.Row="0" Height="56" Background="#181A20" BorderBrush="#2A2D36" BorderThickness="0,0,0,1" Padding="24,8,24,8">
+            <Border Grid.Row="0" Height="56" Background="{DynamicResource Theme.Brushes.Surface.Panel}" BorderBrush="{DynamicResource Theme.Brushes.Border.Default}" BorderThickness="0,0,0,1" Padding="24,8,24,8">
                 <Grid VerticalAlignment="Center">
                     <Grid.ColumnDefinitions>
                         <!-- Branding & Breadcrumb Area on the left. Width: Auto -->
@@ -632,13 +632,13 @@
                             <TextBlock Text="Game &amp; Application Manager"
                                        FontFamily="{StaticResource PeydaBold}"
                                        FontSize="16"
-                                       Foreground="#63E6FF"
+                                       Foreground="{DynamicResource Theme.Brushes.Secondary}"
                                        FontWeight="Bold"
                                        LineHeight="20" />
                             <TextBlock Text="Local Administration / Game &amp; Application Manager"
                                        FontFamily="{StaticResource PeydaMedium}"
                                        FontSize="11"
-                                       Foreground="#9A9A9A"
+                                       Foreground="{DynamicResource Theme.Brushes.Text.Secondary}"
                                        FontWeight="Normal"
                                        LineHeight="14"
                                        Margin="0,2,0,0" />
@@ -718,7 +718,7 @@
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
 
-                    <Border Grid.Row="0" Background="#181A20" BorderBrush="#2A2D36" BorderThickness="1" CornerRadius="10" Padding="8">
+                    <Border Grid.Row="0" Background="{DynamicResource Theme.Brushes.Surface.Panel}" BorderBrush="{DynamicResource Theme.Brushes.Border.Default}" BorderThickness="1" CornerRadius="10" Padding="8">
                         <ListBox x:Name="CategoriesList"
                                  ItemsSource="{Binding Categories}"
                                  SelectedItem="{Binding SelectedCategory}"
@@ -739,23 +739,23 @@
                                             <Path.Style>
                                                 <Style TargetType="Path">
                                                     <!-- Default state: outline icon -->
-                                                    <Setter Property="Stroke" Value="#9A9A9A"/>
+                                                    <Setter Property="Stroke" Value="{DynamicResource Theme.Brushes.Text.Secondary}"/>
                                                     <Setter Property="StrokeThickness" Value="1.5"/>
                                                     <Setter Property="Fill" Value="Transparent"/>
 
                                                     <Style.Triggers>
                                                         <!-- If outline icon is hovered -->
                                                         <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType=ListBoxItem}}" Value="True">
-                                                            <Setter Property="Stroke" Value="#FFFFFF"/>
+                                                            <Setter Property="Stroke" Value="{DynamicResource Theme.Brushes.Text.Primary}"/>
                                                         </DataTrigger>
                                                         <!-- If outline icon is selected -->
                                                         <DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=ListBoxItem}}" Value="True">
-                                                            <Setter Property="Stroke" Value="#63E6FF"/>
+                                                            <Setter Property="Stroke" Value="{DynamicResource Theme.Brushes.Secondary}"/>
                                                         </DataTrigger>
 
                                                         <!-- If it's a Brand Icon (Solid fill instead of outline stroke) -->
                                                         <DataTrigger Binding="{Binding IsBrandIcon}" Value="True">
-                                                            <Setter Property="Fill" Value="#9A9A9A"/>
+                                                            <Setter Property="Fill" Value="{DynamicResource Theme.Brushes.Text.Secondary}"/>
                                                             <Setter Property="Stroke" Value="Transparent"/>
                                                             <Setter Property="StrokeThickness" Value="0"/>
                                                         </DataTrigger>
@@ -764,7 +764,7 @@
                                                                 <Condition Binding="{Binding IsBrandIcon}" Value="True"/>
                                                                 <Condition Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType=ListBoxItem}}" Value="True"/>
                                                             </MultiDataTrigger.Conditions>
-                                                            <Setter Property="Fill" Value="#FFFFFF"/>
+                                                            <Setter Property="Fill" Value="{DynamicResource Theme.Brushes.Text.Primary}"/>
                                                             <Setter Property="Stroke" Value="Transparent"/>
                                                             <Setter Property="StrokeThickness" Value="0"/>
                                                         </MultiDataTrigger>
@@ -773,7 +773,7 @@
                                                                 <Condition Binding="{Binding IsBrandIcon}" Value="True"/>
                                                                 <Condition Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=ListBoxItem}}" Value="True"/>
                                                             </MultiDataTrigger.Conditions>
-                                                            <Setter Property="Fill" Value="#63E6FF"/>
+                                                            <Setter Property="Fill" Value="{DynamicResource Theme.Brushes.Secondary}"/>
                                                             <Setter Property="Stroke" Value="Transparent"/>
                                                             <Setter Property="StrokeThickness" Value="0"/>
                                                         </MultiDataTrigger>
@@ -789,7 +789,7 @@
                                                    TextTrimming="CharacterEllipsis"/>
                                         <!-- Count Badge -->
                                         <Border Grid.Column="2" Background="#252A34" CornerRadius="10" Padding="8,2" Height="18" MinWidth="22" VerticalAlignment="Center">
-                                            <TextBlock Text="{Binding Count}" Foreground="#63E6FF" FontSize="10" FontFamily="{StaticResource PeydaBold}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            <TextBlock Text="{Binding Count}" Foreground="{DynamicResource Theme.Brushes.Secondary}" FontSize="10" FontFamily="{StaticResource PeydaBold}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                         </Border>
                                     </Grid>
                                 </DataTemplate>
@@ -798,7 +798,7 @@
                     </Border>
 
                     <!-- Left Nav Bottom Actions/Settings (Clean & Premium) -->
-                    <Border Grid.Row="1" Background="#181A20" BorderBrush="#2A2D36" BorderThickness="1" CornerRadius="10" Margin="0,12,0,0" Padding="8">
+                    <Border Grid.Row="1" Background="{DynamicResource Theme.Brushes.Surface.Panel}" BorderBrush="{DynamicResource Theme.Brushes.Border.Default}" BorderThickness="1" CornerRadius="10" Margin="0,12,0,0" Padding="8">
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*"/>
@@ -806,13 +806,13 @@
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
                             <Button Grid.Column="0" Style="{StaticResource ToolbarButtonStyle}" Command="{Binding ManageCategoriesCommand}" Height="32" Padding="4">
-                                <Path Data="M10.5 6a1.5 1.5 0 111.5 1.5 1.5 1.5 0 01-1.5-1.5zm0 6a1.5 1.5 0 111.5 1.5 1.5 1.5 0 01-1.5-1.5zm0 6a1.5 1.5 0 111.5 1.5 1.5 1.5 0 01-1.5-1.5z" Stroke="#9A9A9A" StrokeThickness="1.5" Width="12" Height="12" Stretch="Uniform"/>
+                                <Path Data="M10.5 6a1.5 1.5 0 111.5 1.5 1.5 1.5 0 01-1.5-1.5zm0 6a1.5 1.5 0 111.5 1.5 1.5 1.5 0 01-1.5-1.5zm0 6a1.5 1.5 0 111.5 1.5 1.5 1.5 0 01-1.5-1.5z" Stroke="{DynamicResource Theme.Brushes.Text.Secondary}" StrokeThickness="1.5" Width="12" Height="12" Stretch="Uniform"/>
                             </Button>
                             <Button Grid.Column="1" Style="{StaticResource ToolbarButtonStyle}" Command="{Binding SettingsCommand}" Height="32" Padding="4" Margin="4,0">
-                                <Path Data="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.323.196.72.222 1.062.067l1.175-.53c.5-.226 1.1-.035 1.373.438l1.296 2.247c.273.472.115 1.077-.354 1.378l-1.076.69c-.312.2-.494.55-.494.924v.266c0 .373.182.724.494.924l1.076.69c.469.301.627.906.354 1.378l-1.296 2.247c-.273.473-.873.664-1.373.438l-1.175-.53a1.125 1.125 0 00-1.062.067c-.073.044-.146.087-.22.128-.332.183-.582.495-.645.869l-.213 1.28c-.09.543-.56.94-1.11.94h-2.593c-.55 0-1.02-.398-1.11-.94l-.213-1.28a1.125 1.125 0 00-.645-.869c-.074-.04-.147-.084-.22-.128a1.125 1.125 0 00-1.062-.067l-1.175.53c-.5.226-1.1.035-1.373-.438l-1.296-2.247c-.273-.472-.115-1.077.354-1.378l1.076-.69c.312-.2.494-.55.494-.924v-.266c0-.374-.182-.724-.494-.924l-1.076-.69c-.469-.301-.627-.906-.354-1.378l1.296-2.247c.273-.473.873-.664 1.373-.438l1.175.53c.343.155.74.129 1.062-.067.073-.044.146-.087.22-.128.332-.184.582-.496.645-.87l.213-1.281z" Stroke="#9A9A9A" StrokeThickness="1.5" Width="12" Height="12" Stretch="Uniform"/>
+                                <Path Data="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.323.196.72.222 1.062.067l1.175-.53c.5-.226 1.1-.035 1.373.438l1.296 2.247c.273.472.115 1.077-.354 1.378l-1.076.69c-.312.2-.494.55-.494.924v.266c0 .373.182.724.494.924l1.076.69c.469.301.627.906.354 1.378l-1.296 2.247c-.273.473-.873.664-1.373.438l-1.175-.53a1.125 1.125 0 00-1.062.067c-.073.044-.146.087-.22.128-.332.183-.582.495-.645.869l-.213 1.28c-.09.543-.56.94-1.11.94h-2.593c-.55 0-1.02-.398-1.11-.94l-.213-1.28a1.125 1.125 0 00-.645-.869c-.074-.04-.147-.084-.22-.128a1.125 1.125 0 00-1.062-.067l-1.175.53c-.5.226-1.1.035-1.373-.438l-1.296-2.247c-.273-.472-.115-1.077.354-1.378l1.076-.69c.312-.2.494-.55.494-.924v-.266c0-.374-.182-.724-.494-.924l-1.076-.69c-.469-.301-.627-.906-.354-1.378l1.296-2.247c.273-.473.873-.664 1.373-.438l1.175.53c.343.155.74.129 1.062-.067.073-.044.146-.087.22-.128.332-.184.582-.496.645-.87l.213-1.281z" Stroke="{DynamicResource Theme.Brushes.Text.Secondary}" StrokeThickness="1.5" Width="12" Height="12" Stretch="Uniform"/>
                             </Button>
                             <Button Grid.Column="2" Style="{StaticResource ToolbarButtonStyle}" Command="{Binding RefreshCommand}" Height="32" Padding="4">
-                                <Path Data="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182" Stroke="#9A9A9A" StrokeThickness="1.5" Width="12" Height="12" Stretch="Uniform"/>
+                                <Path Data="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182" Stroke="{DynamicResource Theme.Brushes.Text.Secondary}" StrokeThickness="1.5" Width="12" Height="12" Stretch="Uniform"/>
                             </Button>
                         </Grid>
                     </Border>
@@ -821,7 +821,7 @@
                 <!-- 02. SEARCH (Full width) -->
                 <!-- Shorter Search Box (Height: 38px, Margin: 12px top, 24px left/right) -->
                 <Grid Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="0" Margin="24,12,0,0" Height="38">
-                    <Border CornerRadius="8" Background="#181A20" BorderBrush="#2A2D36" BorderThickness="1.5">
+                    <Border CornerRadius="8" Background="{DynamicResource Theme.Brushes.Surface.Panel}" BorderBrush="{DynamicResource Theme.Brushes.Border.Default}" BorderThickness="1.5">
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="36" />
@@ -830,14 +830,14 @@
                             </Grid.ColumnDefinitions>
                             <!-- Search Icon -->
                             <Path Grid.Column="0" Data="{StaticResource SearchIconGeometry}"
-                                  Stroke="#9A9A9A" StrokeThickness="1.5" Width="14" Height="14"
+                                  Stroke="{DynamicResource Theme.Brushes.Text.Secondary}" StrokeThickness="1.5" Width="14" Height="14"
                                   Stretch="Uniform" VerticalAlignment="Center" HorizontalAlignment="Center" />
 
                             <!-- Search TextBox -->
                             <TextBox Grid.Column="1" x:Name="SearchBox"
                                      Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
                                      Background="Transparent" BorderThickness="0"
-                                     Foreground="#FFFFFF" CaretBrush="#63E6FF"
+                                     Foreground="{DynamicResource Theme.Brushes.Text.Primary}" CaretBrush="{DynamicResource Theme.Brushes.Secondary}"
                                      VerticalContentAlignment="Center" FontSize="12"
                                      FontFamily="{StaticResource PeydaMedium}" Padding="4,0,0,0"/>
 
@@ -864,7 +864,7 @@
                             <!-- Total items badge on the right -->
                             <StackPanel Grid.Column="2" Orientation="Horizontal" Margin="0,0,12,0" VerticalAlignment="Center">
                                 <Border Background="#252A34" CornerRadius="4" Padding="8,4" VerticalAlignment="Center">
-                                    <TextBlock Text="{Binding TotalItemsCount, StringFormat='{}{0} items found'}" Foreground="#63E6FF" FontSize="10" FontFamily="{StaticResource PeydaBold}"/>
+                                    <TextBlock Text="{Binding TotalItemsCount, StringFormat='{}{0} items found'}" Foreground="{DynamicResource Theme.Brushes.Secondary}" FontSize="10" FontFamily="{StaticResource PeydaBold}"/>
                                 </Border>
                             </StackPanel>
                         </Grid>
@@ -876,9 +876,9 @@
                 <ScrollViewer Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="1" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled" BorderThickness="0" Background="Transparent" Margin="24,8,0,0">
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Height="56">
                         <!-- GROUP: SCAN -->
-                        <Border Background="#181A20" BorderBrush="#2A2D36" BorderThickness="1" CornerRadius="8" Padding="12,0" Margin="0,0,16,0" VerticalAlignment="Stretch">
+                        <Border Background="{DynamicResource Theme.Brushes.Surface.Panel}" BorderBrush="{DynamicResource Theme.Brushes.Border.Default}" BorderThickness="1" CornerRadius="8" Padding="12,0" Margin="0,0,16,0" VerticalAlignment="Stretch">
                             <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                <TextBlock Text="SCAN" FontFamily="{StaticResource PeydaBold}" FontSize="9" Foreground="#14BE78" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                <TextBlock Text="SCAN" FontFamily="{StaticResource PeydaBold}" FontSize="9" Foreground="{DynamicResource Theme.Brushes.Status.Success}" VerticalAlignment="Center" Margin="0,0,8,0"/>
                                 <Button Style="{StaticResource ToolbarLauncherButtonStyle}" Command="{Binding ScanComputerCommand}" ToolTip="Scan All">
                                     <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
                                         <Path Data="{StaticResource ScanAllIconGeometry}" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" Width="16" Height="16" Stretch="Uniform" HorizontalAlignment="Center"/>
@@ -938,9 +938,9 @@
                         </Border>
 
                         <!-- GROUP: ADD -->
-                        <Border Background="#181A20" BorderBrush="#2A2D36" BorderThickness="1" CornerRadius="8" Padding="12,0" Margin="0,0,16,0" VerticalAlignment="Stretch">
+                        <Border Background="{DynamicResource Theme.Brushes.Surface.Panel}" BorderBrush="{DynamicResource Theme.Brushes.Border.Default}" BorderThickness="1" CornerRadius="8" Padding="12,0" Margin="0,0,16,0" VerticalAlignment="Stretch">
                             <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                <TextBlock Text="ADD" FontFamily="{StaticResource PeydaBold}" FontSize="9" Foreground="#ffff3d" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                <TextBlock Text="ADD" FontFamily="{StaticResource PeydaBold}" FontSize="9" Foreground="{DynamicResource Theme.Brushes.Primary}" VerticalAlignment="Center" Margin="0,0,8,0"/>
                                 <Button Style="{StaticResource MainToolbarButtonStyle}" Command="{Binding ManageCategoriesCommand}">
                                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                                         <Path Data="{StaticResource AddGameIconGeometry}" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" Width="13" Height="13" Stretch="Uniform" Margin="0,0,6,0"/>
@@ -958,9 +958,9 @@
                         </Border>
 
                         <!-- GROUP: DATA -->
-                        <Border Background="#181A20" BorderBrush="#2A2D36" BorderThickness="1" CornerRadius="8" Padding="12,0" Margin="0,0,16,0" VerticalAlignment="Stretch">
+                        <Border Background="{DynamicResource Theme.Brushes.Surface.Panel}" BorderBrush="{DynamicResource Theme.Brushes.Border.Default}" BorderThickness="1" CornerRadius="8" Padding="12,0" Margin="0,0,16,0" VerticalAlignment="Stretch">
                             <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                <TextBlock Text="DATA" FontFamily="{StaticResource PeydaBold}" FontSize="9" Foreground="#8A5CFF" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                <TextBlock Text="DATA" FontFamily="{StaticResource PeydaBold}" FontSize="9" Foreground="{DynamicResource Theme.Brushes.Purple}" VerticalAlignment="Center" Margin="0,0,8,0"/>
                                 <Button Style="{StaticResource MainToolbarButtonStyle}" Command="{Binding RefreshCategoriesCommand}">
                                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                                         <Path Data="{StaticResource ImportIconGeometry}" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" Width="13" Height="13" Stretch="Uniform" Margin="0,0,6,0"/>
@@ -992,9 +992,9 @@
                         </Border>
 
                         <!-- GROUP: SYNC (Adjacent to DATA) -->
-                        <Border Background="#181A20" BorderBrush="#2A2D36" BorderThickness="1" CornerRadius="8" Padding="12,0" VerticalAlignment="Stretch">
+                        <Border Background="{DynamicResource Theme.Brushes.Surface.Panel}" BorderBrush="{DynamicResource Theme.Brushes.Border.Default}" BorderThickness="1" CornerRadius="8" Padding="12,0" VerticalAlignment="Stretch">
                             <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                <TextBlock Text="SYNC" FontFamily="{StaticResource PeydaBold}" FontSize="9" Foreground="#63E6FF" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                <TextBlock Text="SYNC" FontFamily="{StaticResource PeydaBold}" FontSize="9" Foreground="{DynamicResource Theme.Brushes.Secondary}" VerticalAlignment="Center" Margin="0,0,8,0"/>
                                 <Button Style="{StaticResource MainToolbarButtonStyle}" Command="{Binding RefreshCommand}">
                                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                                         <Path Data="{StaticResource SyncFromIconGeometry}" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" Width="13" Height="13" Stretch="Uniform" Margin="0,0,6,0"/>
@@ -1022,7 +1022,7 @@
 
                 <!-- 09. GAMES PANEL -->
                 <!-- Main DataGrid Container with integrated sticky pagination footer -->
-                <Border Grid.Column="2" Grid.Row="2" Background="#181A20" BorderBrush="#2A2D36" BorderThickness="1" CornerRadius="10" Margin="0,12,0,12">
+                <Border Grid.Column="2" Grid.Row="2" Background="{DynamicResource Theme.Brushes.Surface.Panel}" BorderBrush="{DynamicResource Theme.Brushes.Border.Default}" BorderThickness="1" CornerRadius="10" Margin="0,12,0,12">
                     <Border.OpacityMask>
                         <VisualBrush>
                             <VisualBrush.Visual>
@@ -1070,10 +1070,10 @@
                                 <DataGridTemplateColumn Header="Cover" Width="55" HeaderStyle="{StaticResource PremiumDataGridHeaderCenteredStyle}">
                                     <DataGridTemplateColumn.CellTemplate>
                                         <DataTemplate>
-                                            <Border Width="32" Height="32" Background="#13FFFFFF" CornerRadius="4" ClipToBounds="True" HorizontalAlignment="Center" VerticalAlignment="Center" BorderThickness="1" BorderBrush="#2A2D36">
+                                            <Border Width="32" Height="32" Background="#13FFFFFF" CornerRadius="4" ClipToBounds="True" HorizontalAlignment="Center" VerticalAlignment="Center" BorderThickness="1" BorderBrush="{DynamicResource Theme.Brushes.Border.Default}">
                                                 <Grid>
                                                     <Path Data="M21,6H3C1.9,6 1,6.9 1,8V16C1,17.1 1.9,18 3,18H21C22.1,18 23,17.1 23,16V8C23,6.9 22.1,6 21,6M6,15H4V13H2V11H4V9H6V11H8V13H6V15M15,11A1.5,1.5 0 1,1 16.5,9.5A1.5,1.5 0 0,1 15,11M19,14A1.5,1.5 0 1,1 20.5,12.5A1.5,1.5 0 0,1 19,14Z"
-                                                          Fill="#33FFFFFF" Width="16" Height="16" Stretch="Uniform" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                          Fill="{DynamicResource Theme.Brushes.White.Opacity20}" Width="16" Height="16" Stretch="Uniform" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                                                     <Image Source="{Binding CoverImage}" Stretch="UniformToFill" RenderOptions.BitmapScalingMode="HighQuality"/>
                                                 </Grid>
                                             </Border>
@@ -1121,29 +1121,29 @@
                                             <Border CornerRadius="4" Padding="6,3" HorizontalAlignment="Center" VerticalAlignment="Center">
                                                 <Border.Style>
                                                     <Style TargetType="Border">
-                                                        <Setter Property="Background" Value="#2214BE78"/>
-                                                        <Setter Property="BorderBrush" Value="#4414BE78"/>
+                                                        <Setter Property="Background" Value="{DynamicResource Theme.Brushes.Status.Success}"/>
+                                                        <Setter Property="BorderBrush" Value="{DynamicResource Theme.Brushes.Status.Success}"/>
                                                         <Setter Property="BorderThickness" Value="1"/>
                                                         <Style.Triggers>
                                                             <DataTrigger Binding="{Binding Status}" Value="Disabled">
-                                                                <Setter Property="Background" Value="#229A9A9A"/>
-                                                                <Setter Property="BorderBrush" Value="#449A9A9A"/>
+                                                                <Setter Property="Background" Value="{DynamicResource Theme.Brushes.Text.SecondaryTranslucent13}"/>
+                                                                <Setter Property="BorderBrush" Value="{DynamicResource Theme.Brushes.Text.SecondaryTranslucent26}"/>
                                                             </DataTrigger>
                                                             <DataTrigger Binding="{Binding Status}" Value="Corrupted">
-                                                                <Setter Property="Background" Value="#22F46B6B"/>
-                                                                <Setter Property="BorderBrush" Value="#44F46B6B"/>
+                                                                <Setter Property="Background" Value="{DynamicResource Theme.Brushes.Status.Error.Opacity10}"/>
+                                                                <Setter Property="BorderBrush" Value="{DynamicResource Theme.Brushes.Status.ErrorTranslucent}"/>
                                                             </DataTrigger>
                                                             <DataTrigger Binding="{Binding Status}" Value="Missing">
-                                                                <Setter Property="Background" Value="#22F46B6B"/>
-                                                                <Setter Property="BorderBrush" Value="#44F46B6B"/>
+                                                                <Setter Property="Background" Value="{DynamicResource Theme.Brushes.Status.Error.Opacity10}"/>
+                                                                <Setter Property="BorderBrush" Value="{DynamicResource Theme.Brushes.Status.ErrorTranslucent}"/>
                                                             </DataTrigger>
                                                             <DataTrigger Binding="{Binding Status}" Value="Updating">
-                                                                <Setter Property="Background" Value="#22ffff3d"/>
-                                                                <Setter Property="BorderBrush" Value="#44ffff3d"/>
+                                                                <Setter Property="Background" Value="{DynamicResource Theme.Brushes.PrimaryTranslucent13}"/>
+                                                                <Setter Property="BorderBrush" Value="{DynamicResource Theme.Brushes.PrimaryTranslucent26}"/>
                                                             </DataTrigger>
                                                             <DataTrigger Binding="{Binding Status}" Value="Validation Required">
-                                                                <Setter Property="Background" Value="#228A5CFF"/>
-                                                                <Setter Property="BorderBrush" Value="#448A5CFF"/>
+                                                                <Setter Property="Background" Value="{DynamicResource Theme.Brushes.PurpleTranslucent13}"/>
+                                                                <Setter Property="BorderBrush" Value="{DynamicResource Theme.Brushes.PurpleTranslucent26}"/>
                                                             </DataTrigger>
                                                         </Style.Triggers>
                                                     </Style>
@@ -1151,22 +1151,22 @@
                                                 <TextBlock Text="{Binding Status}" FontSize="11" FontFamily="{StaticResource PeydaBold}" TextWrapping="Wrap" TextAlignment="Center" MaxWidth="75">
                                                     <TextBlock.Style>
                                                         <Style TargetType="TextBlock">
-                                                            <Setter Property="Foreground" Value="#14BE78"/>
+                                                            <Setter Property="Foreground" Value="{DynamicResource Theme.Brushes.Status.Success}"/>
                                                             <Style.Triggers>
                                                                 <DataTrigger Binding="{Binding Status}" Value="Disabled">
-                                                                    <Setter Property="Foreground" Value="#9A9A9A"/>
+                                                                    <Setter Property="Foreground" Value="{DynamicResource Theme.Brushes.Text.Secondary}"/>
                                                                 </DataTrigger>
                                                                 <DataTrigger Binding="{Binding Status}" Value="Corrupted">
-                                                                    <Setter Property="Foreground" Value="#F46B6B"/>
+                                                                    <Setter Property="Foreground" Value="{DynamicResource Theme.Brushes.Status.Error}"/>
                                                                 </DataTrigger>
                                                                 <DataTrigger Binding="{Binding Status}" Value="Missing">
-                                                                    <Setter Property="Foreground" Value="#F46B6B"/>
+                                                                    <Setter Property="Foreground" Value="{DynamicResource Theme.Brushes.Status.Error}"/>
                                                                 </DataTrigger>
                                                                 <DataTrigger Binding="{Binding Status}" Value="Updating">
-                                                                    <Setter Property="Foreground" Value="#ffff3d"/>
+                                                                    <Setter Property="Foreground" Value="{DynamicResource Theme.Brushes.Primary}"/>
                                                                 </DataTrigger>
                                                                 <DataTrigger Binding="{Binding Status}" Value="Validation Required">
-                                                                    <Setter Property="Foreground" Value="#8A5CFF"/>
+                                                                    <Setter Property="Foreground" Value="{DynamicResource Theme.Brushes.Purple}"/>
                                                                 </DataTrigger>
                                                             </Style.Triggers>
                                                         </Style>
@@ -1218,7 +1218,7 @@
                         </ScrollViewer>
 
                         <!-- Local Sticky Footer for Pagination under Main DataGrid -->
-                        <Border Grid.Row="1" Background="#1C1F26" BorderBrush="#2A2D36" BorderThickness="0,1,0,0" Padding="16,8">
+                        <Border Grid.Row="1" Background="#1C1F26" BorderBrush="{DynamicResource Theme.Brushes.Border.Default}" BorderThickness="0,1,0,0" Padding="16,8">
                             <Grid>
                                 <Grid.ColumnDefinitions>
                                     <!-- Left: Info Text -->
@@ -1227,24 +1227,24 @@
                                     <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
 
-                                <TextBlock Grid.Column="0" Text="{Binding ShowingText}" Foreground="#9A9A9A" FontSize="11" FontFamily="{StaticResource PeydaMedium}" VerticalAlignment="Center"/>
+                                <TextBlock Grid.Column="0" Text="{Binding ShowingText}" Foreground="{DynamicResource Theme.Brushes.Text.Secondary}" FontSize="11" FontFamily="{StaticResource PeydaMedium}" VerticalAlignment="Center"/>
 
                                 <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
                                     <!-- View Mode Selector -->
-                                    <TextBlock Text="View Mode:" Foreground="#9A9A9A" FontSize="11" FontFamily="{StaticResource PeydaMedium}" VerticalAlignment="Center" Margin="0,0,8,0"/>
-                                    <ComboBox ItemsSource="{Binding ViewModes}" SelectedItem="{Binding SelectedViewMode}" Width="100" Height="26" Background="#14161C" Foreground="White" BorderBrush="#2A2D36" FontFamily="{StaticResource PeydaMedium}" FontSize="11" VerticalContentAlignment="Center"/>
+                                    <TextBlock Text="View Mode:" Foreground="{DynamicResource Theme.Brushes.Text.Secondary}" FontSize="11" FontFamily="{StaticResource PeydaMedium}" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                    <ComboBox ItemsSource="{Binding ViewModes}" SelectedItem="{Binding SelectedViewMode}" Width="100" Height="26" Background="{DynamicResource Theme.Brushes.Progress.Track}" Foreground="White" BorderBrush="{DynamicResource Theme.Brushes.Border.Default}" FontFamily="{StaticResource PeydaMedium}" FontSize="11" VerticalContentAlignment="Center"/>
 
                                     <Border Width="16"/>
 
                                     <!-- Demo State Selector -->
-                                    <TextBlock Text="Demo State:" Foreground="#9A9A9A" FontSize="11" FontFamily="{StaticResource PeydaMedium}" VerticalAlignment="Center" Margin="0,0,8,0"/>
-                                    <ComboBox ItemsSource="{Binding DemoStates}" SelectedItem="{Binding SelectedDemoState}" Width="100" Height="26" Background="#14161C" Foreground="White" BorderBrush="#2A2D36" FontFamily="{StaticResource PeydaMedium}" FontSize="11" VerticalContentAlignment="Center"/>
+                                    <TextBlock Text="Demo State:" Foreground="{DynamicResource Theme.Brushes.Text.Secondary}" FontSize="11" FontFamily="{StaticResource PeydaMedium}" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                    <ComboBox ItemsSource="{Binding DemoStates}" SelectedItem="{Binding SelectedDemoState}" Width="100" Height="26" Background="{DynamicResource Theme.Brushes.Progress.Track}" Foreground="White" BorderBrush="{DynamicResource Theme.Brushes.Border.Default}" FontFamily="{StaticResource PeydaMedium}" FontSize="11" VerticalContentAlignment="Center"/>
 
                                     <Border Width="16"/>
 
                                     <!-- Page Size Selector -->
-                                    <TextBlock Text="Show:" Foreground="#9A9A9A" FontSize="11" FontFamily="{StaticResource PeydaMedium}" VerticalAlignment="Center" Margin="0,0,8,0"/>
-                                    <ComboBox x:Name="PageSizeCombo" ItemsSource="{Binding PageSizes}" SelectedItem="{Binding SelectedPageSize}" Width="60" Height="26" Background="#14161C" Foreground="White" BorderBrush="#2A2D36" FontFamily="{StaticResource PeydaMedium}" FontSize="11" VerticalContentAlignment="Center"/>
+                                    <TextBlock Text="Show:" Foreground="{DynamicResource Theme.Brushes.Text.Secondary}" FontSize="11" FontFamily="{StaticResource PeydaMedium}" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                    <ComboBox x:Name="PageSizeCombo" ItemsSource="{Binding PageSizes}" SelectedItem="{Binding SelectedPageSize}" Width="60" Height="26" Background="{DynamicResource Theme.Brushes.Progress.Track}" Foreground="White" BorderBrush="{DynamicResource Theme.Brushes.Border.Default}" FontFamily="{StaticResource PeydaMedium}" FontSize="11" VerticalContentAlignment="Center"/>
 
                                     <Border Width="16"/>
 
@@ -1253,7 +1253,7 @@
                                     <Border Width="4"/>
                                     <!-- Current Page Counter -->
                                     <Border Background="#252A34" CornerRadius="4" Width="26" Height="26" VerticalAlignment="Center">
-                                        <TextBlock Text="{Binding CurrentPage}" Foreground="#63E6FF" FontSize="11" FontFamily="{StaticResource PeydaBold}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        <TextBlock Text="{Binding CurrentPage}" Foreground="{DynamicResource Theme.Brushes.Secondary}" FontSize="11" FontFamily="{StaticResource PeydaBold}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                     </Border>
                                     <Border Width="4"/>
                                     <Button Style="{StaticResource ToolbarButtonStyle}" Content="Next" Command="{Binding NextPageCommand}" Height="26" Width="50" Padding="0"/>
@@ -1267,7 +1267,7 @@
 
                 <!-- 11. RIGHT SIDEBAR -->
                 <!-- Right Sidebar aligned with Main DataGrid in Row 2 -->
-                <Border Grid.Column="4" Grid.Row="0" Grid.RowSpan="3" Margin="0,12,24,12" Background="#14161C" BorderBrush="#2A2D36" BorderThickness="1" CornerRadius="10" Padding="12">
+                <Border Grid.Column="4" Grid.Row="0" Grid.RowSpan="3" Margin="0,12,24,12" Background="{DynamicResource Theme.Brushes.Progress.Track}" BorderBrush="{DynamicResource Theme.Brushes.Border.Default}" BorderThickness="1" CornerRadius="10" Padding="12">
                     <ScrollViewer Style="{StaticResource ThinScrollViewerStyle}" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                         <Grid x:Name="RightSidebarGrid">
                             <Grid.RowDefinitions>
@@ -1285,20 +1285,20 @@
                                 </Expander.Header>
                                 <StackPanel>
                                     <!-- Name * Field -->
-                                    <TextBlock Text="Name *" Foreground="#9A9A9A" FontSize="11" Margin="0,0,0,4" FontFamily="{StaticResource PeydaMedium}"/>
-                                    <Border Background="#1C1F26" BorderBrush="#2A2D36" BorderThickness="1" CornerRadius="6" Height="30" Padding="6,2" Margin="0,0,0,10">
-                                        <TextBox Background="Transparent" BorderThickness="0" Foreground="White" FontSize="12" FontFamily="{StaticResource PeydaMedium}" VerticalContentAlignment="Center" CaretBrush="#63E6FF"/>
+                                    <TextBlock Text="Name *" Foreground="{DynamicResource Theme.Brushes.Text.Secondary}" FontSize="11" Margin="0,0,0,4" FontFamily="{StaticResource PeydaMedium}"/>
+                                    <Border Background="#1C1F26" BorderBrush="{DynamicResource Theme.Brushes.Border.Default}" BorderThickness="1" CornerRadius="6" Height="30" Padding="6,2" Margin="0,0,0,10">
+                                        <TextBox Background="Transparent" BorderThickness="0" Foreground="White" FontSize="12" FontFamily="{StaticResource PeydaMedium}" VerticalContentAlignment="Center" CaretBrush="{DynamicResource Theme.Brushes.Secondary}"/>
                                     </Border>
 
                                     <!-- Executable Path * Field -->
-                                    <TextBlock Text="Executable Path *" Foreground="#9A9A9A" FontSize="11" Margin="0,0,0,4" FontFamily="{StaticResource PeydaMedium}"/>
+                                    <TextBlock Text="Executable Path *" Foreground="{DynamicResource Theme.Brushes.Text.Secondary}" FontSize="11" Margin="0,0,0,4" FontFamily="{StaticResource PeydaMedium}"/>
                                     <Grid Margin="0,0,0,10">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="*" />
                                             <ColumnDefinition Width="Auto" />
                                         </Grid.ColumnDefinitions>
-                                        <Border Grid.Column="0" Background="#1C1F26" BorderBrush="#2A2D36" BorderThickness="1" CornerRadius="6,0,0,6" Height="30" Padding="6,2">
-                                            <TextBox Background="Transparent" BorderThickness="0" Foreground="White" FontSize="11" FontFamily="{StaticResource PeydaMedium}" VerticalContentAlignment="Center" Text="D:\Games\New Game\game.exe" CaretBrush="#63E6FF"/>
+                                        <Border Grid.Column="0" Background="#1C1F26" BorderBrush="{DynamicResource Theme.Brushes.Border.Default}" BorderThickness="1" CornerRadius="6,0,0,6" Height="30" Padding="6,2">
+                                            <TextBox Background="Transparent" BorderThickness="0" Foreground="White" FontSize="11" FontFamily="{StaticResource PeydaMedium}" VerticalContentAlignment="Center" Text="D:\Games\New Game\game.exe" CaretBrush="{DynamicResource Theme.Brushes.Secondary}"/>
                                         </Border>
                                         <Button Grid.Column="1" Content="Browse" Height="30" Padding="10,0" Style="{StaticResource ToolbarButtonStyle}">
                                             <Button.Resources>
@@ -1317,8 +1317,8 @@
                                             <ColumnDefinition Width="*" />
                                         </Grid.ColumnDefinitions>
                                         <StackPanel Grid.Column="0">
-                                            <TextBlock Text="Launcher" Foreground="#9A9A9A" FontSize="11" Margin="0,0,0,4" FontFamily="{StaticResource PeydaMedium}"/>
-                                            <ComboBox Height="30" Background="#1C1F26" Foreground="White" BorderBrush="#2A2D36" FontFamily="{StaticResource PeydaMedium}" FontSize="11" VerticalContentAlignment="Center" SelectedIndex="4">
+                                            <TextBlock Text="Launcher" Foreground="{DynamicResource Theme.Brushes.Text.Secondary}" FontSize="11" Margin="0,0,0,4" FontFamily="{StaticResource PeydaMedium}"/>
+                                            <ComboBox Height="30" Background="#1C1F26" Foreground="White" BorderBrush="{DynamicResource Theme.Brushes.Border.Default}" FontFamily="{StaticResource PeydaMedium}" FontSize="11" VerticalContentAlignment="Center" SelectedIndex="4">
                                                 <ComboBoxItem Content="Steam"/>
                                                 <ComboBoxItem Content="Epic Games"/>
                                                 <ComboBoxItem Content="GOG"/>
@@ -1327,8 +1327,8 @@
                                             </ComboBox>
                                         </StackPanel>
                                         <StackPanel Grid.Column="2">
-                                            <TextBlock Text="Category" Foreground="#9A9A9A" FontSize="11" Margin="0,0,0,4" FontFamily="{StaticResource PeydaMedium}"/>
-                                            <ComboBox Height="30" Background="#1C1F26" Foreground="White" BorderBrush="#2A2D36" FontFamily="{StaticResource PeydaMedium}" FontSize="11" VerticalContentAlignment="Center" SelectedIndex="0">
+                                            <TextBlock Text="Category" Foreground="{DynamicResource Theme.Brushes.Text.Secondary}" FontSize="11" Margin="0,0,0,4" FontFamily="{StaticResource PeydaMedium}"/>
+                                            <ComboBox Height="30" Background="#1C1F26" Foreground="White" BorderBrush="{DynamicResource Theme.Brushes.Border.Default}" FontFamily="{StaticResource PeydaMedium}" FontSize="11" VerticalContentAlignment="Center" SelectedIndex="0">
                                                 <ComboBoxItem Content="Action"/>
                                                 <ComboBoxItem Content="Adventure"/>
                                                 <ComboBoxItem Content="RPG"/>
@@ -1340,9 +1340,9 @@
                                     </Grid>
 
                                     <!-- Description Section -->
-                                    <TextBlock Text="Description" Foreground="#9A9A9A" FontSize="11" Margin="0,0,0,4" FontFamily="{StaticResource PeydaMedium}"/>
-                                    <Border Background="#1C1F26" BorderBrush="#2A2D36" BorderThickness="1" CornerRadius="6" Height="60" Padding="6,4" Margin="0,0,0,10">
-                                        <TextBox Background="Transparent" BorderThickness="0" Foreground="White" FontSize="11" FontFamily="{StaticResource PeydaMedium}" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" CaretBrush="#63E6FF"/>
+                                    <TextBlock Text="Description" Foreground="{DynamicResource Theme.Brushes.Text.Secondary}" FontSize="11" Margin="0,0,0,4" FontFamily="{StaticResource PeydaMedium}"/>
+                                    <Border Background="#1C1F26" BorderBrush="{DynamicResource Theme.Brushes.Border.Default}" BorderThickness="1" CornerRadius="6" Height="60" Padding="6,4" Margin="0,0,0,10">
+                                        <TextBox Background="Transparent" BorderThickness="0" Foreground="White" FontSize="11" FontFamily="{StaticResource PeydaMedium}" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" CaretBrush="{DynamicResource Theme.Brushes.Secondary}"/>
                                     </Border>
 
                                     <!-- Favorite Checkbox -->
@@ -1359,13 +1359,13 @@
                                         <Button Grid.Column="2" Content="Add Game" Height="30">
                                             <Button.Style>
                                                 <Style TargetType="Button" BasedOn="{StaticResource ToolbarButtonStyle}">
-                                                    <Setter Property="Background" Value="#2200FFFF"/>
-                                                    <Setter Property="BorderBrush" Value="#4400FFFF"/>
-                                                    <Setter Property="Foreground" Value="#00FFFF"/>
+                                                    <Setter Property="Background" Value="{DynamicResource Theme.Brushes.SecondaryTranslucent13}"/>
+                                                    <Setter Property="BorderBrush" Value="{DynamicResource Theme.Brushes.SecondaryTranslucent26}"/>
+                                                    <Setter Property="Foreground" Value="{DynamicResource Theme.Brushes.Secondary}"/>
                                                     <Style.Triggers>
                                                         <Trigger Property="IsMouseOver" Value="True">
-                                                            <Setter Property="Background" Value="#3300FFFF"/>
-                                                            <Setter Property="BorderBrush" Value="#00FFFF"/>
+                                                            <Setter Property="Background" Value="{DynamicResource Theme.Brushes.SecondaryTranslucent20}"/>
+                                                            <Setter Property="BorderBrush" Value="{DynamicResource Theme.Brushes.Secondary}"/>
                                                         </Trigger>
                                                     </Style.Triggers>
                                                 </Style>
@@ -1392,17 +1392,17 @@
                                         <StackPanel Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center">
                                             <Grid Width="64" Height="64">
                                                 <!-- Progress Background Ring -->
-                                                <Ellipse Stroke="#2A2D36" StrokeThickness="4"/>
+                                                <Ellipse Stroke="{DynamicResource Theme.Brushes.Border.Default}" StrokeThickness="4"/>
                                                 <!-- Progress Active Segment -->
-                                                <Ellipse Stroke="#00FFFF" StrokeThickness="4" StrokeDashArray="3.14 0.8" RenderTransformOrigin="0.5,0.5">
+                                                <Ellipse Stroke="{DynamicResource Theme.Brushes.Secondary}" StrokeThickness="4" StrokeDashArray="3.14 0.8" RenderTransformOrigin="0.5,0.5">
                                                     <Ellipse.RenderTransform>
                                                         <RotateTransform Angle="-90"/>
                                                     </Ellipse.RenderTransform>
                                                 </Ellipse>
                                                 <!-- Text inside -->
                                                 <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
-                                                    <TextBlock Text="87%" Foreground="#00FFFF" FontSize="12" FontFamily="{StaticResource PeydaBold}" FontWeight="Bold" HorizontalAlignment="Center"/>
-                                                    <TextBlock Text="Scanning" Foreground="#9A9A9A" FontSize="8" FontFamily="{StaticResource PeydaMedium}" HorizontalAlignment="Center" Margin="0,-2,0,0"/>
+                                                    <TextBlock Text="87%" Foreground="{DynamicResource Theme.Brushes.Secondary}" FontSize="12" FontFamily="{StaticResource PeydaBold}" FontWeight="Bold" HorizontalAlignment="Center"/>
+                                                    <TextBlock Text="Scanning" Foreground="{DynamicResource Theme.Brushes.Text.Secondary}" FontSize="8" FontFamily="{StaticResource PeydaMedium}" HorizontalAlignment="Center" Margin="0,-2,0,0"/>
                                                 </StackPanel>
                                             </Grid>
                                             <!-- Scanning path info -->
@@ -1413,34 +1413,34 @@
                                         <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="8,0,0,0">
                                             <!-- Found Games -->
                                             <Grid Margin="0,0,0,4">
-                                                <TextBlock Text="Found Games" Foreground="#9A9A9A" FontSize="11" FontFamily="{StaticResource PeydaMedium}" HorizontalAlignment="Left"/>
+                                                <TextBlock Text="Found Games" Foreground="{DynamicResource Theme.Brushes.Text.Secondary}" FontSize="11" FontFamily="{StaticResource PeydaMedium}" HorizontalAlignment="Left"/>
                                                 <TextBlock Text="23" Foreground="White" FontSize="11" FontFamily="{StaticResource PeydaBold}" HorizontalAlignment="Right"/>
                                             </Grid>
                                             <!-- Found Applications -->
                                             <Grid Margin="0,0,0,4">
-                                                <TextBlock Text="Found Applications" Foreground="#9A9A9A" FontSize="11" FontFamily="{StaticResource PeydaMedium}" HorizontalAlignment="Left"/>
+                                                <TextBlock Text="Found Applications" Foreground="{DynamicResource Theme.Brushes.Text.Secondary}" FontSize="11" FontFamily="{StaticResource PeydaMedium}" HorizontalAlignment="Left"/>
                                                 <TextBlock Text="7" Foreground="White" FontSize="11" FontFamily="{StaticResource PeydaBold}" HorizontalAlignment="Right"/>
                                             </Grid>
                                             <!-- Updated -->
                                             <Grid Margin="0,0,0,4">
-                                                <TextBlock Text="Updated" Foreground="#9A9A9A" FontSize="11" FontFamily="{StaticResource PeydaMedium}" HorizontalAlignment="Left"/>
-                                                <TextBlock Text="12" Foreground="#63E6FF" FontSize="11" FontFamily="{StaticResource PeydaBold}" HorizontalAlignment="Right"/>
+                                                <TextBlock Text="Updated" Foreground="{DynamicResource Theme.Brushes.Text.Secondary}" FontSize="11" FontFamily="{StaticResource PeydaMedium}" HorizontalAlignment="Left"/>
+                                                <TextBlock Text="12" Foreground="{DynamicResource Theme.Brushes.Secondary}" FontSize="11" FontFamily="{StaticResource PeydaBold}" HorizontalAlignment="Right"/>
                                             </Grid>
                                             <!-- New -->
                                             <Grid Margin="0,0,0,4">
-                                                <TextBlock Text="New" Foreground="#9A9A9A" FontSize="11" FontFamily="{StaticResource PeydaMedium}" HorizontalAlignment="Left"/>
-                                                <TextBlock Text="18" Foreground="#14BE78" FontSize="11" FontFamily="{StaticResource PeydaBold}" HorizontalAlignment="Right"/>
+                                                <TextBlock Text="New" Foreground="{DynamicResource Theme.Brushes.Text.Secondary}" FontSize="11" FontFamily="{StaticResource PeydaMedium}" HorizontalAlignment="Left"/>
+                                                <TextBlock Text="18" Foreground="{DynamicResource Theme.Brushes.Status.Success}" FontSize="11" FontFamily="{StaticResource PeydaBold}" HorizontalAlignment="Right"/>
                                             </Grid>
                                             <!-- Errors -->
                                             <Grid>
-                                                <TextBlock Text="Errors" Foreground="#9A9A9A" FontSize="11" FontFamily="{StaticResource PeydaMedium}" HorizontalAlignment="Left"/>
-                                                <TextBlock Text="2" Foreground="#F46B6B" FontSize="11" FontFamily="{StaticResource PeydaBold}" HorizontalAlignment="Right"/>
+                                                <TextBlock Text="Errors" Foreground="{DynamicResource Theme.Brushes.Text.Secondary}" FontSize="11" FontFamily="{StaticResource PeydaMedium}" HorizontalAlignment="Left"/>
+                                                <TextBlock Text="2" Foreground="{DynamicResource Theme.Brushes.Status.Error}" FontSize="11" FontFamily="{StaticResource PeydaBold}" HorizontalAlignment="Right"/>
                                             </Grid>
                                         </StackPanel>
                                     </Grid>
 
                                     <!-- Footer -->
-                                    <TextBlock Text="Time Elapsed 00:45" Foreground="#9A9A9A" FontSize="10" FontFamily="{StaticResource PeydaMedium}" Margin="0,0,0,10" HorizontalAlignment="Left"/>
+                                    <TextBlock Text="Time Elapsed 00:45" Foreground="{DynamicResource Theme.Brushes.Text.Secondary}" FontSize="10" FontFamily="{StaticResource PeydaMedium}" Margin="0,0,0,10" HorizontalAlignment="Left"/>
                                     <Grid>
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="*" />
@@ -1450,13 +1450,13 @@
                                         <Button Grid.Column="0" Content="Stop" Height="30">
                                             <Button.Style>
                                                 <Style TargetType="Button" BasedOn="{StaticResource ToolbarButtonStyle}">
-                                                    <Setter Property="Background" Value="#22F46B6B"/>
-                                                    <Setter Property="BorderBrush" Value="#44F46B6B"/>
-                                                    <Setter Property="Foreground" Value="#F46B6B"/>
+                                                    <Setter Property="Background" Value="{DynamicResource Theme.Brushes.Status.Error.Opacity10}"/>
+                                                    <Setter Property="BorderBrush" Value="{DynamicResource Theme.Brushes.Status.ErrorTranslucent}"/>
+                                                    <Setter Property="Foreground" Value="{DynamicResource Theme.Brushes.Status.Error}"/>
                                                     <Style.Triggers>
                                                         <Trigger Property="IsMouseOver" Value="True">
-                                                            <Setter Property="Background" Value="#33F46B6B"/>
-                                                            <Setter Property="BorderBrush" Value="#F46B6B"/>
+                                                            <Setter Property="Background" Value="{DynamicResource Theme.Brushes.Status.Error.Opacity20}"/>
+                                                            <Setter Property="BorderBrush" Value="{DynamicResource Theme.Brushes.Status.Error}"/>
                                                         </Trigger>
                                                     </Style.Triggers>
                                                 </Style>
@@ -1465,13 +1465,13 @@
                                         <Button Grid.Column="2" Content="View Results" Height="30">
                                             <Button.Style>
                                                 <Style TargetType="Button" BasedOn="{StaticResource ToolbarButtonStyle}">
-                                                    <Setter Property="Background" Value="#2200FFFF"/>
-                                                    <Setter Property="BorderBrush" Value="#4400FFFF"/>
-                                                    <Setter Property="Foreground" Value="#00FFFF"/>
+                                                    <Setter Property="Background" Value="{DynamicResource Theme.Brushes.SecondaryTranslucent13}"/>
+                                                    <Setter Property="BorderBrush" Value="{DynamicResource Theme.Brushes.SecondaryTranslucent26}"/>
+                                                    <Setter Property="Foreground" Value="{DynamicResource Theme.Brushes.Secondary}"/>
                                                     <Style.Triggers>
                                                         <Trigger Property="IsMouseOver" Value="True">
-                                                            <Setter Property="Background" Value="#3300FFFF"/>
-                                                            <Setter Property="BorderBrush" Value="#00FFFF"/>
+                                                            <Setter Property="Background" Value="{DynamicResource Theme.Brushes.SecondaryTranslucent20}"/>
+                                                            <Setter Property="BorderBrush" Value="{DynamicResource Theme.Brushes.Secondary}"/>
                                                         </Trigger>
                                                     </Style.Triggers>
                                                 </Style>
@@ -1497,12 +1497,12 @@
                                         <!-- Left Column: Validation Status Circle -->
                                         <StackPanel Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center">
                                             <Grid Width="56" Height="56">
-                                                <Ellipse Stroke="#14BE78" StrokeThickness="3" Fill="#1114BE78"/>
+                                                <Ellipse Stroke="{DynamicResource Theme.Brushes.Status.Success}" StrokeThickness="3" Fill="#1114BE78"/>
                                                 <!-- Checkmark Icon -->
-                                                <Path Data="M 16,28 L 22,34 L 38,18" Stroke="#14BE78" StrokeThickness="3" StrokeStartLineCap="Round" StrokeEndLineCap="Round" StrokeLineJoin="Round" Width="20" Height="20" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                <Path Data="M 16,28 L 22,34 L 38,18" Stroke="{DynamicResource Theme.Brushes.Status.Success}" StrokeThickness="3" StrokeStartLineCap="Round" StrokeEndLineCap="Round" StrokeLineJoin="Round" Width="20" Height="20" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                             </Grid>
-                                            <TextBlock Text="Validation Completed" Foreground="#14BE78" FontSize="10" FontFamily="{StaticResource PeydaBold}" Margin="0,8,0,0" HorizontalAlignment="Center" TextAlignment="Center"/>
-                                            <TextBlock Text="All checks passed successfully" Foreground="#9A9A9A" FontSize="8" FontFamily="{StaticResource PeydaMedium}" Margin="0,2,0,0" HorizontalAlignment="Center" TextAlignment="Center" TextWrapping="Wrap" Width="95"/>
+                                            <TextBlock Text="Validation Completed" Foreground="{DynamicResource Theme.Brushes.Status.Success}" FontSize="10" FontFamily="{StaticResource PeydaBold}" Margin="0,8,0,0" HorizontalAlignment="Center" TextAlignment="Center"/>
+                                            <TextBlock Text="All checks passed successfully" Foreground="{DynamicResource Theme.Brushes.Text.Secondary}" FontSize="8" FontFamily="{StaticResource PeydaMedium}" Margin="0,2,0,0" HorizontalAlignment="Center" TextAlignment="Center" TextWrapping="Wrap" Width="95"/>
                                         </StackPanel>
 
                                         <!-- Right Column: Validation Statistics Grid -->
@@ -1524,27 +1524,27 @@
                                             <!-- Headers -->
                                             <TextBlock Grid.Row="0" Grid.Column="0" Text="عنوان" Foreground="#55FFFFFF" FontSize="9" FontFamily="{StaticResource PeydaMedium}" HorizontalAlignment="Left" Margin="0,0,0,2"/>
                                             <TextBlock Grid.Row="0" Grid.Column="1" Text="مقدار" Foreground="#55FFFFFF" FontSize="9" FontFamily="{StaticResource PeydaMedium}" HorizontalAlignment="Right" Margin="0,0,0,2"/>
-                                            <Border Grid.Row="1" Grid.ColumnSpan="2" BorderBrush="#2A2D36" BorderThickness="0,0,0,1" Margin="0,0,0,4"/>
+                                            <Border Grid.Row="1" Grid.ColumnSpan="2" BorderBrush="{DynamicResource Theme.Brushes.Border.Default}" BorderThickness="0,0,0,1" Margin="0,0,0,4"/>
 
                                             <!-- Total Files -->
-                                            <TextBlock Grid.Row="2" Grid.Column="0" Text="Total Files" Foreground="#9A9A9A" FontSize="10" FontFamily="{StaticResource PeydaMedium}" HorizontalAlignment="Left" Margin="0,0,0,3"/>
+                                            <TextBlock Grid.Row="2" Grid.Column="0" Text="Total Files" Foreground="{DynamicResource Theme.Brushes.Text.Secondary}" FontSize="10" FontFamily="{StaticResource PeydaMedium}" HorizontalAlignment="Left" Margin="0,0,0,3"/>
                                             <TextBlock Grid.Row="2" Grid.Column="1" Text="1243" Foreground="White" FontSize="10" FontFamily="{StaticResource PeydaBold}" HorizontalAlignment="Right" Margin="0,0,0,3"/>
 
                                             <!-- Valid Files -->
-                                            <TextBlock Grid.Row="3" Grid.Column="0" Text="Valid Files" Foreground="#9A9A9A" FontSize="10" FontFamily="{StaticResource PeydaMedium}" HorizontalAlignment="Left" Margin="0,0,0,3"/>
-                                            <TextBlock Grid.Row="3" Grid.Column="1" Text="1232" Foreground="#14BE78" FontSize="10" FontFamily="{StaticResource PeydaBold}" HorizontalAlignment="Right" Margin="0,0,0,3"/>
+                                            <TextBlock Grid.Row="3" Grid.Column="0" Text="Valid Files" Foreground="{DynamicResource Theme.Brushes.Text.Secondary}" FontSize="10" FontFamily="{StaticResource PeydaMedium}" HorizontalAlignment="Left" Margin="0,0,0,3"/>
+                                            <TextBlock Grid.Row="3" Grid.Column="1" Text="1232" Foreground="{DynamicResource Theme.Brushes.Status.Success}" FontSize="10" FontFamily="{StaticResource PeydaBold}" HorizontalAlignment="Right" Margin="0,0,0,3"/>
 
                                             <!-- Invalid Files -->
-                                            <TextBlock Grid.Row="4" Grid.Column="0" Text="Invalid Files" Foreground="#9A9A9A" FontSize="10" FontFamily="{StaticResource PeydaMedium}" HorizontalAlignment="Left" Margin="0,0,0,3"/>
+                                            <TextBlock Grid.Row="4" Grid.Column="0" Text="Invalid Files" Foreground="{DynamicResource Theme.Brushes.Text.Secondary}" FontSize="10" FontFamily="{StaticResource PeydaMedium}" HorizontalAlignment="Left" Margin="0,0,0,3"/>
                                             <TextBlock Grid.Row="4" Grid.Column="1" Text="0" Foreground="White" FontSize="10" FontFamily="{StaticResource PeydaBold}" HorizontalAlignment="Right" Margin="0,0,0,3"/>
 
                                             <!-- Missing Files -->
-                                            <TextBlock Grid.Row="5" Grid.Column="0" Text="Missing Files" Foreground="#9A9A9A" FontSize="10" FontFamily="{StaticResource PeydaMedium}" HorizontalAlignment="Left" Margin="0,0,0,3"/>
-                                            <TextBlock Grid.Row="5" Grid.Column="1" Text="11" Foreground="#ffff3d" FontSize="10" FontFamily="{StaticResource PeydaBold}" HorizontalAlignment="Right" Margin="0,0,0,3"/>
+                                            <TextBlock Grid.Row="5" Grid.Column="0" Text="Missing Files" Foreground="{DynamicResource Theme.Brushes.Text.Secondary}" FontSize="10" FontFamily="{StaticResource PeydaMedium}" HorizontalAlignment="Left" Margin="0,0,0,3"/>
+                                            <TextBlock Grid.Row="5" Grid.Column="1" Text="11" Foreground="{DynamicResource Theme.Brushes.Primary}" FontSize="10" FontFamily="{StaticResource PeydaBold}" HorizontalAlignment="Right" Margin="0,0,0,3"/>
 
                                             <!-- Corrupted Files -->
-                                            <TextBlock Grid.Row="6" Grid.Column="0" Text="Corrupted Files" Foreground="#9A9A9A" FontSize="10" FontFamily="{StaticResource PeydaMedium}" HorizontalAlignment="Left"/>
-                                            <TextBlock Grid.Row="6" Grid.Column="1" Text="0" Foreground="#F46B6B" FontSize="10" FontFamily="{StaticResource PeydaBold}" HorizontalAlignment="Right"/>
+                                            <TextBlock Grid.Row="6" Grid.Column="0" Text="Corrupted Files" Foreground="{DynamicResource Theme.Brushes.Text.Secondary}" FontSize="10" FontFamily="{StaticResource PeydaMedium}" HorizontalAlignment="Left"/>
+                                            <TextBlock Grid.Row="6" Grid.Column="1" Text="0" Foreground="{DynamicResource Theme.Brushes.Status.Error}" FontSize="10" FontFamily="{StaticResource PeydaBold}" HorizontalAlignment="Right"/>
                                         </Grid>
                                     </Grid>
 
@@ -1560,13 +1560,13 @@
                                 </Expander.Header>
                                 <StackPanel>
                                     <!-- Source Section -->
-                                    <TextBlock Text="Source" Foreground="#9A9A9A" FontSize="11" Margin="0,0,0,4" FontFamily="{StaticResource PeydaMedium}"/>
+                                    <TextBlock Text="Source" Foreground="{DynamicResource Theme.Brushes.Text.Secondary}" FontSize="11" Margin="0,0,0,4" FontFamily="{StaticResource PeydaMedium}"/>
                                     <Grid Margin="0,0,0,12">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="*" />
                                             <ColumnDefinition Width="Auto" />
                                         </Grid.ColumnDefinitions>
-                                        <ComboBox Grid.Column="0" Height="30" Background="#1C1F26" Foreground="White" BorderBrush="#2A2D36" FontFamily="{StaticResource PeydaMedium}" FontSize="11" VerticalContentAlignment="Center" SelectedIndex="0">
+                                        <ComboBox Grid.Column="0" Height="30" Background="#1C1F26" Foreground="White" BorderBrush="{DynamicResource Theme.Brushes.Border.Default}" FontFamily="{StaticResource PeydaMedium}" FontSize="11" VerticalContentAlignment="Center" SelectedIndex="0">
                                             <ComboBoxItem Content="Select source..."/>
                                             <ComboBoxItem Content="Steam Library"/>
                                             <ComboBoxItem Content="Epic Library"/>
@@ -1588,7 +1588,7 @@
                                     </Grid>
 
                                     <!-- Import Options -->
-                                    <TextBlock Text="Import Options" Foreground="#9A9A9A" FontSize="11" Margin="0,0,0,6" FontFamily="{StaticResource PeydaMedium}"/>
+                                    <TextBlock Text="Import Options" Foreground="{DynamicResource Theme.Brushes.Text.Secondary}" FontSize="11" Margin="0,0,0,6" FontFamily="{StaticResource PeydaMedium}"/>
                                     <StackPanel Margin="0,0,0,12">
                                         <CheckBox Content="Import Games" IsChecked="True" Foreground="White" FontFamily="{StaticResource PeydaMedium}" FontSize="10" Margin="0,0,0,6"/>
                                         <CheckBox Content="Import Applications" Foreground="White" FontFamily="{StaticResource PeydaMedium}" FontSize="10" Margin="0,0,0,6"/>
@@ -1607,13 +1607,13 @@
                                         <Button Grid.Column="2" Content="Import" Height="30">
                                             <Button.Style>
                                                 <Style TargetType="Button" BasedOn="{StaticResource ToolbarButtonStyle}">
-                                                    <Setter Property="Background" Value="#2200FFFF"/>
-                                                    <Setter Property="BorderBrush" Value="#4400FFFF"/>
-                                                    <Setter Property="Foreground" Value="#00FFFF"/>
+                                                    <Setter Property="Background" Value="{DynamicResource Theme.Brushes.SecondaryTranslucent13}"/>
+                                                    <Setter Property="BorderBrush" Value="{DynamicResource Theme.Brushes.SecondaryTranslucent26}"/>
+                                                    <Setter Property="Foreground" Value="{DynamicResource Theme.Brushes.Secondary}"/>
                                                     <Style.Triggers>
                                                         <Trigger Property="IsMouseOver" Value="True">
-                                                            <Setter Property="Background" Value="#3300FFFF"/>
-                                                            <Setter Property="BorderBrush" Value="#00FFFF"/>
+                                                            <Setter Property="Background" Value="{DynamicResource Theme.Brushes.SecondaryTranslucent20}"/>
+                                                            <Setter Property="BorderBrush" Value="{DynamicResource Theme.Brushes.Secondary}"/>
                                                         </Trigger>
                                                     </Style.Triggers>
                                                 </Style>
@@ -1630,13 +1630,13 @@
                                 </Expander.Header>
                                 <StackPanel>
                                     <!-- Conflict Summary -->
-                                    <TextBlock Text="Conflicts Found: 3" Foreground="#ffff3d" FontSize="11" FontFamily="{StaticResource PeydaBold}" FontWeight="Bold" Margin="0,0,0,2"/>
-                                    <TextBlock Text="Choose which version to keep for each item" Foreground="#9A9A9A" FontSize="10" FontFamily="{StaticResource PeydaMedium}" Margin="0,0,0,10" TextWrapping="Wrap"/>
+                                    <TextBlock Text="Conflicts Found: 3" Foreground="{DynamicResource Theme.Brushes.Primary}" FontSize="11" FontFamily="{StaticResource PeydaBold}" FontWeight="Bold" Margin="0,0,0,2"/>
+                                    <TextBlock Text="Choose which version to keep for each item" Foreground="{DynamicResource Theme.Brushes.Text.Secondary}" FontSize="10" FontFamily="{StaticResource PeydaMedium}" Margin="0,0,0,10" TextWrapping="Wrap"/>
 
                                     <!-- Conflict Table list -->
                                     <StackPanel Margin="0,0,0,12">
                                         <!-- Conflict Row 1: Valorant -->
-                                        <Border BorderBrush="#2A2D36" BorderThickness="0,0,0,1" Padding="0,0,0,8" Margin="0,0,0,8">
+                                        <Border BorderBrush="{DynamicResource Theme.Brushes.Border.Default}" BorderThickness="0,0,0,1" Padding="0,0,0,8" Margin="0,0,0,8">
                                             <Grid>
                                                 <Grid.RowDefinitions>
                                                     <RowDefinition Height="Auto"/>
@@ -1644,7 +1644,7 @@
                                                 </Grid.RowDefinitions>
                                                 <StackPanel Grid.Row="0">
                                                     <TextBlock Text="Valorant" Foreground="White" FontSize="11" FontFamily="{StaticResource PeydaBold}"/>
-                                                    <TextBlock Text="Local is newer" Foreground="#9A9A9A" FontSize="9" FontFamily="{StaticResource PeydaMedium}"/>
+                                                    <TextBlock Text="Local is newer" Foreground="{DynamicResource Theme.Brushes.Text.Secondary}" FontSize="9" FontFamily="{StaticResource PeydaMedium}"/>
                                                 </StackPanel>
                                                 <!-- Options buttons -->
                                                 <Grid Grid.Row="1" Margin="0,6,0,0">
@@ -1663,7 +1663,7 @@
                                         </Border>
 
                                         <!-- Conflict Row 2: GTA V -->
-                                        <Border BorderBrush="#2A2D36" BorderThickness="0,0,0,1" Padding="0,0,0,8" Margin="0,0,0,8">
+                                        <Border BorderBrush="{DynamicResource Theme.Brushes.Border.Default}" BorderThickness="0,0,0,1" Padding="0,0,0,8" Margin="0,0,0,8">
                                             <Grid>
                                                 <Grid.RowDefinitions>
                                                     <RowDefinition Height="Auto"/>
@@ -1671,7 +1671,7 @@
                                                 </Grid.RowDefinitions>
                                                 <StackPanel Grid.Row="0">
                                                     <TextBlock Text="GTA V" Foreground="White" FontSize="11" FontFamily="{StaticResource PeydaBold}"/>
-                                                    <TextBlock Text="Server is newer" Foreground="#9A9A9A" FontSize="9" FontFamily="{StaticResource PeydaMedium}"/>
+                                                    <TextBlock Text="Server is newer" Foreground="{DynamicResource Theme.Brushes.Text.Secondary}" FontSize="9" FontFamily="{StaticResource PeydaMedium}"/>
                                                 </StackPanel>
                                                 <!-- Options buttons -->
                                                 <Grid Grid.Row="1" Margin="0,6,0,0">
@@ -1698,7 +1698,7 @@
                                                 </Grid.RowDefinitions>
                                                 <StackPanel Grid.Row="0">
                                                     <TextBlock Text="Red Dead Redemption 2" Foreground="White" FontSize="11" FontFamily="{StaticResource PeydaBold}"/>
-                                                    <TextBlock Text="Different" Foreground="#9A9A9A" FontSize="9" FontFamily="{StaticResource PeydaMedium}"/>
+                                                    <TextBlock Text="Different" Foreground="{DynamicResource Theme.Brushes.Text.Secondary}" FontSize="9" FontFamily="{StaticResource PeydaMedium}"/>
                                                 </StackPanel>
                                                 <!-- Options buttons -->
                                                 <Grid Grid.Row="1" Margin="0,6,0,0">
@@ -1731,13 +1731,13 @@
                                         <Button Grid.Column="2" Content="Resolve" Height="30">
                                             <Button.Style>
                                                 <Style TargetType="Button" BasedOn="{StaticResource ToolbarButtonStyle}">
-                                                    <Setter Property="Background" Value="#2200FFFF"/>
-                                                    <Setter Property="BorderBrush" Value="#4400FFFF"/>
-                                                    <Setter Property="Foreground" Value="#00FFFF"/>
+                                                    <Setter Property="Background" Value="{DynamicResource Theme.Brushes.SecondaryTranslucent13}"/>
+                                                    <Setter Property="BorderBrush" Value="{DynamicResource Theme.Brushes.SecondaryTranslucent26}"/>
+                                                    <Setter Property="Foreground" Value="{DynamicResource Theme.Brushes.Secondary}"/>
                                                     <Style.Triggers>
                                                         <Trigger Property="IsMouseOver" Value="True">
-                                                            <Setter Property="Background" Value="#3300FFFF"/>
-                                                            <Setter Property="BorderBrush" Value="#00FFFF"/>
+                                                            <Setter Property="Background" Value="{DynamicResource Theme.Brushes.SecondaryTranslucent20}"/>
+                                                            <Setter Property="BorderBrush" Value="{DynamicResource Theme.Brushes.Secondary}"/>
                                                         </Trigger>
                                                     </Style.Triggers>
                                                 </Style>
@@ -1752,7 +1752,7 @@
             </Grid>
 
             <!-- 12. FOOTER -->
-            <Border Grid.Row="2" Background="#181A20" BorderBrush="#2A2D36" BorderThickness="0,1,0,0" Padding="24,10">
+            <Border Grid.Row="2" Background="{DynamicResource Theme.Brushes.Surface.Panel}" BorderBrush="{DynamicResource Theme.Brushes.Border.Default}" BorderThickness="0,1,0,0" Padding="24,10">
                 <Grid VerticalAlignment="Center">
                     <Grid.ColumnDefinitions>
                         <!-- Full-width: Status Stat Cards -->
@@ -1762,58 +1762,58 @@
                     <!-- Left: Status Stat Cards -->
                     <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
                         <!-- Stat Card: Games -->
-                        <Border Background="#1C1F26" CornerRadius="6" Padding="12,6" Margin="0,0,8,0" BorderBrush="#2A2D36" BorderThickness="1">
+                        <Border Background="#1C1F26" CornerRadius="6" Padding="12,6" Margin="0,0,8,0" BorderBrush="{DynamicResource Theme.Brushes.Border.Default}" BorderThickness="1">
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="GAMES: " Foreground="#9A9A9A" FontSize="11" FontFamily="{StaticResource PeydaBold}"/>
-                                <TextBlock Text="{Binding Categories[1].Count}" Foreground="#63E6FF" FontSize="11" FontFamily="{StaticResource PeydaBold}"/>
+                                <TextBlock Text="GAMES: " Foreground="{DynamicResource Theme.Brushes.Text.Secondary}" FontSize="11" FontFamily="{StaticResource PeydaBold}"/>
+                                <TextBlock Text="{Binding Categories[1].Count}" Foreground="{DynamicResource Theme.Brushes.Secondary}" FontSize="11" FontFamily="{StaticResource PeydaBold}"/>
                             </StackPanel>
                         </Border>
 
                         <!-- Stat Card: Applications -->
-                        <Border Background="#1C1F26" CornerRadius="6" Padding="12,6" Margin="0,0,8,0" BorderBrush="#2A2D36" BorderThickness="1">
+                        <Border Background="#1C1F26" CornerRadius="6" Padding="12,6" Margin="0,0,8,0" BorderBrush="{DynamicResource Theme.Brushes.Border.Default}" BorderThickness="1">
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="APPLICATIONS: " Foreground="#9A9A9A" FontSize="11" FontFamily="{StaticResource PeydaBold}"/>
-                                <TextBlock Text="{Binding Categories[2].Count}" Foreground="#63E6FF" FontSize="11" FontFamily="{StaticResource PeydaBold}"/>
+                                <TextBlock Text="APPLICATIONS: " Foreground="{DynamicResource Theme.Brushes.Text.Secondary}" FontSize="11" FontFamily="{StaticResource PeydaBold}"/>
+                                <TextBlock Text="{Binding Categories[2].Count}" Foreground="{DynamicResource Theme.Brushes.Secondary}" FontSize="11" FontFamily="{StaticResource PeydaBold}"/>
                             </StackPanel>
                         </Border>
 
                         <!-- Stat Card: Installed -->
-                        <Border Background="#1C1F26" CornerRadius="6" Padding="12,6" Margin="0,0,8,0" BorderBrush="#2A2D36" BorderThickness="1">
+                        <Border Background="#1C1F26" CornerRadius="6" Padding="12,6" Margin="0,0,8,0" BorderBrush="{DynamicResource Theme.Brushes.Border.Default}" BorderThickness="1">
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="INSTALLED: " Foreground="#9A9A9A" FontSize="11" FontFamily="{StaticResource PeydaBold}"/>
-                                <TextBlock Text="{Binding Categories[0].Count}" Foreground="#14BE78" FontSize="11" FontFamily="{StaticResource PeydaBold}"/>
+                                <TextBlock Text="INSTALLED: " Foreground="{DynamicResource Theme.Brushes.Text.Secondary}" FontSize="11" FontFamily="{StaticResource PeydaBold}"/>
+                                <TextBlock Text="{Binding Categories[0].Count}" Foreground="{DynamicResource Theme.Brushes.Status.Success}" FontSize="11" FontFamily="{StaticResource PeydaBold}"/>
                             </StackPanel>
                         </Border>
 
                         <!-- Stat Card: Missing -->
-                        <Border Background="#1C1F26" CornerRadius="6" Padding="12,6" Margin="0,0,8,0" BorderBrush="#2A2D36" BorderThickness="1">
+                        <Border Background="#1C1F26" CornerRadius="6" Padding="12,6" Margin="0,0,8,0" BorderBrush="{DynamicResource Theme.Brushes.Border.Default}" BorderThickness="1">
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="MISSING: " Foreground="#9A9A9A" FontSize="11" FontFamily="{StaticResource PeydaBold}"/>
-                                <TextBlock Text="{Binding Categories[15].Count}" Foreground="#F46B6B" FontSize="11" FontFamily="{StaticResource PeydaBold}"/>
+                                <TextBlock Text="MISSING: " Foreground="{DynamicResource Theme.Brushes.Text.Secondary}" FontSize="11" FontFamily="{StaticResource PeydaBold}"/>
+                                <TextBlock Text="{Binding Categories[15].Count}" Foreground="{DynamicResource Theme.Brushes.Status.Error}" FontSize="11" FontFamily="{StaticResource PeydaBold}"/>
                             </StackPanel>
                         </Border>
 
                         <!-- Stat Card: Broken -->
-                        <Border Background="#1C1F26" CornerRadius="6" Padding="12,6" Margin="0,0,8,0" BorderBrush="#2A2D36" BorderThickness="1">
+                        <Border Background="#1C1F26" CornerRadius="6" Padding="12,6" Margin="0,0,8,0" BorderBrush="{DynamicResource Theme.Brushes.Border.Default}" BorderThickness="1">
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="INVALID: " Foreground="#9A9A9A" FontSize="11" FontFamily="{StaticResource PeydaBold}"/>
-                                <TextBlock Text="{Binding Categories[15].Count}" Foreground="#F46B6B" FontSize="11" FontFamily="{StaticResource PeydaBold}"/>
+                                <TextBlock Text="INVALID: " Foreground="{DynamicResource Theme.Brushes.Text.Secondary}" FontSize="11" FontFamily="{StaticResource PeydaBold}"/>
+                                <TextBlock Text="{Binding Categories[15].Count}" Foreground="{DynamicResource Theme.Brushes.Status.Error}" FontSize="11" FontFamily="{StaticResource PeydaBold}"/>
                             </StackPanel>
                         </Border>
 
                         <!-- Stat Card: Need Scan -->
-                        <Border Background="#1C1F26" CornerRadius="6" Padding="12,6" Margin="0,0,8,0" BorderBrush="#2A2D36" BorderThickness="1">
+                        <Border Background="#1C1F26" CornerRadius="6" Padding="12,6" Margin="0,0,8,0" BorderBrush="{DynamicResource Theme.Brushes.Border.Default}" BorderThickness="1">
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="NEED SCAN: " Foreground="#9A9A9A" FontSize="11" FontFamily="{StaticResource PeydaBold}"/>
-                                <TextBlock Text="{Binding Categories[16].Count}" Foreground="#ffff3d" FontSize="11" FontFamily="{StaticResource PeydaBold}"/>
+                                <TextBlock Text="NEED SCAN: " Foreground="{DynamicResource Theme.Brushes.Text.Secondary}" FontSize="11" FontFamily="{StaticResource PeydaBold}"/>
+                                <TextBlock Text="{Binding Categories[16].Count}" Foreground="{DynamicResource Theme.Brushes.Primary}" FontSize="11" FontFamily="{StaticResource PeydaBold}"/>
                             </StackPanel>
                         </Border>
 
                         <!-- Stat Card: Disabled -->
-                        <Border Background="#1C1F26" CornerRadius="6" Padding="12,6" Margin="0,0,8,0" BorderBrush="#2A2D36" BorderThickness="1">
+                        <Border Background="#1C1F26" CornerRadius="6" Padding="12,6" Margin="0,0,8,0" BorderBrush="{DynamicResource Theme.Brushes.Border.Default}" BorderThickness="1">
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="DISABLED: " Foreground="#9A9A9A" FontSize="11" FontFamily="{StaticResource PeydaBold}"/>
-                                <TextBlock Text="{Binding Categories[14].Count}" Foreground="#9A9A9A" FontSize="11" FontFamily="{StaticResource PeydaBold}"/>
+                                <TextBlock Text="DISABLED: " Foreground="{DynamicResource Theme.Brushes.Text.Secondary}" FontSize="11" FontFamily="{StaticResource PeydaBold}"/>
+                                <TextBlock Text="{Binding Categories[14].Count}" Foreground="{DynamicResource Theme.Brushes.Text.Secondary}" FontSize="11" FontFamily="{StaticResource PeydaBold}"/>
                             </StackPanel>
                         </Border>
                     </StackPanel>
@@ -1823,7 +1823,7 @@
         </Grid>
 
         <!-- FULL-SCREEN LOADING OVERLAY -->
-        <Grid Background="#88000000" Panel.ZIndex="10000">
+        <Grid Background="{DynamicResource Theme.Brushes.Surface.Dialog}" Panel.ZIndex="10000">
             <Grid.Style>
                 <Style TargetType="Grid">
                     <Setter Property="Visibility" Value="Collapsed" />
@@ -1834,34 +1834,34 @@
                     </Style.Triggers>
                 </Style>
             </Grid.Style>
-            <Border Background="#1A1F26" BorderBrush="#63E6FF" BorderThickness="1.5" CornerRadius="12" Width="380" Height="180" HorizontalAlignment="Center" VerticalAlignment="Center">
+            <Border Background="#1A1F26" BorderBrush="{DynamicResource Theme.Brushes.Secondary}" BorderThickness="1.5" CornerRadius="12" Width="380" Height="180" HorizontalAlignment="Center" VerticalAlignment="Center">
                 <StackPanel VerticalAlignment="Center" Margin="24">
                     <TextBlock Text="Scanning Local Computer..." Foreground="White" FontSize="15" FontFamily="{StaticResource PeydaBold}" HorizontalAlignment="Center" Margin="0,0,0,16"/>
                     <!-- Progress Bar -->
-                    <ProgressBar Value="{Binding LoadingProgress}" Height="10" Background="#14161C" Foreground="#63E6FF" BorderThickness="0" Maximum="100"/>
+                    <ProgressBar Value="{Binding LoadingProgress}" Height="10" Background="{DynamicResource Theme.Brushes.Progress.Track}" Foreground="{DynamicResource Theme.Brushes.Secondary}" BorderThickness="0" Maximum="100"/>
                     <!-- Progress Text -->
-                    <TextBlock Text="{Binding LoadingProgress, StringFormat='{}{0}% Completed'}" Foreground="#63E6FF" FontSize="12" FontFamily="{StaticResource PeydaMedium}" HorizontalAlignment="Center" Margin="0,8,0,0"/>
+                    <TextBlock Text="{Binding LoadingProgress, StringFormat='{}{0}% Completed'}" Foreground="{DynamicResource Theme.Brushes.Secondary}" FontSize="12" FontFamily="{StaticResource PeydaMedium}" HorizontalAlignment="Center" Margin="0,8,0,0"/>
                 </StackPanel>
             </Border>
         </Grid>
 
         <!-- MODAL DIALOG OVERLAY (Semi-transparent black overlay 45% & Blur focus controller) -->
-        <Grid x:Name="ModalOverlay" DataContext="{x:Null}" Background="#73000000" Panel.ZIndex="9000" Visibility="Collapsed" IsVisibleChanged="ModalOverlay_IsVisibleChanged" MouseDown="ModalOverlay_MouseDown">
+        <Grid x:Name="ModalOverlay" DataContext="{x:Null}" Background="{DynamicResource Theme.Brushes.Surface.Dialog}" Panel.ZIndex="9000" Visibility="Collapsed" IsVisibleChanged="ModalOverlay_IsVisibleChanged" MouseDown="ModalOverlay_MouseDown">
             <!-- Centered Modal dialog container -->
             <Border x:Name="ModalCard"
                     Width="1100" Height="740"
                     HorizontalAlignment="Center" VerticalAlignment="Center"
-                    CornerRadius="18" BorderBrush="#252528" BorderThickness="1"
+                    CornerRadius="18" BorderBrush="{DynamicResource Theme.Brushes.Border.Default}" BorderThickness="1"
                     RenderTransformOrigin="0.5,0.5"
                     MouseDown="ModalCard_MouseDown">
                 <Border.Background>
                     <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
                         <GradientStop Color="#1B1B1F" Offset="0"/>
-                        <GradientStop Color="#101014" Offset="1"/>
+                        <GradientStop Color="{DynamicResource Theme.Colors.Background.Primary}" Offset="1"/>
                     </LinearGradientBrush>
                 </Border.Background>
                 <Border.Effect>
-                    <DropShadowEffect Color="#000000" BlurRadius="40" ShadowDepth="8" Opacity="0.65"/>
+                    <DropShadowEffect Color="{DynamicResource Theme.Colors.Shadow}" BlurRadius="40" ShadowDepth="8" Opacity="0.65"/>
                 </Border.Effect>
                 <Border.RenderTransform>
                     <ScaleTransform x:Name="ModalScaleTransform" ScaleX="1.0" ScaleY="1.0"/>
@@ -1883,11 +1883,11 @@
                         <!-- Left Column: Game Cover & Metadata -->
                         <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
                             <!-- Game Cover: 96x96 glassmorphic -->
-                            <Border Width="96" Height="96" Background="#13FFFFFF" BorderBrush="#252528" BorderThickness="1" CornerRadius="12" Margin="0,0,20,0" ClipToBounds="True">
+                            <Border Width="96" Height="96" Background="#13FFFFFF" BorderBrush="{DynamicResource Theme.Brushes.Border.Default}" BorderThickness="1" CornerRadius="12" Margin="0,0,20,0" ClipToBounds="True">
                                 <Grid>
                                     <!-- Fallback Path icon -->
                                     <Path Data="M21,6H3C1.9,6 1,6.9 1,8V16C1,17.1 1.9,18 3,18H21C22.1,18 23,17.1 23,16V8C23,6.9 22.1,6 21,6M6,15H4V13H2V11H4V9H6V11H8V13H6V15M15,11A1.5,1.5 0 1,1 16.5,9.5A1.5,1.5 0 0,1 15,11M19,14A1.5,1.5 0 1,1 20.5,12.5A1.5,1.5 0 0,1 19,14Z"
-                                          Fill="#33FFFFFF" Width="48" Height="48" Stretch="Uniform"
+                                          Fill="{DynamicResource Theme.Brushes.White.Opacity20}" Width="48" Height="48" Stretch="Uniform"
                                           VerticalAlignment="Center" HorizontalAlignment="Center"/>
 
                                     <!-- Cover Image -->
@@ -1902,41 +1902,41 @@
                                 <WrapPanel Margin="0,6,0,0" VerticalAlignment="Center">
                                     <!-- Category Badge -->
                                     <Border Background="#252A34" CornerRadius="4" Padding="8,4" Margin="0,0,8,0">
-                                        <TextBlock Text="{Binding Category, FallbackValue='Action'}" Foreground="#9A9A9A" FontSize="11" FontFamily="{StaticResource PeydaMedium}"/>
+                                        <TextBlock Text="{Binding Category, FallbackValue='Action'}" Foreground="{DynamicResource Theme.Brushes.Text.Secondary}" FontSize="11" FontFamily="{StaticResource PeydaMedium}"/>
                                     </Border>
 
                                     <!-- Platform Launcher -->
                                     <Border Background="#1C1F26" CornerRadius="4" Padding="8,4" Margin="0,0,8,0">
-                                        <TextBlock Text="{Binding Launcher, FallbackValue='Steam'}" Foreground="#63E6FF" FontSize="11" FontFamily="{StaticResource PeydaBold}"/>
+                                        <TextBlock Text="{Binding Launcher, FallbackValue='Steam'}" Foreground="{DynamicResource Theme.Brushes.Secondary}" FontSize="11" FontFamily="{StaticResource PeydaBold}"/>
                                     </Border>
 
                                     <!-- Installed Status Badge -->
                                     <Border CornerRadius="4" Padding="8,4" Margin="0,0,8,0">
                                         <Border.Style>
                                             <Style TargetType="Border">
-                                                <Setter Property="Background" Value="#2214BE78"/>
-                                                <Setter Property="BorderBrush" Value="#4414BE78"/>
+                                                <Setter Property="Background" Value="{DynamicResource Theme.Brushes.Status.Success}"/>
+                                                <Setter Property="BorderBrush" Value="{DynamicResource Theme.Brushes.Status.Success}"/>
                                                 <Setter Property="BorderThickness" Value="1"/>
                                                 <Style.Triggers>
                                                     <DataTrigger Binding="{Binding Status}" Value="Disabled">
-                                                        <Setter Property="Background" Value="#229A9A9A"/>
-                                                        <Setter Property="BorderBrush" Value="#449A9A9A"/>
+                                                        <Setter Property="Background" Value="{DynamicResource Theme.Brushes.Text.SecondaryTranslucent13}"/>
+                                                        <Setter Property="BorderBrush" Value="{DynamicResource Theme.Brushes.Text.SecondaryTranslucent26}"/>
                                                     </DataTrigger>
                                                     <DataTrigger Binding="{Binding Status}" Value="Corrupted">
-                                                        <Setter Property="Background" Value="#22F46B6B"/>
-                                                        <Setter Property="BorderBrush" Value="#44F46B6B"/>
+                                                        <Setter Property="Background" Value="{DynamicResource Theme.Brushes.Status.Error.Opacity10}"/>
+                                                        <Setter Property="BorderBrush" Value="{DynamicResource Theme.Brushes.Status.ErrorTranslucent}"/>
                                                     </DataTrigger>
                                                     <DataTrigger Binding="{Binding Status}" Value="Missing">
-                                                        <Setter Property="Background" Value="#22F46B6B"/>
-                                                        <Setter Property="BorderBrush" Value="#44F46B6B"/>
+                                                        <Setter Property="Background" Value="{DynamicResource Theme.Brushes.Status.Error.Opacity10}"/>
+                                                        <Setter Property="BorderBrush" Value="{DynamicResource Theme.Brushes.Status.ErrorTranslucent}"/>
                                                     </DataTrigger>
                                                     <DataTrigger Binding="{Binding Status}" Value="Updating">
-                                                        <Setter Property="Background" Value="#22ffff3d"/>
-                                                        <Setter Property="BorderBrush" Value="#44ffff3d"/>
+                                                        <Setter Property="Background" Value="{DynamicResource Theme.Brushes.PrimaryTranslucent13}"/>
+                                                        <Setter Property="BorderBrush" Value="{DynamicResource Theme.Brushes.PrimaryTranslucent26}"/>
                                                     </DataTrigger>
                                                     <DataTrigger Binding="{Binding Status}" Value="Validation Required">
-                                                        <Setter Property="Background" Value="#228A5CFF"/>
-                                                        <Setter Property="BorderBrush" Value="#448A5CFF"/>
+                                                        <Setter Property="Background" Value="{DynamicResource Theme.Brushes.PurpleTranslucent13}"/>
+                                                        <Setter Property="BorderBrush" Value="{DynamicResource Theme.Brushes.PurpleTranslucent26}"/>
                                                     </DataTrigger>
                                                 </Style.Triggers>
                                             </Style>
@@ -1944,22 +1944,22 @@
                                         <TextBlock Text="{Binding Status, FallbackValue='Installed'}" FontSize="11" FontFamily="{StaticResource PeydaBold}">
                                             <TextBlock.Style>
                                                 <Style TargetType="TextBlock">
-                                                    <Setter Property="Foreground" Value="#14BE78"/>
+                                                    <Setter Property="Foreground" Value="{DynamicResource Theme.Brushes.Status.Success}"/>
                                                     <Style.Triggers>
                                                         <DataTrigger Binding="{Binding Status}" Value="Disabled">
-                                                            <Setter Property="Foreground" Value="#9A9A9A"/>
+                                                            <Setter Property="Foreground" Value="{DynamicResource Theme.Brushes.Text.Secondary}"/>
                                                         </DataTrigger>
                                                         <DataTrigger Binding="{Binding Status}" Value="Corrupted">
-                                                            <Setter Property="Foreground" Value="#F46B6B"/>
+                                                            <Setter Property="Foreground" Value="{DynamicResource Theme.Brushes.Status.Error}"/>
                                                         </DataTrigger>
                                                         <DataTrigger Binding="{Binding Status}" Value="Missing">
-                                                            <Setter Property="Foreground" Value="#F46B6B"/>
+                                                            <Setter Property="Foreground" Value="{DynamicResource Theme.Brushes.Status.Error}"/>
                                                         </DataTrigger>
                                                         <DataTrigger Binding="{Binding Status}" Value="Updating">
-                                                            <Setter Property="Foreground" Value="#ffff3d"/>
+                                                            <Setter Property="Foreground" Value="{DynamicResource Theme.Brushes.Primary}"/>
                                                         </DataTrigger>
                                                         <DataTrigger Binding="{Binding Status}" Value="Validation Required">
-                                                            <Setter Property="Foreground" Value="#8A5CFF"/>
+                                                            <Setter Property="Foreground" Value="{DynamicResource Theme.Brushes.Purple}"/>
                                                         </DataTrigger>
                                                     </Style.Triggers>
                                                 </Style>
@@ -1968,10 +1968,10 @@
                                     </Border>
 
                                     <!-- Version -->
-                                    <TextBlock Text="{Binding Version, FallbackValue='1.0.0'}" Foreground="#9A9A9A" FontSize="11" FontFamily="{StaticResource PeydaMedium}" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                                    <TextBlock Text="{Binding Version, FallbackValue='1.0.0'}" Foreground="{DynamicResource Theme.Brushes.Text.Secondary}" FontSize="11" FontFamily="{StaticResource PeydaMedium}" Margin="0,0,8,0" VerticalAlignment="Center"/>
 
                                     <!-- Developer -->
-                                    <TextBlock Text="{Binding Publisher, FallbackValue='Developer'}" Foreground="#9A9A9A" FontSize="11" FontFamily="{StaticResource PeydaMedium}" VerticalAlignment="Center"/>
+                                    <TextBlock Text="{Binding Publisher, FallbackValue='Developer'}" Foreground="{DynamicResource Theme.Brushes.Text.Secondary}" FontSize="11" FontFamily="{StaticResource PeydaMedium}" VerticalAlignment="Center"/>
                                 </WrapPanel>
                             </StackPanel>
                         </StackPanel>
@@ -1981,11 +1981,11 @@
                             <Button.Template>
                                 <ControlTemplate TargetType="Button">
                                     <Border x:Name="CloseBorder" Background="Transparent" CornerRadius="18" BorderThickness="0">
-                                        <Path x:Name="CrossPath" Data="M10 10L26 26M26 10L10 26" Stroke="#9A9A9A" StrokeThickness="2" Width="14" Height="14" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        <Path x:Name="CrossPath" Data="M10 10L26 26M26 10L10 26" Stroke="{DynamicResource Theme.Brushes.Text.Secondary}" StrokeThickness="2" Width="14" Height="14" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                     </Border>
                                     <ControlTemplate.Triggers>
                                         <Trigger Property="IsMouseOver" Value="True">
-                                            <Setter TargetName="CloseBorder" Property="Background" Value="#D9383A"/>
+                                            <Setter TargetName="CloseBorder" Property="Background" Value="{DynamicResource Theme.Brushes.CloseButton.Hover}"/>
                                             <Setter TargetName="CrossPath" Property="Stroke" Value="White"/>
                                         </Trigger>
                                     </ControlTemplate.Triggers>
@@ -2007,9 +2007,9 @@
                             <StackPanel Margin="0,0,10,0">
 
                                 <!-- 1. General Info Card -->
-                                <Border Background="#121216" BorderBrush="#252528" BorderThickness="1" CornerRadius="12" Padding="16" Margin="0,0,0,20">
+                                <Border Background="{DynamicResource Theme.Brushes.Surface.Card}" BorderBrush="{DynamicResource Theme.Brushes.Border.Default}" BorderThickness="1" CornerRadius="12" Padding="16" Margin="0,0,0,20">
                                     <StackPanel>
-                                        <TextBlock Text="1. GENERAL" FontFamily="{StaticResource PeydaBold}" FontSize="12" Foreground="#63E6FF" Margin="0,0,0,12" FontWeight="Bold"/>
+                                        <TextBlock Text="1. GENERAL" FontFamily="{StaticResource PeydaBold}" FontSize="12" Foreground="{DynamicResource Theme.Brushes.Secondary}" Margin="0,0,0,12" FontWeight="Bold"/>
                                         <Grid>
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="1.5*" />
@@ -2024,24 +2024,24 @@
                                             </Grid.RowDefinitions>
 
                                             <!-- ID -->
-                                            <TextBlock Grid.Row="0" Grid.Column="0" Text="Application ID" Foreground="#9A9A9A" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
+                                            <TextBlock Grid.Row="0" Grid.Column="0" Text="Application ID" Foreground="{DynamicResource Theme.Brushes.Text.Secondary}" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
                                             <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding Id, FallbackValue='N/A'}" Foreground="White" FontSize="12" FontFamily="{StaticResource PeydaBold}"/>
 
                                             <!-- Name -->
-                                            <TextBlock Grid.Row="2" Grid.Column="0" Text="Name / Title" Foreground="#9A9A9A" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
+                                            <TextBlock Grid.Row="2" Grid.Column="0" Text="Name / Title" Foreground="{DynamicResource Theme.Brushes.Text.Secondary}" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
                                             <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding Name, FallbackValue='N/A'}" Foreground="White" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
 
                                             <!-- Publisher -->
-                                            <TextBlock Grid.Row="4" Grid.Column="0" Text="Developer / Publisher" Foreground="#9A9A9A" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
+                                            <TextBlock Grid.Row="4" Grid.Column="0" Text="Developer / Publisher" Foreground="{DynamicResource Theme.Brushes.Text.Secondary}" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
                                             <TextBlock Grid.Row="4" Grid.Column="1" Text="{Binding Publisher, FallbackValue='N/A'}" Foreground="White" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
                                         </Grid>
                                     </StackPanel>
                                 </Border>
 
                                 <!-- 2. Executable Card -->
-                                <Border Background="#121216" BorderBrush="#252528" BorderThickness="1" CornerRadius="12" Padding="16" Margin="0,0,0,20">
+                                <Border Background="{DynamicResource Theme.Brushes.Surface.Card}" BorderBrush="{DynamicResource Theme.Brushes.Border.Default}" BorderThickness="1" CornerRadius="12" Padding="16" Margin="0,0,0,20">
                                     <StackPanel>
-                                        <TextBlock Text="2. EXECUTABLE" FontFamily="{StaticResource PeydaBold}" FontSize="12" Foreground="#ffff3d" Margin="0,0,0,12" FontWeight="Bold"/>
+                                        <TextBlock Text="2. EXECUTABLE" FontFamily="{StaticResource PeydaBold}" FontSize="12" Foreground="{DynamicResource Theme.Brushes.Primary}" Margin="0,0,0,12" FontWeight="Bold"/>
                                         <Grid>
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="1.5*" />
@@ -2054,20 +2054,20 @@
                                             </Grid.RowDefinitions>
 
                                             <!-- Executable -->
-                                            <TextBlock Grid.Row="0" Grid.Column="0" Text="Executable" Foreground="#9A9A9A" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
+                                            <TextBlock Grid.Row="0" Grid.Column="0" Text="Executable" Foreground="{DynamicResource Theme.Brushes.Text.Secondary}" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
                                             <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding Executable, FallbackValue='launcher.exe'}" Foreground="White" FontSize="12" FontFamily="{StaticResource PeydaBold}" TextWrapping="Wrap"/>
 
                                             <!-- Install Directory -->
-                                            <TextBlock Grid.Row="2" Grid.Column="0" Text="Install Directory" Foreground="#9A9A9A" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
+                                            <TextBlock Grid.Row="2" Grid.Column="0" Text="Install Directory" Foreground="{DynamicResource Theme.Brushes.Text.Secondary}" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
                                             <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding InstallationPath, FallbackValue='C:\\'}" Foreground="White" FontSize="12" FontFamily="{StaticResource PeydaMedium}" TextWrapping="Wrap"/>
                                         </Grid>
                                     </StackPanel>
                                 </Border>
 
                                 <!-- 3. Launcher Card -->
-                                <Border Background="#121216" BorderBrush="#252528" BorderThickness="1" CornerRadius="12" Padding="16" Margin="0,0,0,20">
+                                <Border Background="{DynamicResource Theme.Brushes.Surface.Card}" BorderBrush="{DynamicResource Theme.Brushes.Border.Default}" BorderThickness="1" CornerRadius="12" Padding="16" Margin="0,0,0,20">
                                     <StackPanel>
-                                        <TextBlock Text="3. LAUNCHER" FontFamily="{StaticResource PeydaBold}" FontSize="12" Foreground="#8A5CFF" Margin="0,0,0,12" FontWeight="Bold"/>
+                                        <TextBlock Text="3. LAUNCHER" FontFamily="{StaticResource PeydaBold}" FontSize="12" Foreground="{DynamicResource Theme.Brushes.Purple}" Margin="0,0,0,12" FontWeight="Bold"/>
                                         <Grid>
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="1.5*" />
@@ -2080,20 +2080,20 @@
                                             </Grid.RowDefinitions>
 
                                             <!-- Launcher Platform -->
-                                            <TextBlock Grid.Row="0" Grid.Column="0" Text="Launcher Platform" Foreground="#9A9A9A" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
+                                            <TextBlock Grid.Row="0" Grid.Column="0" Text="Launcher Platform" Foreground="{DynamicResource Theme.Brushes.Text.Secondary}" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
                                             <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding Launcher, FallbackValue='Custom'}" Foreground="White" FontSize="12" FontFamily="{StaticResource PeydaBold}"/>
 
                                             <!-- Installation Source -->
-                                            <TextBlock Grid.Row="2" Grid.Column="0" Text="Installation Source" Foreground="#9A9A9A" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
+                                            <TextBlock Grid.Row="2" Grid.Column="0" Text="Installation Source" Foreground="{DynamicResource Theme.Brushes.Text.Secondary}" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
                                             <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding InstallationSource, FallbackValue='Local'}" Foreground="White" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
                                         </Grid>
                                     </StackPanel>
                                 </Border>
 
                                 <!-- 4. Launch Settings Card -->
-                                <Border Background="#121216" BorderBrush="#252528" BorderThickness="1" CornerRadius="12" Padding="16" Margin="0,0,0,20">
+                                <Border Background="{DynamicResource Theme.Brushes.Surface.Card}" BorderBrush="{DynamicResource Theme.Brushes.Border.Default}" BorderThickness="1" CornerRadius="12" Padding="16" Margin="0,0,0,20">
                                     <StackPanel>
-                                        <TextBlock Text="4. LAUNCH SETTINGS" FontFamily="{StaticResource PeydaBold}" FontSize="12" Foreground="#14BE78" Margin="0,0,0,12" FontWeight="Bold"/>
+                                        <TextBlock Text="4. LAUNCH SETTINGS" FontFamily="{StaticResource PeydaBold}" FontSize="12" Foreground="{DynamicResource Theme.Brushes.Status.Success}" Margin="0,0,0,12" FontWeight="Bold"/>
                                         <Grid>
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="1.5*" />
@@ -2106,20 +2106,20 @@
                                             </Grid.RowDefinitions>
 
                                             <!-- Arguments -->
-                                            <TextBlock Grid.Row="0" Grid.Column="0" Text="Arguments / Params" Foreground="#9A9A9A" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
-                                            <TextBlock Grid.Row="0" Grid.Column="1" Text="--nosplash --noborder --fullscreen" Foreground="#63E6FF" FontSize="12" FontFamily="Consolas"/>
+                                            <TextBlock Grid.Row="0" Grid.Column="0" Text="Arguments / Params" Foreground="{DynamicResource Theme.Brushes.Text.Secondary}" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
+                                            <TextBlock Grid.Row="0" Grid.Column="1" Text="--nosplash --noborder --fullscreen" Foreground="{DynamicResource Theme.Brushes.Secondary}" FontSize="12" FontFamily="Consolas"/>
 
                                             <!-- Working Directory -->
-                                            <TextBlock Grid.Row="2" Grid.Column="0" Text="Working Directory" Foreground="#9A9A9A" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
+                                            <TextBlock Grid.Row="2" Grid.Column="0" Text="Working Directory" Foreground="{DynamicResource Theme.Brushes.Text.Secondary}" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
                                             <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding InstallationPath, FallbackValue='C:\\'}" Foreground="White" FontSize="12" FontFamily="{StaticResource PeydaMedium}" TextWrapping="Wrap"/>
                                         </Grid>
                                     </StackPanel>
                                 </Border>
 
                                 <!-- 5. Runtime Card -->
-                                <Border Background="#121216" BorderBrush="#252528" BorderThickness="1" CornerRadius="12" Padding="16" Margin="0,0,0,20">
+                                <Border Background="{DynamicResource Theme.Brushes.Surface.Card}" BorderBrush="{DynamicResource Theme.Brushes.Border.Default}" BorderThickness="1" CornerRadius="12" Padding="16" Margin="0,0,0,20">
                                     <StackPanel>
-                                        <TextBlock Text="5. RUNTIME" FontFamily="{StaticResource PeydaBold}" FontSize="12" Foreground="#F46B6B" Margin="0,0,0,12" FontWeight="Bold"/>
+                                        <TextBlock Text="5. RUNTIME" FontFamily="{StaticResource PeydaBold}" FontSize="12" Foreground="{DynamicResource Theme.Brushes.Status.Error}" Margin="0,0,0,12" FontWeight="Bold"/>
                                         <Grid>
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="1.5*" />
@@ -2132,20 +2132,20 @@
                                             </Grid.RowDefinitions>
 
                                             <!-- Status -->
-                                            <TextBlock Grid.Row="0" Grid.Column="0" Text="Execution Status" Foreground="#9A9A9A" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
+                                            <TextBlock Grid.Row="0" Grid.Column="0" Text="Execution Status" Foreground="{DynamicResource Theme.Brushes.Text.Secondary}" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
                                             <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding Status, FallbackValue='Installed'}" Foreground="White" FontSize="12" FontFamily="{StaticResource PeydaBold}"/>
 
                                             <!-- Enabled -->
-                                            <TextBlock Grid.Row="2" Grid.Column="0" Text="Is Enabled" Foreground="#9A9A9A" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
+                                            <TextBlock Grid.Row="2" Grid.Column="0" Text="Is Enabled" Foreground="{DynamicResource Theme.Brushes.Text.Secondary}" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
                                             <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding IsEnabled, FallbackValue='True'}" Foreground="White" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
                                         </Grid>
                                     </StackPanel>
                                 </Border>
 
                                 <!-- 6. Images Card -->
-                                <Border Background="#121216" BorderBrush="#252528" BorderThickness="1" CornerRadius="12" Padding="16" Margin="0,0,0,20">
+                                <Border Background="{DynamicResource Theme.Brushes.Surface.Card}" BorderBrush="{DynamicResource Theme.Brushes.Border.Default}" BorderThickness="1" CornerRadius="12" Padding="16" Margin="0,0,0,20">
                                     <StackPanel>
-                                        <TextBlock Text="6. IMAGES" FontFamily="{StaticResource PeydaBold}" FontSize="12" Foreground="#63E6FF" Margin="0,0,0,12" FontWeight="Bold"/>
+                                        <TextBlock Text="6. IMAGES" FontFamily="{StaticResource PeydaBold}" FontSize="12" Foreground="{DynamicResource Theme.Brushes.Secondary}" Margin="0,0,0,12" FontWeight="Bold"/>
                                         <Grid>
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="1.5*" />
@@ -2160,24 +2160,24 @@
                                             </Grid.RowDefinitions>
 
                                             <!-- Cover Image -->
-                                            <TextBlock Grid.Row="0" Grid.Column="0" Text="Cover Image URL" Foreground="#9A9A9A" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
+                                            <TextBlock Grid.Row="0" Grid.Column="0" Text="Cover Image URL" Foreground="{DynamicResource Theme.Brushes.Text.Secondary}" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
                                             <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding CoverImage, FallbackValue='N/A'}" Foreground="White" FontSize="12" FontFamily="Consolas" TextWrapping="Wrap"/>
 
                                             <!-- Logo Image -->
-                                            <TextBlock Grid.Row="2" Grid.Column="0" Text="Logo Image URL" Foreground="#9A9A9A" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
+                                            <TextBlock Grid.Row="2" Grid.Column="0" Text="Logo Image URL" Foreground="{DynamicResource Theme.Brushes.Text.Secondary}" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
                                             <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding LogoImage, FallbackValue='N/A'}" Foreground="White" FontSize="12" FontFamily="Consolas" TextWrapping="Wrap"/>
 
                                             <!-- Background Image -->
-                                            <TextBlock Grid.Row="4" Grid.Column="0" Text="Background URL" Foreground="#9A9A9A" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
+                                            <TextBlock Grid.Row="4" Grid.Column="0" Text="Background URL" Foreground="{DynamicResource Theme.Brushes.Text.Secondary}" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
                                             <TextBlock Grid.Row="4" Grid.Column="1" Text="{Binding BackgroundImage, FallbackValue='N/A'}" Foreground="White" FontSize="12" FontFamily="Consolas" TextWrapping="Wrap"/>
                                         </Grid>
                                     </StackPanel>
                                 </Border>
 
                                 <!-- 7. Metadata Card -->
-                                <Border Background="#121216" BorderBrush="#252528" BorderThickness="1" CornerRadius="12" Padding="16" Margin="0,0,0,20">
+                                <Border Background="{DynamicResource Theme.Brushes.Surface.Card}" BorderBrush="{DynamicResource Theme.Brushes.Border.Default}" BorderThickness="1" CornerRadius="12" Padding="16" Margin="0,0,0,20">
                                     <StackPanel>
-                                        <TextBlock Text="7. METADATA" FontFamily="{StaticResource PeydaBold}" FontSize="12" Foreground="#ffff3d" Margin="0,0,0,12" FontWeight="Bold"/>
+                                        <TextBlock Text="7. METADATA" FontFamily="{StaticResource PeydaBold}" FontSize="12" Foreground="{DynamicResource Theme.Brushes.Primary}" Margin="0,0,0,12" FontWeight="Bold"/>
                                         <Grid>
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="1.5*" />
@@ -2192,24 +2192,24 @@
                                             </Grid.RowDefinitions>
 
                                             <!-- Size -->
-                                            <TextBlock Grid.Row="0" Grid.Column="0" Text="Size on Disk" Foreground="#9A9A9A" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
+                                            <TextBlock Grid.Row="0" Grid.Column="0" Text="Size on Disk" Foreground="{DynamicResource Theme.Brushes.Text.Secondary}" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
                                             <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding Size, FallbackValue='0 GB'}" Foreground="White" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
 
                                             <!-- License -->
-                                            <TextBlock Grid.Row="2" Grid.Column="0" Text="License Model" Foreground="#9A9A9A" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
+                                            <TextBlock Grid.Row="2" Grid.Column="0" Text="License Model" Foreground="{DynamicResource Theme.Brushes.Text.Secondary}" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
                                             <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding License, FallbackValue='Free'}" Foreground="White" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
 
                                             <!-- Release Year -->
-                                            <TextBlock Grid.Row="4" Grid.Column="0" Text="Release Year" Foreground="#9A9A9A" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
+                                            <TextBlock Grid.Row="4" Grid.Column="0" Text="Release Year" Foreground="{DynamicResource Theme.Brushes.Text.Secondary}" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
                                             <TextBlock Grid.Row="4" Grid.Column="1" Text="{Binding ReleaseYear, FallbackValue='N/A'}" Foreground="White" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
                                         </Grid>
                                     </StackPanel>
                                 </Border>
 
                                 <!-- 8. Tags Card -->
-                                <Border Background="#121216" BorderBrush="#252528" BorderThickness="1" CornerRadius="12" Padding="16" Margin="0,0,0,20">
+                                <Border Background="{DynamicResource Theme.Brushes.Surface.Card}" BorderBrush="{DynamicResource Theme.Brushes.Border.Default}" BorderThickness="1" CornerRadius="12" Padding="16" Margin="0,0,0,20">
                                     <StackPanel>
-                                        <TextBlock Text="8. TAGS" FontFamily="{StaticResource PeydaBold}" FontSize="12" Foreground="#8A5CFF" Margin="0,0,0,12" FontWeight="Bold"/>
+                                        <TextBlock Text="8. TAGS" FontFamily="{StaticResource PeydaBold}" FontSize="12" Foreground="{DynamicResource Theme.Brushes.Purple}" Margin="0,0,0,12" FontWeight="Bold"/>
                                         <Grid>
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="1.5*" />
@@ -2222,20 +2222,20 @@
                                             </Grid.RowDefinitions>
 
                                             <!-- Category -->
-                                            <TextBlock Grid.Row="0" Grid.Column="0" Text="Category / Genre" Foreground="#9A9A9A" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
+                                            <TextBlock Grid.Row="0" Grid.Column="0" Text="Category / Genre" Foreground="{DynamicResource Theme.Brushes.Text.Secondary}" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
                                             <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding Category, FallbackValue='N/A'}" Foreground="White" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
 
                                             <!-- Custom Tags -->
-                                            <TextBlock Grid.Row="2" Grid.Column="0" Text="Custom Tags" Foreground="#9A9A9A" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
+                                            <TextBlock Grid.Row="2" Grid.Column="0" Text="Custom Tags" Foreground="{DynamicResource Theme.Brushes.Text.Secondary}" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
                                             <TextBlock Grid.Row="2" Grid.Column="1" Text="Kiosk, GameNet, LAN" Foreground="White" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
                                         </Grid>
                                     </StackPanel>
                                 </Border>
 
                                 <!-- 9. Security Card -->
-                                <Border Background="#121216" BorderBrush="#252528" BorderThickness="1" CornerRadius="12" Padding="16" Margin="0,0,0,20">
+                                <Border Background="{DynamicResource Theme.Brushes.Surface.Card}" BorderBrush="{DynamicResource Theme.Brushes.Border.Default}" BorderThickness="1" CornerRadius="12" Padding="16" Margin="0,0,0,20">
                                     <StackPanel>
-                                        <TextBlock Text="9. SECURITY" FontFamily="{StaticResource PeydaBold}" FontSize="12" Foreground="#14BE78" Margin="0,0,0,12" FontWeight="Bold"/>
+                                        <TextBlock Text="9. SECURITY" FontFamily="{StaticResource PeydaBold}" FontSize="12" Foreground="{DynamicResource Theme.Brushes.Status.Success}" Margin="0,0,0,12" FontWeight="Bold"/>
                                         <Grid>
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="1.5*" />
@@ -2248,20 +2248,20 @@
                                             </Grid.RowDefinitions>
 
                                             <!-- Verification Status -->
-                                            <TextBlock Grid.Row="0" Grid.Column="0" Text="Verification Status" Foreground="#9A9A9A" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
-                                            <TextBlock Grid.Row="0" Grid.Column="1" Text="Validated" Foreground="#14BE78" FontSize="12" FontFamily="{StaticResource PeydaBold}"/>
+                                            <TextBlock Grid.Row="0" Grid.Column="0" Text="Verification Status" Foreground="{DynamicResource Theme.Brushes.Text.Secondary}" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
+                                            <TextBlock Grid.Row="0" Grid.Column="1" Text="Validated" Foreground="{DynamicResource Theme.Brushes.Status.Success}" FontSize="12" FontFamily="{StaticResource PeydaBold}"/>
 
                                             <!-- Sandbox Mode -->
-                                            <TextBlock Grid.Row="2" Grid.Column="0" Text="Sandbox Mode" Foreground="#9A9A9A" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
+                                            <TextBlock Grid.Row="2" Grid.Column="0" Text="Sandbox Mode" Foreground="{DynamicResource Theme.Brushes.Text.Secondary}" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
                                             <TextBlock Grid.Row="2" Grid.Column="1" Text="Enforced" Foreground="White" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
                                         </Grid>
                                     </StackPanel>
                                 </Border>
 
                                 <!-- 10. Visibility Card -->
-                                <Border Background="#121216" BorderBrush="#252528" BorderThickness="1" CornerRadius="12" Padding="16" Margin="0,0,0,20">
+                                <Border Background="{DynamicResource Theme.Brushes.Surface.Card}" BorderBrush="{DynamicResource Theme.Brushes.Border.Default}" BorderThickness="1" CornerRadius="12" Padding="16" Margin="0,0,0,20">
                                     <StackPanel>
-                                        <TextBlock Text="10. VISIBILITY" FontFamily="{StaticResource PeydaBold}" FontSize="12" Foreground="#63E6FF" Margin="0,0,0,12" FontWeight="Bold"/>
+                                        <TextBlock Text="10. VISIBILITY" FontFamily="{StaticResource PeydaBold}" FontSize="12" Foreground="{DynamicResource Theme.Brushes.Secondary}" Margin="0,0,0,12" FontWeight="Bold"/>
                                         <Grid>
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="1.5*" />
@@ -2274,22 +2274,22 @@
                                             </Grid.RowDefinitions>
 
                                             <!-- Hide on Client -->
-                                            <TextBlock Grid.Row="0" Grid.Column="0" Text="Hide on Client" Foreground="#9A9A9A" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
+                                            <TextBlock Grid.Row="0" Grid.Column="0" Text="Hide on Client" Foreground="{DynamicResource Theme.Brushes.Text.Secondary}" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
                                             <TextBlock Grid.Row="0" Grid.Column="1" Text="False" Foreground="White" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
 
                                             <!-- Last Updated -->
-                                            <TextBlock Grid.Row="2" Grid.Column="0" Text="Last Synced / Modified" Foreground="#9A9A9A" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
+                                            <TextBlock Grid.Row="2" Grid.Column="0" Text="Last Synced / Modified" Foreground="{DynamicResource Theme.Brushes.Text.Secondary}" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
                                             <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding LastUpdated, FallbackValue='N/A'}" Foreground="White" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
                                         </Grid>
                                     </StackPanel>
                                 </Border>
 
                                 <!-- Danger Zone -->
-                                <Border BorderBrush="#F46B6B" BorderThickness="1.5" CornerRadius="12" Background="#1A1212" Padding="16" Margin="0,0,0,20">
+                                <Border BorderBrush="{DynamicResource Theme.Brushes.Status.Error}" BorderThickness="1.5" CornerRadius="12" Background="#1A1212" Padding="16" Margin="0,0,0,20">
                                     <StackPanel>
-                                        <TextBlock Text="DANGER ZONE" FontFamily="{StaticResource PeydaBold}" FontSize="12" Foreground="#F46B6B" Margin="0,0,0,8" FontWeight="Bold"/>
+                                        <TextBlock Text="DANGER ZONE" FontFamily="{StaticResource PeydaBold}" FontSize="12" Foreground="{DynamicResource Theme.Brushes.Status.Error}" Margin="0,0,0,8" FontWeight="Bold"/>
                                         <TextBlock Text="These actions can result in permanent loss of local app states, metadata configuration, or image cache. Please execute with high caution."
-                                                   Foreground="#9A9A9A" FontSize="11" FontFamily="{StaticResource PeydaMedium}" Margin="0,0,0,16" TextWrapping="Wrap"/>
+                                                   Foreground="{DynamicResource Theme.Brushes.Text.Secondary}" FontSize="11" FontFamily="{StaticResource PeydaMedium}" Margin="0,0,0,16" TextWrapping="Wrap"/>
 
                                         <Grid>
                                             <Grid.ColumnDefinitions>
@@ -2299,20 +2299,20 @@
                                             </Grid.ColumnDefinitions>
 
                                             <!-- Reset Config -->
-                                            <Button Grid.Column="0" Content="Reset Config" Height="36" Margin="0,0,8,0" Click="ResetConfig_Click" Foreground="#F46B6B">
+                                            <Button Grid.Column="0" Content="Reset Config" Height="36" Margin="0,0,8,0" Click="ResetConfig_Click" Foreground="{DynamicResource Theme.Brushes.Status.Error}">
                                                 <Button.Style>
                                                     <Style TargetType="Button" BasedOn="{StaticResource ToolbarButtonStyle}">
-                                                        <Setter Property="BorderBrush" Value="#44F46B6B"/>
+                                                        <Setter Property="BorderBrush" Value="{DynamicResource Theme.Brushes.Status.ErrorTranslucent}"/>
                                                         <Setter Property="Background" Value="Transparent"/>
                                                     </Style>
                                                 </Button.Style>
                                             </Button>
 
                                             <!-- Remove Images -->
-                                            <Button Grid.Column="1" Content="Remove Images" Height="36" Margin="0,0,8,0" Click="RemoveImages_Click" Foreground="#F46B6B">
+                                            <Button Grid.Column="1" Content="Remove Images" Height="36" Margin="0,0,8,0" Click="RemoveImages_Click" Foreground="{DynamicResource Theme.Brushes.Status.Error}">
                                                 <Button.Style>
                                                     <Style TargetType="Button" BasedOn="{StaticResource ToolbarButtonStyle}">
-                                                        <Setter Property="BorderBrush" Value="#44F46B6B"/>
+                                                        <Setter Property="BorderBrush" Value="{DynamicResource Theme.Brushes.Status.ErrorTranslucent}"/>
                                                         <Setter Property="Background" Value="Transparent"/>
                                                     </Style>
                                                 </Button.Style>
@@ -2322,12 +2322,12 @@
                                             <Button Grid.Column="2" Content="Delete Entry" Height="36" Command="{Binding DataContext.DeleteCommand, RelativeSource={RelativeSource AncestorType=Window}}" CommandParameter="{Binding}" Foreground="White">
                                                 <Button.Style>
                                                     <Style TargetType="Button" BasedOn="{StaticResource ToolbarButtonStyle}">
-                                                        <Setter Property="Background" Value="#F46B6B"/>
-                                                        <Setter Property="BorderBrush" Value="#F46B6B"/>
+                                                        <Setter Property="Background" Value="{DynamicResource Theme.Brushes.Status.Error}"/>
+                                                        <Setter Property="BorderBrush" Value="{DynamicResource Theme.Brushes.Status.Error}"/>
                                                         <Style.Triggers>
                                                             <Trigger Property="IsMouseOver" Value="True">
-                                                                <Setter Property="Background" Value="#D9383A"/>
-                                                                <Setter Property="BorderBrush" Value="#D9383A"/>
+                                                                <Setter Property="Background" Value="{DynamicResource Theme.Brushes.CloseButton.Hover}"/>
+                                                                <Setter Property="BorderBrush" Value="{DynamicResource Theme.Brushes.CloseButton.Hover}"/>
                                                             </Trigger>
                                                         </Style.Triggers>
                                                     </Style>
@@ -2342,15 +2342,15 @@
                         <!-- RIGHT COLUMN (35%) -->
                         <Grid Grid.Column="2" VerticalAlignment="Top">
                             <StackPanel>
-                                <TextBlock Text="QUICK ACTIONS" FontFamily="{StaticResource PeydaBold}" FontSize="12" Foreground="#63E6FF" Margin="0,0,0,16" FontWeight="Bold"/>
+                                <TextBlock Text="QUICK ACTIONS" FontFamily="{StaticResource PeydaBold}" FontSize="12" Foreground="{DynamicResource Theme.Brushes.Secondary}" Margin="0,0,0,16" FontWeight="Bold"/>
 
                                 <!-- Launch Button -->
                                 <Button Content="Launch Application" Command="{Binding DataContext.LaunchCommand, RelativeSource={RelativeSource AncestorType=Window}}" CommandParameter="{Binding}" Height="42" Margin="0,0,0,12">
                                     <Button.Style>
                                         <Style TargetType="Button" BasedOn="{StaticResource ToolbarButtonStyle}">
-                                            <Setter Property="Background" Value="#2214BE78"/>
-                                            <Setter Property="BorderBrush" Value="#4414BE78"/>
-                                            <Setter Property="Foreground" Value="#14BE78"/>
+                                            <Setter Property="Background" Value="{DynamicResource Theme.Brushes.Status.Success}"/>
+                                            <Setter Property="BorderBrush" Value="{DynamicResource Theme.Brushes.Status.Success}"/>
+                                            <Setter Property="Foreground" Value="{DynamicResource Theme.Brushes.Status.Success}"/>
                                             <Setter Property="Template">
                                                 <Setter.Value>
                                                     <ControlTemplate TargetType="Button">
@@ -2361,14 +2361,14 @@
                                                                     <ColumnDefinition Width="*" />
                                                                 </Grid.ColumnDefinitions>
                                                                 <!-- Play Icon Geometry -->
-                                                                <Path Data="M8 5v14l11-7z" Fill="#14BE78" Width="14" Height="14" Stretch="Uniform" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                                                                <Path Data="M8 5v14l11-7z" Fill="{DynamicResource Theme.Brushes.Status.Success}" Width="14" Height="14" Stretch="Uniform" VerticalAlignment="Center" Margin="0,0,10,0"/>
                                                                 <ContentPresenter Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center"/>
                                                             </Grid>
                                                         </Border>
                                                         <ControlTemplate.Triggers>
                                                             <Trigger Property="IsMouseOver" Value="True">
-                                                                <Setter TargetName="border" Property="Background" Value="#3314BE78"/>
-                                                                <Setter TargetName="border" Property="BorderBrush" Value="#14BE78"/>
+                                                                <Setter TargetName="border" Property="Background" Value="{DynamicResource Theme.Brushes.Status.Success}"/>
+                                                                <Setter TargetName="border" Property="BorderBrush" Value="{DynamicResource Theme.Brushes.Status.Success}"/>
                                                             </Trigger>
                                                         </ControlTemplate.Triggers>
                                                     </ControlTemplate>
@@ -2382,9 +2382,9 @@
                                 <Button Content="Stop Execution" Command="{Binding DataContext.StopCommand, RelativeSource={RelativeSource AncestorType=Window}}" CommandParameter="{Binding}" Height="42" Margin="0,0,0,12">
                                     <Button.Style>
                                         <Style TargetType="Button" BasedOn="{StaticResource ToolbarButtonStyle}">
-                                            <Setter Property="Background" Value="#22F46B6B"/>
-                                            <Setter Property="BorderBrush" Value="#44F46B6B"/>
-                                            <Setter Property="Foreground" Value="#F46B6B"/>
+                                            <Setter Property="Background" Value="{DynamicResource Theme.Brushes.Status.Error.Opacity10}"/>
+                                            <Setter Property="BorderBrush" Value="{DynamicResource Theme.Brushes.Status.ErrorTranslucent}"/>
+                                            <Setter Property="Foreground" Value="{DynamicResource Theme.Brushes.Status.Error}"/>
                                             <Setter Property="Template">
                                                 <Setter.Value>
                                                     <ControlTemplate TargetType="Button">
@@ -2395,14 +2395,14 @@
                                                                     <ColumnDefinition Width="*" />
                                                                 </Grid.ColumnDefinitions>
                                                                 <!-- Stop Icon Geometry -->
-                                                                <Path Data="M6 6h12v12H6z" Fill="#F46B6B" Width="14" Height="14" Stretch="Uniform" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                                                                <Path Data="M6 6h12v12H6z" Fill="{DynamicResource Theme.Brushes.Status.Error}" Width="14" Height="14" Stretch="Uniform" VerticalAlignment="Center" Margin="0,0,10,0"/>
                                                                 <ContentPresenter Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center"/>
                                                             </Grid>
                                                         </Border>
                                                         <ControlTemplate.Triggers>
                                                             <Trigger Property="IsMouseOver" Value="True">
-                                                                <Setter TargetName="border" Property="Background" Value="#33F46B6B"/>
-                                                                <Setter TargetName="border" Property="BorderBrush" Value="#F46B6B"/>
+                                                                <Setter TargetName="border" Property="Background" Value="{DynamicResource Theme.Brushes.Status.Error.Opacity20}"/>
+                                                                <Setter TargetName="border" Property="BorderBrush" Value="{DynamicResource Theme.Brushes.Status.Error}"/>
                                                             </Trigger>
                                                         </ControlTemplate.Triggers>
                                                     </ControlTemplate>
@@ -2426,14 +2426,14 @@
                                                                     <ColumnDefinition Width="*" />
                                                                 </Grid.ColumnDefinitions>
                                                                 <!-- Restart Sync Icon -->
-                                                                <Path Data="M19 8l-4 4h3c0 3.31-2.69 6-6 6a5.87 5.87 0 01-2.8-.7l-1.01 1.01A7.9 7.9 0 0012 20c4.42 0 8-3.58 8-8h3l-4-4zM6 12c0-3.31 2.69-6 6-6 1.01 0 1.97.25 2.8.7l1.01-1.01A7.9 7.9 0 0012 4c-4.42 0-8 3.58-8 8H1l4 4 4-4H6z" Fill="#9A9A9A" Width="14" Height="14" Stretch="Uniform" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                                                                <Path Data="M19 8l-4 4h3c0 3.31-2.69 6-6 6a5.87 5.87 0 01-2.8-.7l-1.01 1.01A7.9 7.9 0 0012 20c4.42 0 8-3.58 8-8h3l-4-4zM6 12c0-3.31 2.69-6 6-6 1.01 0 1.97.25 2.8.7l1.01-1.01A7.9 7.9 0 0012 4c-4.42 0-8 3.58-8 8H1l4 4 4-4H6z" Fill="{DynamicResource Theme.Brushes.Text.Secondary}" Width="14" Height="14" Stretch="Uniform" VerticalAlignment="Center" Margin="0,0,10,0"/>
                                                                 <ContentPresenter Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center"/>
                                                             </Grid>
                                                         </Border>
                                                         <ControlTemplate.Triggers>
                                                             <Trigger Property="IsMouseOver" Value="True">
                                                                 <Setter TargetName="border" Property="Background" Value="#252A34"/>
-                                                                <Setter TargetName="border" Property="BorderBrush" Value="#63E6FF"/>
+                                                                <Setter TargetName="border" Property="BorderBrush" Value="{DynamicResource Theme.Brushes.Secondary}"/>
                                                             </Trigger>
                                                         </ControlTemplate.Triggers>
                                                     </ControlTemplate>
@@ -2457,14 +2457,14 @@
                                                                     <ColumnDefinition Width="*" />
                                                                 </Grid.ColumnDefinitions>
                                                                 <!-- Shield/Check Icon -->
-                                                                <Path Data="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" Fill="#9A9A9A" Width="14" Height="14" Stretch="Uniform" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                                                                <Path Data="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" Fill="{DynamicResource Theme.Brushes.Text.Secondary}" Width="14" Height="14" Stretch="Uniform" VerticalAlignment="Center" Margin="0,0,10,0"/>
                                                                 <ContentPresenter Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center"/>
                                                             </Grid>
                                                         </Border>
                                                         <ControlTemplate.Triggers>
                                                             <Trigger Property="IsMouseOver" Value="True">
                                                                 <Setter TargetName="border" Property="Background" Value="#252A34"/>
-                                                                <Setter TargetName="border" Property="BorderBrush" Value="#63E6FF"/>
+                                                                <Setter TargetName="border" Property="BorderBrush" Value="{DynamicResource Theme.Brushes.Secondary}"/>
                                                             </Trigger>
                                                         </ControlTemplate.Triggers>
                                                     </ControlTemplate>
@@ -2488,14 +2488,14 @@
                                                                     <ColumnDefinition Width="*" />
                                                                 </Grid.ColumnDefinitions>
                                                                 <!-- Folder Icon -->
-                                                                <Path Data="M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z" Fill="#9A9A9A" Width="14" Height="14" Stretch="Uniform" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                                                                <Path Data="M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z" Fill="{DynamicResource Theme.Brushes.Text.Secondary}" Width="14" Height="14" Stretch="Uniform" VerticalAlignment="Center" Margin="0,0,10,0"/>
                                                                 <ContentPresenter Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center"/>
                                                             </Grid>
                                                         </Border>
                                                         <ControlTemplate.Triggers>
                                                             <Trigger Property="IsMouseOver" Value="True">
                                                                 <Setter TargetName="border" Property="Background" Value="#252A34"/>
-                                                                <Setter TargetName="border" Property="BorderBrush" Value="#63E6FF"/>
+                                                                <Setter TargetName="border" Property="BorderBrush" Value="{DynamicResource Theme.Brushes.Secondary}"/>
                                                             </Trigger>
                                                         </ControlTemplate.Triggers>
                                                     </ControlTemplate>
@@ -2519,14 +2519,14 @@
                                                                     <ColumnDefinition Width="*" />
                                                                 </Grid.ColumnDefinitions>
                                                                 <!-- Search Eye/Magnifier Icon -->
-                                                                <Path Data="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" Fill="#9A9A9A" Width="14" Height="14" Stretch="Uniform" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                                                                <Path Data="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" Fill="{DynamicResource Theme.Brushes.Text.Secondary}" Width="14" Height="14" Stretch="Uniform" VerticalAlignment="Center" Margin="0,0,10,0"/>
                                                                 <ContentPresenter Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center"/>
                                                             </Grid>
                                                         </Border>
                                                         <ControlTemplate.Triggers>
                                                             <Trigger Property="IsMouseOver" Value="True">
                                                                 <Setter TargetName="border" Property="Background" Value="#252A34"/>
-                                                                <Setter TargetName="border" Property="BorderBrush" Value="#63E6FF"/>
+                                                                <Setter TargetName="border" Property="BorderBrush" Value="{DynamicResource Theme.Brushes.Secondary}"/>
                                                             </Trigger>
                                                         </ControlTemplate.Triggers>
                                                     </ControlTemplate>
@@ -2550,14 +2550,14 @@
                                                                     <ColumnDefinition Width="*" />
                                                                 </Grid.ColumnDefinitions>
                                                                 <!-- Share/Upload Icon -->
-                                                                <Path Data="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z" Fill="#9A9A9A" Width="14" Height="14" Stretch="Uniform" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                                                                <Path Data="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z" Fill="{DynamicResource Theme.Brushes.Text.Secondary}" Width="14" Height="14" Stretch="Uniform" VerticalAlignment="Center" Margin="0,0,10,0"/>
                                                                 <ContentPresenter Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center"/>
                                                             </Grid>
                                                         </Border>
                                                         <ControlTemplate.Triggers>
                                                             <Trigger Property="IsMouseOver" Value="True">
                                                                 <Setter TargetName="border" Property="Background" Value="#252A34"/>
-                                                                <Setter TargetName="border" Property="BorderBrush" Value="#63E6FF"/>
+                                                                <Setter TargetName="border" Property="BorderBrush" Value="{DynamicResource Theme.Brushes.Secondary}"/>
                                                             </Trigger>
                                                         </ControlTemplate.Triggers>
                                                     </ControlTemplate>
@@ -2581,14 +2581,14 @@
                                                                     <ColumnDefinition Width="*" />
                                                                 </Grid.ColumnDefinitions>
                                                                 <!-- Delete Icon -->
-                                                                <Path Data="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z" Fill="#9A9A9A" Width="14" Height="14" Stretch="Uniform" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                                                                <Path Data="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z" Fill="{DynamicResource Theme.Brushes.Text.Secondary}" Width="14" Height="14" Stretch="Uniform" VerticalAlignment="Center" Margin="0,0,10,0"/>
                                                                 <ContentPresenter Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center"/>
                                                             </Grid>
                                                         </Border>
                                                         <ControlTemplate.Triggers>
                                                             <Trigger Property="IsMouseOver" Value="True">
                                                                 <Setter TargetName="border" Property="Background" Value="#252A34"/>
-                                                                <Setter TargetName="border" Property="BorderBrush" Value="#F46B6B"/>
+                                                                <Setter TargetName="border" Property="BorderBrush" Value="{DynamicResource Theme.Brushes.Status.Error}"/>
                                                             </Trigger>
                                                         </ControlTemplate.Triggers>
                                                     </ControlTemplate>

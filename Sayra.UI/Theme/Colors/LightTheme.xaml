@@ -1,0 +1,79 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <!-- Light Theme Specific Color Mappings (Future Theme Support) -->
+    <Color x:Key="Theme.Colors.Background.Primary">#F9FAFB</Color>
+    <Color x:Key="Theme.Colors.Background.Secondary">#F3F4F6</Color>
+    <Color x:Key="Theme.Colors.Surface.Card">#FFFFFF</Color>
+    <Color x:Key="Theme.Colors.Surface.Panel">#E5E7EB</Color>
+    <Color x:Key="Theme.Colors.Surface.Dialog">#D9FFFFFF</Color>
+
+    <!-- Text Colors -->
+    <Color x:Key="Theme.Colors.Text.Primary">#111827</Color>
+    <Color x:Key="Theme.Colors.Text.Secondary">#4B5563</Color>
+    <Color x:Key="Theme.Colors.Text.Disabled">#9CA3AF</Color>
+    <Color x:Key="Theme.Colors.Text.Muted">#6B7280</Color>
+    <Color x:Key="Theme.Colors.Text.PrimaryTranslucent">#40111827</Color>
+    <Color x:Key="Theme.Colors.Track.Default">#06000000</Color>
+    <Color x:Key="Theme.Colors.Track.Hover">#12000000</Color>
+
+    <!-- Border Colors -->
+    <Color x:Key="Theme.Colors.Border.Default">#D1D5DB</Color>
+    <Color x:Key="Theme.Colors.Border.Active">#F5FF00</Color>
+    <Color x:Key="Theme.Colors.Border.Cyan">#00B4D8</Color>
+    <Color x:Key="Theme.Colors.Border.Translucent">#1A000000</Color>
+
+    <!-- Accents / Brand -->
+    <Color x:Key="Theme.Colors.Primary">#ffff3d</Color>
+    <Color x:Key="Theme.Colors.PrimaryHover">#f4f46b</Color>
+    <Color x:Key="Theme.Colors.Secondary">#00B4D8</Color>
+
+    <!-- Button States -->
+    <Color x:Key="Theme.Colors.Button.Primary.Default">#ffff3d</Color>
+    <Color x:Key="Theme.Colors.Button.Primary.Hover">#f4f46b</Color>
+    <Color x:Key="Theme.Colors.Button.Primary.Pressed">#E5A000</Color>
+    <Color x:Key="Theme.Colors.Button.Primary.Disabled">#E5E7EB</Color>
+
+    <!-- Input Colors -->
+    <Color x:Key="Theme.Colors.Input.Background">#FFFFFF</Color>
+    <Color x:Key="Theme.Colors.Input.Border">#D1D5DB</Color>
+
+    <!-- Status -->
+    <Color x:Key="Theme.Colors.Status.Success">#10B981</Color>
+    <Color x:Key="Theme.Colors.Status.Warning">#F59E0B</Color>
+    <Color x:Key="Theme.Colors.Status.Error">#EF4444</Color>
+
+    <!-- Notification Gradients & Accents -->
+    <Color x:Key="Theme.Colors.Notification.Success.Start">#D1FAE5</Color>
+    <Color x:Key="Theme.Colors.Notification.Success.End">#10B981</Color>
+    <Color x:Key="Theme.Colors.Notification.Error.Start">#FEE2E2</Color>
+    <Color x:Key="Theme.Colors.Notification.Error.End">#EF4444</Color>
+    <Color x:Key="Theme.Colors.Notification.Warning.Start">#FEF3C7</Color>
+    <Color x:Key="Theme.Colors.Notification.Warning.End">#F59E0B</Color>
+    <Color x:Key="Theme.Colors.Notification.Info.Start">#F3F4F6</Color>
+    <Color x:Key="Theme.Colors.Notification.Info.End">#9CA3AF</Color>
+    <Color x:Key="Theme.Colors.Notification.Loading.Start">#E5E7EB</Color>
+    <Color x:Key="Theme.Colors.Notification.Loading.End">#111827</Color>
+
+    <!-- Navigation panel colors -->
+    <Color x:Key="Theme.Colors.Navigation.Background">#F3F4F6</Color>
+    <Color x:Key="Theme.Colors.Navigation.Border">#D1D5DB</Color>
+    <Color x:Key="Theme.Colors.Navigation.ItemHover">#E5E7EB</Color>
+    <Color x:Key="Theme.Colors.Navigation.ItemActive">#D1D5DB</Color>
+
+    <!-- Specific Admin Panel & Detail Colors -->
+    <Color x:Key="Theme.Colors.SecondaryTranslucent13">#2200B4D8</Color>
+    <Color x:Key="Theme.Colors.SecondaryTranslucent20">#3300B4D8</Color>
+    <Color x:Key="Theme.Colors.SecondaryTranslucent26">#4400B4D8</Color>
+    <Color x:Key="Theme.Colors.Purple">#7C3AED</Color>
+    <Color x:Key="Theme.Colors.PurpleTranslucent13">#227C3AED</Color>
+    <Color x:Key="Theme.Colors.PurpleTranslucent26">#447C3AED</Color>
+
+    <Color x:Key="Theme.Colors.CloseButton.Hover">#DC2626</Color>
+    <Color x:Key="Theme.Colors.Progress.Track">#F3F4F6</Color>
+
+    <Color x:Key="Theme.Colors.Text.SecondaryTranslucent13">#224B5563</Color>
+    <Color x:Key="Theme.Colors.Text.SecondaryTranslucent26">#444B5563</Color>
+
+    <Color x:Key="Theme.Colors.PrimaryTranslucent13">#22ffff3d</Color>
+    <Color x:Key="Theme.Colors.PrimaryTranslucent26">#44ffff3d</Color>
+</ResourceDictionary>
