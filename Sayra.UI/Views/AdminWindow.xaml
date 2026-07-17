@@ -699,9 +699,9 @@
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="2.5*" MinWidth="180" MaxWidth="250" /> <!-- Column 0: Category Sidebar -->
                     <ColumnDefinition Width="16" />  <!-- Gap -->
-                    <ColumnDefinition Width="9.1*" />   <!-- Column 1: Games Panel (Stretches) -->
+                    <ColumnDefinition Width="11.2*" />   <!-- Column 1: Games Panel (Stretches) -->
                     <ColumnDefinition Width="16" />  <!-- Gap -->
-                    <ColumnDefinition Width="4.8*" MinWidth="350" MaxWidth="480" /> <!-- Column 2: Right Sidebar -->
+                    <ColumnDefinition Width="2.7*" MinWidth="220" MaxWidth="260" /> <!-- Column 2: Right Sidebar -->
                 </Grid.ColumnDefinitions>
 
                 <Grid.RowDefinitions>
@@ -873,7 +873,7 @@
 
                 <!-- 03. TOOLBAR (Full width) -->
                 <!-- Thicker Toolbar (Height: 56px -> 64px, Margin: 8px top, 24px left/right, 4 separate border segments separated by 16px) -->
-                <ScrollViewer Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="1" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled" BorderThickness="0" Background="Transparent" Margin="24,8,0,0">
+                <ScrollViewer Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="1" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Disabled" BorderThickness="0" Background="Transparent" Margin="24,8,0,0">
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Height="56">
                         <!-- GROUP: SCAN -->
                         <Border Background="{DynamicResource Theme.Brushes.Surface.Panel}" BorderBrush="{DynamicResource Theme.Brushes.Border.Default}" BorderThickness="1" CornerRadius="8" Padding="12,0" Margin="0,0,16,0" VerticalAlignment="Stretch">
@@ -1267,9 +1267,9 @@
 
                 <!-- 11. RIGHT SIDEBAR -->
                 <!-- Right Sidebar aligned with Main DataGrid in Row 2 -->
-                <Border Grid.Column="4" Grid.Row="0" Grid.RowSpan="3" Margin="0,12,24,12" Background="{DynamicResource Theme.Brushes.Progress.Track}" BorderBrush="{DynamicResource Theme.Brushes.Border.Default}" BorderThickness="1" CornerRadius="10" Padding="12">
+                <Border Grid.Column="4" Grid.Row="0" Grid.RowSpan="3" Margin="0,12,24,12" Background="{DynamicResource Theme.Brushes.Progress.Track}" BorderBrush="{DynamicResource Theme.Brushes.Border.Default}" BorderThickness="1" CornerRadius="10" Padding="12,12,2,12">
                     <ScrollViewer Style="{StaticResource ThinScrollViewerStyle}" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-                        <Grid x:Name="RightSidebarGrid">
+                        <Grid x:Name="RightSidebarGrid" Margin="0,0,12,0">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto" /> <!-- 11.1 Add New Game -->
                                 <RowDefinition Height="Auto" /> <!-- 11.2 Scanner Result -->
