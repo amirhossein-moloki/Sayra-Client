@@ -6,7 +6,6 @@
     </ResourceDictionary.MergedDictionaries>
 
     <!-- Transparent aliases for central binding resolution -->
-    <SolidColorBrush x:Key="Transparent" Color="Transparent" />
     <Color x:Key="Transparent">Transparent</Color>
 
     <!-- Semantic SolidColorBrushes mapping to Semantic Colors -->
