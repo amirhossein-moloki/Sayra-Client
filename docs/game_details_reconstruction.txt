@@ -1,0 +1,749 @@
+==================================================
+SECTION
+==================================================
+
+Section Name:
+General
+
+Purpose:
+TODO: Purpose Missing
+
+Parent:
+TODO: Parent Missing
+
+Position:
+TODO: Position Missing
+
+Size:
+TODO: Size Missing
+
+Background:
+TODO: Background Missing
+
+Border:
+TODO: Border Missing
+
+Corner Radius:
+TODO: Corner Radius Missing
+
+Padding:
+TODO: Padding Missing
+
+Margin:
+TODO: Margin Missing
+
+Grid Structure:
+TODO: Grid Structure Missing
+
+Visibility:
+TODO: Visibility Missing
+
+Collapsed:
+TODO: Collapsed Missing
+
+Children:
+TODO: Children Missing
+
+==================================================
+LAYOUT
+==================================================
+
+Container Type
+TODO: Container Type Missing
+
+Grid
+TODO: Grid Missing
+
+Rows
+TODO: Rows Missing
+
+Columns
+TODO: Columns Missing
+
+Spacing
+TODO: Spacing Missing
+
+Alignment
+TODO: Alignment Missing
+
+==================================================
+COMPONENTS
+==================================================
+
+TODO:
+Components Missing
+
+==================================================
+SECTION
+==================================================
+
+Section Name:
+Executable
+
+Purpose:
+TODO: Purpose Missing
+
+Parent:
+TODO: Parent Missing
+
+Position:
+TODO: Position Missing
+
+Size:
+TODO: Size Missing
+
+Background:
+TODO: Background Missing
+
+Border:
+TODO: Border Missing
+
+Corner Radius:
+TODO: Corner Radius Missing
+
+Padding:
+TODO: Padding Missing
+
+Margin:
+TODO: Margin Missing
+
+Grid Structure:
+TODO: Grid Structure Missing
+
+Visibility:
+TODO: Visibility Missing
+
+Collapsed:
+TODO: Collapsed Missing
+
+Children:
+TODO: Children Missing
+
+==================================================
+LAYOUT
+==================================================
+
+Container Type
+TODO: Container Type Missing
+
+Grid
+TODO: Grid Missing
+
+Rows
+TODO: Rows Missing
+
+Columns
+TODO: Columns Missing
+
+Spacing
+TODO: Spacing Missing
+
+Alignment
+TODO: Alignment Missing
+
+==================================================
+COMPONENTS
+==================================================
+
+TODO:
+Components Missing
+
+==================================================
+SECTION
+==================================================
+
+Section Name:
+Launcher
+
+Purpose:
+TODO: Purpose Missing
+
+Parent:
+TODO: Parent Missing
+
+Position:
+TODO: Position Missing
+
+Size:
+TODO: Size Missing
+
+Background:
+TODO: Background Missing
+
+Border:
+TODO: Border Missing
+
+Corner Radius:
+TODO: Corner Radius Missing
+
+Padding:
+TODO: Padding Missing
+
+Margin:
+TODO: Margin Missing
+
+Grid Structure:
+TODO: Grid Structure Missing
+
+Visibility:
+TODO: Visibility Missing
+
+Collapsed:
+TODO: Collapsed Missing
+
+Children:
+TODO: Children Missing
+
+==================================================
+LAYOUT
+==================================================
+
+Container Type
+TODO: Container Type Missing
+
+Grid
+TODO: Grid Missing
+
+Rows
+TODO: Rows Missing
+
+Columns
+TODO: Columns Missing
+
+Spacing
+TODO: Spacing Missing
+
+Alignment
+TODO: Alignment Missing
+
+==================================================
+COMPONENTS
+==================================================
+
+TODO:
+Components Missing
+
+==================================================
+SECTION
+==================================================
+
+Section Name:
+Launch Settings
+
+Purpose:
+TODO: Purpose Missing
+
+Parent:
+TODO: Parent Missing
+
+Position:
+TODO: Position Missing
+
+Size:
+TODO: Size Missing
+
+Background:
+TODO: Background Missing
+
+Border:
+TODO: Border Missing
+
+Corner Radius:
+TODO: Corner Radius Missing
+
+Padding:
+TODO: Padding Missing
+
+Margin:
+TODO: Margin Missing
+
+Grid Structure:
+TODO: Grid Structure Missing
+
+Visibility:
+TODO: Visibility Missing
+
+Collapsed:
+TODO: Collapsed Missing
+
+Children:
+TODO: Children Missing
+
+==================================================
+LAYOUT
+==================================================
+
+Container Type
+TODO: Container Type Missing
+
+Grid
+TODO: Grid Missing
+
+Rows
+TODO: Rows Missing
+
+Columns
+TODO: Columns Missing
+
+Spacing
+TODO: Spacing Missing
+
+Alignment
+TODO: Alignment Missing
+
+==================================================
+COMPONENTS
+==================================================
+
+TODO:
+Components Missing
+
+==================================================
+SECTION
+==================================================
+
+Section Name:
+Runtime
+
+Purpose:
+TODO: Purpose Missing
+
+Parent:
+TODO: Parent Missing
+
+Position:
+TODO: Position Missing
+
+Size:
+TODO: Size Missing
+
+Background:
+TODO: Background Missing
+
+Border:
+TODO: Border Missing
+
+Corner Radius:
+TODO: Corner Radius Missing
+
+Padding:
+TODO: Padding Missing
+
+Margin:
+TODO: Margin Missing
+
+Grid Structure:
+TODO: Grid Structure Missing
+
+Visibility:
+TODO: Visibility Missing
+
+Collapsed:
+TODO: Collapsed Missing
+
+Children:
+TODO: Children Missing
+
+==================================================
+LAYOUT
+==================================================
+
+Container Type
+TODO: Container Type Missing
+
+Grid
+TODO: Grid Missing
+
+Rows
+TODO: Rows Missing
+
+Columns
+TODO: Columns Missing
+
+Spacing
+TODO: Spacing Missing
+
+Alignment
+TODO: Alignment Missing
+
+==================================================
+COMPONENTS
+==================================================
+
+TODO:
+Components Missing
+
+==================================================
+SECTION
+==================================================
+
+Section Name:
+Images
+
+Purpose:
+TODO: Purpose Missing
+
+Parent:
+TODO: Parent Missing
+
+Position:
+TODO: Position Missing
+
+Size:
+TODO: Size Missing
+
+Background:
+TODO: Background Missing
+
+Border:
+TODO: Border Missing
+
+Corner Radius:
+TODO: Corner Radius Missing
+
+Padding:
+TODO: Padding Missing
+
+Margin:
+TODO: Margin Missing
+
+Grid Structure:
+TODO: Grid Structure Missing
+
+Visibility:
+TODO: Visibility Missing
+
+Collapsed:
+TODO: Collapsed Missing
+
+Children:
+TODO: Children Missing
+
+==================================================
+LAYOUT
+==================================================
+
+Container Type
+TODO: Container Type Missing
+
+Grid
+TODO: Grid Missing
+
+Rows
+TODO: Rows Missing
+
+Columns
+TODO: Columns Missing
+
+Spacing
+TODO: Spacing Missing
+
+Alignment
+TODO: Alignment Missing
+
+==================================================
+COMPONENTS
+==================================================
+
+TODO:
+Components Missing
+
+==================================================
+SECTION
+==================================================
+
+Section Name:
+Metadata
+
+Purpose:
+TODO: Purpose Missing
+
+Parent:
+TODO: Parent Missing
+
+Position:
+TODO: Position Missing
+
+Size:
+TODO: Size Missing
+
+Background:
+TODO: Background Missing
+
+Border:
+TODO: Border Missing
+
+Corner Radius:
+TODO: Corner Radius Missing
+
+Padding:
+TODO: Padding Missing
+
+Margin:
+TODO: Margin Missing
+
+Grid Structure:
+TODO: Grid Structure Missing
+
+Visibility:
+TODO: Visibility Missing
+
+Collapsed:
+TODO: Collapsed Missing
+
+Children:
+TODO: Children Missing
+
+==================================================
+LAYOUT
+==================================================
+
+Container Type
+TODO: Container Type Missing
+
+Grid
+TODO: Grid Missing
+
+Rows
+TODO: Rows Missing
+
+Columns
+TODO: Columns Missing
+
+Spacing
+TODO: Spacing Missing
+
+Alignment
+TODO: Alignment Missing
+
+==================================================
+COMPONENTS
+==================================================
+
+TODO:
+Components Missing
+
+==================================================
+SECTION
+==================================================
+
+Section Name:
+Tags
+
+Purpose:
+TODO: Purpose Missing
+
+Parent:
+TODO: Parent Missing
+
+Position:
+TODO: Position Missing
+
+Size:
+TODO: Size Missing
+
+Background:
+TODO: Background Missing
+
+Border:
+TODO: Border Missing
+
+Corner Radius:
+TODO: Corner Radius Missing
+
+Padding:
+TODO: Padding Missing
+
+Margin:
+TODO: Margin Missing
+
+Grid Structure:
+TODO: Grid Structure Missing
+
+Visibility:
+TODO: Visibility Missing
+
+Collapsed:
+TODO: Collapsed Missing
+
+Children:
+TODO: Children Missing
+
+==================================================
+LAYOUT
+==================================================
+
+Container Type
+TODO: Container Type Missing
+
+Grid
+TODO: Grid Missing
+
+Rows
+TODO: Rows Missing
+
+Columns
+TODO: Columns Missing
+
+Spacing
+TODO: Spacing Missing
+
+Alignment
+TODO: Alignment Missing
+
+==================================================
+COMPONENTS
+==================================================
+
+TODO:
+Components Missing
+
+==================================================
+SECTION
+==================================================
+
+Section Name:
+Security
+
+Purpose:
+TODO: Purpose Missing
+
+Parent:
+TODO: Parent Missing
+
+Position:
+TODO: Position Missing
+
+Size:
+TODO: Size Missing
+
+Background:
+TODO: Background Missing
+
+Border:
+TODO: Border Missing
+
+Corner Radius:
+TODO: Corner Radius Missing
+
+Padding:
+TODO: Padding Missing
+
+Margin:
+TODO: Margin Missing
+
+Grid Structure:
+TODO: Grid Structure Missing
+
+Visibility:
+TODO: Visibility Missing
+
+Collapsed:
+TODO: Collapsed Missing
+
+Children:
+TODO: Children Missing
+
+==================================================
+LAYOUT
+==================================================
+
+Container Type
+TODO: Container Type Missing
+
+Grid
+TODO: Grid Missing
+
+Rows
+TODO: Rows Missing
+
+Columns
+TODO: Columns Missing
+
+Spacing
+TODO: Spacing Missing
+
+Alignment
+TODO: Alignment Missing
+
+==================================================
+COMPONENTS
+==================================================
+
+TODO:
+Components Missing
+
+==================================================
+SECTION
+==================================================
+
+Section Name:
+Visibility
+
+Purpose:
+TODO: Purpose Missing
+
+Parent:
+TODO: Parent Missing
+
+Position:
+TODO: Position Missing
+
+Size:
+TODO: Size Missing
+
+Background:
+TODO: Background Missing
+
+Border:
+TODO: Border Missing
+
+Corner Radius:
+TODO: Corner Radius Missing
+
+Padding:
+TODO: Padding Missing
+
+Margin:
+TODO: Margin Missing
+
+Grid Structure:
+TODO: Grid Structure Missing
+
+Visibility:
+TODO: Visibility Missing
+
+Collapsed:
+TODO: Collapsed Missing
+
+Children:
+TODO: Children Missing
+
+==================================================
+LAYOUT
+==================================================
+
+Container Type
+TODO: Container Type Missing
+
+Grid
+TODO: Grid Missing
+
+Rows
+TODO: Rows Missing
+
+Columns
+TODO: Columns Missing
+
+Spacing
+TODO: Spacing Missing
+
+Alignment
+TODO: Alignment Missing
+
+==================================================
+COMPONENTS
+==================================================
+
+TODO:
+Components Missing
