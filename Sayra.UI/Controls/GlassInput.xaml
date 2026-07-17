@@ -6,20 +6,6 @@
              mc:Ignorable="d"
              x:Name="self"
              d:DesignHeight="60" d:DesignWidth="400">
-    <UserControl.Resources>
-        <!-- Soft glow dynamic effect -->
-        <Style x:Key="GlassBorderStyle" TargetType="Border">
-            <Setter Property="Background" Value="#1A0A0A0A" />
-            <Setter Property="BorderBrush" Value="#22F5FF00" />
-            <Setter Property="BorderThickness" Value="1.5" />
-            <Setter Property="CornerRadius" Value="12" />
-            <Setter Property="SnapsToDevicePixels" Value="True" />
-            <Style.Triggers>
-                <!-- We do not animate frozen SolidColorBrush.Color via Triggers directly if it causes issues.
-                     Let's use Storyboards on non-frozen target elements or simply rely on UI elements with Opacity/Thickness shifts. -->
-            </Style.Triggers>
-        </Style>
-    </UserControl.Resources>
 
     <Grid Margin="0,8">
         <!-- InputBorder with SolidColorBrush specifically declared locally so it's NOT frozen -->
