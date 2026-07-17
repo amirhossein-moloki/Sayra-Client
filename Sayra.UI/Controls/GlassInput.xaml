@@ -28,7 +28,7 @@
                 <SolidColorBrush x:Name="BorderBrushInstance" Color="#22F5FF00" />
             </Border.BorderBrush>
             <Border.Effect>
-                <DropShadowEffect x:Name="ShadowEffectInstance" Color="#F5FF00" BlurRadius="12" ShadowDepth="0" Opacity="0" />
+                <DropShadowEffect x:Name="ShadowEffectInstance" Color="{DynamicResource Theme.Colors.Primary}" BlurRadius="12" ShadowDepth="0" Opacity="0" />
             </Border.Effect>
             <Grid>
                 <Grid.ColumnDefinitions>
@@ -49,8 +49,8 @@
                              Text="{Binding Text, ElementName=self, UpdateSourceTrigger=PropertyChanged}"
                              Background="Transparent"
                              BorderThickness="0"
-                             Foreground="#FFFFFF"
-                             CaretBrush="#F5FF00"
+                             Foreground="{DynamicResource Theme.Brushes.Text.Primary}"
+                             CaretBrush="{DynamicResource Theme.Brushes.Primary}"
                              FontFamily="{StaticResource PeydaMedium}"
                              FontSize="16"
                              VerticalAlignment="Center"
@@ -64,8 +64,8 @@
                     <PasswordBox x:Name="SecuredPasswordBox"
                                  Background="Transparent"
                                  BorderThickness="0"
-                                 Foreground="#FFFFFF"
-                                 CaretBrush="#F5FF00"
+                                 Foreground="{DynamicResource Theme.Brushes.Text.Primary}"
+                                 CaretBrush="{DynamicResource Theme.Brushes.Primary}"
                                  FontFamily="{StaticResource PeydaMedium}"
                                  FontSize="16"
                                  VerticalAlignment="Center"

@@ -26,7 +26,7 @@
                             <ScaleTransform x:Name="PlayBtnScaleTransform" ScaleX="1.0" ScaleY="1.0" />
                         </Border.RenderTransform>
                         <Border.Effect>
-                            <DropShadowEffect x:Name="PlayBtnGlow" Color="#ffff3d" BlurRadius="12" ShadowDepth="0" Opacity="0" />
+                            <DropShadowEffect x:Name="PlayBtnGlow" Color="{DynamicResource Theme.Colors.Primary}" BlurRadius="12" ShadowDepth="0" Opacity="0" />
                         </Border.Effect>
 
                         <TextBlock Text="{TemplateBinding Content}"

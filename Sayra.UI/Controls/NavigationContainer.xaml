@@ -9,8 +9,8 @@
     <Grid>
         <!-- Main container Border -->
         <Border Width="260"
-                Background="#171A20"
-                BorderBrush="#2B3039"
+                Background="{DynamicResource Theme.Brushes.Surface.Panel}"
+                BorderBrush="{DynamicResource Theme.Brushes.Border.Default}"
                 BorderThickness="0,0,1,0"
                 CornerRadius="12"
                 Padding="16,20,16,20">
@@ -43,7 +43,7 @@
                 <!-- Block 3: Footer Placeholder -->
                 <Border Grid.Row="3"
                         BorderThickness="0,1,0,0"
-                        BorderBrush="#2B3039">
+                        BorderBrush="{DynamicResource Theme.Brushes.Border.Default}">
                     <!-- Empty placeholder for Footer actions (Height: 120px) -->
                 </Border>
             </Grid>

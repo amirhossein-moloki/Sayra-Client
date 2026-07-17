@@ -14,13 +14,13 @@
         </Grid.RowDefinitions>
 
         <!-- Search Bar -->
-        <Border Grid.Row="0" Background="#252525" CornerRadius="20" Padding="20,10" Margin="0,0,0,30" HorizontalAlignment="Left" Width="400">
+        <Border Grid.Row="0" Background="{DynamicResource Theme.Brushes.Background.Secondary}" CornerRadius="20" Padding="20,10" Margin="0,0,0,30" HorizontalAlignment="Left" Width="400">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                <TextBlock Grid.Column="0" Text="🔍" VerticalAlignment="Center" Margin="0,0,10,0" Foreground="#888"/>
+                <TextBlock Grid.Column="0" Text="🔍" VerticalAlignment="Center" Margin="0,0,10,0" Foreground="{DynamicResource Theme.Brushes.Text.Muted}"/>
                 <TextBox Grid.Column="1" Text="{Binding SearchQuery, UpdateSourceTrigger=PropertyChanged}"
                          Background="Transparent" BorderThickness="0" Foreground="White"
                          FontSize="16" VerticalAlignment="Center" CaretBrush="White"/>
@@ -37,20 +37,20 @@
                 </ItemsControl.ItemsPanel>
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <Border Width="180" Height="240" Margin="0,0,20,20" Background="#1E1E1E" CornerRadius="10">
+                        <Border Width="180" Height="240" Margin="0,0,20,20" Background="{DynamicResource Theme.Brushes.Background.Secondary}" CornerRadius="10">
                             <Grid>
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="150"/> <!-- Icon/Image Placeholder -->
                                     <RowDefinition Height="*"/>    <!-- Name / Launch -->
                                 </Grid.RowDefinitions>
 
-                                <Border Grid.Row="0" Background="#2A2A2A" CornerRadius="10,10,0,0">
+                                <Border Grid.Row="0" Background="{DynamicResource Theme.Brushes.Surface.Panel}" CornerRadius="10,10,0,0">
                                     <TextBlock Text="{Binding Name[0]}" Foreground="Cyan" FontSize="48" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                 </Border>
 
                                 <StackPanel Grid.Row="1" Margin="10">
                                     <TextBlock Text="{Binding Name}" FontWeight="Bold" Foreground="White" FontSize="14" TextTrimming="CharacterEllipsis"/>
-                                    <TextBlock Text="{Binding Category}" Foreground="#888" FontSize="11" Margin="0,2,0,5"/>
+                                    <TextBlock Text="{Binding Category}" Foreground="{DynamicResource Theme.Brushes.Text.Muted}" FontSize="11" Margin="0,2,0,5"/>
 
                                     <Button Content="LAUNCH" Height="30" Background="Cyan" Foreground="Black" FontWeight="Bold"
                                             Command="{Binding DataContext.LaunchAppCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"

@@ -20,11 +20,11 @@
                     <ControlTemplate TargetType="{x:Type Thumb}">
                         <Border x:Name="rectangle"
                                 CornerRadius="8"
-                                Background="#353B46"
+                                Background="{DynamicResource Theme.Brushes.Navigation.Background}"
                                 SnapsToDevicePixels="True" />
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="rectangle" Property="Background" Value="#4C5562" />
+                                <Setter TargetName="rectangle" Property="Background" Value="{DynamicResource Theme.Brushes.Navigation.ItemActive}" />
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -96,63 +96,63 @@
                     <!-- Spacing between placeholders: 6px -->
                     <!-- Placeholder 1 -->
                     <Grid Height="42" Margin="0,0,0,6">
-                        <Rectangle Stroke="#303641" StrokeThickness="1" StrokeDashArray="4,4" RadiusX="8" RadiusY="8" Fill="Transparent" />
+                        <Rectangle Stroke="{DynamicResource Theme.Brushes.Navigation.ItemActive}" StrokeThickness="1" StrokeDashArray="4,4" RadiusX="8" RadiusY="8" Fill="Transparent" />
                     </Grid>
                     <!-- Placeholder 2 -->
                     <Grid Height="42" Margin="0,0,0,6">
-                        <Rectangle Stroke="#303641" StrokeThickness="1" StrokeDashArray="4,4" RadiusX="8" RadiusY="8" Fill="Transparent" />
+                        <Rectangle Stroke="{DynamicResource Theme.Brushes.Navigation.ItemActive}" StrokeThickness="1" StrokeDashArray="4,4" RadiusX="8" RadiusY="8" Fill="Transparent" />
                     </Grid>
                     <!-- Placeholder 3 -->
                     <Grid Height="42" Margin="0,0,0,6">
-                        <Rectangle Stroke="#303641" StrokeThickness="1" StrokeDashArray="4,4" RadiusX="8" RadiusY="8" Fill="Transparent" />
+                        <Rectangle Stroke="{DynamicResource Theme.Brushes.Navigation.ItemActive}" StrokeThickness="1" StrokeDashArray="4,4" RadiusX="8" RadiusY="8" Fill="Transparent" />
                     </Grid>
                     <!-- Placeholder 4 -->
                     <Grid Height="42" Margin="0,0,0,6">
-                        <Rectangle Stroke="#303641" StrokeThickness="1" StrokeDashArray="4,4" RadiusX="8" RadiusY="8" Fill="Transparent" />
+                        <Rectangle Stroke="{DynamicResource Theme.Brushes.Navigation.ItemActive}" StrokeThickness="1" StrokeDashArray="4,4" RadiusX="8" RadiusY="8" Fill="Transparent" />
                     </Grid>
                     <!-- Placeholder 5 -->
                     <Grid Height="42" Margin="0,0,0,6">
-                        <Rectangle Stroke="#303641" StrokeThickness="1" StrokeDashArray="4,4" RadiusX="8" RadiusY="8" Fill="Transparent" />
+                        <Rectangle Stroke="{DynamicResource Theme.Brushes.Navigation.ItemActive}" StrokeThickness="1" StrokeDashArray="4,4" RadiusX="8" RadiusY="8" Fill="Transparent" />
                     </Grid>
                     <!-- Placeholder 6 -->
                     <Grid Height="42" Margin="0,0,0,6">
-                        <Rectangle Stroke="#303641" StrokeThickness="1" StrokeDashArray="4,4" RadiusX="8" RadiusY="8" Fill="Transparent" />
+                        <Rectangle Stroke="{DynamicResource Theme.Brushes.Navigation.ItemActive}" StrokeThickness="1" StrokeDashArray="4,4" RadiusX="8" RadiusY="8" Fill="Transparent" />
                     </Grid>
                     <!-- Placeholder 7 -->
                     <Grid Height="42" Margin="0,0,0,6">
-                        <Rectangle Stroke="#303641" StrokeThickness="1" StrokeDashArray="4,4" RadiusX="8" RadiusY="8" Fill="Transparent" />
+                        <Rectangle Stroke="{DynamicResource Theme.Brushes.Navigation.ItemActive}" StrokeThickness="1" StrokeDashArray="4,4" RadiusX="8" RadiusY="8" Fill="Transparent" />
                     </Grid>
                     <!-- Placeholder 8 -->
                     <Grid Height="42" Margin="0,0,0,6">
-                        <Rectangle Stroke="#303641" StrokeThickness="1" StrokeDashArray="4,4" RadiusX="8" RadiusY="8" Fill="Transparent" />
+                        <Rectangle Stroke="{DynamicResource Theme.Brushes.Navigation.ItemActive}" StrokeThickness="1" StrokeDashArray="4,4" RadiusX="8" RadiusY="8" Fill="Transparent" />
                     </Grid>
                     <!-- Placeholder 9 -->
                     <Grid Height="42" Margin="0,0,0,6">
-                        <Rectangle Stroke="#303641" StrokeThickness="1" StrokeDashArray="4,4" RadiusX="8" RadiusY="8" Fill="Transparent" />
+                        <Rectangle Stroke="{DynamicResource Theme.Brushes.Navigation.ItemActive}" StrokeThickness="1" StrokeDashArray="4,4" RadiusX="8" RadiusY="8" Fill="Transparent" />
                     </Grid>
                     <!-- Placeholder 10 -->
                     <Grid Height="42" Margin="0,0,0,6">
-                        <Rectangle Stroke="#303641" StrokeThickness="1" StrokeDashArray="4,4" RadiusX="8" RadiusY="8" Fill="Transparent" />
+                        <Rectangle Stroke="{DynamicResource Theme.Brushes.Navigation.ItemActive}" StrokeThickness="1" StrokeDashArray="4,4" RadiusX="8" RadiusY="8" Fill="Transparent" />
                     </Grid>
                     <!-- Placeholder 11 -->
                     <Grid Height="42" Margin="0,0,0,6">
-                        <Rectangle Stroke="#303641" StrokeThickness="1" StrokeDashArray="4,4" RadiusX="8" RadiusY="8" Fill="Transparent" />
+                        <Rectangle Stroke="{DynamicResource Theme.Brushes.Navigation.ItemActive}" StrokeThickness="1" StrokeDashArray="4,4" RadiusX="8" RadiusY="8" Fill="Transparent" />
                     </Grid>
                     <!-- Placeholder 12 -->
                     <Grid Height="42" Margin="0,0,0,6">
-                        <Rectangle Stroke="#303641" StrokeThickness="1" StrokeDashArray="4,4" RadiusX="8" RadiusY="8" Fill="Transparent" />
+                        <Rectangle Stroke="{DynamicResource Theme.Brushes.Navigation.ItemActive}" StrokeThickness="1" StrokeDashArray="4,4" RadiusX="8" RadiusY="8" Fill="Transparent" />
                     </Grid>
                     <!-- Placeholder 13 -->
                     <Grid Height="42" Margin="0,0,0,6">
-                        <Rectangle Stroke="#303641" StrokeThickness="1" StrokeDashArray="4,4" RadiusX="8" RadiusY="8" Fill="Transparent" />
+                        <Rectangle Stroke="{DynamicResource Theme.Brushes.Navigation.ItemActive}" StrokeThickness="1" StrokeDashArray="4,4" RadiusX="8" RadiusY="8" Fill="Transparent" />
                     </Grid>
                     <!-- Placeholder 14 -->
                     <Grid Height="42" Margin="0,0,0,6">
-                        <Rectangle Stroke="#303641" StrokeThickness="1" StrokeDashArray="4,4" RadiusX="8" RadiusY="8" Fill="Transparent" />
+                        <Rectangle Stroke="{DynamicResource Theme.Brushes.Navigation.ItemActive}" StrokeThickness="1" StrokeDashArray="4,4" RadiusX="8" RadiusY="8" Fill="Transparent" />
                     </Grid>
                     <!-- Placeholder 15 -->
                     <Grid Height="42" Margin="0,0,0,0">
-                        <Rectangle Stroke="#303641" StrokeThickness="1" StrokeDashArray="4,4" RadiusX="8" RadiusY="8" Fill="Transparent" />
+                        <Rectangle Stroke="{DynamicResource Theme.Brushes.Navigation.ItemActive}" StrokeThickness="1" StrokeDashArray="4,4" RadiusX="8" RadiusY="8" Fill="Transparent" />
                     </Grid>
                 </StackPanel>
             </Border>

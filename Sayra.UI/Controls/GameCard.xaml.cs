@@ -246,8 +246,13 @@ namespace Sayra.UI.Controls
             var duration = TimeSpan.FromSeconds(durationSec);
 
             double targetScale = 1.0;
-            Color targetBorderColor = Color.FromRgb(37, 37, 40); // #252528 (Border Color)
-            Color targetShadowColor = Color.FromRgb(0, 0, 0);
+            Color defaultBorder = (Color)FindResource("Theme.Colors.Border.Default");
+            Color primaryColor = (Color)FindResource("Theme.Colors.Primary");
+            Color shadowColor = (Color)FindResource("Theme.Colors.Shadow");
+            Color primaryHover = (Color)FindResource("Theme.Colors.PrimaryHover");
+
+            Color targetBorderColor = defaultBorder;
+            Color targetShadowColor = shadowColor;
             double targetShadowOpacity = 0.5;
             double targetShadowBlur = 15;
             double targetShadowDepth = 4;
@@ -259,7 +264,7 @@ namespace Sayra.UI.Controls
             {
                 // Disabled State
                 targetCardOpacity = 0.55;
-                targetBorderColor = Color.FromArgb(80, 37, 37, 40); // #252528 at low opacity
+                targetBorderColor = Color.FromArgb(80, defaultBorder.R, defaultBorder.G, defaultBorder.B);
                 targetShadowOpacity = 0.2;
                 targetShadowBlur = 10;
                 targetShadowDepth = 2;
@@ -268,8 +273,8 @@ namespace Sayra.UI.Controls
             else if (IsSelected)
             {
                 // Selected State
-                targetBorderColor = Color.FromRgb(255, 255, 61); // #ffff3d (Primary Yellow)
-                targetShadowColor = Color.FromRgb(255, 255, 61); // #ffff3d glow
+                targetBorderColor = primaryColor;
+                targetShadowColor = primaryColor;
                 targetShadowOpacity = _isMouseOver ? 0.8 : 0.65;
                 targetShadowBlur = _isMouseOver ? 25 : 20;
                 targetShadowDepth = 0;
@@ -280,8 +285,8 @@ namespace Sayra.UI.Controls
             {
                 // Hover State
                 targetScale = 1.03;
-                targetBorderColor = Color.FromArgb(160, 244, 244, 107); // #f4f46b (Primary Hover Yellow)
-                targetShadowColor = Color.FromRgb(255, 255, 61); // #ffff3d glow
+                targetBorderColor = Color.FromArgb(160, primaryHover.R, primaryHover.G, primaryHover.B);
+                targetShadowColor = primaryColor;
                 targetShadowOpacity = 0.55;
                 targetShadowBlur = 20;
                 targetShadowDepth = 0;

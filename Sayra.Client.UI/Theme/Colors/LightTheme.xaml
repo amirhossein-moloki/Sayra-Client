@@ -1,0 +1,41 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <!-- Light Theme Specific Color Mappings (Future Theme Support) -->
+    <Color x:Key="Theme.Colors.Background.Primary">#F9FAFB</Color>
+    <Color x:Key="Theme.Colors.Background.Secondary">#F3F4F6</Color>
+    <Color x:Key="Theme.Colors.Surface.Card">#FFFFFF</Color>
+    <Color x:Key="Theme.Colors.Surface.Panel">#E5E7EB</Color>
+    <Color x:Key="Theme.Colors.Surface.Dialog">#D9FFFFFF</Color>
+
+    <!-- Text Colors -->
+    <Color x:Key="Theme.Colors.Text.Primary">#111827</Color>
+    <Color x:Key="Theme.Colors.Text.Secondary">#4B5563</Color>
+    <Color x:Key="Theme.Colors.Text.Disabled">#9CA3AF</Color>
+    <Color x:Key="Theme.Colors.Text.Muted">#6B7280</Color>
+
+    <!-- Border Colors -->
+    <Color x:Key="Theme.Colors.Border.Default">#D1D5DB</Color>
+    <Color x:Key="Theme.Colors.Border.Active">#F5FF00</Color>
+    <Color x:Key="Theme.Colors.Border.Cyan">#00B4D8</Color>
+    <Color x:Key="Theme.Colors.Border.Translucent">#1A000000</Color>
+
+    <!-- Accents / Brand -->
+    <Color x:Key="Theme.Colors.Primary">#ffff3d</Color>
+    <Color x:Key="Theme.Colors.PrimaryHover">#f4f46b</Color>
+    <Color x:Key="Theme.Colors.Secondary">#00B4D8</Color>
+
+    <!-- Button States -->
+    <Color x:Key="Theme.Colors.Button.Primary.Default">#ffff3d</Color>
+    <Color x:Key="Theme.Colors.Button.Primary.Hover">#f4f46b</Color>
+    <Color x:Key="Theme.Colors.Button.Primary.Pressed">#E5A000</Color>
+    <Color x:Key="Theme.Colors.Button.Primary.Disabled">#E5E7EB</Color>
+
+    <!-- Input Colors -->
+    <Color x:Key="Theme.Colors.Input.Background">#FFFFFF</Color>
+    <Color x:Key="Theme.Colors.Input.Border">#D1D5DB</Color>
+
+    <!-- Status -->
+    <Color x:Key="Theme.Colors.Status.Success">#10B981</Color>
+    <Color x:Key="Theme.Colors.Status.Warning">#F59E0B</Color>
+    <Color x:Key="Theme.Colors.Status.Error">#EF4444</Color>
+</ResourceDictionary>

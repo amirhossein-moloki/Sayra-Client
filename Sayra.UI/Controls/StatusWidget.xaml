@@ -20,7 +20,7 @@
         <!-- Icon -->
         <Path Grid.Column="0"
               Data="{Binding Icon, ElementName=Widget}"
-              Stroke="#9A9A9A"
+              Stroke="{DynamicResource Theme.Brushes.Text.Secondary}"
               StrokeThickness="1.5"
               StrokeStartLineCap="Round"
               StrokeEndLineCap="Round"
@@ -35,7 +35,7 @@
             <TextBlock Text="{Binding Label, ElementName=Widget}"
                        FontFamily="{StaticResource PeydaBold}"
                        FontSize="10"
-                       Foreground="#9A9A9A"
+                       Foreground="{DynamicResource Theme.Brushes.Text.Secondary}"
                        FontWeight="SemiBold"
                        LineHeight="12"
                        TextTrimming="CharacterEllipsis" />
@@ -44,7 +44,7 @@
             <TextBlock Text="{Binding Value, ElementName=Widget}"
                        FontFamily="{StaticResource PeydaMedium}"
                        FontSize="13"
-                       Foreground="#FFFFFF"
+                       Foreground="{DynamicResource Theme.Brushes.Text.Primary}"
                        LineHeight="16"
                        Margin="0,2,0,0"
                        TextTrimming="CharacterEllipsis" />

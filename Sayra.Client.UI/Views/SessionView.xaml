@@ -9,7 +9,7 @@
     <Grid>
         <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
             <StackPanel Margin="0,0,15,0">
-                <TextBlock Text="REMAINING" FontSize="10" Foreground="#888"/>
+                <TextBlock Text="REMAINING" FontSize="10" Foreground="{DynamicResource Theme.Brushes.Text.Muted}"/>
                 <TextBlock Text="{Binding RemainingTimeStr}" FontSize="18" FontWeight="Bold">
                     <TextBlock.Style>
                         <Style TargetType="TextBlock">
@@ -25,12 +25,12 @@
             </StackPanel>
 
             <StackPanel Margin="0,0,15,0">
-                <TextBlock Text="ELAPSED" FontSize="10" Foreground="#888"/>
+                <TextBlock Text="ELAPSED" FontSize="10" Foreground="{DynamicResource Theme.Brushes.Text.Muted}"/>
                 <TextBlock Text="{Binding ElapsedTimeStr}" FontSize="16" Foreground="White"/>
             </StackPanel>
 
             <StackPanel>
-                <TextBlock Text="STARTED" FontSize="10" Foreground="#888"/>
+                <TextBlock Text="STARTED" FontSize="10" Foreground="{DynamicResource Theme.Brushes.Text.Muted}"/>
                 <TextBlock Text="{Binding StartTimeStr}" FontSize="16" Foreground="White"/>
             </StackPanel>
 

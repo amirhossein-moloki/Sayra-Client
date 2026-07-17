@@ -7,14 +7,14 @@
              mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
-        <Border Background="#1A1A1A" CornerRadius="10"
+        <Border Background="{DynamicResource Theme.Brushes.Background.Secondary}" CornerRadius="10"
                 Width="350" Height="450" VerticalAlignment="Center" HorizontalAlignment="Center"
-                BorderBrush="#333" BorderThickness="1">
+                BorderBrush="{DynamicResource Theme.Brushes.Border.Default}" BorderThickness="1">
             <StackPanel Margin="30">
                 <TextBlock Text="SAYRA" FontSize="36" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,20,0,40" Foreground="Cyan"/>
 
-                <TextBlock Text="ENTER PIN" FontSize="14" Foreground="#888" Margin="0,0,0,10"/>
-                <PasswordBox x:Name="PinBox" Height="45" Background="#222" Foreground="White" BorderBrush="#444" FontSize="24"
+                <TextBlock Text="ENTER PIN" FontSize="14" Foreground="{DynamicResource Theme.Brushes.Text.Muted}" Margin="0,0,0,10"/>
+                <PasswordBox x:Name="PinBox" Height="45" Background="{DynamicResource Theme.Brushes.Input.Background}" Foreground="White" BorderBrush="{DynamicResource Theme.Brushes.Input.Border}" FontSize="24"
                              HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
                              PasswordChanged="PinBox_PasswordChanged"/>
 
