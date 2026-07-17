@@ -409,7 +409,7 @@
 
                 <!-- 02. SEARCH (Full width) -->
                 <!-- Shorter Search Box (Height: 38px, Margin: 12px top, 24px left/right) -->
-                <Grid Grid.Column="0" Grid.ColumnSpan="5" Grid.Row="0" Margin="24,12,24,0" Height="38">
+                <Grid Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="0" Margin="24,12,0,0" Height="38">
                     <Border CornerRadius="8" Background="#181A20" BorderBrush="#2A2D36" BorderThickness="1.5">
                         <Grid>
                             <Grid.ColumnDefinitions>
@@ -462,65 +462,57 @@
 
                 <!-- 03. TOOLBAR (Full width) -->
                 <!-- Shorter Toolbar (Height: 46px, Margin: 8px top, 24px left/right) -->
-                <Border Grid.Column="0" Grid.ColumnSpan="5" Grid.Row="1" Height="46" Margin="24,8,24,0" Background="#181A20" BorderBrush="#2A2D36" BorderThickness="1" CornerRadius="8" Padding="12,0">
-                    <Grid VerticalAlignment="Center">
-                        <Grid.ColumnDefinitions>
-                            <!-- Left aligned categories -->
-                            <ColumnDefinition Width="*" />
-                            <!-- Right aligned category (Sync) -->
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
+                <Border Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="1" Height="46" Margin="24,8,0,0" Background="#181A20" BorderBrush="#2A2D36" BorderThickness="1" CornerRadius="8" Padding="12,0">
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                        <!-- GROUP: SCAN -->
+                        <TextBlock Text="SCAN" FontFamily="{StaticResource PeydaBold}" FontSize="9" Foreground="#14BE78" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                        <Button Style="{StaticResource ToolbarButtonStyle}" Content="Scan All" Command="{Binding ScanComputerCommand}" />
+                        <Border Width="4"/>
+                        <Button Style="{StaticResource ToolbarButtonStyle}" Content="Steam" Command="{Binding ScanComputerCommand}" />
+                        <Border Width="4"/>
+                        <Button Style="{StaticResource ToolbarButtonStyle}" Content="Epic" Command="{Binding ScanComputerCommand}" />
+                        <Border Width="4"/>
+                        <Button Style="{StaticResource ToolbarButtonStyle}" Content="Riot" Command="{Binding ScanComputerCommand}" />
+                        <Border Width="4"/>
+                        <Button Style="{StaticResource ToolbarButtonStyle}" Content="Battle.net" Command="{Binding ScanComputerCommand}" />
+                        <Border Width="4"/>
+                        <Button Style="{StaticResource ToolbarButtonStyle}" Content="Ubisoft" Command="{Binding ScanComputerCommand}" />
+                        <Border Width="4"/>
+                        <Button Style="{StaticResource ToolbarButtonStyle}" Content="Custom" Command="{Binding ScanComputerCommand}" />
 
-                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                            <!-- GROUP: SCAN -->
-                            <TextBlock Text="SCAN" FontFamily="{StaticResource PeydaBold}" FontSize="9" Foreground="#14BE78" VerticalAlignment="Center" Margin="0,0,8,0"/>
-                            <Button Style="{StaticResource ToolbarButtonStyle}" Content="Scan All" Command="{Binding ScanComputerCommand}" />
-                            <Border Width="4"/>
-                            <Button Style="{StaticResource ToolbarButtonStyle}" Content="Steam" Command="{Binding ScanComputerCommand}" />
-                            <Border Width="4"/>
-                            <Button Style="{StaticResource ToolbarButtonStyle}" Content="Epic" Command="{Binding ScanComputerCommand}" />
-                            <Border Width="4"/>
-                            <Button Style="{StaticResource ToolbarButtonStyle}" Content="Riot" Command="{Binding ScanComputerCommand}" />
-                            <Border Width="4"/>
-                            <Button Style="{StaticResource ToolbarButtonStyle}" Content="Battle.net" Command="{Binding ScanComputerCommand}" />
-                            <Border Width="4"/>
-                            <Button Style="{StaticResource ToolbarButtonStyle}" Content="Ubisoft" Command="{Binding ScanComputerCommand}" />
-                            <Border Width="4"/>
-                            <Button Style="{StaticResource ToolbarButtonStyle}" Content="Custom" Command="{Binding ScanComputerCommand}" />
+                        <!-- Group Separator -->
+                        <Border BorderBrush="#2A2D36" BorderThickness="1,0,0,0" Margin="12,6" Height="18"/>
 
-                            <!-- Group Separator -->
-                            <Border BorderBrush="#2A2D36" BorderThickness="1,0,0,0" Margin="12,6" Height="18"/>
+                        <!-- GROUP: ADD -->
+                        <TextBlock Text="ADD" FontFamily="{StaticResource PeydaBold}" FontSize="9" Foreground="#ffff3d" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                        <Button Style="{StaticResource ToolbarButtonStyle}" Content="Add Game" Command="{Binding ManageCategoriesCommand}" />
+                        <Border Width="4"/>
+                        <Button Style="{StaticResource ToolbarButtonStyle}" Content="Add App" Command="{Binding ManageCategoriesCommand}" />
 
-                            <!-- GROUP: ADD -->
-                            <TextBlock Text="ADD" FontFamily="{StaticResource PeydaBold}" FontSize="9" Foreground="#ffff3d" VerticalAlignment="Center" Margin="0,0,8,0"/>
-                            <Button Style="{StaticResource ToolbarButtonStyle}" Content="Add Game" Command="{Binding ManageCategoriesCommand}" />
-                            <Border Width="4"/>
-                            <Button Style="{StaticResource ToolbarButtonStyle}" Content="Add App" Command="{Binding ManageCategoriesCommand}" />
+                        <!-- Group Separator -->
+                        <Border BorderBrush="#2A2D36" BorderThickness="1,0,0,0" Margin="12,6" Height="18"/>
 
-                            <!-- Group Separator -->
-                            <Border BorderBrush="#2A2D36" BorderThickness="1,0,0,0" Margin="12,6" Height="18"/>
+                        <!-- GROUP: DATA -->
+                        <TextBlock Text="DATA" FontFamily="{StaticResource PeydaBold}" FontSize="9" Foreground="#8A5CFF" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                        <Button Style="{StaticResource ToolbarButtonStyle}" Content="Import" Command="{Binding RefreshCategoriesCommand}" />
+                        <Border Width="4"/>
+                        <Button Style="{StaticResource ToolbarButtonStyle}" Content="Export" Command="{Binding RefreshCategoriesCommand}" />
+                        <Border Width="4"/>
+                        <Button Style="{StaticResource ToolbarButtonStyle}" Content="Backup" Command="{Binding RefreshCategoriesCommand}" />
+                        <Border Width="4"/>
+                        <Button Style="{StaticResource ToolbarButtonStyle}" Content="Restore" Command="{Binding RefreshCategoriesCommand}" />
 
-                            <!-- GROUP: DATA -->
-                            <TextBlock Text="DATA" FontFamily="{StaticResource PeydaBold}" FontSize="9" Foreground="#8A5CFF" VerticalAlignment="Center" Margin="0,0,8,0"/>
-                            <Button Style="{StaticResource ToolbarButtonStyle}" Content="Import" Command="{Binding RefreshCategoriesCommand}" />
-                            <Border Width="4"/>
-                            <Button Style="{StaticResource ToolbarButtonStyle}" Content="Export" Command="{Binding RefreshCategoriesCommand}" />
-                            <Border Width="4"/>
-                            <Button Style="{StaticResource ToolbarButtonStyle}" Content="Backup" Command="{Binding RefreshCategoriesCommand}" />
-                            <Border Width="4"/>
-                            <Button Style="{StaticResource ToolbarButtonStyle}" Content="Restore" Command="{Binding RefreshCategoriesCommand}" />
-                        </StackPanel>
+                        <!-- Group Separator -->
+                        <Border BorderBrush="#2A2D36" BorderThickness="1,0,0,0" Margin="12,6" Height="18"/>
 
-                        <!-- GROUP: SYNC (Align Right) -->
-                        <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
-                            <TextBlock Text="SYNC" FontFamily="{StaticResource PeydaBold}" FontSize="9" Foreground="#63E6FF" VerticalAlignment="Center" Margin="0,0,8,0"/>
-                            <Button Style="{StaticResource ToolbarButtonStyle}" Content="Sync From Server" Command="{Binding RefreshCommand}" />
-                            <Border Width="4"/>
-                            <Button Style="{StaticResource ToolbarButtonStyle}" Content="Sync To Server" Command="{Binding RefreshCommand}" />
-                            <Border Width="4"/>
-                            <Button Style="{StaticResource ToolbarButtonStyle}" Content="Compare" Command="{Binding RefreshCommand}" />
-                        </StackPanel>
-                    </Grid>
+                        <!-- GROUP: SYNC (Adjacent to DATA) -->
+                        <TextBlock Text="SYNC" FontFamily="{StaticResource PeydaBold}" FontSize="9" Foreground="#63E6FF" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                        <Button Style="{StaticResource ToolbarButtonStyle}" Content="Sync From Server" Command="{Binding RefreshCommand}" />
+                        <Border Width="4"/>
+                        <Button Style="{StaticResource ToolbarButtonStyle}" Content="Sync To Server" Command="{Binding RefreshCommand}" />
+                        <Border Width="4"/>
+                        <Button Style="{StaticResource ToolbarButtonStyle}" Content="Compare" Command="{Binding RefreshCommand}" />
+                    </StackPanel>
                 </Border>
 
                 <!-- 09. GAMES PANEL -->
@@ -704,7 +696,7 @@
 
                 <!-- 11. RIGHT SIDEBAR -->
                 <!-- Right Sidebar aligned with Main DataGrid in Row 2 -->
-                <Border Grid.Column="4" Grid.Row="2" Grid.RowSpan="1" Margin="0,12,24,12" Background="#14161C" BorderBrush="#2A2D36" BorderThickness="1" CornerRadius="10" Padding="12">
+                <Border Grid.Column="4" Grid.Row="0" Grid.RowSpan="3" Margin="0,12,24,12" Background="#14161C" BorderBrush="#2A2D36" BorderThickness="1" CornerRadius="10" Padding="12">
                     <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                         <Grid x:Name="RightSidebarGrid">
                             <Grid.RowDefinitions>
