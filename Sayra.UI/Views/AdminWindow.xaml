@@ -186,8 +186,12 @@
             <Setter Property="Padding" Value="12,10"/>
             <Setter Property="FontFamily" Value="{StaticResource PeydaBold}"/>
             <Setter Property="FontSize" Value="11"/>
-            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
             <Setter Property="VerticalContentAlignment" Value="Center"/>
+        </Style>
+
+        <Style x:Key="PremiumDataGridHeaderCenteredStyle" TargetType="DataGridColumnHeader" BasedOn="{StaticResource PremiumDataGridHeaderStyle}">
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
         </Style>
 
         <Style x:Key="PremiumDataGridCellStyle" TargetType="DataGridCell">
@@ -678,7 +682,7 @@
                                 </DataGridTemplateColumn>
 
                                 <!-- Icon/Cover Column -->
-                                <DataGridTemplateColumn Header="Cover" Width="55">
+                                <DataGridTemplateColumn Header="Cover" Width="55" HeaderStyle="{StaticResource PremiumDataGridHeaderCenteredStyle}">
                                     <DataGridTemplateColumn.CellTemplate>
                                         <DataTemplate>
                                             <Border Width="32" Height="32" Background="#13FFFFFF" CornerRadius="4" ClipToBounds="True" HorizontalAlignment="Center" VerticalAlignment="Center" BorderThickness="1" BorderBrush="#2A2D36">
@@ -705,7 +709,7 @@
                                 <DataGridTextColumn Header="Version" Binding="{Binding Version}" Width="90" ElementStyle="{StaticResource {x:Type TextBlock}}"/>
 
                                 <!-- Enabled Checkbox Column -->
-                                <DataGridTemplateColumn Header="Enabled" Width="80">
+                                <DataGridTemplateColumn Header="Enabled" Width="80" HeaderStyle="{StaticResource PremiumDataGridHeaderCenteredStyle}">
                                     <DataGridTemplateColumn.CellTemplate>
                                         <DataTemplate>
                                             <CheckBox IsChecked="{Binding IsEnabled, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
@@ -726,7 +730,7 @@
                                 <DataGridTextColumn Header="Source" Binding="{Binding InstallationSource}" Width="110" ElementStyle="{StaticResource {x:Type TextBlock}}"/>
 
                                 <!-- Enabled/Status Column -->
-                                <DataGridTemplateColumn Header="Status" Width="105">
+                                <DataGridTemplateColumn Header="Status" Width="105" HeaderStyle="{StaticResource PremiumDataGridHeaderCenteredStyle}">
                                     <DataGridTemplateColumn.CellTemplate>
                                         <DataTemplate>
                                             <Border CornerRadius="4" Padding="6,3" HorizontalAlignment="Center" VerticalAlignment="Center">
