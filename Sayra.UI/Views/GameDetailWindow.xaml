@@ -17,7 +17,6 @@
         FlowDirection="LeftToRight">
 
     <Window.Resources>
-        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
 
         <!-- Fade-in animation for Window content -->
         <Storyboard x:Key="WindowFadeInStoryboard">

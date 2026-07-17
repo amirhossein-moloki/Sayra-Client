@@ -22,7 +22,6 @@
     </Window.DataContext>
 
     <Window.Resources>
-        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
         <!-- Style for SVG Logo (Yellow Glow Effect Removed) -->
         <Style x:Key="BreathingLogoStyle" TargetType="svgc:SvgViewbox">
             <!-- No yellow DropShadowEffect glow on Sayra Logo in login screen -->
