@@ -54,5 +54,60 @@ namespace Sayra.UI.Models
 
         [ObservableProperty]
         private string _iconGeometry = string.Empty;
+
+        // Redesigned structured asset pipeline properties for game identity
+        [ObservableProperty]
+        private string _coverImage = string.Empty;
+
+        [ObservableProperty]
+        private string _logoImage = string.Empty;
+
+        [ObservableProperty]
+        private string _backgroundImage = string.Empty;
+
+        [ObservableProperty]
+        private string _releaseYear = string.Empty;
+
+        // Structured wrapper properties to align with GameItem and Game
+        public string Title
+        {
+            get => Name;
+            set => Name = value;
+        }
+
+        public string Genre
+        {
+            get => Category;
+            set => Category = value;
+        }
+
+        public string ImagePath
+        {
+            get => CoverImage;
+            set => CoverImage = value;
+        }
+
+        public string Developer
+        {
+            get => Publisher;
+            set => Publisher = value;
+        }
+
+        public string ExecutablePath
+        {
+            get
+            {
+                try
+                {
+                    return System.IO.Path.Combine(InstallationPath ?? string.Empty, Executable ?? string.Empty);
+                }
+                catch
+                {
+                    return Executable ?? string.Empty;
+                }
+            }
+        }
+
+        public string GenreAndYear => !string.IsNullOrEmpty(ReleaseYear) ? $"{Genre} • {ReleaseYear}" : Genre;
     }
 }

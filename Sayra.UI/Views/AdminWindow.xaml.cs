@@ -37,7 +37,7 @@ namespace Sayra.UI.Views
             }
         }
 
-        private void OpenModal(Sayra.UI.Models.AdminAppItem item)
+        public void OpenModal(Sayra.UI.Models.AdminAppItem item)
         {
             if (_isAnimating) return;
 

@@ -185,6 +185,11 @@ namespace Sayra.UI.ViewModels
             }
         }
 
+        partial void OnSelectedViewModeChanged(string value)
+        {
+            ApplyFilterAndPagination();
+        }
+
         private async void TriggerLoadingDemo()
         {
             IsLoading = true;
@@ -213,29 +218,64 @@ namespace Sayra.UI.ViewModels
             }
             _cachedAllItems.Clear();
 
-            // Distinct applications & games with crisp vector icon paths
-            var templates = new List<(string Name, string Exec, string Cat, string Launcher, string Ver, string Pub, string Path, string Src, string Status, string Size, string Lic, string Svg)>
+            // Load 61 popular games from single source of truth MockGameService
+            var games = MockGameService.GetStaticGames();
+            var templates = new List<(string Name, string Exec, string Cat, string Launcher, string Ver, string Pub, string Path, string Src, string Status, string Size, string Lic, string Svg, string Cover, string Logo, string Bg, string Year)>();
+
+            foreach (var g in games)
             {
-                ("Counter-Strike 2", "cs2.exe", "FPS / Action", "Steam", "2.4.1", "Valve", @"C:\Program Files (x86)\Steam\steamapps\common\Counter-Strike 2", "Digital Download", "Installed", "35.8 GB", "Free-to-Play", "M9 5H7a2 2 0 00-2 2v2M5 15v2a2 2 0 002 2h2m10-14h-2a2 2 0 00-2 2v2m4 6v2a2 2 0 00-2 2h-2M9 11H7v2h2v-2zm8 0h-2v2h2v-2z"),
-                ("Cyberpunk 2077", "Cyberpunk2077.exe", "RPG", "Custom", "2.12", "CD PROJEKT RED", @"D:\Games\Cyberpunk 2077", "Offline Installer", "Installed", "70.2 GB", "Commercial", "M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"),
-                ("World of Warcraft", "Wow.exe", "MMORPG", "Battle.net", "10.2.7", "Blizzard Entertainment", @"C:\Program Files (x86)\Battle.net\World of Warcraft", "Launcher Sync", "Updating", "82.4 GB", "Commercial", "M12 2a10 10 0 100 20 10 10 0 000-20zm0 2c1.66 0 3 3.58 3 8s-1.34 8-3 8-3-3.58-3-8 1.34-8 3-8zm-8 8h16"),
-                ("VALORANT", "VALORANT.exe", "Shooter / Tactical", "Riot", "8.09", "Riot Games", @"C:\Riot Games\VALORANT\live", "Riot Client", "Validation Required", "28.5 GB", "Free-to-Play", "M12 2C6.48 2 2 4.24 2 7v10c0 2.76 4.48 5 10 5s10-2.24 10-5V7c0-2.76-4.48-5-10-5zm0 18c-4.42 0-8-1.79-8-4V9.82c1.78.73 4.7 1.18 8 1.18s6.22-.45 8-1.18V14c0 2.21-3.58 4-8 4z"),
-                ("Grand Theft Auto V", "GTA5.exe", "Action-Adventure", "Epic", "1.0.3", "Rockstar Games", @"E:\EpicGames\GTAV", "Digital Store", "Missing", "105.0 GB", "Commercial", "M9 5H7a2 2 0 00-2 2v2M5 15v2a2 2 0 002 2h2m10-14h-2a2 2 0 00-2 2v2m4 6v2a2 2 0 00-2 2h-2M9 11H7v2h2v-2zm8 0h-2v2h2v-2z"),
-                ("EA SPORTS FC 24", "FC24.exe", "Sports", "EA", "1.4.2", "Electronic Arts", @"C:\Program Files\EA Games\EA SPORTS FC 24", "EA App", "Disabled", "48.0 GB", "Commercial", "M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"),
-                ("Assassin's Creed Valhalla", "ACValhalla.exe", "Action / RPG", "Ubisoft", "1.7.0", "Ubisoft", @"C:\Program Files (x86)\Ubisoft\Assassin's Creed Valhalla", "Ubisoft Connect", "Corrupted", "75.0 GB", "Commercial", "M12 2a10 10 0 100 20 10 10 0 000-20zm0 2c1.66 0 3 3.58 3 8s-1.34 8-3 8-3-3.58-3-8 1.34-8 3-8zm-8 8h16"),
-                ("Forza Horizon 5", "ForzaHorizon5.exe", "Racing", "Xbox", "1.624", "Xbox Game Studios", @"C:\Program Files\WindowsApps\Microsoft.Forza_x64", "Windows Store", "Installed", "110.0 GB", "Commercial", "M12 2C6.48 2 2 4.24 2 7v10c0 2.76 4.48 5 10 5s10-2.24 10-5V7c0-2.76-4.48-5-10-5zm0 18c-4.42 0-8-1.79-8-4V9.82c1.78.73 4.7 1.18 8 1.18s6.22-.45 8-1.18V14c0 2.21-3.58 4-8 4z"),
-                ("Visual Studio Code", "Code.exe", "Developer Tools", "Custom", "1.89.1", "Microsoft", @"C:\Users\Admin\AppData\Local\Programs\VSCode", "Local Installer", "Installed", "450 MB", "Free", "M9 5H7a2 2 0 00-2 2v2M5 15v2a2 2 0 002 2h2m10-14h-2a2 2 0 00-2 2v2m4 6v2a2 2 0 00-2 2h-2M9 11H7v2h2v-2zm8 0h-2v2h2v-2z"),
-                ("Google Chrome", "chrome.exe", "Web Browser", "Custom", "125.0", "Google LLC", @"C:\Program Files\Google\Chrome\Application", "Web Download", "Installed", "1.2 GB", "Free", "M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"),
-                ("Discord", "Discord.exe", "Social / Chat", "Custom", "1.0.9001", "Discord Inc.", @"C:\Users\Admin\AppData\Local\Discord", "Web Download", "Installed", "220 MB", "Free", "M12 2a10 10 0 100 20 10 10 0 000-20zm0 2c1.66 0 3 3.58 3 8s-1.34 8-3 8-3-3.58-3-8 1.34-8 3-8zm-8 8h16"),
-                ("Docker Desktop", "DockerDesktop.exe", "Virtualization", "Custom", "4.29.0", "Docker Inc.", @"C:\Program Files\Docker\Docker", "Enterprise Sync", "Installed", "4.8 GB", "Commercial", "M12 2C6.48 2 2 4.24 2 7v10c0 2.76 4.48 5 10 5s10-2.24 10-5V7c0-2.76-4.48-5-10-5zm0 18c-4.42 0-8-1.79-8-4V9.82c1.78.73 4.7 1.18 8 1.18s6.22-.45 8-1.18V14c0 2.21-3.58 4-8 4z"),
-                ("VMware Workstation", "vmware.exe", "Hypervisor", "Custom", "17.5.1", "VMware, Inc.", @"C:\Program Files (x86)\VMware\Workstation", "Enterprise Disk", "Installed", "3.2 GB", "Commercial", "M9 5H7a2 2 0 00-2 2v2M5 15v2a2 2 0 002 2h2m10-14h-2a2 2 0 00-2 2v2m4 6v2a2 2 0 00-2 2h-2M9 11H7v2h2v-2zm8 0h-2v2h2v-2z"),
-                ("SQL Server Management Studio", "Ssms.exe", "Database Console", "Custom", "19.3", "Microsoft", @"C:\Program Files (x86)\SSMS", "SQL Server Disk", "Installed", "2.8 GB", "Free", "M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"),
-                ("Fortnite", "FortniteClient.exe", "Battle Royale", "Epic", "29.40", "Epic Games", @"D:\EpicGames\Fortnite", "Epic Games Launcher", "Installed", "55.4 GB", "Free-to-Play", "M12 2a10 10 0 100 20 10 10 0 000-20zm0 2c1.66 0 3 3.58 3 8s-1.34 8-3 8-3-3.58-3-8 1.34-8 3-8zm-8 8h16"),
-                ("Hearthstone", "Hearthstone.exe", "Card Game", "Battle.net", "28.6", "Blizzard Entertainment", @"C:\Program Files (x86)\Hearthstone", "Launcher Sync", "Installed", "12.0 GB", "Free-to-Play", "M12 2C6.48 2 2 4.24 2 7v10c0 2.76 4.48 5 10 5s10-2.24 10-5V7c0-2.76-4.48-5-10-5zm0 18c-4.42 0-8-1.79-8-4V9.82c1.78.73 4.7 1.18 8 1.18s6.22-.45 8-1.18V14c0 2.21-3.58 4-8 4z"),
-                ("League of Legends", "LeagueClient.exe", "MOBA", "Riot", "14.10", "Riot Games", @"C:\Riot Games\League of Legends", "Riot Client", "Installed", "16.5 GB", "Free-to-Play", "M9 5H7a2 2 0 00-2 2v2M5 15v2a2 2 0 002 2h2m10-14h-2a2 2 0 00-2 2v2m4 6v2a2 2 0 00-2 2h-2M9 11H7v2h2v-2zm8 0h-2v2h2v-2z"),
-                ("Apex Legends", "r5apex.exe", "Battle Royale", "EA", "1.24.4", "Respawn Entertainment", @"C:\Program Files\EA Games\Apex Legends", "EA App", "Installed", "62.0 GB", "Free-to-Play", "M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"),
-                ("Minecraft Launcher", "MinecraftLauncher.exe", "Sandbox", "Xbox", "2.1.20", "Mojang Studios", @"C:\XboxGames\Minecraft", "Microsoft Store", "Installed", "500 MB", "Commercial", "M12 2a10 10 0 100 20 10 10 0 000-20zm0 2c1.66 0 3 3.58 3 8s-1.34 8-3 8-3-3.58-3-8 1.34-8 3-8zm-8 8h16")
+                // Map status from game status
+                string status = "Installed";
+                if (g.Status == "Currently Playing") status = "Installed";
+                else if (g.Status == "Locked") status = "Disabled";
+                else if (g.Status == "Unavailable") status = "Missing";
+
+                // Generate consistent executables
+                string exec = g.Title.Replace(" ", "").Replace(":", "").Replace("-", "").Replace("'", "") + ".exe";
+
+                // Generate clean install path
+                string path = $@"C:\Program Files\Games\{g.Title}";
+                if (g.Launcher == "Steam")
+                    path = $@"C:\Program Files (x86)\Steam\steamapps\common\{g.Title}";
+                else if (g.Launcher == "Epic")
+                    path = $@"E:\EpicGames\{g.Title}";
+                else if (g.Launcher == "Battle.net")
+                    path = $@"C:\Program Files (x86)\Battle.net\{g.Title}";
+
+                string license = g.Title.Contains("Counter-Strike") || g.Title.Contains("Valorant") || g.Title.Contains("Apex") || g.Title.Contains("Overwatch") || g.Title.Contains("Dota") ? "Free-to-Play" : "Commercial";
+
+                templates.Add((
+                    g.Title,
+                    exec,
+                    g.Genre,
+                    g.Launcher,
+                    "1.0.0",
+                    g.Developer,
+                    path,
+                    g.Launcher + " Client",
+                    status,
+                    "45.0 GB",
+                    license,
+                    "M12 2H2v10h10V2z", // generic vector path if cover is missing
+                    g.ImagePath,
+                    g.LogoImage,
+                    g.BackgroundImage,
+                    g.ReleaseYear
+                ));
+            }
+
+            // Distinct non-game applications with crisp vector icon paths
+            var apps = new List<(string Name, string Exec, string Cat, string Launcher, string Ver, string Pub, string Path, string Src, string Status, string Size, string Lic, string Svg, string Cover, string Logo, string Bg, string Year)>
+            {
+                ("Visual Studio Code", "Code.exe", "Developer Tools", "Custom", "1.89.1", "Microsoft", @"C:\Users\Admin\AppData\Local\Programs\VSCode", "Local Installer", "Installed", "450 MB", "Free", "M9 5H7a2 2 0 00-2 2v2M5 15v2a2 2 0 002 2h2m10-14h-2a2 2 0 00-2 2v2m4 6v2a2 2 0 00-2 2h-2M9 11H7v2h2v-2zm8 0h-2v2h2v-2z", "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/105600/library_600x900_2x.jpg", "", "", "2015"),
+                ("Google Chrome", "chrome.exe", "Web Browser", "Custom", "125.0", "Google LLC", @"C:\Program Files\Google\Chrome\Application", "Web Download", "Installed", "1.2 GB", "Free", "M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5", "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/105600/library_600x900_2x.jpg", "", "", "2008"),
+                ("Discord", "Discord.exe", "Social / Chat", "Custom", "1.0.9001", "Discord Inc.", @"C:\Users\Admin\AppData\Local\Discord", "Web Download", "Installed", "220 MB", "Free", "M12 2a10 10 0 100 20 10 10 0 000-20zm0 2c1.66 0 3 3.58 3 8s-1.34 8-3 8-3-3.58-3-8 1.34-8 3-8zm-8 8h16", "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/105600/library_600x900_2x.jpg", "", "", "2015"),
+                ("Docker Desktop", "DockerDesktop.exe", "Virtualization", "Custom", "4.29.0", "Docker Inc.", @"C:\Program Files\Docker\Docker", "Enterprise Sync", "Installed", "4.8 GB", "Commercial", "M12 2C6.48 2 2 4.24 2 7v10c0 2.76 4.48 5 10 5s10-2.24 10-5V7c0-2.76-4.48-5-10-5zm0 18c-4.42 0-8-1.79-8-4V9.82c1.78.73 4.7 1.18 8 1.18s6.22-.45 8-1.18V14c0 2.21-3.58 4-8 4z", "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/105600/library_600x900_2x.jpg", "", "", "2013"),
+                ("VMware Workstation", "vmware.exe", "Hypervisor", "Custom", "17.5.1", "VMware, Inc.", @"C:\Program Files (x86)\VMware\Workstation", "Enterprise Disk", "Installed", "3.2 GB", "Commercial", "M9 5H7a2 2 0 00-2 2v2M5 15v2a2 2 0 002 2h2m10-14h-2a2 2 0 00-2 2v2m4 6v2a2 2 0 00-2 2h-2M9 11H7v2h2v-2zm8 0h-2v2h2v-2z", "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/105600/library_600x900_2x.jpg", "", "", "1998"),
+                ("SQL Server Management Studio", "Ssms.exe", "Database Console", "Custom", "19.3", "Microsoft", @"C:\Program Files (x86)\SSMS", "SQL Server Disk", "Installed", "2.8 GB", "Free", "M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5", "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/105600/library_600x900_2x.jpg", "", "", "2005")
             };
+
+            templates.AddRange(apps);
 
             // Loop and duplicate templates with distinct indexes to reach exactly 128 elements
             int totalRequired = 128;
@@ -280,7 +320,11 @@ namespace Sayra.UI.ViewModels
                     ModifiedBy = (i % 3 == 0) ? "Administrator" : ((i % 3 == 1) ? "System Sync" : "Deploy Service"),
                     Size = temp.Size,
                     License = temp.Lic,
-                    IconGeometry = temp.Svg
+                    IconGeometry = temp.Svg,
+                    CoverImage = temp.Cover,
+                    LogoImage = temp.Logo,
+                    BackgroundImage = temp.Bg,
+                    ReleaseYear = temp.Year
                 };
 
                 item.PropertyChanged += Item_PropertyChanged;
