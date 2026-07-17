@@ -955,57 +955,571 @@
                             </Grid.RowDefinitions>
 
                             <!-- 11.1 ADD NEW GAME -->
-                            <Border Grid.Row="0" Background="#181A20" BorderBrush="#2A2D36" BorderThickness="1" CornerRadius="8" Padding="12" Margin="0,0,0,12">
+                            <Border Grid.Row="0" Background="#181A20" BorderBrush="#2A2D36" BorderThickness="1" CornerRadius="10" Padding="12" Margin="0,0,0,16">
                                 <StackPanel>
-                                    <TextBlock Text="QUICK ADD" FontFamily="{StaticResource PeydaBold}" FontSize="11" Foreground="#ffff3d" Margin="0,0,0,8"/>
-                                    <TextBlock Text="Title" Foreground="#9A9A9A" FontSize="11" Margin="0,0,0,4"/>
-                                    <Border Background="#1C1F26" BorderBrush="#2A2D36" BorderThickness="1" CornerRadius="4" Height="28" Padding="6,2" Margin="0,0,0,8">
-                                        <TextBox Background="Transparent" BorderThickness="0" Foreground="White" FontSize="11" VerticalContentAlignment="Center"/>
+                                    <!-- Header -->
+                                    <Grid Margin="0,0,0,12">
+                                        <TextBlock Text="Add New Game" FontFamily="{StaticResource PeydaBold}" FontSize="13" Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                                        <Button Content="×" HorizontalAlignment="Right" VerticalAlignment="Center" Background="Transparent" Foreground="#9A9A9A" BorderThickness="0" FontSize="16" FontFamily="Segoe UI" Padding="0" Cursor="Hand">
+                                            <Button.Style>
+                                                <Style TargetType="Button">
+                                                    <Setter Property="Template">
+                                                        <Setter.Value>
+                                                            <ControlTemplate TargetType="Button">
+                                                                <TextBlock Text="{TemplateBinding Content}" Foreground="{TemplateBinding Foreground}"/>
+                                                            </ControlTemplate>
+                                                        </Setter.Value>
+                                                    </Setter>
+                                                    <Style.Triggers>
+                                                        <Trigger Property="IsMouseOver" Value="True">
+                                                            <Setter Property="Foreground" Value="#F46B6B"/>
+                                                        </Trigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Button.Style>
+                                        </Button>
+                                    </Grid>
+
+                                    <!-- Name * Field -->
+                                    <TextBlock Text="Name *" Foreground="#9A9A9A" FontSize="11" Margin="0,0,0,4" FontFamily="{StaticResource PeydaMedium}"/>
+                                    <Border Background="#1C1F26" BorderBrush="#2A2D36" BorderThickness="1" CornerRadius="6" Height="30" Padding="6,2" Margin="0,0,0,10">
+                                        <TextBox Background="Transparent" BorderThickness="0" Foreground="White" FontSize="12" FontFamily="{StaticResource PeydaMedium}" VerticalContentAlignment="Center" CaretBrush="#63E6FF"/>
                                     </Border>
-                                    <TextBlock Text="Category" Foreground="#9A9A9A" FontSize="11" Margin="0,0,0,4"/>
-                                    <Border Background="#1C1F26" BorderBrush="#2A2D36" BorderThickness="1" CornerRadius="4" Height="28" Padding="6,2" Margin="0,0,0,12">
-                                        <TextBox Background="Transparent" BorderThickness="0" Foreground="White" FontSize="11" VerticalContentAlignment="Center"/>
+
+                                    <!-- Executable Path * Field -->
+                                    <TextBlock Text="Executable Path *" Foreground="#9A9A9A" FontSize="11" Margin="0,0,0,4" FontFamily="{StaticResource PeydaMedium}"/>
+                                    <Grid Margin="0,0,0,10">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
+                                        <Border Grid.Column="0" Background="#1C1F26" BorderBrush="#2A2D36" BorderThickness="1" CornerRadius="6,0,0,6" Height="30" Padding="6,2">
+                                            <TextBox Background="Transparent" BorderThickness="0" Foreground="White" FontSize="11" FontFamily="{StaticResource PeydaMedium}" VerticalContentAlignment="Center" Text="D:\Games\New Game\game.exe" CaretBrush="#63E6FF"/>
+                                        </Border>
+                                        <Button Grid.Column="1" Content="Browse" Height="30" Padding="10,0" Style="{StaticResource ToolbarButtonStyle}">
+                                            <Button.Resources>
+                                                <Style TargetType="Border">
+                                                    <Setter Property="CornerRadius" Value="0,6,6,0"/>
+                                                </Style>
+                                            </Button.Resources>
+                                        </Button>
+                                    </Grid>
+
+                                    <!-- Metadata Section (Launcher & Category Dropdowns) -->
+                                    <Grid Margin="0,0,0,10">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="8" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <StackPanel Grid.Column="0">
+                                            <TextBlock Text="Launcher" Foreground="#9A9A9A" FontSize="11" Margin="0,0,0,4" FontFamily="{StaticResource PeydaMedium}"/>
+                                            <ComboBox Height="30" Background="#1C1F26" Foreground="White" BorderBrush="#2A2D36" FontFamily="{StaticResource PeydaMedium}" FontSize="11" VerticalContentAlignment="Center" SelectedIndex="4">
+                                                <ComboBoxItem Content="Steam"/>
+                                                <ComboBoxItem Content="Epic Games"/>
+                                                <ComboBoxItem Content="GOG"/>
+                                                <ComboBoxItem Content="Battle.net"/>
+                                                <ComboBoxItem Content="Manual"/>
+                                            </ComboBox>
+                                        </StackPanel>
+                                        <StackPanel Grid.Column="2">
+                                            <TextBlock Text="Category" Foreground="#9A9A9A" FontSize="11" Margin="0,0,0,4" FontFamily="{StaticResource PeydaMedium}"/>
+                                            <ComboBox Height="30" Background="#1C1F26" Foreground="White" BorderBrush="#2A2D36" FontFamily="{StaticResource PeydaMedium}" FontSize="11" VerticalContentAlignment="Center" SelectedIndex="0">
+                                                <ComboBoxItem Content="Action"/>
+                                                <ComboBoxItem Content="Adventure"/>
+                                                <ComboBoxItem Content="RPG"/>
+                                                <ComboBoxItem Content="Simulation"/>
+                                                <ComboBoxItem Content="Strategy"/>
+                                                <ComboBoxItem Content="Sport"/>
+                                            </ComboBox>
+                                        </StackPanel>
+                                    </Grid>
+
+                                    <!-- Description Section -->
+                                    <TextBlock Text="Description" Foreground="#9A9A9A" FontSize="11" Margin="0,0,0,4" FontFamily="{StaticResource PeydaMedium}"/>
+                                    <Border Background="#1C1F26" BorderBrush="#2A2D36" BorderThickness="1" CornerRadius="6" Height="60" Padding="6,4" Margin="0,0,0,10">
+                                        <TextBox Background="Transparent" BorderThickness="0" Foreground="White" FontSize="11" FontFamily="{StaticResource PeydaMedium}" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" CaretBrush="#63E6FF"/>
                                     </Border>
-                                    <Button Style="{StaticResource ToolbarButtonStyle}" Content="Add to Library" Height="30" Width="210" Command="{Binding ManageCategoriesCommand}"/>
+
+                                    <!-- Favorite Checkbox -->
+                                    <CheckBox Content="Add to Favorites" Foreground="White" FontFamily="{StaticResource PeydaMedium}" FontSize="11" Margin="0,0,0,12"/>
+
+                                    <!-- Footer Buttons -->
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="8" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <Button Grid.Column="0" Content="Cancel" Height="30" Style="{StaticResource ToolbarButtonStyle}"/>
+                                        <Button Grid.Column="2" Content="Add Game" Height="30">
+                                            <Button.Style>
+                                                <Style TargetType="Button" BasedOn="{StaticResource ToolbarButtonStyle}">
+                                                    <Setter Property="Background" Value="#2200FFFF"/>
+                                                    <Setter Property="BorderBrush" Value="#4400FFFF"/>
+                                                    <Setter Property="Foreground" Value="#00FFFF"/>
+                                                    <Style.Triggers>
+                                                        <Trigger Property="IsMouseOver" Value="True">
+                                                            <Setter Property="Background" Value="#3300FFFF"/>
+                                                            <Setter Property="BorderBrush" Value="#00FFFF"/>
+                                                        </Trigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Button.Style>
+                                        </Button>
+                                    </Grid>
                                 </StackPanel>
                             </Border>
 
                             <!-- 11.2 SCANNER RESULT -->
-                            <Border Grid.Row="1" Background="#181A20" BorderBrush="#2A2D36" BorderThickness="1" CornerRadius="8" Padding="12" Margin="0,0,0,12">
+                            <Border Grid.Row="1" Background="#181A20" BorderBrush="#2A2D36" BorderThickness="1" CornerRadius="10" Padding="12" Margin="0,0,0,16">
                                 <StackPanel>
-                                    <TextBlock Text="SCANNER RESULT" FontFamily="{StaticResource PeydaBold}" FontSize="11" Foreground="#14BE78" Margin="0,0,0,8"/>
-                                    <TextBlock Text="Last scan completed today 14:25." Foreground="White" FontSize="11" Margin="0,0,0,4" TextWrapping="Wrap"/>
-                                    <TextBlock Text="128 entries identified." Foreground="#9A9A9A" FontSize="11" Margin="0,0,0,12"/>
-                                    <Button Style="{StaticResource ToolbarButtonStyle}" Content="Rescan System" Height="30" Width="210" Command="{Binding ScanComputerCommand}"/>
+                                    <!-- Header -->
+                                    <Grid Margin="0,0,0,12">
+                                        <TextBlock Text="Scanner Results" FontFamily="{StaticResource PeydaBold}" FontSize="13" Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                                        <Button Content="×" HorizontalAlignment="Right" VerticalAlignment="Center" Background="Transparent" Foreground="#9A9A9A" BorderThickness="0" FontSize="16" FontFamily="Segoe UI" Padding="0" Cursor="Hand">
+                                            <Button.Style>
+                                                <Style TargetType="Button">
+                                                    <Setter Property="Template">
+                                                        <Setter.Value>
+                                                            <ControlTemplate TargetType="Button">
+                                                                <TextBlock Text="{TemplateBinding Content}" Foreground="{TemplateBinding Foreground}"/>
+                                                            </ControlTemplate>
+                                                        </Setter.Value>
+                                                    </Setter>
+                                                    <Style.Triggers>
+                                                        <Trigger Property="IsMouseOver" Value="True">
+                                                            <Setter Property="Foreground" Value="#F46B6B"/>
+                                                        </Trigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Button.Style>
+                                        </Button>
+                                    </Grid>
+
+                                    <!-- Main Body (Two Columns) -->
+                                    <Grid Margin="0,0,0,12">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="1.1*" />
+                                            <ColumnDefinition Width="1.3*" />
+                                        </Grid.ColumnDefinitions>
+
+                                        <!-- Left Column: Circular Progress Chart -->
+                                        <StackPanel Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                            <Grid Width="64" Height="64">
+                                                <!-- Progress Background Ring -->
+                                                <Ellipse Stroke="#2A2D36" StrokeThickness="4"/>
+                                                <!-- Progress Active Segment -->
+                                                <Ellipse Stroke="#00FFFF" StrokeThickness="4" StrokeDashArray="3.14 0.8" RenderTransformOrigin="0.5,0.5">
+                                                    <Ellipse.RenderTransform>
+                                                        <RotateTransform Angle="-90"/>
+                                                    </Ellipse.RenderTransform>
+                                                </Ellipse>
+                                                <!-- Text inside -->
+                                                <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                                                    <TextBlock Text="87%" Foreground="#00FFFF" FontSize="12" FontFamily="{StaticResource PeydaBold}" FontWeight="Bold" HorizontalAlignment="Center"/>
+                                                    <TextBlock Text="Scanning" Foreground="#9A9A9A" FontSize="8" FontFamily="{StaticResource PeydaMedium}" HorizontalAlignment="Center" Margin="0,-2,0,0"/>
+                                                </StackPanel>
+                                            </Grid>
+                                            <!-- Scanning path info -->
+                                            <TextBlock Text="D:\Games\...\GAME.exe" Foreground="#55FFFFFF" FontSize="9" FontFamily="{StaticResource PeydaMedium}" Margin="0,8,0,0" HorizontalAlignment="Center" TextAlignment="Center" TextTrimming="CharacterEllipsis" Width="95" ToolTip="D:\Games\Steam\CS2\game.exe"/>
+                                        </StackPanel>
+
+                                        <!-- Right Column: Stats List -->
+                                        <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="8,0,0,0">
+                                            <!-- Found Games -->
+                                            <Grid Margin="0,0,0,4">
+                                                <TextBlock Text="Found Games" Foreground="#9A9A9A" FontSize="11" FontFamily="{StaticResource PeydaMedium}" HorizontalAlignment="Left"/>
+                                                <TextBlock Text="23" Foreground="White" FontSize="11" FontFamily="{StaticResource PeydaBold}" HorizontalAlignment="Right"/>
+                                            </Grid>
+                                            <!-- Found Applications -->
+                                            <Grid Margin="0,0,0,4">
+                                                <TextBlock Text="Found Applications" Foreground="#9A9A9A" FontSize="11" FontFamily="{StaticResource PeydaMedium}" HorizontalAlignment="Left"/>
+                                                <TextBlock Text="7" Foreground="White" FontSize="11" FontFamily="{StaticResource PeydaBold}" HorizontalAlignment="Right"/>
+                                            </Grid>
+                                            <!-- Updated -->
+                                            <Grid Margin="0,0,0,4">
+                                                <TextBlock Text="Updated" Foreground="#9A9A9A" FontSize="11" FontFamily="{StaticResource PeydaMedium}" HorizontalAlignment="Left"/>
+                                                <TextBlock Text="12" Foreground="#63E6FF" FontSize="11" FontFamily="{StaticResource PeydaBold}" HorizontalAlignment="Right"/>
+                                            </Grid>
+                                            <!-- New -->
+                                            <Grid Margin="0,0,0,4">
+                                                <TextBlock Text="New" Foreground="#9A9A9A" FontSize="11" FontFamily="{StaticResource PeydaMedium}" HorizontalAlignment="Left"/>
+                                                <TextBlock Text="18" Foreground="#14BE78" FontSize="11" FontFamily="{StaticResource PeydaBold}" HorizontalAlignment="Right"/>
+                                            </Grid>
+                                            <!-- Errors -->
+                                            <Grid>
+                                                <TextBlock Text="Errors" Foreground="#9A9A9A" FontSize="11" FontFamily="{StaticResource PeydaMedium}" HorizontalAlignment="Left"/>
+                                                <TextBlock Text="2" Foreground="#F46B6B" FontSize="11" FontFamily="{StaticResource PeydaBold}" HorizontalAlignment="Right"/>
+                                            </Grid>
+                                        </StackPanel>
+                                    </Grid>
+
+                                    <!-- Footer -->
+                                    <TextBlock Text="Time Elapsed 00:45" Foreground="#9A9A9A" FontSize="10" FontFamily="{StaticResource PeydaMedium}" Margin="0,0,0,10" HorizontalAlignment="Left"/>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="8" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <Button Grid.Column="0" Content="Stop" Height="30">
+                                            <Button.Style>
+                                                <Style TargetType="Button" BasedOn="{StaticResource ToolbarButtonStyle}">
+                                                    <Setter Property="Background" Value="#22F46B6B"/>
+                                                    <Setter Property="BorderBrush" Value="#44F46B6B"/>
+                                                    <Setter Property="Foreground" Value="#F46B6B"/>
+                                                    <Style.Triggers>
+                                                        <Trigger Property="IsMouseOver" Value="True">
+                                                            <Setter Property="Background" Value="#33F46B6B"/>
+                                                            <Setter Property="BorderBrush" Value="#F46B6B"/>
+                                                        </Trigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Button.Style>
+                                        </Button>
+                                        <Button Grid.Column="2" Content="View Results" Height="30">
+                                            <Button.Style>
+                                                <Style TargetType="Button" BasedOn="{StaticResource ToolbarButtonStyle}">
+                                                    <Setter Property="Background" Value="#2200FFFF"/>
+                                                    <Setter Property="BorderBrush" Value="#4400FFFF"/>
+                                                    <Setter Property="Foreground" Value="#00FFFF"/>
+                                                    <Style.Triggers>
+                                                        <Trigger Property="IsMouseOver" Value="True">
+                                                            <Setter Property="Background" Value="#3300FFFF"/>
+                                                            <Setter Property="BorderBrush" Value="#00FFFF"/>
+                                                        </Trigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Button.Style>
+                                        </Button>
+                                    </Grid>
                                 </StackPanel>
                             </Border>
 
                             <!-- 11.3 VALIDATION RESULT -->
-                            <Border Grid.Row="2" Background="#181A20" BorderBrush="#2A2D36" BorderThickness="1" CornerRadius="8" Padding="12" Margin="0,0,0,12">
+                            <Border Grid.Row="2" Background="#181A20" BorderBrush="#2A2D36" BorderThickness="1" CornerRadius="10" Padding="12" Margin="0,0,0,16">
                                 <StackPanel>
-                                    <TextBlock Text="VALIDATION RESULT" FontFamily="{StaticResource PeydaBold}" FontSize="11" Foreground="#8A5CFF" Margin="0,0,0,8"/>
-                                    <TextBlock Text="No corrupt or broken files detected." Foreground="White" FontSize="11" Margin="0,0,0,4" TextWrapping="Wrap"/>
-                                    <TextBlock Text="0 validation conflicts pending." Foreground="#9A9A9A" FontSize="11" Margin="0,0,0,12"/>
-                                    <Button Style="{StaticResource ToolbarButtonStyle}" Content="Verify Integrity" Height="30" Width="210" Command="{Binding RefreshCategoriesCommand}"/>
+                                    <!-- Header -->
+                                    <Grid Margin="0,0,0,12">
+                                        <TextBlock Text="Validation Results" FontFamily="{StaticResource PeydaBold}" FontSize="13" Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                                        <Button Content="×" HorizontalAlignment="Right" VerticalAlignment="Center" Background="Transparent" Foreground="#9A9A9A" BorderThickness="0" FontSize="16" FontFamily="Segoe UI" Padding="0" Cursor="Hand">
+                                            <Button.Style>
+                                                <Style TargetType="Button">
+                                                    <Setter Property="Template">
+                                                        <Setter.Value>
+                                                            <ControlTemplate TargetType="Button">
+                                                                <TextBlock Text="{TemplateBinding Content}" Foreground="{TemplateBinding Foreground}"/>
+                                                            </ControlTemplate>
+                                                        </Setter.Value>
+                                                    </Setter>
+                                                    <Style.Triggers>
+                                                        <Trigger Property="IsMouseOver" Value="True">
+                                                            <Setter Property="Foreground" Value="#F46B6B"/>
+                                                        </Trigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Button.Style>
+                                        </Button>
+                                    </Grid>
+
+                                    <!-- Main Body (Two Columns) -->
+                                    <Grid Margin="0,0,0,12">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="1.1*" />
+                                            <ColumnDefinition Width="1.3*" />
+                                        </Grid.ColumnDefinitions>
+
+                                        <!-- Left Column: Validation Status Circle -->
+                                        <StackPanel Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                            <Grid Width="56" Height="56">
+                                                <Ellipse Stroke="#14BE78" StrokeThickness="3" Fill="#1114BE78"/>
+                                                <!-- Checkmark Icon -->
+                                                <Path Data="M 16,28 L 22,34 L 38,18" Stroke="#14BE78" StrokeThickness="3" StrokeStartLineCap="Round" StrokeEndLineCap="Round" StrokeLineJoin="Round" Width="20" Height="20" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            </Grid>
+                                            <TextBlock Text="Validation Completed" Foreground="#14BE78" FontSize="10" FontFamily="{StaticResource PeydaBold}" Margin="0,8,0,0" HorizontalAlignment="Center" TextAlignment="Center"/>
+                                            <TextBlock Text="All checks passed successfully" Foreground="#9A9A9A" FontSize="8" FontFamily="{StaticResource PeydaMedium}" Margin="0,2,0,0" HorizontalAlignment="Center" TextAlignment="Center" TextWrapping="Wrap" Width="95"/>
+                                        </StackPanel>
+
+                                        <!-- Right Column: Validation Statistics Grid -->
+                                        <Grid Grid.Column="1" VerticalAlignment="Center" Margin="8,0,0,0">
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto"/>
+                                                <RowDefinition Height="1"/>
+                                                <RowDefinition Height="Auto"/>
+                                                <RowDefinition Height="Auto"/>
+                                                <RowDefinition Height="Auto"/>
+                                                <RowDefinition Height="Auto"/>
+                                                <RowDefinition Height="Auto"/>
+                                            </Grid.RowDefinitions>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+
+                                            <!-- Headers -->
+                                            <TextBlock Grid.Row="0" Grid.Column="0" Text="عنوان" Foreground="#55FFFFFF" FontSize="9" FontFamily="{StaticResource PeydaMedium}" HorizontalAlignment="Left" Margin="0,0,0,2"/>
+                                            <TextBlock Grid.Row="0" Grid.Column="1" Text="مقدار" Foreground="#55FFFFFF" FontSize="9" FontFamily="{StaticResource PeydaMedium}" HorizontalAlignment="Right" Margin="0,0,0,2"/>
+                                            <Border Grid.Row="1" Grid.ColumnSpan="2" BorderBrush="#2A2D36" BorderThickness="0,0,0,1" Margin="0,0,0,4"/>
+
+                                            <!-- Total Files -->
+                                            <TextBlock Grid.Row="2" Grid.Column="0" Text="Total Files" Foreground="#9A9A9A" FontSize="10" FontFamily="{StaticResource PeydaMedium}" HorizontalAlignment="Left" Margin="0,0,0,3"/>
+                                            <TextBlock Grid.Row="2" Grid.Column="1" Text="1243" Foreground="White" FontSize="10" FontFamily="{StaticResource PeydaBold}" HorizontalAlignment="Right" Margin="0,0,0,3"/>
+
+                                            <!-- Valid Files -->
+                                            <TextBlock Grid.Row="3" Grid.Column="0" Text="Valid Files" Foreground="#9A9A9A" FontSize="10" FontFamily="{StaticResource PeydaMedium}" HorizontalAlignment="Left" Margin="0,0,0,3"/>
+                                            <TextBlock Grid.Row="3" Grid.Column="1" Text="1232" Foreground="#14BE78" FontSize="10" FontFamily="{StaticResource PeydaBold}" HorizontalAlignment="Right" Margin="0,0,0,3"/>
+
+                                            <!-- Invalid Files -->
+                                            <TextBlock Grid.Row="4" Grid.Column="0" Text="Invalid Files" Foreground="#9A9A9A" FontSize="10" FontFamily="{StaticResource PeydaMedium}" HorizontalAlignment="Left" Margin="0,0,0,3"/>
+                                            <TextBlock Grid.Row="4" Grid.Column="1" Text="0" Foreground="White" FontSize="10" FontFamily="{StaticResource PeydaBold}" HorizontalAlignment="Right" Margin="0,0,0,3"/>
+
+                                            <!-- Missing Files -->
+                                            <TextBlock Grid.Row="5" Grid.Column="0" Text="Missing Files" Foreground="#9A9A9A" FontSize="10" FontFamily="{StaticResource PeydaMedium}" HorizontalAlignment="Left" Margin="0,0,0,3"/>
+                                            <TextBlock Grid.Row="5" Grid.Column="1" Text="11" Foreground="#ffff3d" FontSize="10" FontFamily="{StaticResource PeydaBold}" HorizontalAlignment="Right" Margin="0,0,0,3"/>
+
+                                            <!-- Corrupted Files -->
+                                            <TextBlock Grid.Row="6" Grid.Column="0" Text="Corrupted Files" Foreground="#9A9A9A" FontSize="10" FontFamily="{StaticResource PeydaMedium}" HorizontalAlignment="Left"/>
+                                            <TextBlock Grid.Row="6" Grid.Column="1" Text="0" Foreground="#F46B6B" FontSize="10" FontFamily="{StaticResource PeydaBold}" HorizontalAlignment="Right"/>
+                                        </Grid>
+                                    </Grid>
+
+                                    <!-- Footer -->
+                                    <Button Content="Close" Height="30" Style="{StaticResource ToolbarButtonStyle}"/>
                                 </StackPanel>
                             </Border>
 
-                            <!-- 11.4 IMPORT DATA -->
-                            <Border Grid.Row="3" Background="#181A20" BorderBrush="#2A2D36" BorderThickness="1" CornerRadius="8" Padding="12" Margin="0,0,0,12">
+                            <!-- 11.4 IMPORT GAMES -->
+                            <Border Grid.Row="3" Background="#181A20" BorderBrush="#2A2D36" BorderThickness="1" CornerRadius="10" Padding="12" Margin="0,0,0,16">
                                 <StackPanel>
-                                    <TextBlock Text="IMPORT DATA" FontFamily="{StaticResource PeydaBold}" FontSize="11" Foreground="#63E6FF" Margin="0,0,0,8"/>
-                                    <TextBlock Text="Select a JSON database to import." Foreground="White" FontSize="11" Margin="0,0,0,12" TextWrapping="Wrap"/>
-                                    <Button Style="{StaticResource ToolbarButtonStyle}" Content="Browse &amp; Import" Height="30" Width="210" Command="{Binding RefreshCategoriesCommand}"/>
+                                    <!-- Header -->
+                                    <Grid Margin="0,0,0,12">
+                                        <TextBlock Text="Import Games" FontFamily="{StaticResource PeydaBold}" FontSize="13" Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                                        <Button Content="×" HorizontalAlignment="Right" VerticalAlignment="Center" Background="Transparent" Foreground="#9A9A9A" BorderThickness="0" FontSize="16" FontFamily="Segoe UI" Padding="0" Cursor="Hand">
+                                            <Button.Style>
+                                                <Style TargetType="Button">
+                                                    <Setter Property="Template">
+                                                        <Setter.Value>
+                                                            <ControlTemplate TargetType="Button">
+                                                                <TextBlock Text="{TemplateBinding Content}" Foreground="{TemplateBinding Foreground}"/>
+                                                            </ControlTemplate>
+                                                        </Setter.Value>
+                                                    </Setter>
+                                                    <Style.Triggers>
+                                                        <Trigger Property="IsMouseOver" Value="True">
+                                                            <Setter Property="Foreground" Value="#F46B6B"/>
+                                                        </Trigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Button.Style>
+                                        </Button>
+                                    </Grid>
+
+                                    <!-- Source Section -->
+                                    <TextBlock Text="Source" Foreground="#9A9A9A" FontSize="11" Margin="0,0,0,4" FontFamily="{StaticResource PeydaMedium}"/>
+                                    <Grid Margin="0,0,0,12">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
+                                        <ComboBox Grid.Column="0" Height="30" Background="#1C1F26" Foreground="White" BorderBrush="#2A2D36" FontFamily="{StaticResource PeydaMedium}" FontSize="11" VerticalContentAlignment="Center" SelectedIndex="0">
+                                            <ComboBoxItem Content="Select source..."/>
+                                            <ComboBoxItem Content="Steam Library"/>
+                                            <ComboBoxItem Content="Epic Library"/>
+                                            <ComboBoxItem Content="Folder"/>
+                                            <ComboBoxItem Content="Backup"/>
+                                            <ComboBox.Resources>
+                                                <Style TargetType="Border">
+                                                    <Setter Property="CornerRadius" Value="6,0,0,6"/>
+                                                </Style>
+                                            </ComboBox.Resources>
+                                        </ComboBox>
+                                        <Button Grid.Column="1" Content="Browse" Height="30" Padding="10,0" Style="{StaticResource ToolbarButtonStyle}">
+                                            <Button.Resources>
+                                                <Style TargetType="Border">
+                                                    <Setter Property="CornerRadius" Value="0,6,6,0"/>
+                                                </Style>
+                                            </Button.Resources>
+                                        </Button>
+                                    </Grid>
+
+                                    <!-- Import Options -->
+                                    <TextBlock Text="Import Options" Foreground="#9A9A9A" FontSize="11" Margin="0,0,0,6" FontFamily="{StaticResource PeydaMedium}"/>
+                                    <StackPanel Margin="0,0,0,12">
+                                        <CheckBox Content="Import Games" IsChecked="True" Foreground="White" FontFamily="{StaticResource PeydaMedium}" FontSize="10" Margin="0,0,0,6"/>
+                                        <CheckBox Content="Import Applications" Foreground="White" FontFamily="{StaticResource PeydaMedium}" FontSize="10" Margin="0,0,0,6"/>
+                                        <CheckBox Content="Import Settings" Foreground="White" FontFamily="{StaticResource PeydaMedium}" FontSize="10" Margin="0,0,0,6"/>
+                                        <CheckBox Content="Import Metadata (Cover, Description...)" Foreground="White" FontFamily="{StaticResource PeydaMedium}" FontSize="10"/>
+                                    </StackPanel>
+
+                                    <!-- Footer -->
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="8" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <Button Grid.Column="0" Content="Cancel" Height="30" Style="{StaticResource ToolbarButtonStyle}"/>
+                                        <Button Grid.Column="2" Content="Import" Height="30">
+                                            <Button.Style>
+                                                <Style TargetType="Button" BasedOn="{StaticResource ToolbarButtonStyle}">
+                                                    <Setter Property="Background" Value="#2200FFFF"/>
+                                                    <Setter Property="BorderBrush" Value="#4400FFFF"/>
+                                                    <Setter Property="Foreground" Value="#00FFFF"/>
+                                                    <Style.Triggers>
+                                                        <Trigger Property="IsMouseOver" Value="True">
+                                                            <Setter Property="Background" Value="#3300FFFF"/>
+                                                            <Setter Property="BorderBrush" Value="#00FFFF"/>
+                                                        </Trigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Button.Style>
+                                        </Button>
+                                    </Grid>
                                 </StackPanel>
                             </Border>
 
                             <!-- 11.5 SYNC CONFLICT RESOLVER -->
-                            <Border Grid.Row="4" Background="#181A20" BorderBrush="#2A2D36" BorderThickness="1" CornerRadius="8" Padding="12">
+                            <Border Grid.Row="4" Background="#181A20" BorderBrush="#2A2D36" BorderThickness="1" CornerRadius="10" Padding="12">
                                 <StackPanel>
-                                    <TextBlock Text="SYNC CONFLICT RESOLVER" FontFamily="{StaticResource PeydaBold}" FontSize="11" Foreground="#ffff3d" Margin="0,0,0,8"/>
-                                    <TextBlock Text="All items synchronized successfully." Foreground="White" FontSize="11" Margin="0,0,0,4" TextWrapping="Wrap"/>
-                                    <TextBlock Text="0 conflict resolvents needed." Foreground="#9A9A9A" FontSize="11" Margin="0,0,0,12"/>
-                                    <Button Style="{StaticResource ToolbarButtonStyle}" Content="Resolve Conflicts" Height="30" Width="210" Command="{Binding RefreshCommand}"/>
+                                    <!-- Header -->
+                                    <Grid Margin="0,0,0,12">
+                                        <TextBlock Text="Sync Conflict Resolver" FontFamily="{StaticResource PeydaBold}" FontSize="13" Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                                        <Button Content="×" HorizontalAlignment="Right" VerticalAlignment="Center" Background="Transparent" Foreground="#9A9A9A" BorderThickness="0" FontSize="16" FontFamily="Segoe UI" Padding="0" Cursor="Hand">
+                                            <Button.Style>
+                                                <Style TargetType="Button">
+                                                    <Setter Property="Template">
+                                                        <Setter.Value>
+                                                            <ControlTemplate TargetType="Button">
+                                                                <TextBlock Text="{TemplateBinding Content}" Foreground="{TemplateBinding Foreground}"/>
+                                                            </ControlTemplate>
+                                                        </Setter.Value>
+                                                    </Setter>
+                                                    <Style.Triggers>
+                                                        <Trigger Property="IsMouseOver" Value="True">
+                                                            <Setter Property="Foreground" Value="#F46B6B"/>
+                                                        </Trigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Button.Style>
+                                        </Button>
+                                    </Grid>
+
+                                    <!-- Conflict Summary -->
+                                    <TextBlock Text="Conflicts Found: 3" Foreground="#ffff3d" FontSize="11" FontFamily="{StaticResource PeydaBold}" FontWeight="Bold" Margin="0,0,0,2"/>
+                                    <TextBlock Text="Choose which version to keep for each item" Foreground="#9A9A9A" FontSize="10" FontFamily="{StaticResource PeydaMedium}" Margin="0,0,0,10" TextWrapping="Wrap"/>
+
+                                    <!-- Conflict Table list -->
+                                    <StackPanel Margin="0,0,0,12">
+                                        <!-- Conflict Row 1: Valorant -->
+                                        <Border BorderBrush="#2A2D36" BorderThickness="0,0,0,1" Padding="0,0,0,8" Margin="0,0,0,8">
+                                            <Grid>
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="Auto"/>
+                                                    <RowDefinition Height="Auto"/>
+                                                </Grid.RowDefinitions>
+                                                <StackPanel Grid.Row="0">
+                                                    <TextBlock Text="Valorant" Foreground="White" FontSize="11" FontFamily="{StaticResource PeydaBold}"/>
+                                                    <TextBlock Text="Local is newer" Foreground="#9A9A9A" FontSize="9" FontFamily="{StaticResource PeydaMedium}"/>
+                                                </StackPanel>
+                                                <!-- Options buttons -->
+                                                <Grid Grid.Row="1" Margin="0,6,0,0">
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="*"/>
+                                                        <ColumnDefinition Width="4"/>
+                                                        <ColumnDefinition Width="*"/>
+                                                        <ColumnDefinition Width="4"/>
+                                                        <ColumnDefinition Width="*"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <RadioButton Grid.Column="0" GroupName="ValConflict" Content="Local" IsChecked="True" Style="{StaticResource {x:Type ToggleButton}}" Height="22" FontSize="9" FontFamily="{StaticResource PeydaMedium}"/>
+                                                    <RadioButton Grid.Column="2" GroupName="ValConflict" Content="Server" Style="{StaticResource {x:Type ToggleButton}}" Height="22" FontSize="9" FontFamily="{StaticResource PeydaMedium}"/>
+                                                    <RadioButton Grid.Column="4" GroupName="ValConflict" Content="Both" Style="{StaticResource {x:Type ToggleButton}}" Height="22" FontSize="9" FontFamily="{StaticResource PeydaMedium}"/>
+                                                </Grid>
+                                            </Grid>
+                                        </Border>
+
+                                        <!-- Conflict Row 2: GTA V -->
+                                        <Border BorderBrush="#2A2D36" BorderThickness="0,0,0,1" Padding="0,0,0,8" Margin="0,0,0,8">
+                                            <Grid>
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="Auto"/>
+                                                    <RowDefinition Height="Auto"/>
+                                                </Grid.RowDefinitions>
+                                                <StackPanel Grid.Row="0">
+                                                    <TextBlock Text="GTA V" Foreground="White" FontSize="11" FontFamily="{StaticResource PeydaBold}"/>
+                                                    <TextBlock Text="Server is newer" Foreground="#9A9A9A" FontSize="9" FontFamily="{StaticResource PeydaMedium}"/>
+                                                </StackPanel>
+                                                <!-- Options buttons -->
+                                                <Grid Grid.Row="1" Margin="0,6,0,0">
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="*"/>
+                                                        <ColumnDefinition Width="4"/>
+                                                        <ColumnDefinition Width="*"/>
+                                                        <ColumnDefinition Width="4"/>
+                                                        <ColumnDefinition Width="*"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <RadioButton Grid.Column="0" GroupName="GtaConflict" Content="Local" Style="{StaticResource {x:Type ToggleButton}}" Height="22" FontSize="9" FontFamily="{StaticResource PeydaMedium}"/>
+                                                    <RadioButton Grid.Column="2" GroupName="GtaConflict" Content="Server" IsChecked="True" Style="{StaticResource {x:Type ToggleButton}}" Height="22" FontSize="9" FontFamily="{StaticResource PeydaMedium}"/>
+                                                    <RadioButton Grid.Column="4" GroupName="GtaConflict" Content="Both" Style="{StaticResource {x:Type ToggleButton}}" Height="22" FontSize="9" FontFamily="{StaticResource PeydaMedium}"/>
+                                                </Grid>
+                                            </Grid>
+                                        </Border>
+
+                                        <!-- Conflict Row 3: Red Dead Redemption 2 -->
+                                        <Border Padding="0,0,0,4">
+                                            <Grid>
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="Auto"/>
+                                                    <RowDefinition Height="Auto"/>
+                                                </Grid.RowDefinitions>
+                                                <StackPanel Grid.Row="0">
+                                                    <TextBlock Text="Red Dead Redemption 2" Foreground="White" FontSize="11" FontFamily="{StaticResource PeydaBold}"/>
+                                                    <TextBlock Text="Different" Foreground="#9A9A9A" FontSize="9" FontFamily="{StaticResource PeydaMedium}"/>
+                                                </StackPanel>
+                                                <!-- Options buttons -->
+                                                <Grid Grid.Row="1" Margin="0,6,0,0">
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="*"/>
+                                                        <ColumnDefinition Width="4"/>
+                                                        <ColumnDefinition Width="*"/>
+                                                        <ColumnDefinition Width="4"/>
+                                                        <ColumnDefinition Width="*"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <RadioButton Grid.Column="0" GroupName="RdrConflict" Content="Local" Style="{StaticResource {x:Type ToggleButton}}" Height="22" FontSize="9" FontFamily="{StaticResource PeydaMedium}"/>
+                                                    <RadioButton Grid.Column="2" GroupName="RdrConflict" Content="Server" Style="{StaticResource {x:Type ToggleButton}}" Height="22" FontSize="9" FontFamily="{StaticResource PeydaMedium}"/>
+                                                    <RadioButton Grid.Column="4" GroupName="RdrConflict" Content="Both" IsChecked="True" Style="{StaticResource {x:Type ToggleButton}}" Height="22" FontSize="9" FontFamily="{StaticResource PeydaMedium}"/>
+                                                </Grid>
+                                            </Grid>
+                                        </Border>
+                                    </StackPanel>
+
+                                    <!-- Global Option -->
+                                    <CheckBox Content="Apply to all conflicts" Foreground="White" FontFamily="{StaticResource PeydaMedium}" FontSize="10" Margin="0,0,0,12"/>
+
+                                    <!-- Footer Buttons -->
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="8" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <Button Grid.Column="0" Content="Skip All" Height="30" Style="{StaticResource ToolbarButtonStyle}"/>
+                                        <Button Grid.Column="2" Content="Resolve" Height="30">
+                                            <Button.Style>
+                                                <Style TargetType="Button" BasedOn="{StaticResource ToolbarButtonStyle}">
+                                                    <Setter Property="Background" Value="#2200FFFF"/>
+                                                    <Setter Property="BorderBrush" Value="#4400FFFF"/>
+                                                    <Setter Property="Foreground" Value="#00FFFF"/>
+                                                    <Style.Triggers>
+                                                        <Trigger Property="IsMouseOver" Value="True">
+                                                            <Setter Property="Background" Value="#3300FFFF"/>
+                                                            <Setter Property="BorderBrush" Value="#00FFFF"/>
+                                                        </Trigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Button.Style>
+                                        </Button>
+                                    </Grid>
                                 </StackPanel>
                             </Border>
                         </Grid>
