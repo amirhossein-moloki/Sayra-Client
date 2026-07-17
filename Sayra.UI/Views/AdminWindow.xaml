@@ -1207,18 +1207,16 @@
                         <ScrollViewer Grid.Column="0" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                             <StackPanel Margin="0,0,10,0">
 
-                                <!-- General Info Card -->
+                                <!-- 1. General Info Card -->
                                 <Border Background="#121216" BorderBrush="#252528" BorderThickness="1" CornerRadius="12" Padding="16" Margin="0,0,0,20">
                                     <StackPanel>
-                                        <TextBlock Text="GENERAL" FontFamily="{StaticResource PeydaBold}" FontSize="12" Foreground="#63E6FF" Margin="0,0,0,12" FontWeight="Bold"/>
+                                        <TextBlock Text="1. GENERAL" FontFamily="{StaticResource PeydaBold}" FontSize="12" Foreground="#63E6FF" Margin="0,0,0,12" FontWeight="Bold"/>
                                         <Grid>
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="1.5*" />
                                                 <ColumnDefinition Width="2*" />
                                             </Grid.ColumnDefinitions>
                                             <Grid.RowDefinitions>
-                                                <RowDefinition Height="Auto" />
-                                                <RowDefinition Height="12" />
                                                 <RowDefinition Height="Auto" />
                                                 <RowDefinition Height="12" />
                                                 <RowDefinition Height="Auto" />
@@ -1230,37 +1228,27 @@
                                             <TextBlock Grid.Row="0" Grid.Column="0" Text="Application ID" Foreground="#9A9A9A" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
                                             <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding Id, FallbackValue='N/A'}" Foreground="White" FontSize="12" FontFamily="{StaticResource PeydaBold}"/>
 
-                                            <!-- Size -->
-                                            <TextBlock Grid.Row="2" Grid.Column="0" Text="Size on Disk" Foreground="#9A9A9A" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
-                                            <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding Size, FallbackValue='0 GB'}" Foreground="White" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
+                                            <!-- Name -->
+                                            <TextBlock Grid.Row="2" Grid.Column="0" Text="Name / Title" Foreground="#9A9A9A" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
+                                            <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding Name, FallbackValue='N/A'}" Foreground="White" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
 
-                                            <!-- License -->
-                                            <TextBlock Grid.Row="4" Grid.Column="0" Text="License Model" Foreground="#9A9A9A" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
-                                            <TextBlock Grid.Row="4" Grid.Column="1" Text="{Binding License, FallbackValue='Free'}" Foreground="White" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
-
-                                            <!-- Last Updated -->
-                                            <TextBlock Grid.Row="6" Grid.Column="0" Text="Last Synced / Modified" Foreground="#9A9A9A" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
-                                            <TextBlock Grid.Row="6" Grid.Column="1" Text="{Binding LastUpdated, FallbackValue='N/A'}" Foreground="White" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
+                                            <!-- Publisher -->
+                                            <TextBlock Grid.Row="4" Grid.Column="0" Text="Developer / Publisher" Foreground="#9A9A9A" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
+                                            <TextBlock Grid.Row="4" Grid.Column="1" Text="{Binding Publisher, FallbackValue='N/A'}" Foreground="White" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
                                         </Grid>
                                     </StackPanel>
                                 </Border>
 
-                                <!-- Executable & Directory Settings Card -->
+                                <!-- 2. Executable Card -->
                                 <Border Background="#121216" BorderBrush="#252528" BorderThickness="1" CornerRadius="12" Padding="16" Margin="0,0,0,20">
                                     <StackPanel>
-                                        <TextBlock Text="EXECUTABLE &amp; LAUNCH SETTINGS" FontFamily="{StaticResource PeydaBold}" FontSize="12" Foreground="#ffff3d" Margin="0,0,0,12" FontWeight="Bold"/>
+                                        <TextBlock Text="2. EXECUTABLE" FontFamily="{StaticResource PeydaBold}" FontSize="12" Foreground="#ffff3d" Margin="0,0,0,12" FontWeight="Bold"/>
                                         <Grid>
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="1.5*" />
                                                 <ColumnDefinition Width="2*" />
                                             </Grid.ColumnDefinitions>
                                             <Grid.RowDefinitions>
-                                                <RowDefinition Height="Auto" />
-                                                <RowDefinition Height="12" />
-                                                <RowDefinition Height="Auto" />
-                                                <RowDefinition Height="12" />
-                                                <RowDefinition Height="Auto" />
-                                                <RowDefinition Height="12" />
                                                 <RowDefinition Height="Auto" />
                                                 <RowDefinition Height="12" />
                                                 <RowDefinition Height="Auto" />
@@ -1270,29 +1258,95 @@
                                             <TextBlock Grid.Row="0" Grid.Column="0" Text="Executable" Foreground="#9A9A9A" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
                                             <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding Executable, FallbackValue='launcher.exe'}" Foreground="White" FontSize="12" FontFamily="{StaticResource PeydaBold}" TextWrapping="Wrap"/>
 
-                                            <!-- Install Folder / Path -->
+                                            <!-- Install Directory -->
                                             <TextBlock Grid.Row="2" Grid.Column="0" Text="Install Directory" Foreground="#9A9A9A" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
                                             <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding InstallationPath, FallbackValue='C:\\'}" Foreground="White" FontSize="12" FontFamily="{StaticResource PeydaMedium}" TextWrapping="Wrap"/>
-
-                                            <!-- Arguments -->
-                                            <TextBlock Grid.Row="4" Grid.Column="0" Text="Arguments / Params" Foreground="#9A9A9A" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
-                                            <TextBlock Grid.Row="4" Grid.Column="1" Text="--nosplash --noborder --fullscreen" Foreground="#63E6FF" FontSize="12" FontFamily="Consolas"/>
-
-                                            <!-- Working Directory -->
-                                            <TextBlock Grid.Row="6" Grid.Column="0" Text="Working Directory" Foreground="#9A9A9A" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
-                                            <TextBlock Grid.Row="6" Grid.Column="1" Text="{Binding InstallationPath, FallbackValue='C:\\'}" Foreground="White" FontSize="12" FontFamily="{StaticResource PeydaMedium}" TextWrapping="Wrap"/>
-
-                                            <!-- Image Paths / Asset Directory -->
-                                            <TextBlock Grid.Row="8" Grid.Column="0" Text="Asset Directory Path" Foreground="#9A9A9A" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
-                                            <TextBlock Grid.Row="8" Grid.Column="1" Text="Default Local Store / Assets / Games" Foreground="White" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
                                         </Grid>
                                     </StackPanel>
                                 </Border>
 
-                                <!-- Integrated Platforms Store IDs Card -->
+                                <!-- 3. Launcher Card -->
                                 <Border Background="#121216" BorderBrush="#252528" BorderThickness="1" CornerRadius="12" Padding="16" Margin="0,0,0,20">
                                     <StackPanel>
-                                        <TextBlock Text="INTEGRATION APIS" FontFamily="{StaticResource PeydaBold}" FontSize="12" Foreground="#8A5CFF" Margin="0,0,0,12" FontWeight="Bold"/>
+                                        <TextBlock Text="3. LAUNCHER" FontFamily="{StaticResource PeydaBold}" FontSize="12" Foreground="#8A5CFF" Margin="0,0,0,12" FontWeight="Bold"/>
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="1.5*" />
+                                                <ColumnDefinition Width="2*" />
+                                            </Grid.ColumnDefinitions>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto" />
+                                                <RowDefinition Height="12" />
+                                                <RowDefinition Height="Auto" />
+                                            </Grid.RowDefinitions>
+
+                                            <!-- Launcher Platform -->
+                                            <TextBlock Grid.Row="0" Grid.Column="0" Text="Launcher Platform" Foreground="#9A9A9A" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
+                                            <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding Launcher, FallbackValue='Custom'}" Foreground="White" FontSize="12" FontFamily="{StaticResource PeydaBold}"/>
+
+                                            <!-- Installation Source -->
+                                            <TextBlock Grid.Row="2" Grid.Column="0" Text="Installation Source" Foreground="#9A9A9A" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
+                                            <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding InstallationSource, FallbackValue='Local'}" Foreground="White" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
+                                        </Grid>
+                                    </StackPanel>
+                                </Border>
+
+                                <!-- 4. Launch Settings Card -->
+                                <Border Background="#121216" BorderBrush="#252528" BorderThickness="1" CornerRadius="12" Padding="16" Margin="0,0,0,20">
+                                    <StackPanel>
+                                        <TextBlock Text="4. LAUNCH SETTINGS" FontFamily="{StaticResource PeydaBold}" FontSize="12" Foreground="#14BE78" Margin="0,0,0,12" FontWeight="Bold"/>
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="1.5*" />
+                                                <ColumnDefinition Width="2*" />
+                                            </Grid.ColumnDefinitions>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto" />
+                                                <RowDefinition Height="12" />
+                                                <RowDefinition Height="Auto" />
+                                            </Grid.RowDefinitions>
+
+                                            <!-- Arguments -->
+                                            <TextBlock Grid.Row="0" Grid.Column="0" Text="Arguments / Params" Foreground="#9A9A9A" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
+                                            <TextBlock Grid.Row="0" Grid.Column="1" Text="--nosplash --noborder --fullscreen" Foreground="#63E6FF" FontSize="12" FontFamily="Consolas"/>
+
+                                            <!-- Working Directory -->
+                                            <TextBlock Grid.Row="2" Grid.Column="0" Text="Working Directory" Foreground="#9A9A9A" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
+                                            <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding InstallationPath, FallbackValue='C:\\'}" Foreground="White" FontSize="12" FontFamily="{StaticResource PeydaMedium}" TextWrapping="Wrap"/>
+                                        </Grid>
+                                    </StackPanel>
+                                </Border>
+
+                                <!-- 5. Runtime Card -->
+                                <Border Background="#121216" BorderBrush="#252528" BorderThickness="1" CornerRadius="12" Padding="16" Margin="0,0,0,20">
+                                    <StackPanel>
+                                        <TextBlock Text="5. RUNTIME" FontFamily="{StaticResource PeydaBold}" FontSize="12" Foreground="#F46B6B" Margin="0,0,0,12" FontWeight="Bold"/>
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="1.5*" />
+                                                <ColumnDefinition Width="2*" />
+                                            </Grid.ColumnDefinitions>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto" />
+                                                <RowDefinition Height="12" />
+                                                <RowDefinition Height="Auto" />
+                                            </Grid.RowDefinitions>
+
+                                            <!-- Status -->
+                                            <TextBlock Grid.Row="0" Grid.Column="0" Text="Execution Status" Foreground="#9A9A9A" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
+                                            <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding Status, FallbackValue='Installed'}" Foreground="White" FontSize="12" FontFamily="{StaticResource PeydaBold}"/>
+
+                                            <!-- Enabled -->
+                                            <TextBlock Grid.Row="2" Grid.Column="0" Text="Is Enabled" Foreground="#9A9A9A" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
+                                            <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding IsEnabled, FallbackValue='True'}" Foreground="White" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
+                                        </Grid>
+                                    </StackPanel>
+                                </Border>
+
+                                <!-- 6. Images Card -->
+                                <Border Background="#121216" BorderBrush="#252528" BorderThickness="1" CornerRadius="12" Padding="16" Margin="0,0,0,20">
+                                    <StackPanel>
+                                        <TextBlock Text="6. IMAGES" FontFamily="{StaticResource PeydaBold}" FontSize="12" Foreground="#63E6FF" Margin="0,0,0,12" FontWeight="Bold"/>
                                         <Grid>
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="1.5*" />
@@ -1306,27 +1360,128 @@
                                                 <RowDefinition Height="Auto" />
                                             </Grid.RowDefinitions>
 
-                                            <!-- Steam ID -->
-                                            <TextBlock Grid.Row="0" Grid.Column="0" Text="Steam AppID" Foreground="#9A9A9A" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
-                                            <TextBlock Grid.Row="0" Grid.Column="1" Text="730 (CS2)" Foreground="White" FontSize="12" FontFamily="Consolas"/>
+                                            <!-- Cover Image -->
+                                            <TextBlock Grid.Row="0" Grid.Column="0" Text="Cover Image URL" Foreground="#9A9A9A" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
+                                            <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding CoverImage, FallbackValue='N/A'}" Foreground="White" FontSize="12" FontFamily="Consolas" TextWrapping="Wrap"/>
 
-                                            <!-- Epic ID -->
-                                            <TextBlock Grid.Row="2" Grid.Column="0" Text="Epic Games Catalog Namespace" Foreground="#9A9A9A" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
-                                            <TextBlock Grid.Row="2" Grid.Column="1" Text="fn_prod_fn10291_epic" Foreground="White" FontSize="12" FontFamily="Consolas"/>
+                                            <!-- Logo Image -->
+                                            <TextBlock Grid.Row="2" Grid.Column="0" Text="Logo Image URL" Foreground="#9A9A9A" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
+                                            <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding LogoImage, FallbackValue='N/A'}" Foreground="White" FontSize="12" FontFamily="Consolas" TextWrapping="Wrap"/>
 
-                                            <!-- Riot ID -->
-                                            <TextBlock Grid.Row="4" Grid.Column="0" Text="Riot Client Project ID" Foreground="#9A9A9A" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
-                                            <TextBlock Grid.Row="4" Grid.Column="1" Text="valorant_prod_client" Foreground="White" FontSize="12" FontFamily="Consolas"/>
+                                            <!-- Background Image -->
+                                            <TextBlock Grid.Row="4" Grid.Column="0" Text="Background URL" Foreground="#9A9A9A" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
+                                            <TextBlock Grid.Row="4" Grid.Column="1" Text="{Binding BackgroundImage, FallbackValue='N/A'}" Foreground="White" FontSize="12" FontFamily="Consolas" TextWrapping="Wrap"/>
                                         </Grid>
                                     </StackPanel>
                                 </Border>
 
-                                <!-- Description Card -->
+                                <!-- 7. Metadata Card -->
                                 <Border Background="#121216" BorderBrush="#252528" BorderThickness="1" CornerRadius="12" Padding="16" Margin="0,0,0,20">
                                     <StackPanel>
-                                        <TextBlock Text="DESCRIPTION &amp; BRIEF" FontFamily="{StaticResource PeydaBold}" FontSize="12" Foreground="#14BE78" Margin="0,0,0,12" FontWeight="Bold"/>
-                                        <TextBlock Text="The client launcher application system sync handles execution pipeline, anti-tamper constraints, sandbox boundaries, and process monitoring rules defined by Sayra core server configurations."
-                                                   Foreground="#D1D1D6" FontSize="12" FontFamily="{StaticResource PeydaLight}" TextWrapping="Wrap" LineHeight="20"/>
+                                        <TextBlock Text="7. METADATA" FontFamily="{StaticResource PeydaBold}" FontSize="12" Foreground="#ffff3d" Margin="0,0,0,12" FontWeight="Bold"/>
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="1.5*" />
+                                                <ColumnDefinition Width="2*" />
+                                            </Grid.ColumnDefinitions>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto" />
+                                                <RowDefinition Height="12" />
+                                                <RowDefinition Height="Auto" />
+                                                <RowDefinition Height="12" />
+                                                <RowDefinition Height="Auto" />
+                                            </Grid.RowDefinitions>
+
+                                            <!-- Size -->
+                                            <TextBlock Grid.Row="0" Grid.Column="0" Text="Size on Disk" Foreground="#9A9A9A" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
+                                            <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding Size, FallbackValue='0 GB'}" Foreground="White" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
+
+                                            <!-- License -->
+                                            <TextBlock Grid.Row="2" Grid.Column="0" Text="License Model" Foreground="#9A9A9A" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
+                                            <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding License, FallbackValue='Free'}" Foreground="White" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
+
+                                            <!-- Release Year -->
+                                            <TextBlock Grid.Row="4" Grid.Column="0" Text="Release Year" Foreground="#9A9A9A" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
+                                            <TextBlock Grid.Row="4" Grid.Column="1" Text="{Binding ReleaseYear, FallbackValue='N/A'}" Foreground="White" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
+                                        </Grid>
+                                    </StackPanel>
+                                </Border>
+
+                                <!-- 8. Tags Card -->
+                                <Border Background="#121216" BorderBrush="#252528" BorderThickness="1" CornerRadius="12" Padding="16" Margin="0,0,0,20">
+                                    <StackPanel>
+                                        <TextBlock Text="8. TAGS" FontFamily="{StaticResource PeydaBold}" FontSize="12" Foreground="#8A5CFF" Margin="0,0,0,12" FontWeight="Bold"/>
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="1.5*" />
+                                                <ColumnDefinition Width="2*" />
+                                            </Grid.ColumnDefinitions>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto" />
+                                                <RowDefinition Height="12" />
+                                                <RowDefinition Height="Auto" />
+                                            </Grid.RowDefinitions>
+
+                                            <!-- Category -->
+                                            <TextBlock Grid.Row="0" Grid.Column="0" Text="Category / Genre" Foreground="#9A9A9A" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
+                                            <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding Category, FallbackValue='N/A'}" Foreground="White" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
+
+                                            <!-- Custom Tags -->
+                                            <TextBlock Grid.Row="2" Grid.Column="0" Text="Custom Tags" Foreground="#9A9A9A" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
+                                            <TextBlock Grid.Row="2" Grid.Column="1" Text="Kiosk, GameNet, LAN" Foreground="White" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
+                                        </Grid>
+                                    </StackPanel>
+                                </Border>
+
+                                <!-- 9. Security Card -->
+                                <Border Background="#121216" BorderBrush="#252528" BorderThickness="1" CornerRadius="12" Padding="16" Margin="0,0,0,20">
+                                    <StackPanel>
+                                        <TextBlock Text="9. SECURITY" FontFamily="{StaticResource PeydaBold}" FontSize="12" Foreground="#14BE78" Margin="0,0,0,12" FontWeight="Bold"/>
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="1.5*" />
+                                                <ColumnDefinition Width="2*" />
+                                            </Grid.ColumnDefinitions>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto" />
+                                                <RowDefinition Height="12" />
+                                                <RowDefinition Height="Auto" />
+                                            </Grid.RowDefinitions>
+
+                                            <!-- Verification Status -->
+                                            <TextBlock Grid.Row="0" Grid.Column="0" Text="Verification Status" Foreground="#9A9A9A" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
+                                            <TextBlock Grid.Row="0" Grid.Column="1" Text="Validated" Foreground="#14BE78" FontSize="12" FontFamily="{StaticResource PeydaBold}"/>
+
+                                            <!-- Sandbox Mode -->
+                                            <TextBlock Grid.Row="2" Grid.Column="0" Text="Sandbox Mode" Foreground="#9A9A9A" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
+                                            <TextBlock Grid.Row="2" Grid.Column="1" Text="Enforced" Foreground="White" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
+                                        </Grid>
+                                    </StackPanel>
+                                </Border>
+
+                                <!-- 10. Visibility Card -->
+                                <Border Background="#121216" BorderBrush="#252528" BorderThickness="1" CornerRadius="12" Padding="16" Margin="0,0,0,20">
+                                    <StackPanel>
+                                        <TextBlock Text="10. VISIBILITY" FontFamily="{StaticResource PeydaBold}" FontSize="12" Foreground="#63E6FF" Margin="0,0,0,12" FontWeight="Bold"/>
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="1.5*" />
+                                                <ColumnDefinition Width="2*" />
+                                            </Grid.ColumnDefinitions>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto" />
+                                                <RowDefinition Height="12" />
+                                                <RowDefinition Height="Auto" />
+                                            </Grid.RowDefinitions>
+
+                                            <!-- Hide on Client -->
+                                            <TextBlock Grid.Row="0" Grid.Column="0" Text="Hide on Client" Foreground="#9A9A9A" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
+                                            <TextBlock Grid.Row="0" Grid.Column="1" Text="False" Foreground="White" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
+
+                                            <!-- Last Updated -->
+                                            <TextBlock Grid.Row="2" Grid.Column="0" Text="Last Synced / Modified" Foreground="#9A9A9A" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
+                                            <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding LastUpdated, FallbackValue='N/A'}" Foreground="White" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
+                                        </Grid>
                                     </StackPanel>
                                 </Border>
 
