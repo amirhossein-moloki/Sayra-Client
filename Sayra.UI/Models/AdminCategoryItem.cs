@@ -15,5 +15,8 @@ namespace Sayra.UI.Models
 
         [ObservableProperty]
         private bool _isEnabled = true;
+
+        [ObservableProperty]
+        private bool _isBrandIcon = false;
     }
 }

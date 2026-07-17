@@ -386,9 +386,53 @@
                                         </Grid.ColumnDefinitions>
                                         <!-- Category Icon -->
                                         <Path Grid.Column="0" Data="{Binding IconGeometry}"
-                                              Stroke="#9A9A9A" StrokeThickness="1.5"
                                               Width="16" Height="16" Stretch="Uniform"
-                                              VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                              VerticalAlignment="Center" HorizontalAlignment="Center">
+                                            <Path.Style>
+                                                <Style TargetType="Path">
+                                                    <!-- Default state: outline icon -->
+                                                    <Setter Property="Stroke" Value="#9A9A9A"/>
+                                                    <Setter Property="StrokeThickness" Value="1.5"/>
+                                                    <Setter Property="Fill" Value="Transparent"/>
+
+                                                    <Style.Triggers>
+                                                        <!-- If outline icon is hovered -->
+                                                        <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType=ListBoxItem}}" Value="True">
+                                                            <Setter Property="Stroke" Value="#FFFFFF"/>
+                                                        </DataTrigger>
+                                                        <!-- If outline icon is selected -->
+                                                        <DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=ListBoxItem}}" Value="True">
+                                                            <Setter Property="Stroke" Value="#63E6FF"/>
+                                                        </DataTrigger>
+
+                                                        <!-- If it's a Brand Icon (Solid fill instead of outline stroke) -->
+                                                        <DataTrigger Binding="{Binding IsBrandIcon}" Value="True">
+                                                            <Setter Property="Fill" Value="#9A9A9A"/>
+                                                            <Setter Property="Stroke" Value="Transparent"/>
+                                                            <Setter Property="StrokeThickness" Value="0"/>
+                                                        </DataTrigger>
+                                                        <MultiDataTrigger>
+                                                            <MultiDataTrigger.Conditions>
+                                                                <Condition Binding="{Binding IsBrandIcon}" Value="True"/>
+                                                                <Condition Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType=ListBoxItem}}" Value="True"/>
+                                                            </MultiDataTrigger.Conditions>
+                                                            <Setter Property="Fill" Value="#FFFFFF"/>
+                                                            <Setter Property="Stroke" Value="Transparent"/>
+                                                            <Setter Property="StrokeThickness" Value="0"/>
+                                                        </MultiDataTrigger>
+                                                        <MultiDataTrigger>
+                                                            <MultiDataTrigger.Conditions>
+                                                                <Condition Binding="{Binding IsBrandIcon}" Value="True"/>
+                                                                <Condition Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=ListBoxItem}}" Value="True"/>
+                                                            </MultiDataTrigger.Conditions>
+                                                            <Setter Property="Fill" Value="#63E6FF"/>
+                                                            <Setter Property="Stroke" Value="Transparent"/>
+                                                            <Setter Property="StrokeThickness" Value="0"/>
+                                                        </MultiDataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Path.Style>
+                                        </Path>
                                         <!-- Category Name -->
                                         <TextBlock Grid.Column="1" Text="{Binding Name}"
                                                    Foreground="White" FontSize="13"
