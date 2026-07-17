@@ -18,6 +18,280 @@
 
     <!-- Define premium dark style resources for layout placeholders -->
     <Window.Resources>
+        <!-- Custom Ultra-Thin ScrollBar style for Admin Right Sidebar -->
+        <Style x:Key="ThinScrollThumbStyle" TargetType="{x:Type Thumb}">
+            <Setter Property="OverridesDefaultStyle" Value="True"/>
+            <Setter Property="IsTabStop" Value="False"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Thumb}">
+                        <Border x:Name="ThumbBorder"
+                                CornerRadius="2"
+                                SnapsToDevicePixels="True">
+                            <Border.Background>
+                                <SolidColorBrush x:Name="ThumbBrush" Color="#4063E6FF"/>
+                            </Border.Background>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="ThumbBorder" Property="Background" Value="#63E6FF"/>
+                            </Trigger>
+                            <Trigger Property="IsDragging" Value="True">
+                                <Setter TargetName="ThumbBorder" Property="Background" Value="#63E6FF"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="ThinScrollBarPageButtonStyle" TargetType="{x:Type RepeatButton}">
+            <Setter Property="OverridesDefaultStyle" Value="True"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Focusable" Value="False"/>
+            <Setter Property="IsTabStop" Value="False"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type RepeatButton}">
+                        <Border Background="{TemplateBinding Background}"/>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="ThinScrollBarStyle" TargetType="{x:Type ScrollBar}">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Width" Value="4"/>
+            <Setter Property="Height" Value="Auto"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ScrollBar}">
+                        <Grid x:Name="Bg" SnapsToDevicePixels="True" Background="Transparent">
+                            <Track x:Name="PART_Track" IsDirectionReversed="True" IsEnabled="{TemplateBinding IsEnabled}">
+                                <Track.DecreaseRepeatButton>
+                                    <RepeatButton Command="{x:Static ScrollBar.PageUpCommand}" Style="{StaticResource ThinScrollBarPageButtonStyle}"/>
+                                </Track.DecreaseRepeatButton>
+                                <Track.IncreaseRepeatButton>
+                                    <RepeatButton Command="{x:Static ScrollBar.PageDownCommand}" Style="{StaticResource ThinScrollBarPageButtonStyle}"/>
+                                </Track.IncreaseRepeatButton>
+                                <Track.Thumb>
+                                    <Thumb Style="{StaticResource ThinScrollThumbStyle}"/>
+                                </Track.Thumb>
+                            </Track>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="ThinScrollViewerStyle" TargetType="{x:Type ScrollViewer}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ScrollViewer}">
+                        <Grid Background="{TemplateBinding Background}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <ScrollContentPresenter Grid.Column="0" CanContentScroll="{TemplateBinding CanContentScroll}"/>
+                            <ScrollBar Grid.Column="1" x:Name="PART_VerticalScrollBar"
+                                       Style="{StaticResource ThinScrollBarStyle}"
+                                       Orientation="Vertical"
+                                       ViewportSize="{TemplateBinding ViewportHeight}"
+                                       Maximum="{TemplateBinding ScrollableHeight}"
+                                       Minimum="0"
+                                       Value="{Binding VerticalOffset, Mode=OneWay, RelativeSource={RelativeSource TemplatedParent}}"
+                                       Visibility="{TemplateBinding ComputedVerticalScrollBarVisibility}"/>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Custom Premium ScrollBar style for Admin Main Content -->
+        <Style x:Key="AdminScrollThumbStyle" TargetType="{x:Type Thumb}">
+            <Setter Property="OverridesDefaultStyle" Value="True"/>
+            <Setter Property="IsTabStop" Value="False"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Thumb}">
+                        <Border x:Name="ThumbBorder"
+                                CornerRadius="3"
+                                SnapsToDevicePixels="True"
+                                Margin="1">
+                            <Border.Background>
+                                <SolidColorBrush x:Name="ThumbBrush" Color="#4063E6FF"/>
+                            </Border.Background>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="ThumbBorder" Property="Background" Value="#63E6FF"/>
+                            </Trigger>
+                            <Trigger Property="IsDragging" Value="True">
+                                <Setter TargetName="ThumbBorder" Property="Background" Value="#63E6FF"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="AdminScrollBarStyle" TargetType="{x:Type ScrollBar}">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Width" Value="6"/>
+            <Setter Property="Height" Value="Auto"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ScrollBar}">
+                        <Grid x:Name="Bg" SnapsToDevicePixels="True" Background="#06FFFFFF">
+                            <Track x:Name="PART_Track" IsDirectionReversed="True" IsEnabled="{TemplateBinding IsEnabled}">
+                                <Track.DecreaseRepeatButton>
+                                    <RepeatButton Command="{x:Static ScrollBar.PageUpCommand}" Style="{StaticResource ThinScrollBarPageButtonStyle}"/>
+                                </Track.DecreaseRepeatButton>
+                                <Track.IncreaseRepeatButton>
+                                    <RepeatButton Command="{x:Static ScrollBar.PageDownCommand}" Style="{StaticResource ThinScrollBarPageButtonStyle}"/>
+                                </Track.IncreaseRepeatButton>
+                                <Track.Thumb>
+                                    <Thumb Style="{StaticResource AdminScrollThumbStyle}"/>
+                                </Track.Thumb>
+                            </Track>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Bg" Property="Background" Value="#12FFFFFF" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="Orientation" Value="Horizontal">
+                    <Setter Property="Width" Value="Auto"/>
+                    <Setter Property="Height" Value="6"/>
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="{x:Type ScrollBar}">
+                                <Grid x:Name="Bg" SnapsToDevicePixels="True" Background="#06FFFFFF">
+                                    <Track x:Name="PART_Track" IsDirectionReversed="False" IsEnabled="{TemplateBinding IsEnabled}">
+                                        <Track.DecreaseRepeatButton>
+                                            <RepeatButton Command="{x:Static ScrollBar.PageLeftCommand}" Style="{StaticResource ThinScrollBarPageButtonStyle}"/>
+                                        </Track.DecreaseRepeatButton>
+                                        <Track.IncreaseRepeatButton>
+                                            <RepeatButton Command="{x:Static ScrollBar.PageRightCommand}" Style="{StaticResource ThinScrollBarPageButtonStyle}"/>
+                                        </Track.IncreaseRepeatButton>
+                                        <Track.Thumb>
+                                            <Thumb Style="{StaticResource AdminScrollThumbStyle}"/>
+                                        </Track.Thumb>
+                                    </Track>
+                                </Grid>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter TargetName="Bg" Property="Background" Value="#12FFFFFF" />
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- Custom Expander Style for Admin Right Sidebar -->
+        <Style x:Key="SidebarExpanderStyle" TargetType="{x:Type Expander}">
+            <Setter Property="Background" Value="#181A20"/>
+            <Setter Property="BorderBrush" Value="#2A2D36"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Margin" Value="0,0,0,16"/>
+            <Setter Property="IsExpanded" Value="False"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Expander}">
+                        <Border Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="10"
+                                SnapsToDevicePixels="True">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="*" x:Name="ContentRow"/>
+                                </Grid.RowDefinitions>
+
+                                <!-- Header Toggle Button -->
+                                <ToggleButton Grid.Row="0"
+                                              IsChecked="{Binding IsExpanded, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
+                                              Content="{TemplateBinding Header}"
+                                              Cursor="Hand">
+                                    <ToggleButton.Template>
+                                        <ControlTemplate TargetType="{x:Type ToggleButton}">
+                                            <Border Background="Transparent" Padding="14,12">
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="*"/>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                    </Grid.ColumnDefinitions>
+
+                                                    <!-- Header Content -->
+                                                    <ContentPresenter Grid.Column="0"
+                                                                      VerticalAlignment="Center"/>
+
+                                                    <!-- Chevron Arrow -->
+                                                    <Path Grid.Column="1" x:Name="Arrow"
+                                                          Data="M1 1l4 4 4-4"
+                                                          Stroke="#9A9A9A"
+                                                          StrokeThickness="1.5"
+                                                          Width="10" Height="6"
+                                                          Stretch="Uniform"
+                                                          VerticalAlignment="Center"
+                                                          RenderTransformOrigin="0.5,0.5">
+                                                        <Path.RenderTransform>
+                                                            <RotateTransform Angle="0"/>
+                                                        </Path.RenderTransform>
+                                                    </Path>
+                                                </Grid>
+                                            </Border>
+                                            <ControlTemplate.Triggers>
+                                                <Trigger Property="IsChecked" Value="True">
+                                                    <Setter TargetName="Arrow" Property="RenderTransform">
+                                                        <Setter.Value>
+                                                            <RotateTransform Angle="180"/>
+                                                        </Setter.Value>
+                                                    </Setter>
+                                                    <Setter TargetName="Arrow" Property="Stroke" Value="#63E6FF"/>
+                                                </Trigger>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter TargetName="Arrow" Property="Stroke" Value="White"/>
+                                                </Trigger>
+                                            </ControlTemplate.Triggers>
+                                        </ControlTemplate>
+                                    </ToggleButton.Template>
+                                </ToggleButton>
+
+                                <!-- Content Presenter (Collapsible body) -->
+                                <Border Grid.Row="1" x:Name="ContentBorder"
+                                        Visibility="Collapsed"
+                                        Padding="14,0,14,14"
+                                        Background="Transparent"
+                                        BorderBrush="#2A2D36"
+                                        BorderThickness="0,1,0,0">
+                                    <ContentPresenter />
+                                </Border>
+                            </Grid>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsExpanded" Value="True">
+                                <Setter TargetName="ContentBorder" Property="Visibility" Value="Visible"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
         <!-- Reusable Fluent/Monochrome Icons (Pure stroke-based geometries for crispness and uniform visual weight) -->
         <Geometry x:Key="PCNameIcon">M2 4h20v11H2zm3 15h14M12 15v4</Geometry>
         <Geometry x:Key="ServerStatusIcon">M3 4h18v5H3zm0 8h18v5H3zm3-5.5h.01M6 14.5h.01</Geometry>
@@ -253,6 +527,7 @@
 
                                     <!-- Vertical ScrollBar strictly in Row 1 (RowSpan=1) and Column 1 so it starts below the headers and has no overlap -->
                                     <ScrollBar x:Name="PART_VerticalScrollBar"
+                                               Style="{StaticResource AdminScrollBarStyle}"
                                                Grid.Column="1" Grid.Row="1" Grid.RowSpan="1"
                                                Orientation="Vertical"
                                                ViewportSize="{TemplateBinding ViewportHeight}"
@@ -263,6 +538,7 @@
 
                                     <!-- Horizontal ScrollBar in Row 2, Column 0 -->
                                     <ScrollBar x:Name="PART_HorizontalScrollBar"
+                                               Style="{StaticResource AdminScrollBarStyle}"
                                                Grid.Column="0" Grid.Row="2"
                                                Orientation="Horizontal"
                                                ViewportSize="{TemplateBinding ViewportWidth}"
@@ -409,7 +685,7 @@
                     <ColumnDefinition Width="16" />  <!-- Gap -->
                     <ColumnDefinition Width="10.7*" />   <!-- Column 1: Games Panel (Stretches) -->
                     <ColumnDefinition Width="16" />  <!-- Gap -->
-                    <ColumnDefinition Width="2.6*" MinWidth="200" MaxWidth="260" /> <!-- Column 2: Right Sidebar -->
+                    <ColumnDefinition Width="3.2*" MinWidth="240" MaxWidth="320" /> <!-- Column 2: Right Sidebar -->
                 </Grid.ColumnDefinitions>
 
                 <Grid.RowDefinitions>
@@ -944,7 +1220,7 @@
                 <!-- 11. RIGHT SIDEBAR -->
                 <!-- Right Sidebar aligned with Main DataGrid in Row 2 -->
                 <Border Grid.Column="4" Grid.Row="0" Grid.RowSpan="3" Margin="0,12,24,12" Background="#14161C" BorderBrush="#2A2D36" BorderThickness="1" CornerRadius="10" Padding="12">
-                    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                    <ScrollViewer Style="{StaticResource ThinScrollViewerStyle}" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                         <Grid x:Name="RightSidebarGrid">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto" /> <!-- 11.1 Add New Game -->
@@ -955,31 +1231,11 @@
                             </Grid.RowDefinitions>
 
                             <!-- 11.1 ADD NEW GAME -->
-                            <Border Grid.Row="0" Background="#181A20" BorderBrush="#2A2D36" BorderThickness="1" CornerRadius="10" Padding="12" Margin="0,0,0,16">
+                            <Expander Grid.Row="0" Style="{StaticResource SidebarExpanderStyle}" IsExpanded="True">
+                                <Expander.Header>
+                                    <TextBlock Text="Add New Game" FontFamily="{StaticResource PeydaBold}" FontSize="13" Foreground="White"/>
+                                </Expander.Header>
                                 <StackPanel>
-                                    <!-- Header -->
-                                    <Grid Margin="0,0,0,12">
-                                        <TextBlock Text="Add New Game" FontFamily="{StaticResource PeydaBold}" FontSize="13" Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center"/>
-                                        <Button Content="×" HorizontalAlignment="Right" VerticalAlignment="Center" Background="Transparent" Foreground="#9A9A9A" BorderThickness="0" FontSize="16" FontFamily="Segoe UI" Padding="0" Cursor="Hand">
-                                            <Button.Style>
-                                                <Style TargetType="Button">
-                                                    <Setter Property="Template">
-                                                        <Setter.Value>
-                                                            <ControlTemplate TargetType="Button">
-                                                                <TextBlock Text="{TemplateBinding Content}" Foreground="{TemplateBinding Foreground}"/>
-                                                            </ControlTemplate>
-                                                        </Setter.Value>
-                                                    </Setter>
-                                                    <Style.Triggers>
-                                                        <Trigger Property="IsMouseOver" Value="True">
-                                                            <Setter Property="Foreground" Value="#F46B6B"/>
-                                                        </Trigger>
-                                                    </Style.Triggers>
-                                                </Style>
-                                            </Button.Style>
-                                        </Button>
-                                    </Grid>
-
                                     <!-- Name * Field -->
                                     <TextBlock Text="Name *" Foreground="#9A9A9A" FontSize="11" Margin="0,0,0,4" FontFamily="{StaticResource PeydaMedium}"/>
                                     <Border Background="#1C1F26" BorderBrush="#2A2D36" BorderThickness="1" CornerRadius="6" Height="30" Padding="6,2" Margin="0,0,0,10">
@@ -1069,34 +1325,14 @@
                                         </Button>
                                     </Grid>
                                 </StackPanel>
-                            </Border>
+                            </Expander>
 
                             <!-- 11.2 SCANNER RESULT -->
-                            <Border Grid.Row="1" Background="#181A20" BorderBrush="#2A2D36" BorderThickness="1" CornerRadius="10" Padding="12" Margin="0,0,0,16">
+                            <Expander Grid.Row="1" Style="{StaticResource SidebarExpanderStyle}">
+                                <Expander.Header>
+                                    <TextBlock Text="Scanner Results" FontFamily="{StaticResource PeydaBold}" FontSize="13" Foreground="White"/>
+                                </Expander.Header>
                                 <StackPanel>
-                                    <!-- Header -->
-                                    <Grid Margin="0,0,0,12">
-                                        <TextBlock Text="Scanner Results" FontFamily="{StaticResource PeydaBold}" FontSize="13" Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center"/>
-                                        <Button Content="×" HorizontalAlignment="Right" VerticalAlignment="Center" Background="Transparent" Foreground="#9A9A9A" BorderThickness="0" FontSize="16" FontFamily="Segoe UI" Padding="0" Cursor="Hand">
-                                            <Button.Style>
-                                                <Style TargetType="Button">
-                                                    <Setter Property="Template">
-                                                        <Setter.Value>
-                                                            <ControlTemplate TargetType="Button">
-                                                                <TextBlock Text="{TemplateBinding Content}" Foreground="{TemplateBinding Foreground}"/>
-                                                            </ControlTemplate>
-                                                        </Setter.Value>
-                                                    </Setter>
-                                                    <Style.Triggers>
-                                                        <Trigger Property="IsMouseOver" Value="True">
-                                                            <Setter Property="Foreground" Value="#F46B6B"/>
-                                                        </Trigger>
-                                                    </Style.Triggers>
-                                                </Style>
-                                            </Button.Style>
-                                        </Button>
-                                    </Grid>
-
                                     <!-- Main Body (Two Columns) -->
                                     <Grid Margin="0,0,0,12">
                                         <Grid.ColumnDefinitions>
@@ -1195,34 +1431,14 @@
                                         </Button>
                                     </Grid>
                                 </StackPanel>
-                            </Border>
+                            </Expander>
 
                             <!-- 11.3 VALIDATION RESULT -->
-                            <Border Grid.Row="2" Background="#181A20" BorderBrush="#2A2D36" BorderThickness="1" CornerRadius="10" Padding="12" Margin="0,0,0,16">
+                            <Expander Grid.Row="2" Style="{StaticResource SidebarExpanderStyle}">
+                                <Expander.Header>
+                                    <TextBlock Text="Validation Results" FontFamily="{StaticResource PeydaBold}" FontSize="13" Foreground="White"/>
+                                </Expander.Header>
                                 <StackPanel>
-                                    <!-- Header -->
-                                    <Grid Margin="0,0,0,12">
-                                        <TextBlock Text="Validation Results" FontFamily="{StaticResource PeydaBold}" FontSize="13" Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center"/>
-                                        <Button Content="×" HorizontalAlignment="Right" VerticalAlignment="Center" Background="Transparent" Foreground="#9A9A9A" BorderThickness="0" FontSize="16" FontFamily="Segoe UI" Padding="0" Cursor="Hand">
-                                            <Button.Style>
-                                                <Style TargetType="Button">
-                                                    <Setter Property="Template">
-                                                        <Setter.Value>
-                                                            <ControlTemplate TargetType="Button">
-                                                                <TextBlock Text="{TemplateBinding Content}" Foreground="{TemplateBinding Foreground}"/>
-                                                            </ControlTemplate>
-                                                        </Setter.Value>
-                                                    </Setter>
-                                                    <Style.Triggers>
-                                                        <Trigger Property="IsMouseOver" Value="True">
-                                                            <Setter Property="Foreground" Value="#F46B6B"/>
-                                                        </Trigger>
-                                                    </Style.Triggers>
-                                                </Style>
-                                            </Button.Style>
-                                        </Button>
-                                    </Grid>
-
                                     <!-- Main Body (Two Columns) -->
                                     <Grid Margin="0,0,0,12">
                                         <Grid.ColumnDefinitions>
@@ -1287,34 +1503,14 @@
                                     <!-- Footer -->
                                     <Button Content="Close" Height="30" Style="{StaticResource ToolbarButtonStyle}"/>
                                 </StackPanel>
-                            </Border>
+                            </Expander>
 
                             <!-- 11.4 IMPORT GAMES -->
-                            <Border Grid.Row="3" Background="#181A20" BorderBrush="#2A2D36" BorderThickness="1" CornerRadius="10" Padding="12" Margin="0,0,0,16">
+                            <Expander Grid.Row="3" Style="{StaticResource SidebarExpanderStyle}">
+                                <Expander.Header>
+                                    <TextBlock Text="Import Games" FontFamily="{StaticResource PeydaBold}" FontSize="13" Foreground="White"/>
+                                </Expander.Header>
                                 <StackPanel>
-                                    <!-- Header -->
-                                    <Grid Margin="0,0,0,12">
-                                        <TextBlock Text="Import Games" FontFamily="{StaticResource PeydaBold}" FontSize="13" Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center"/>
-                                        <Button Content="×" HorizontalAlignment="Right" VerticalAlignment="Center" Background="Transparent" Foreground="#9A9A9A" BorderThickness="0" FontSize="16" FontFamily="Segoe UI" Padding="0" Cursor="Hand">
-                                            <Button.Style>
-                                                <Style TargetType="Button">
-                                                    <Setter Property="Template">
-                                                        <Setter.Value>
-                                                            <ControlTemplate TargetType="Button">
-                                                                <TextBlock Text="{TemplateBinding Content}" Foreground="{TemplateBinding Foreground}"/>
-                                                            </ControlTemplate>
-                                                        </Setter.Value>
-                                                    </Setter>
-                                                    <Style.Triggers>
-                                                        <Trigger Property="IsMouseOver" Value="True">
-                                                            <Setter Property="Foreground" Value="#F46B6B"/>
-                                                        </Trigger>
-                                                    </Style.Triggers>
-                                                </Style>
-                                            </Button.Style>
-                                        </Button>
-                                    </Grid>
-
                                     <!-- Source Section -->
                                     <TextBlock Text="Source" Foreground="#9A9A9A" FontSize="11" Margin="0,0,0,4" FontFamily="{StaticResource PeydaMedium}"/>
                                     <Grid Margin="0,0,0,12">
@@ -1377,34 +1573,14 @@
                                         </Button>
                                     </Grid>
                                 </StackPanel>
-                            </Border>
+                            </Expander>
 
                             <!-- 11.5 SYNC CONFLICT RESOLVER -->
-                            <Border Grid.Row="4" Background="#181A20" BorderBrush="#2A2D36" BorderThickness="1" CornerRadius="10" Padding="12">
+                            <Expander Grid.Row="4" Style="{StaticResource SidebarExpanderStyle}">
+                                <Expander.Header>
+                                    <TextBlock Text="Sync Conflict Resolver" FontFamily="{StaticResource PeydaBold}" FontSize="13" Foreground="White"/>
+                                </Expander.Header>
                                 <StackPanel>
-                                    <!-- Header -->
-                                    <Grid Margin="0,0,0,12">
-                                        <TextBlock Text="Sync Conflict Resolver" FontFamily="{StaticResource PeydaBold}" FontSize="13" Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center"/>
-                                        <Button Content="×" HorizontalAlignment="Right" VerticalAlignment="Center" Background="Transparent" Foreground="#9A9A9A" BorderThickness="0" FontSize="16" FontFamily="Segoe UI" Padding="0" Cursor="Hand">
-                                            <Button.Style>
-                                                <Style TargetType="Button">
-                                                    <Setter Property="Template">
-                                                        <Setter.Value>
-                                                            <ControlTemplate TargetType="Button">
-                                                                <TextBlock Text="{TemplateBinding Content}" Foreground="{TemplateBinding Foreground}"/>
-                                                            </ControlTemplate>
-                                                        </Setter.Value>
-                                                    </Setter>
-                                                    <Style.Triggers>
-                                                        <Trigger Property="IsMouseOver" Value="True">
-                                                            <Setter Property="Foreground" Value="#F46B6B"/>
-                                                        </Trigger>
-                                                    </Style.Triggers>
-                                                </Style>
-                                            </Button.Style>
-                                        </Button>
-                                    </Grid>
-
                                     <!-- Conflict Summary -->
                                     <TextBlock Text="Conflicts Found: 3" Foreground="#ffff3d" FontSize="11" FontFamily="{StaticResource PeydaBold}" FontWeight="Bold" Margin="0,0,0,2"/>
                                     <TextBlock Text="Choose which version to keep for each item" Foreground="#9A9A9A" FontSize="10" FontFamily="{StaticResource PeydaMedium}" Margin="0,0,0,10" TextWrapping="Wrap"/>
@@ -1521,7 +1697,7 @@
                                         </Button>
                                     </Grid>
                                 </StackPanel>
-                            </Border>
+                            </Expander>
                         </Grid>
                     </ScrollViewer>
                 </Border>
