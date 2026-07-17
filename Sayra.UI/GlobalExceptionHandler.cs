@@ -48,6 +48,10 @@ namespace Sayra.UI
             string timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff");
             string logText = $"{timestamp}\n[{category}]\n{message}\n\n";
 
+            // Also print to console so errors/traces are visible when running from terminal
+            Console.WriteLine($"[{category}][{timestamp}] {message}");
+            System.Diagnostics.Debug.WriteLine($"[{category}][{timestamp}] {message}");
+
             try
             {
                 string logDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Logs");
@@ -71,6 +75,9 @@ namespace Sayra.UI
         public static void HandleException(Exception? exception, string source)
         {
             if (exception == null) return;
+
+            // Also print fatal exception directly to console error output
+            Console.Error.WriteLine($"[CRITICAL EXCEPTION][{source}] {exception.Message}\nDetails:\n{exception}");
 
             string timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
             string currentWindow = "Unknown";
