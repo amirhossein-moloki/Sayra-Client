@@ -274,7 +274,7 @@
                                 <!-- Content Presenter (Collapsible body) -->
                                 <Border Grid.Row="1" x:Name="ContentBorder"
                                         Visibility="Collapsed"
-                                        Padding="14,0,14,14"
+                                        Padding="14,16,14,14"
                                         Background="Transparent"
                                         BorderBrush="#2A2D36"
                                         BorderThickness="0,1,0,0">
@@ -683,9 +683,9 @@
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="2.5*" MinWidth="180" MaxWidth="250" /> <!-- Column 0: Category Sidebar -->
                     <ColumnDefinition Width="16" />  <!-- Gap -->
-                    <ColumnDefinition Width="10.7*" />   <!-- Column 1: Games Panel (Stretches) -->
+                    <ColumnDefinition Width="9.1*" />   <!-- Column 1: Games Panel (Stretches) -->
                     <ColumnDefinition Width="16" />  <!-- Gap -->
-                    <ColumnDefinition Width="3.2*" MinWidth="240" MaxWidth="320" /> <!-- Column 2: Right Sidebar -->
+                    <ColumnDefinition Width="4.8*" MinWidth="350" MaxWidth="480" /> <!-- Column 2: Right Sidebar -->
                 </Grid.ColumnDefinitions>
 
                 <Grid.RowDefinitions>
