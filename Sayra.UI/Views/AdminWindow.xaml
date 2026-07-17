@@ -224,6 +224,58 @@
         </Style>
 
         <Style x:Key="PremiumDataGridStyle" TargetType="DataGrid">
+            <Style.Resources>
+                <!-- Custom implicit ScrollViewer Style for DataGrid to ensure Scrollbar doesn't overlap Headers -->
+                <Style TargetType="{x:Type ScrollViewer}">
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="{x:Type ScrollViewer}">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="*" />
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+
+                                    <!-- Column Headers Presenter strictly in Row 0, Column 0 (with ColumnSpan=1 or 2 as desired) -->
+                                    <DataGridColumnHeadersPresenter x:Name="PART_ColumnHeadersPresenter"
+                                                                    Grid.Column="0" Grid.Row="0"
+                                                                    Visibility="{Binding HeadersVisibility, ConverterParameter={x:Static DataGridHeadersVisibility.Column}, Converter={x:Static DataGrid.HeadersVisibilityConverter}, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}"/>
+
+                                    <!-- Scroll Content Presenter in Row 1, Column 0, spanning columns so it aligns properly -->
+                                    <ScrollContentPresenter x:Name="PART_ScrollContentPresenter"
+                                                            Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
+                                                            CanContentScroll="{TemplateBinding CanContentScroll}" />
+
+                                    <!-- Vertical ScrollBar strictly in Row 1 (RowSpan=1) and Column 1 so it starts below the headers and has no overlap -->
+                                    <ScrollBar x:Name="PART_VerticalScrollBar"
+                                               Grid.Column="1" Grid.Row="1" Grid.RowSpan="1"
+                                               Orientation="Vertical"
+                                               ViewportSize="{TemplateBinding ViewportHeight}"
+                                               Maximum="{TemplateBinding ScrollableHeight}"
+                                               Minimum="0"
+                                               Value="{Binding VerticalOffset, Mode=OneWay, RelativeSource={RelativeSource TemplatedParent}}"
+                                               Visibility="{TemplateBinding ComputedVerticalScrollBarVisibility}"/>
+
+                                    <!-- Horizontal ScrollBar in Row 2, Column 0 -->
+                                    <ScrollBar x:Name="PART_HorizontalScrollBar"
+                                               Grid.Column="0" Grid.Row="2"
+                                               Orientation="Horizontal"
+                                               ViewportSize="{TemplateBinding ViewportWidth}"
+                                               Maximum="{TemplateBinding ScrollableWidth}"
+                                               Minimum="0"
+                                               Value="{Binding HorizontalOffset, Mode=OneWay, RelativeSource={RelativeSource TemplatedParent}}"
+                                               Visibility="{TemplateBinding ComputedHorizontalScrollBarVisibility}"/>
+                                </Grid>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </Style.Resources>
             <Setter Property="Background" Value="#181A20"/>
             <Setter Property="RowBackground" Value="#181A20"/>
             <Setter Property="AlternatingRowBackground" Value="#1C1F26"/>
@@ -647,6 +699,15 @@
                 <!-- 09. GAMES PANEL -->
                 <!-- Main DataGrid Container with integrated sticky pagination footer -->
                 <Border Grid.Column="2" Grid.Row="2" Background="#181A20" BorderBrush="#2A2D36" BorderThickness="1" CornerRadius="10" Margin="0,12,0,12">
+                    <Border.OpacityMask>
+                        <VisualBrush>
+                            <VisualBrush.Visual>
+                                <Border Background="Black" CornerRadius="10" SnapsToDevicePixels="True"
+                                        Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=Border}}"
+                                        Height="{Binding ActualHeight, RelativeSource={RelativeSource AncestorType=Border}}"/>
+                            </VisualBrush.Visual>
+                        </VisualBrush>
+                    </Border.OpacityMask>
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="*" />
