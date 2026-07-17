@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using Sayra.UI.Models;
@@ -7,12 +8,9 @@ namespace Sayra.UI.Services
 {
     public class MockGameService
     {
-        public async Task<ObservableCollection<GameItem>> GetGamesAsync()
+        public static List<GameItem> GetStaticGames()
         {
-            // Simulate realistic API latency
-            await Task.Delay(150);
-
-            var games = new ObservableCollection<GameItem>
+            return new List<GameItem>
             {
                 // AAA Games
                 new GameItem
@@ -392,8 +390,8 @@ namespace Sayra.UI.Services
                     Id = "24",
                     Title = "Minecraft",
                     Genre = "Survival",
-                    ImagePath = "https://cdn2.unrealengine.com/egs-fortnite-epicgames-s2-1200x1600-647970898516.jpg", // Placeholder cover using a crisp fallback or UE link
-                    LogoImage = "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/105600/logo.png", // Terraria style or customized logo
+                    ImagePath = "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/105600/library_600x900_2x.jpg", // Minecraft high quality cover placeholder
+                    LogoImage = "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/105600/logo.png",
                     BackgroundImage = "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/105600/library_hero.jpg",
                     Launcher = "Xbox",
                     Developer = "Mojang Studios",
@@ -408,7 +406,7 @@ namespace Sayra.UI.Services
                 new GameItem
                 {
                     Id = "25",
-                    Title = "NFS Unbound",
+                    Title = "Need for Speed Unbound",
                     Genre = "Racing",
                     ImagePath = "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/1374300/library_600x900_2x.jpg",
                     LogoImage = "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/1374300/logo.png",
@@ -424,7 +422,7 @@ namespace Sayra.UI.Services
                 new GameItem
                 {
                     Id = "26",
-                    Title = "NFS Heat",
+                    Title = "Need for Speed Heat",
                     Genre = "Racing",
                     ImagePath = "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/1222680/library_600x900_2x.jpg",
                     LogoImage = "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/1222680/logo.png",
@@ -971,7 +969,7 @@ namespace Sayra.UI.Services
                     Status = "Available",
                     IsAvailable = true,
                     IsSelected = false,
-                    Description = "تجربه واقعی دزدی دریایی با دوستان؛ دریانوردی، نبرد، اکتشاف جزایر و غارت گنجینه‌های مدفون افسانه‌ای."
+                    Description = "تجربه واقعی دزدی دریایی با دوستان؛ دریانوردی, نبرد, اکتشاف جزایر و غارت گنجینه‌های مدفون افسانه‌ای."
                 },
                 new GameItem
                 {
@@ -1006,8 +1004,13 @@ namespace Sayra.UI.Services
                     Description = "رانندگی با کامیون‌های سنگین در جاده‌های سرسبز اروپا؛ ایجاد شرکت حمل‌ونقل و باربری در کشورهای مختلف."
                 }
             };
+        }
 
-            return games;
+        public async Task<ObservableCollection<GameItem>> GetGamesAsync()
+        {
+            // Simulate realistic API latency
+            await Task.Delay(150);
+            return new ObservableCollection<GameItem>(GetStaticGames());
         }
     }
 }

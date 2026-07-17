@@ -211,7 +211,7 @@ namespace Sayra.UI.Controls
                 obj = VisualTreeHelper.GetParent(obj);
             }
 
-            // Clicked outside the Play Button, navigate to Game Detail!
+            // Clicked outside the Play Button, navigate to Game Detail or Edit Modal!
             try
             {
                 Window parentWindow = Window.GetWindow(this);
@@ -224,10 +224,19 @@ namespace Sayra.UI.Controls
                         e.Handled = true;
                     }
                 }
+                else if (parentWindow is Sayra.UI.Views.AdminWindow adminWindow)
+                {
+                    // Map the DataContext which is our AdminAppItem model
+                    if (this.DataContext is Sayra.UI.Models.AdminAppItem adminItem)
+                    {
+                        adminWindow.OpenModal(adminItem);
+                        e.Handled = true;
+                    }
+                }
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"[GameCard] Navigation to detail failed: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"[GameCard] Navigation to detail / modal failed: {ex.Message}");
             }
         }
 
