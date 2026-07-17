@@ -16,5 +16,35 @@ namespace Sayra.Client.GameLibrary.Models
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
         public LaunchProfile? LaunchProfile { get; set; }
+
+        // Structured data model attributes mapping for high visual fidelity Game Launcher assets
+        public string Title
+        {
+            get => Name;
+            set => Name = value;
+        }
+
+        public string CoverImage
+        {
+            get => IconPath;
+            set => IconPath = value;
+        }
+
+        public string LogoImage { get; set; } = string.Empty;
+        public string BackgroundImage { get; set; } = string.Empty;
+        public string Launcher { get; set; } = string.Empty;
+
+        public string Genre
+        {
+            get => Category.Name;
+            set
+            {
+                if (Category == null) Category = new GameCategory();
+                Category.Name = value;
+            }
+        }
+
+        public string Developer { get; set; } = string.Empty;
+        public string ReleaseYear { get; set; } = string.Empty;
     }
 }

@@ -11,7 +11,7 @@
         <!-- Root Card Border: Background: #1F1F23, Border: #252528, CornerRadius: 5px -->
         <Border x:Name="CardBorder"
                 BorderThickness="1.5"
-                CornerRadius="5"
+                CornerRadius="8"
                 Background="{DynamicResource SecondaryBackgroundBrush}"
                 ClipToBounds="True"
                 RenderTransformOrigin="0.5,0.5">
@@ -26,8 +26,8 @@
             </Border.Effect>
 
             <Grid>
-                <!-- 1. COVER IMAGE AREA filling entire card background: CornerRadius 5px to avoid overflow -->
-                <Border CornerRadius="5" ClipToBounds="True" Background="#15FFFFFF">
+                <!-- 1. COVER IMAGE AREA filling entire card background: CornerRadius 8px to avoid overflow -->
+                <Border CornerRadius="8" ClipToBounds="True" Background="#15FFFFFF">
                     <Grid>
                         <!-- Fallback Placeholder Gamepad Icon -->
                         <Grid Background="#10FFFFFF">
@@ -39,7 +39,7 @@
                                   VerticalAlignment="Center" />
                         </Grid>
 
-                        <!-- Game Cover Image -->
+                        <!-- Game Cover Image (High quality crop, no stretch) -->
                         <Image x:Name="CoverImage"
                                ImageFailed="CoverImage_ImageFailed"
                                Stretch="UniformToFill"
@@ -50,27 +50,66 @@
                             <Border.Background>
                                 <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
                                     <GradientStop Color="#00000000" Offset="0.0" />
-                                    <GradientStop Color="#00000000" Offset="0.4" />
-                                    <GradientStop Color="#99101014" Offset="0.75" />
-                                    <GradientStop Color="#F3101014" Offset="1.0" />
+                                    <GradientStop Color="#00000000" Offset="0.3" />
+                                    <GradientStop Color="#B3101014" Offset="0.65" />
+                                    <GradientStop Color="#FB101014" Offset="1.0" />
                                 </LinearGradientBrush>
                             </Border.Background>
                         </Border>
                     </Grid>
                 </Border>
 
+                <!-- 2. HIGH RESOLUTION TRANSPARENT LOGO (Floating on Top Center) -->
+                <Image Source="{Binding DataContext.LogoImage, ElementName=self}"
+                       Height="32"
+                       MaxWidth="130"
+                       HorizontalAlignment="Center"
+                       VerticalAlignment="Top"
+                       Margin="0,16,0,0"
+                       Stretch="Uniform"
+                       IsHitTestVisible="False"
+                       RenderOptions.BitmapScalingMode="HighQuality">
+                    <Image.Effect>
+                        <DropShadowEffect Color="Black" BlurRadius="6" ShadowDepth="1" Opacity="0.8" />
+                    </Image.Effect>
+                </Image>
+
+                <!-- 3. SMALL LAUNCHER BADGE (Secondary Info) -->
+                <Border x:Name="LauncherBadge"
+                        VerticalAlignment="Top"
+                        HorizontalAlignment="Left"
+                        Margin="10"
+                        Padding="6,2"
+                        CornerRadius="5"
+                        Background="#CC101014"
+                        BorderThickness="1"
+                        BorderBrush="#33FFFFFF"
+                        IsHitTestVisible="False">
+                    <TextBlock x:Name="LauncherText"
+                               Text="{Binding DataContext.Launcher, ElementName=self}"
+                               FontFamily="{StaticResource PeydaBold}"
+                               FontSize="9"
+                               Foreground="{DynamicResource SecondaryWhiteBrush}"
+                               VerticalAlignment="Center">
+                        <TextBlock.Effect>
+                            <DropShadowEffect Color="Black" BlurRadius="2" ShadowDepth="0.5" Opacity="0.5" />
+                        </TextBlock.Effect>
+                    </TextBlock>
+                </Border>
+
                 <!-- 4. DISABLED OVERLAY (Placed behind Card Body so texts/buttons are not obscured) -->
                 <Border x:Name="DisabledOverlay"
                         Background="#99101014"
-                        CornerRadius="5"
+                        CornerRadius="8"
                         Opacity="0.0"
                         IsHitTestVisible="False" />
 
-                <!-- 2. CARD BODY overlaying the cover image at the bottom -->
+                <!-- 5. CARD BODY overlaying the cover image at the bottom -->
                 <Grid VerticalAlignment="Bottom" Margin="10,0,10,12">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" /> <!-- Title -->
-                        <RowDefinition Height="Auto" /> <!-- Genre -->
+                        <RowDefinition Height="Auto" /> <!-- Genre & Release Year -->
+                        <RowDefinition Height="Auto" /> <!-- Developer / Publisher -->
                         <RowDefinition Height="Auto" /> <!-- Play Button -->
                     </Grid.RowDefinitions>
 
@@ -78,7 +117,7 @@
                     <TextBlock Grid.Row="0"
                                Text="{Binding Title, ElementName=self}"
                                FontFamily="{StaticResource PeydaBold}"
-                               FontSize="16"
+                               FontSize="15"
                                Foreground="{DynamicResource DarkerWhiteBrush}"
                                TextTrimming="CharacterEllipsis"
                                HorizontalAlignment="Right">
@@ -87,11 +126,11 @@
                         </TextBlock.Effect>
                     </TextBlock>
 
-                    <!-- Genre (Peyda Light, Secondary White color with Shadow) -->
+                    <!-- Genre & Release Year (Peyda Light, Secondary White color with Shadow) -->
                     <TextBlock Grid.Row="1"
-                               Text="{Binding Genre, ElementName=self}"
+                               Text="{Binding DataContext.GenreAndYear, ElementName=self}"
                                FontFamily="{StaticResource PeydaLight}"
-                               FontSize="12"
+                               FontSize="11"
                                Foreground="{DynamicResource SecondaryWhiteBrush}"
                                Margin="0,2,0,0"
                                HorizontalAlignment="Right">
@@ -100,8 +139,21 @@
                         </TextBlock.Effect>
                     </TextBlock>
 
+                    <!-- Developer / Publisher (Elegant, smaller, semi-transparent text) -->
+                    <TextBlock Grid.Row="2"
+                               Text="{Binding DataContext.Developer, ElementName=self}"
+                               FontFamily="{StaticResource PeydaLight}"
+                               FontSize="9"
+                               Foreground="#B0E1E1E6"
+                               Margin="0,1,0,0"
+                               HorizontalAlignment="Right">
+                        <TextBlock.Effect>
+                            <DropShadowEffect Color="Black" BlurRadius="3" ShadowDepth="1" Opacity="0.8" />
+                        </TextBlock.Effect>
+                    </TextBlock>
+
                     <!-- Play Button (Yellow Accent) -->
-                    <Grid Grid.Row="2" Margin="0,8,0,0" Height="38">
+                    <Grid Grid.Row="3" Margin="0,8,0,0" Height="36">
                         <Button Content="{Binding ButtonText, ElementName=self}"
                                 Style="{StaticResource GameCardPlayButtonStyle}"
                                 Command="{Binding PlayCommand, ElementName=self}"
@@ -112,12 +164,12 @@
                     </Grid>
                 </Grid>
 
-                <!-- 3. SELECTED STATE HIGHLIGHT INDICATOR -->
+                <!-- 6. SELECTED STATE HIGHLIGHT INDICATOR -->
                 <Border x:Name="SelectedIndicator"
                         Background="{DynamicResource PrimaryYellowBrush}"
                         CornerRadius="4"
                         Height="8" Width="8"
-                        HorizontalAlignment="Left"
+                        HorizontalAlignment="Right"
                         VerticalAlignment="Top"
                         Margin="12"
                         Opacity="0.0">

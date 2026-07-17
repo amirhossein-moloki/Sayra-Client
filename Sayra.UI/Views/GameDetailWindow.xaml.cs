@@ -34,6 +34,11 @@ namespace Sayra.UI.Views
                 ? "توضیحاتی برای این بازی ثبت نشده است."
                 : _game.Description;
 
+            // Rich metadata binding
+            DetailDeveloper.Text = string.IsNullOrEmpty(_game.Developer) ? "نا مشخص" : _game.Developer;
+            DetailReleaseYear.Text = string.IsNullOrEmpty(_game.ReleaseYear) ? "نا مشخص" : _game.ReleaseYear;
+            DetailLauncher.Text = string.IsNullOrEmpty(_game.Launcher) ? "Custom" : _game.Launcher;
+
             // Status mapping and styling
             string status = _game.Status;
             DetailStatus.Text = status;
@@ -68,8 +73,10 @@ namespace Sayra.UI.Views
                 }
             }
 
-            // Update large artwork
+            // Update large artwork, logo, and blurred ambient backdrop
             UpdateCoverImage();
+            UpdateLogoImage();
+            UpdateBackgroundImage();
         }
 
         private void UpdateCoverImage()
@@ -116,6 +123,100 @@ namespace Sayra.UI.Views
             {
                 System.Diagnostics.Debug.WriteLine($"[GameDetailWindow] Error loading image {path}: {ex.Message}");
                 DetailCoverImage.Source = null;
+            }
+        }
+
+        private void UpdateLogoImage()
+        {
+            if (DetailLogoImage == null) return;
+
+            string path = _game.LogoImage;
+            if (string.IsNullOrEmpty(path))
+            {
+                DetailLogoImage.Source = null;
+                return;
+            }
+
+            try
+            {
+                var bitmap = new BitmapImage();
+                bitmap.BeginInit();
+
+                if (path.StartsWith("pack://") || path.Contains("://"))
+                {
+                    bitmap.UriSource = new Uri(path);
+                }
+                else
+                {
+                    string fullPath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, path);
+                    if (!System.IO.File.Exists(fullPath))
+                    {
+                        bitmap.UriSource = new Uri(path, UriKind.RelativeOrAbsolute);
+                    }
+                    else
+                    {
+                        bitmap.UriSource = new Uri(fullPath, UriKind.Absolute);
+                    }
+                }
+
+                bitmap.CacheOption = BitmapCacheOption.OnLoad;
+                bitmap.CreateOptions = BitmapCreateOptions.DelayCreation;
+                bitmap.EndInit();
+                bitmap.Freeze();
+
+                DetailLogoImage.Source = bitmap;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"[GameDetailWindow] Error loading logo image {path}: {ex.Message}");
+                DetailLogoImage.Source = null;
+            }
+        }
+
+        private void UpdateBackgroundImage()
+        {
+            if (DetailBackgroundImage == null) return;
+
+            string path = _game.BackgroundImage;
+            if (string.IsNullOrEmpty(path))
+            {
+                DetailBackgroundImage.Source = null;
+                return;
+            }
+
+            try
+            {
+                var bitmap = new BitmapImage();
+                bitmap.BeginInit();
+
+                if (path.StartsWith("pack://") || path.Contains("://"))
+                {
+                    bitmap.UriSource = new Uri(path);
+                }
+                else
+                {
+                    string fullPath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, path);
+                    if (!System.IO.File.Exists(fullPath))
+                    {
+                        bitmap.UriSource = new Uri(path, UriKind.RelativeOrAbsolute);
+                    }
+                    else
+                    {
+                        bitmap.UriSource = new Uri(fullPath, UriKind.Absolute);
+                    }
+                }
+
+                bitmap.CacheOption = BitmapCacheOption.OnLoad;
+                bitmap.CreateOptions = BitmapCreateOptions.DelayCreation;
+                bitmap.EndInit();
+                bitmap.Freeze();
+
+                DetailBackgroundImage.Source = bitmap;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"[GameDetailWindow] Error loading background image {path}: {ex.Message}");
+                DetailBackgroundImage.Source = null;
             }
         }
 
