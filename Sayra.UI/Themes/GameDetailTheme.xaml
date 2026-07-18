@@ -1,0 +1,318 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:c="clr-namespace:Sayra.UI.Controls">
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="Colors.xaml" />
+        <ResourceDictionary Source="Brushes.xaml" />
+        <ResourceDictionary Source="Styles.xaml" />
+    </ResourceDictionary.MergedDictionaries>
+
+    <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+
+    <!-- Original Colors & Centralized Theme Mappings -->
+    <Color x:Key="GameDetail.Background.Color">#08090D</Color>
+    <Color x:Key="GameDetail.Highlight.Color">#ffff3d</Color>
+    <Color x:Key="GameDetail.Highlight.HoverColor">#f4f46b</Color>
+    <Color x:Key="GameDetail.CardBackground.Color">#CC1F1F23</Color>
+
+    <!-- Game Detail Specific Colors and Brushes -->
+    <SolidColorBrush x:Key="GameDetail.Background" Color="{DynamicResource GameDetail.Background.Color}" />
+    <SolidColorBrush x:Key="GameDetail.CardBackground" Color="{DynamicResource GameDetail.CardBackground.Color}" />
+    <SolidColorBrush x:Key="GameDetail.PanelBackground" Color="{DynamicResource GameDetail.CardBackground.Color}" />
+    <SolidColorBrush x:Key="GameDetail.Border" Color="{DynamicResource App.Border}" />
+    <SolidColorBrush x:Key="GameDetail.Highlight" Color="{DynamicResource GameDetail.Highlight.Color}" />
+    <SolidColorBrush x:Key="GameDetail.PriceBackground" Color="{DynamicResource App.Surface}" />
+    <SolidColorBrush x:Key="GameDetail.ButtonPrimary" Color="{DynamicResource GameDetail.Highlight.Color}" />
+    <SolidColorBrush x:Key="GameDetail.TextPrimary" Color="{DynamicResource App.Text.Primary}" />
+    <SolidColorBrush x:Key="GameDetail.TextSecondary" Color="{DynamicResource App.Text.Secondary}" />
+
+    <!-- Specific Overlay Gradient matching the original heavily blurred game backdrop -->
+    <LinearGradientBrush x:Key="GameDetail.HeroOverlay" StartPoint="0.5,0" EndPoint="0.5,1">
+        <GradientStop Color="#9908090D" Offset="0.0" />
+        <GradientStop Color="#F308090D" Offset="0.65" />
+        <GradientStop Color="#FF08090D" Offset="1.0" />
+    </LinearGradientBrush>
+
+    <!-- Glass Button hover overlay resources -->
+    <SolidColorBrush x:Key="GameDetail.Button.HoverBg" Color="#1AFFFFFF" />
+    <SolidColorBrush x:Key="GameDetail.Button.HoverBorder" Color="#80FFFFFF" />
+    <SolidColorBrush x:Key="GameDetail.Button.PressedBg" Color="#33FFFFFF" />
+
+    <!-- Button specific Danger backgrounds -->
+    <SolidColorBrush x:Key="GameDetail.Button.DangerHoverBg" Color="{DynamicResource App.Danger}" Opacity="0.1" />
+    <SolidColorBrush x:Key="GameDetail.Button.DangerPressedBg" Color="{DynamicResource App.Danger}" Opacity="0.2" />
+
+    <!-- Cover placeholder assets and fallback icon brushes -->
+    <SolidColorBrush x:Key="GameDetail.CoverPlaceholderBackground" Color="#10FFFFFF" />
+    <SolidColorBrush x:Key="GameDetail.GamepadIconFill" Color="#33FFFFFF" />
+
+    <!-- Badge specific backgrounds -->
+    <SolidColorBrush x:Key="GameDetail.BadgeBackground" Color="#12FFFFFF" />
+
+    <!-- Status Badge backgrounds and borders -->
+    <SolidColorBrush x:Key="GameDetail.Status.SuccessBackground" Color="#1014BE78" />
+    <SolidColorBrush x:Key="GameDetail.Status.SuccessBorder" Color="{DynamicResource App.Success}" />
+    <SolidColorBrush x:Key="GameDetail.Status.DangerBackground" Color="#10F46B6B" />
+    <SolidColorBrush x:Key="GameDetail.Status.DangerBorder" Color="{DynamicResource App.Danger}" />
+    <SolidColorBrush x:Key="GameDetail.Status.WarningBackground" Color="#10E5A000" />
+    <SolidColorBrush x:Key="GameDetail.Status.WarningBorder" Color="{DynamicResource App.Warning}" />
+
+    <!-- Component Reusable Styles -->
+
+    <!-- A) Game Hero Section Styles -->
+    <Style x:Key="GameHeroStyle" TargetType="ContentControl">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Padding" Value="0"/>
+        <Setter Property="VerticalAlignment" Value="Stretch"/>
+        <Setter Property="HorizontalAlignment" Value="Stretch"/>
+    </Style>
+
+    <Style x:Key="GameHeroTitleStyle" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="{StaticResource PeydaBold}"/>
+        <Setter Property="FontSize" Value="32"/>
+        <Setter Property="Foreground" Value="{DynamicResource GameDetail.TextPrimary}"/>
+        <Setter Property="HorizontalAlignment" Value="Right"/>
+    </Style>
+
+    <Style x:Key="GameHeroGenreStyle" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="{StaticResource PeydaLight}"/>
+        <Setter Property="FontSize" Value="17"/>
+        <Setter Property="Foreground" Value="{DynamicResource GameDetail.TextSecondary}"/>
+        <Setter Property="Margin" Value="0,2,0,0"/>
+        <Setter Property="HorizontalAlignment" Value="Right"/>
+    </Style>
+
+    <Style x:Key="GameHeroDescriptionStyle" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="{StaticResource PeydaLight}"/>
+        <Setter Property="FontSize" Value="18"/>
+        <Setter Property="Foreground" Value="{DynamicResource GameDetail.TextPrimary}"/>
+        <Setter Property="TextWrapping" Value="Wrap"/>
+        <Setter Property="LineHeight" Value="28"/>
+        <Setter Property="FlowDirection" Value="RightToLeft"/>
+        <Setter Property="TextAlignment" Value="Right"/>
+        <Setter Property="HorizontalAlignment" Value="Stretch"/>
+        <Setter Property="Margin" Value="0,5,0,15"/>
+    </Style>
+
+    <!-- B) Information Cards Style -->
+    <Style x:Key="GameInfoCardStyle" TargetType="Border">
+        <Setter Property="Background" Value="{DynamicResource GameDetail.CardBackground}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource GameDetail.Border}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="CornerRadius" Value="20"/>
+        <Setter Property="Padding" Value="30"/>
+        <Setter Property="Effect">
+            <Setter.Value>
+                <DropShadowEffect Color="#000000" BlurRadius="25" ShadowDepth="4" Opacity="0.5"/>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- Default Style for GameInfoCard Custom Control -->
+    <Style TargetType="{x:Type c:GameInfoCard}">
+        <Setter Property="Background" Value="{DynamicResource GameDetail.CardBackground}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource GameDetail.Border}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="Padding" Value="30"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type c:GameInfoCard}">
+                    <Border Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="{TemplateBinding CornerRadius}"
+                            Padding="{TemplateBinding Padding}">
+                        <Border.Effect>
+                            <DropShadowEffect Color="#000000" BlurRadius="25" ShadowDepth="4" Opacity="0.5"/>
+                        </Border.Effect>
+                        <ContentPresenter />
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- C) Action Buttons Styles -->
+    <Style x:Key="PrimaryActionButtonStyle" TargetType="Button">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource GameDetail.Highlight}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="Height" Value="50"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="ButtonBorder"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="12">
+                        <Border.Effect>
+                            <DropShadowEffect x:Name="GlowEffect" Color="{DynamicResource GameDetail.Highlight.Color}" BlurRadius="10" ShadowDepth="0" Opacity="0"/>
+                        </Border.Effect>
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="ButtonBorder" Property="Background" Value="#1Affff3d"/>
+                            <Setter TargetName="ButtonBorder" Property="BorderBrush" Value="#80ffff3d"/>
+                            <Setter TargetName="ButtonBorder" Property="BorderThickness" Value="1.5"/>
+                            <Trigger.EnterActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetName="GlowEffect"
+                                                         Storyboard.TargetProperty="Opacity"
+                                                         To="0.6" Duration="0:0:0.2"/>
+                                        <DoubleAnimation Storyboard.TargetName="GlowEffect"
+                                                         Storyboard.TargetProperty="BlurRadius"
+                                                         To="15" Duration="0:0:0.2"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.EnterActions>
+                            <Trigger.ExitActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetName="GlowEffect"
+                                                         Storyboard.TargetProperty="Opacity"
+                                                         To="0.0" Duration="0:0:0.2"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.ExitActions>
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="ButtonBorder" Property="Background" Value="#33ffff3d"/>
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter TargetName="ButtonBorder" Property="Background" Value="#11FFFFFF"/>
+                            <Setter TargetName="ButtonBorder" Property="BorderBrush" Value="#22FFFFFF"/>
+                            <Setter Property="Foreground" Value="#55FFFFFF"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="SecondaryActionButtonStyle" TargetType="Button">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource GameDetail.Border}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="Height" Value="50"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="ButtonBorder"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="12">
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="ButtonBorder" Property="Background" Value="{DynamicResource GameDetail.Button.HoverBg}"/>
+                            <Setter TargetName="ButtonBorder" Property="BorderBrush" Value="{DynamicResource GameDetail.Button.HoverBorder}"/>
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="ButtonBorder" Property="Background" Value="{DynamicResource GameDetail.Button.PressedBg}"/>
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter TargetName="ButtonBorder" Property="Background" Value="#11FFFFFF"/>
+                            <Setter TargetName="ButtonBorder" Property="BorderBrush" Value="#22FFFFFF"/>
+                            <Setter Property="Foreground" Value="#55FFFFFF"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- Default Style for GameActionButton Custom Control -->
+    <Style TargetType="{x:Type c:GameActionButton}" BasedOn="{StaticResource PrimaryActionButtonStyle}">
+    </Style>
+
+    <!-- D) Tags / Badges Styles -->
+    <Style x:Key="CategoryBadgeStyle" TargetType="{x:Type c:GameBadge}">
+        <Setter Property="Background" Value="{DynamicResource GameDetail.BadgeBackground}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource GameDetail.Border}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="Padding" Value="14,6"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type c:GameBadge}">
+                    <Border Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="12"
+                            Padding="{TemplateBinding Padding}">
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
+                            <!-- Optional Status Dot -->
+                            <Ellipse x:Name="StatusDot" Width="8" Height="8" Margin="0,0,10,0" VerticalAlignment="Center"
+                                     Fill="{TemplateBinding DotBrush}"
+                                     Visibility="{Binding HasDot, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=Collapsed}"/>
+
+                            <!-- Label (e.g. "سازنده: ") -->
+                            <TextBlock x:Name="LabelText" Text="{TemplateBinding Label}"
+                                       FontFamily="{StaticResource PeydaMedium}" FontSize="13"
+                                       Foreground="{DynamicResource GameDetail.TextSecondary}" VerticalAlignment="Center" Margin="0,0,4,0"
+                                       Visibility="{Binding HasLabel, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=Collapsed}"/>
+
+                            <!-- Value Text -->
+                            <TextBlock x:Name="ValueText" Text="{TemplateBinding Text}"
+                                       FontFamily="{StaticResource PeydaBold}" FontSize="13"
+                                       Foreground="{TemplateBinding TextForeground}" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="GenreBadgeStyle" TargetType="{x:Type c:GameBadge}">
+        <Setter Property="Background" Value="{DynamicResource GameDetail.BadgeBackground}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource GameDetail.Border}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="Padding" Value="14,6"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type c:GameBadge}">
+                    <Border Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="12"
+                            Padding="{TemplateBinding Padding}">
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
+                            <!-- Optional Status Dot -->
+                            <Ellipse x:Name="StatusDot" Width="8" Height="8" Margin="0,0,10,0" VerticalAlignment="Center"
+                                     Fill="{TemplateBinding DotBrush}"
+                                     Visibility="{Binding HasDot, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=Collapsed}"/>
+
+                            <!-- Label (e.g. "سازنده: ") -->
+                            <TextBlock x:Name="LabelText" Text="{TemplateBinding Label}"
+                                       FontFamily="{StaticResource PeydaMedium}" FontSize="13"
+                                       Foreground="{DynamicResource GameDetail.TextSecondary}" VerticalAlignment="Center" Margin="0,0,4,0"
+                                       Visibility="{Binding HasLabel, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=Collapsed}"/>
+
+                            <!-- Value Text -->
+                            <TextBlock x:Name="ValueText" Text="{TemplateBinding Text}"
+                                       FontFamily="{StaticResource PeydaBold}" FontSize="13"
+                                       Foreground="{TemplateBinding TextForeground}" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- Default Style for GameBadge Custom Control -->
+    <Style TargetType="{x:Type c:GameBadge}" BasedOn="{StaticResource CategoryBadgeStyle}">
+    </Style>
+
+    <Style x:Key="StatusBadgeStyle" TargetType="Border">
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="CornerRadius" Value="10"/>
+        <Setter Property="Background" Value="{DynamicResource GameDetail.Status.SuccessBackground}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource GameDetail.Status.SuccessBorder}"/>
+    </Style>
+</ResourceDictionary>
