@@ -626,31 +626,12 @@
             </Setter>
         </Style>
 
-        <Style x:Key="AdminDetailComboBoxItemStyle" TargetType="ComboBoxItem">
-            <Setter Property="Background" Value="#1C1F26"/>
-            <Setter Property="Foreground" Value="White"/>
+        <Style x:Key="AdminDetailComboBoxItemStyle" TargetType="ComboBoxItem" BasedOn="{StaticResource {x:Type ComboBoxItem}}">
             <Setter Property="Padding" Value="8,4"/>
-            <Setter Property="FontFamily" Value="{StaticResource PeydaMedium}"/>
-            <Style.Triggers>
-                <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="#63E6FF"/>
-                    <Setter Property="Foreground" Value="Black"/>
-                </Trigger>
-                <Trigger Property="IsSelected" Value="True">
-                    <Setter Property="Background" Value="#63E6FF"/>
-                    <Setter Property="Foreground" Value="Black"/>
-                </Trigger>
-            </Style.Triggers>
         </Style>
 
-        <Style x:Key="AdminDetailComboBoxStyle" TargetType="ComboBox">
-            <Setter Property="Background" Value="#1C1F26"/>
-            <Setter Property="Foreground" Value="White"/>
-            <Setter Property="BorderBrush" Value="#2A2D36"/>
-            <Setter Property="BorderThickness" Value="1"/>
+        <Style x:Key="AdminDetailComboBoxStyle" TargetType="ComboBox" BasedOn="{StaticResource {x:Type ComboBox}}">
             <Setter Property="Padding" Value="8,4"/>
-            <Setter Property="FontSize" Value="12"/>
-            <Setter Property="FontFamily" Value="{StaticResource PeydaMedium}"/>
             <Setter Property="ItemContainerStyle" Value="{StaticResource AdminDetailComboBoxItemStyle}"/>
         </Style>
     </Window.Resources>
