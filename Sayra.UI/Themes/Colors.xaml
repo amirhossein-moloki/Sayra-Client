@@ -33,4 +33,72 @@
     <Color x:Key="App.Login.WhitePressedBg">#33FFFFFF</Color>
     <Color x:Key="App.Login.PlaceholderText">#66FFFFFF</Color>
     <Color x:Key="App.Login.SecondaryText">#A1A1AA</Color>
+
+    <!-- Admin Page Centralized Colors -->
+    <Color x:Key="Admin.Background.Color">#0F1014</Color>
+    <Color x:Key="Admin.Surface.Color">#181A20</Color>
+    <Color x:Key="Admin.Border.Color">#2A2D36</Color>
+    <Color x:Key="Admin.Accent.Color">#63E6FF</Color>
+    <Color x:Key="Admin.Text.Secondary.Color">#9A9A9A</Color>
+    <Color x:Key="Admin.Button.Bg.Color">#1E2026</Color>
+    <Color x:Key="Admin.Button.Fg.Color">#E1E1E6</Color>
+    <Color x:Key="Admin.Button.HoverBg.Color">#262933</Color>
+    <Color x:Key="Admin.Button.PressedBg.Color">#101215</Color>
+    <Color x:Key="Admin.Field.Bg.Color">#1C1F26</Color>
+    <Color x:Key="Admin.Field.FocusedBg.Color">#15171C</Color>
+    <Color x:Key="Admin.Selection.Bg.Color">#252A34</Color>
+    <Color x:Key="Admin.CellSelection.Bg.Color">#2663E6FF</Color>
+    <Color x:Key="Admin.RowSelection.Bg.Color">#2D3440</Color>
+    <Color x:Key="Admin.Field.HoverBorder.Color">#4463E6FF</Color>
+    <Color x:Key="Admin.ScrollThumb.Color">#4063E6FF</Color>
+    <Color x:Key="Admin.RightSidebar.Bg.Color">#14161C</Color>
+    <Color x:Key="Admin.Modal.Overlay.Color">#73000000</Color>
+    <Color x:Key="Admin.Loading.Overlay.Color">#88000000</Color>
+    <Color x:Key="Admin.Modal.Bg.Start.Color">#1B1B1F</Color>
+    <Color x:Key="Admin.Modal.Bg.End.Color">#101014</Color>
+    <Color x:Key="Admin.Modal.Border.Color">#252528</Color>
+    <Color x:Key="Admin.Details.CardBg.Color">#121216</Color>
+    <Color x:Key="Admin.Loading.PanelBg.Color">#1A1F26</Color>
+    <Color x:Key="Admin.DangerZone.Bg.Color">#1A1212</Color>
+    <Color x:Key="Admin.CloseButton.HoverBg.Color">#D9383A</Color>
+
+    <!-- Translucent Overlay Colors -->
+    <Color x:Key="Admin.Translucent.06.Color">#06FFFFFF</Color>
+    <Color x:Key="Admin.Translucent.12.Color">#12FFFFFF</Color>
+    <Color x:Key="Admin.Translucent.13.Color">#13FFFFFF</Color>
+    <Color x:Key="Admin.Translucent.22.Color">#22FFFFFF</Color>
+    <Color x:Key="Admin.Translucent.33.Color">#33FFFFFF</Color>
+    <Color x:Key="Admin.Translucent.4D.Color">#4DFFFFFF</Color>
+    <Color x:Key="Admin.Translucent.55.Color">#55FFFFFF</Color>
+
+    <!-- Success Accent Colors -->
+    <Color x:Key="Admin.Success.Color">#14BE78</Color>
+    <Color x:Key="Admin.Success.Translucent.11.Color">#1114BE78</Color>
+    <Color x:Key="Admin.Success.Translucent.22.Color">#2214BE78</Color>
+    <Color x:Key="Admin.Success.Translucent.33.Color">#3314BE78</Color>
+    <Color x:Key="Admin.Success.Translucent.44.Color">#4414BE78</Color>
+
+    <!-- Danger Accent Colors -->
+    <Color x:Key="Admin.Danger.Color">#F46B6B</Color>
+    <Color x:Key="Admin.Danger.Translucent.22.Color">#22F46B6B</Color>
+    <Color x:Key="Admin.Danger.Translucent.33.Color">#33F46B6B</Color>
+    <Color x:Key="Admin.Danger.Translucent.44.Color">#44F46B6B</Color>
+
+    <!-- Warning / Primary Yellow Accent Colors -->
+    <Color x:Key="Admin.Yellow.Color">#ffff3d</Color>
+    <Color x:Key="Admin.Yellow.Translucent.22.Color">#22ffff3d</Color>
+    <Color x:Key="Admin.Yellow.Translucent.44.Color">#44ffff3d</Color>
+
+    <!-- Purple Accent Colors -->
+    <Color x:Key="Admin.Purple.Color">#8A5CFF</Color>
+    <Color x:Key="Admin.Purple.Translucent.22.Color">#228A5CFF</Color>
+    <Color x:Key="Admin.Purple.Translucent.44.Color">#448A5CFF</Color>
+
+    <!-- Cyan Accent Colors -->
+    <Color x:Key="Admin.Cyan.Color">#00FFFF</Color>
+    <Color x:Key="Admin.Cyan.Translucent.22.Color">#2200FFFF</Color>
+    <Color x:Key="Admin.Cyan.Translucent.33.Color">#3300FFFF</Color>
+    <Color x:Key="Admin.Cyan.Translucent.44.Color">#4400FFFF</Color>
+    <Color x:Key="Admin.White">#FFFFFF</Color>
+    <Color x:Key="Admin.Black">#000000</Color>
 </ResourceDictionary>
