@@ -10,7 +10,7 @@
         <!-- Futuristic Premium Button Style -->
         <Style x:Key="FuturisticButtonStyle" TargetType="Button">
             <Setter Property="Background" Value="Transparent" />
-            <Setter Property="BorderBrush" Value="#F5FF00" />
+            <Setter Property="BorderBrush" Value="{DynamicResource LoginYellowAccentBrush}" />
             <Setter Property="BorderThickness" Value="1.5" />
             <Setter Property="FontFamily" Value="{StaticResource PeydaMedium}" />
             <Setter Property="FontSize" Value="18" />
@@ -30,10 +30,10 @@
                             </Border.RenderTransform>
                             <!-- Use locally defined non-frozen Brush to allow Background color animation -->
                             <Border.Background>
-                                <SolidColorBrush x:Name="BtnBackgroundBrush" Color="#00050507" />
+                                <SolidColorBrush x:Name="BtnBackgroundBrush" Color="{StaticResource App.Login.DarkBgTransparent}" />
                             </Border.Background>
                             <Border.Effect>
-                                <DropShadowEffect x:Name="BtnGlow" Color="#F5FF00" BlurRadius="15" ShadowDepth="0" Opacity="0" />
+                                <DropShadowEffect x:Name="BtnGlow" Color="{StaticResource App.Login.YellowAccent}" BlurRadius="15" ShadowDepth="0" Opacity="0" />
                             </Border.Effect>
 
                             <Grid x:Name="ContentGrid" Margin="25,0">
@@ -60,7 +60,7 @@
                                           Width="8" Height="10"
                                           Stretch="Uniform">
                                         <Path.Stroke>
-                                            <SolidColorBrush x:Name="ArrowStrokeBrush" Color="#F5FF00" />
+                                            <SolidColorBrush x:Name="ArrowStrokeBrush" Color="{StaticResource App.Login.YellowAccent}" />
                                         </Path.Stroke>
                                     </Path>
                                 </Grid>
@@ -74,11 +74,11 @@
                                     <BeginStoryboard>
                                         <Storyboard>
                                             <ColorAnimation Storyboard.TargetName="BtnBackgroundBrush" Storyboard.TargetProperty="Color"
-                                                            To="#F5FF00" Duration="0:0:0.25"/>
+                                                            To="{StaticResource App.Login.YellowAccent}" Duration="0:0:0.25"/>
                                             <ColorAnimation Storyboard.TargetName="ArrowStrokeBrush" Storyboard.TargetProperty="Color"
-                                                            To="#050507" Duration="0:0:0.25"/>
+                                                            To="{StaticResource App.Login.DarkBg}" Duration="0:0:0.25"/>
                                             <ColorAnimation Storyboard.TargetProperty="(Control.Foreground).(SolidColorBrush.Color)"
-                                                            To="#050507" Duration="0:0:0.25"/>
+                                                            To="{StaticResource App.Login.DarkBg}" Duration="0:0:0.25"/>
                                             <DoubleAnimation Storyboard.TargetName="BtnGlow" Storyboard.TargetProperty="Opacity"
                                                              To="0.8" Duration="0:0:0.25"/>
                                             <DoubleAnimation Storyboard.TargetName="ArrowTranslate" Storyboard.TargetProperty="X"
@@ -90,11 +90,11 @@
                                     <BeginStoryboard>
                                         <Storyboard>
                                             <ColorAnimation Storyboard.TargetName="BtnBackgroundBrush" Storyboard.TargetProperty="Color"
-                                                            To="#00050507" Duration="0:0:0.2"/>
+                                                            To="{StaticResource App.Login.DarkBgTransparent}" Duration="0:0:0.2"/>
                                             <ColorAnimation Storyboard.TargetName="ArrowStrokeBrush" Storyboard.TargetProperty="Color"
-                                                            To="#F5FF00" Duration="0:0:0.2"/>
+                                                            To="{StaticResource App.Login.YellowAccent}" Duration="0:0:0.2"/>
                                             <ColorAnimation Storyboard.TargetProperty="(Control.Foreground).(SolidColorBrush.Color)"
-                                                            To="#F5FF00" Duration="0:0:0.2"/>
+                                                            To="{StaticResource App.Login.YellowAccent}" Duration="0:0:0.2"/>
                                             <DoubleAnimation Storyboard.TargetName="BtnGlow" Storyboard.TargetProperty="Opacity"
                                                              To="0.0" Duration="0:0:0.2"/>
                                             <DoubleAnimation Storyboard.TargetName="ArrowTranslate" Storyboard.TargetProperty="X"
@@ -140,7 +140,7 @@
                 Command="{Binding Command, ElementName=self}"
                 Style="{StaticResource FuturisticButtonStyle}">
             <Button.Foreground>
-                <SolidColorBrush Color="#F5FF00" />
+                <SolidColorBrush Color="{DynamicResource App.Login.YellowAccent}" />
             </Button.Foreground>
         </Button>
     </Grid>
