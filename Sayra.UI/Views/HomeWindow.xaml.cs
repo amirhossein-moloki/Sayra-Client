@@ -44,7 +44,7 @@ namespace Sayra.UI.Views
                     if (SessionHeroCtrl != null) SessionHeroCtrl.Visibility = Visibility.Collapsed;
                     if (AdPanelCtrl != null) AdPanelCtrl.Visibility = Visibility.Collapsed;
 
-                    RootGrid.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#08090D"));
+                    RootGrid.Background = (Brush)this.FindResource("Home.Background");
                 }
                 catch (Exception ex)
                 {
