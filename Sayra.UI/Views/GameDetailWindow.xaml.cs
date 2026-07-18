@@ -19,61 +19,67 @@ namespace Sayra.UI.Views
             _game = game;
             _dashboard = dashboard;
 
+            // Wire up Play button click event on Hero component
+            if (Hero != null && Hero.PlayButtonControl != null)
+            {
+                Hero.PlayButtonControl.Click += PlayGame_Click;
+            }
+
             PopulateDetails();
         }
 
         private void PopulateDetails()
         {
-            if (_game == null) return;
+            if (_game == null || Hero == null) return;
 
-            // Bind values directly
-            DetailTitle.Text = _game.Title;
-            DetailGenre.Text = _game.Genre;
+            // Bind values directly to Hero controls
+            Hero.TitleText.Text = _game.Title;
+            Hero.GenreText.Text = _game.Genre;
             BreadcrumbGameTitle.Text = _game.Title;
-            DetailDescription.Text = string.IsNullOrEmpty(_game.Description)
+            Hero.DescriptionText.Text = string.IsNullOrEmpty(_game.Description)
                 ? "توضیحاتی برای این بازی ثبت نشده است."
                 : _game.Description;
 
-            // Rich metadata binding
-            DetailDeveloper.Text = string.IsNullOrEmpty(_game.Developer) ? "نا مشخص" : _game.Developer;
-            DetailReleaseYear.Text = string.IsNullOrEmpty(_game.ReleaseYear) ? "نا مشخص" : _game.ReleaseYear;
-            DetailLauncher.Text = string.IsNullOrEmpty(_game.Launcher) ? "Custom" : _game.Launcher;
+            // Rich metadata binding on Hero badges
+            Hero.DeveloperBadgeControl.Text = string.IsNullOrEmpty(_game.Developer) ? "نا مشخص" : _game.Developer;
+            Hero.ReleaseYearBadgeControl.Text = string.IsNullOrEmpty(_game.ReleaseYear) ? "نا مشخص" : _game.ReleaseYear;
+            Hero.LauncherBadgeControl.Text = string.IsNullOrEmpty(_game.Launcher) ? "Custom" : _game.Launcher;
 
-            // Status mapping and styling
+            // Status mapping and styling on Hero status controls
             string status = _game.Status;
-            DetailStatus.Text = status;
+            Hero.StatusText.Text = status;
 
-            // Update badge color based on active state
+            // Update badge color using dynamic resources
             if (!string.IsNullOrEmpty(status))
             {
                 string upperStatus = status.ToUpperInvariant();
                 if (upperStatus == "CURRENTLY PLAYING" || upperStatus == "PLAYING" || upperStatus == "RUNNING")
                 {
-                    StatusBadgeBorder.BorderBrush = (Brush)FindResource("SuccessBrush");
-                    StatusBadgeBorder.Background = new SolidColorBrush(Color.FromArgb(16, 20, 190, 120)); // Subtle green transparent
-                    StatusBadgeDot.Fill = (Brush)FindResource("SuccessBrush");
-                    DetailStatus.Foreground = (Brush)FindResource("SuccessBrush");
-                    DetailStatus.Text = "در حال بازی";
+                    Hero.StatusBadgeBorderControl.BorderBrush = (Brush)FindResource("GameDetail.Status.SuccessBorder");
+                    Hero.StatusBadgeBorderControl.Background = (Brush)FindResource("GameDetail.Status.SuccessBackground");
+                    Hero.StatusBadgeDotControl.Fill = (Brush)FindResource("GameDetail.Status.SuccessBorder");
+                    Hero.StatusText.Foreground = (Brush)FindResource("GameDetail.Status.SuccessBorder");
+                    Hero.StatusText.Text = "در حال بازی";
                 }
                 else if (upperStatus == "LOCKED" || upperStatus == "UNAVAILABLE")
                 {
-                    StatusBadgeBorder.BorderBrush = (Brush)FindResource("RedBrush");
-                    StatusBadgeBorder.Background = new SolidColorBrush(Color.FromArgb(16, 244, 107, 107)); // Subtle red transparent
-                    StatusBadgeDot.Fill = (Brush)FindResource("RedBrush");
-                    DetailStatus.Foreground = (Brush)FindResource("RedBrush");
-                    DetailStatus.Text = upperStatus == "LOCKED" ? "قفل شده" : "غیر فعال";
+                    Hero.StatusBadgeBorderControl.BorderBrush = (Brush)FindResource("GameDetail.Status.DangerBorder");
+                    Hero.StatusBadgeBorderControl.Background = (Brush)FindResource("GameDetail.Status.DangerBackground");
+                    Hero.StatusBadgeDotControl.Fill = (Brush)FindResource("GameDetail.Status.DangerBorder");
+                    Hero.StatusText.Foreground = (Brush)FindResource("GameDetail.Status.DangerBorder");
+                    Hero.StatusText.Text = upperStatus == "LOCKED" ? "قفل شده" : "غیر فعال";
                 }
                 else
                 {
-                    StatusBadgeBorder.BorderBrush = (Brush)FindResource("PrimaryYellowBrush");
-                    StatusBadgeBorder.Background = new SolidColorBrush(Color.FromArgb(16, 255, 255, 61)); // Subtle yellow transparent
-                    StatusBadgeDot.Fill = (Brush)FindResource("PrimaryYellowBrush");
-                    DetailStatus.Foreground = (Brush)FindResource("PrimaryYellowBrush");
-                    DetailStatus.Text = "آماده بازی";
+                    Hero.StatusBadgeBorderControl.BorderBrush = (Brush)FindResource("GameDetail.Status.WarningBorder");
+                    Hero.StatusBadgeBorderControl.Background = (Brush)FindResource("GameDetail.Status.WarningBackground");
+                    Hero.StatusBadgeDotControl.Fill = (Brush)FindResource("GameDetail.Status.WarningBorder");
+                    Hero.StatusText.Foreground = (Brush)FindResource("GameDetail.Status.WarningBorder");
+                    Hero.StatusText.Text = "آماده بازی";
                 }
             }
 
-            // Update large artwork, logo, and blurred ambient backdrop
+            // Update large artwork, logo, and blurred ambient backdrop on Hero
             UpdateCoverImage();
             UpdateLogoImage();
             UpdateBackgroundImage();
@@ -81,12 +87,12 @@ namespace Sayra.UI.Views
 
         private void UpdateCoverImage()
         {
-            if (DetailCoverImage == null) return;
+            if (Hero?.CoverImage == null) return;
 
             string path = _game.ImagePath;
             if (string.IsNullOrEmpty(path))
             {
-                DetailCoverImage.Source = null;
+                Hero.CoverImage.Source = null;
                 return;
             }
 
@@ -117,23 +123,23 @@ namespace Sayra.UI.Views
                 bitmap.EndInit();
                 bitmap.Freeze();
 
-                DetailCoverImage.Source = bitmap;
+                Hero.CoverImage.Source = bitmap;
             }
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine($"[GameDetailWindow] Error loading image {path}: {ex.Message}");
-                DetailCoverImage.Source = null;
+                Hero.CoverImage.Source = null;
             }
         }
 
         private void UpdateLogoImage()
         {
-            if (DetailLogoImage == null) return;
+            if (Hero?.LogoImage == null) return;
 
             string path = _game.LogoImage;
             if (string.IsNullOrEmpty(path))
             {
-                DetailLogoImage.Source = null;
+                Hero.LogoImage.Source = null;
                 return;
             }
 
@@ -164,23 +170,23 @@ namespace Sayra.UI.Views
                 bitmap.EndInit();
                 bitmap.Freeze();
 
-                DetailLogoImage.Source = bitmap;
+                Hero.LogoImage.Source = bitmap;
             }
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine($"[GameDetailWindow] Error loading logo image {path}: {ex.Message}");
-                DetailLogoImage.Source = null;
+                Hero.LogoImage.Source = null;
             }
         }
 
         private void UpdateBackgroundImage()
         {
-            if (DetailBackgroundImage == null) return;
+            if (Hero?.BackgroundImage == null) return;
 
             string path = _game.BackgroundImage;
             if (string.IsNullOrEmpty(path))
             {
-                DetailBackgroundImage.Source = null;
+                Hero.BackgroundImage.Source = null;
                 return;
             }
 
@@ -211,27 +217,12 @@ namespace Sayra.UI.Views
                 bitmap.EndInit();
                 bitmap.Freeze();
 
-                DetailBackgroundImage.Source = bitmap;
+                Hero.BackgroundImage.Source = bitmap;
             }
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine($"[GameDetailWindow] Error loading background image {path}: {ex.Message}");
-                DetailBackgroundImage.Source = null;
-            }
-        }
-
-        private void DetailCoverImage_ImageFailed(object sender, ExceptionRoutedEventArgs e)
-        {
-            try
-            {
-                if (sender is Image img)
-                {
-                    img.Visibility = Visibility.Collapsed;
-                }
-            }
-            catch
-            {
-                // Suppress failure handling errors
+                Hero.BackgroundImage.Source = null;
             }
         }
 

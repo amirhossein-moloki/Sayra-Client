@@ -15,6 +15,8 @@
     <SolidColorBrush x:Key="TextSecondaryBrush" Color="{DynamicResource App.Text.Secondary}"/>
     <SolidColorBrush x:Key="SuccessBrush" Color="{DynamicResource App.Success}"/>
     <SolidColorBrush x:Key="ErrorBrush" Color="{DynamicResource App.Error}"/>
+    <SolidColorBrush x:Key="WarningBrush" Color="{DynamicResource App.Warning}"/>
+    <SolidColorBrush x:Key="DangerBrush" Color="{DynamicResource App.Danger}"/>
 
     <!-- Specific Login Screen Brushes -->
     <SolidColorBrush x:Key="LoginYellowAccentBrush" Color="{DynamicResource App.Login.YellowAccent}"/>
