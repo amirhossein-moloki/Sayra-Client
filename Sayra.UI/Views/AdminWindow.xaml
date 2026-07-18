@@ -21,75 +21,75 @@
         <!-- Centralized Game Item ContextMenu (Used by both DataGrid rows and GameCards) -->
         <ContextMenu x:Key="GameItemContextMenu">
             <MenuItem Header="Launch Application"
-                      Command="{Binding Path=PlacementTarget.Tag.LaunchCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}"
-                      CommandParameter="{Binding Path=PlacementTarget.DataContext, RelativeSource={RelativeSource AncestorType=ContextMenu}}">
+                      Command="{Binding Path=PlacementTarget.Tag.DataContext.LaunchCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}"
+                      CommandParameter="{Binding Path=PlacementTarget.Tag.SelectedItems, RelativeSource={RelativeSource AncestorType=ContextMenu}}">
                 <MenuItem.Icon>
                     <Path Data="M8 5v14l11-7z"/>
                 </MenuItem.Icon>
             </MenuItem>
             <MenuItem Header="Stop Process"
-                      Command="{Binding Path=PlacementTarget.Tag.StopCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}"
-                      CommandParameter="{Binding Path=PlacementTarget.DataContext, RelativeSource={RelativeSource AncestorType=ContextMenu}}">
+                      Command="{Binding Path=PlacementTarget.Tag.DataContext.StopCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}"
+                      CommandParameter="{Binding Path=PlacementTarget.Tag.SelectedItems, RelativeSource={RelativeSource AncestorType=ContextMenu}}">
                 <MenuItem.Icon>
                     <Path Data="M6 6h12v12H6z"/>
                 </MenuItem.Icon>
             </MenuItem>
             <MenuItem Header="Restart Application"
-                      Command="{Binding Path=PlacementTarget.Tag.RestartCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}"
-                      CommandParameter="{Binding Path=PlacementTarget.DataContext, RelativeSource={RelativeSource AncestorType=ContextMenu}}">
+                      Command="{Binding Path=PlacementTarget.Tag.DataContext.RestartCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}"
+                      CommandParameter="{Binding Path=PlacementTarget.Tag.SelectedItems, RelativeSource={RelativeSource AncestorType=ContextMenu}}">
                 <MenuItem.Icon>
                     <Path Data="M19 8l-4 4h3c0 3.31-2.69 6-6 6a5.87 5.87 0 01-2.8-.7l-1.01 1.01A7.9 7.9 0 0012 20c4.42 0 8-3.58 8-8h3l-4-4zM6 12c0-3.31 2.69-6 6-6 1.01 0 1.97.25 2.8.7l1.01-1.01A7.9 7.9 0 0012 4c-4.42 0-8 3.58-8 8H1l4 4 4-4H6z"/>
                 </MenuItem.Icon>
             </MenuItem>
             <Separator />
             <MenuItem Header="Open Install Folder"
-                      Command="{Binding Path=PlacementTarget.Tag.OpenFolderCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}"
-                      CommandParameter="{Binding Path=PlacementTarget.DataContext, RelativeSource={RelativeSource AncestorType=ContextMenu}}">
+                      Command="{Binding Path=PlacementTarget.Tag.DataContext.OpenFolderCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}"
+                      CommandParameter="{Binding Path=PlacementTarget.Tag.SelectedItems, RelativeSource={RelativeSource AncestorType=ContextMenu}}">
                 <MenuItem.Icon>
                     <Path Data="M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"/>
                 </MenuItem.Icon>
             </MenuItem>
             <MenuItem Header="Copy Installation Path"
-                      Command="{Binding Path=PlacementTarget.Tag.CopyPathCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}"
-                      CommandParameter="{Binding Path=PlacementTarget.DataContext, RelativeSource={RelativeSource AncestorType=ContextMenu}}">
+                      Command="{Binding Path=PlacementTarget.Tag.DataContext.CopyPathCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}"
+                      CommandParameter="{Binding Path=PlacementTarget.Tag.SelectedItems, RelativeSource={RelativeSource AncestorType=ContextMenu}}">
                 <MenuItem.Icon>
                     <Path Data="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
                 </MenuItem.Icon>
             </MenuItem>
             <Separator />
             <MenuItem Header="Validate Files"
-                      Command="{Binding Path=PlacementTarget.Tag.ValidateCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}"
-                      CommandParameter="{Binding Path=PlacementTarget.DataContext, RelativeSource={RelativeSource AncestorType=ContextMenu}}">
+                      Command="{Binding Path=PlacementTarget.Tag.DataContext.ValidateCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}"
+                      CommandParameter="{Binding Path=PlacementTarget.Tag.SelectedItems, RelativeSource={RelativeSource AncestorType=ContextMenu}}">
                 <MenuItem.Icon>
                     <Path Data="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
                 </MenuItem.Icon>
             </MenuItem>
             <MenuItem Header="Scan Metadata"
-                      Command="{Binding Path=PlacementTarget.Tag.ScanMetadataCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}"
-                      CommandParameter="{Binding Path=PlacementTarget.DataContext, RelativeSource={RelativeSource AncestorType=ContextMenu}}">
+                      Command="{Binding Path=PlacementTarget.Tag.DataContext.ScanMetadataCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}"
+                      CommandParameter="{Binding Path=PlacementTarget.Tag.SelectedItems, RelativeSource={RelativeSource AncestorType=ContextMenu}}">
                 <MenuItem.Icon>
                     <Path Data="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
                 </MenuItem.Icon>
             </MenuItem>
             <MenuItem Header="Rescan Application"
-                      Command="{Binding Path=PlacementTarget.Tag.RescanCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}"
-                      CommandParameter="{Binding Path=PlacementTarget.DataContext, RelativeSource={RelativeSource AncestorType=ContextMenu}}">
+                      Command="{Binding Path=PlacementTarget.Tag.DataContext.RescanCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}"
+                      CommandParameter="{Binding Path=PlacementTarget.Tag.SelectedItems, RelativeSource={RelativeSource AncestorType=ContextMenu}}">
                 <MenuItem.Icon>
                     <Path Data="M12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6 0 1.01-.25 1.97-.7 2.8l1.46 1.46A7.93 7.93 0 0020 12c0-4.42-3.58-8-8-8zm0 14c-3.31 0-6-2.69-6-6 0-1.01.25-1.97.7-2.8L5.24 7.74A7.93 7.93 0 004 12c0 4.42 3.58 8 8 8v3l4-4-4-4v3z"/>
                 </MenuItem.Icon>
             </MenuItem>
             <Separator />
             <MenuItem Header="Export Configuration"
-                      Command="{Binding Path=PlacementTarget.Tag.ExportCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}"
-                      CommandParameter="{Binding Path=PlacementTarget.DataContext, RelativeSource={RelativeSource AncestorType=ContextMenu}}">
+                      Command="{Binding Path=PlacementTarget.Tag.DataContext.ExportCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}"
+                      CommandParameter="{Binding Path=PlacementTarget.Tag.SelectedItems, RelativeSource={RelativeSource AncestorType=ContextMenu}}">
                 <MenuItem.Icon>
                     <Path Data="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/>
                 </MenuItem.Icon>
             </MenuItem>
             <Separator />
             <MenuItem Header="Delete Entry"
-                      Command="{Binding Path=PlacementTarget.Tag.DeleteCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}"
-                      CommandParameter="{Binding Path=PlacementTarget.DataContext, RelativeSource={RelativeSource AncestorType=ContextMenu}}">
+                      Command="{Binding Path=PlacementTarget.Tag.DataContext.DeleteCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}"
+                      CommandParameter="{Binding Path=PlacementTarget.Tag.SelectedItems, RelativeSource={RelativeSource AncestorType=ContextMenu}}">
                 <MenuItem.Icon>
                     <Path Data="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
                 </MenuItem.Icon>
@@ -586,8 +586,10 @@
             <Setter Property="Foreground" Value="White"/>
             <Setter Property="Height" Value="48"/>
             <Setter Property="SnapsToDevicePixels" Value="True"/>
-            <Setter Property="Tag" Value="{Binding DataContext, RelativeSource={RelativeSource AncestorType=DataGrid}}"/>
+            <Setter Property="Tag" Value="{Binding RelativeSource={RelativeSource AncestorType=DataGrid}}"/>
             <Setter Property="ContextMenu" Value="{StaticResource GameItemContextMenu}"/>
+            <EventSetter Event="PreviewMouseLeftButtonDown" Handler="DataGridRow_PreviewMouseLeftButtonDown"/>
+            <EventSetter Event="MouseEnter" Handler="DataGridRow_MouseEnter"/>
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
                     <Setter Property="Background" Value="#252A34"/>
@@ -1142,9 +1144,10 @@
 
                         <DataGrid Grid.Row="0" x:Name="GamesDataGrid"
                                   ItemsSource="{Binding VisibleItems}"
-                                  SelectionMode="Single"
+                                  SelectionMode="Extended"
                                   SelectionUnit="FullRow"
-                                  SelectionChanged="GamesDataGrid_SelectionChanged">
+                                  MouseDoubleClick="GamesDataGrid_MouseDoubleClick"
+                                  PreviewMouseLeftButtonUp="GamesDataGrid_PreviewMouseLeftButtonUp">
                             <DataGrid.Style>
                                 <Style TargetType="DataGrid" BasedOn="{StaticResource PremiumDataGridStyle}">
                                     <Setter Property="Visibility" Value="Visible"/>
