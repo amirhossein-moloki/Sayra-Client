@@ -68,6 +68,21 @@ namespace Sayra.UI.Models
         [ObservableProperty]
         private string _releaseYear = string.Empty;
 
+        [ObservableProperty]
+        private string _arguments = "--nosplash --noborder --fullscreen";
+
+        [ObservableProperty]
+        private string _customTags = "Kiosk, GameNet, LAN";
+
+        [ObservableProperty]
+        private string _verificationStatus = "Validated";
+
+        [ObservableProperty]
+        private string _sandboxMode = "Enforced";
+
+        [ObservableProperty]
+        private bool _hideOnClient = false;
+
         // Structured wrapper properties to align with GameItem and Game
         public string Title
         {
