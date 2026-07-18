@@ -13,6 +13,8 @@
                 <ResourceDictionary Source="Resources/Styles.xaml"/>
                 <ResourceDictionary Source="Resources/Templates.xaml"/>
                 <ResourceDictionary Source="Resources/GameCardStyles.xaml"/>
+                <ResourceDictionary Source="Themes/LoginTheme.xaml"/>
+                <ResourceDictionary Source="Themes/HomeTheme.xaml"/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>

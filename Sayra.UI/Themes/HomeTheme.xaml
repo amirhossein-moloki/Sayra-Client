@@ -47,7 +47,7 @@
                             <TextBlock Grid.Column="2"
                                        Text="پایان دادن به استفاده"
                                        Foreground="{DynamicResource RedBrush}"
-                                       FontFamily="{StaticResource PeydaBold}"
+                                       FontFamily="{DynamicResource PeydaBold}"
                                        FontSize="15"
                                        VerticalAlignment="Center"/>
                         </Grid>
