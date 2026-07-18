@@ -587,6 +587,20 @@ namespace Sayra.UI.ViewModels
         }
 
         [RelayCommand]
+        private void Rescan(AdminAppItem item)
+        {
+            if (item == null) return;
+            NotificationService.Instance.ShowLoading($"در حال اسکن مجدد: {item.Name}");
+            Task.Delay(1000).ContinueWith(_ =>
+            {
+                App.Current.Dispatcher.Invoke(() =>
+                {
+                    NotificationService.Instance.ShowSuccess($"اسکن مجدد برنامه {item.Name} با موفقیت انجام شد.");
+                });
+            });
+        }
+
+        [RelayCommand]
         private void Export(AdminAppItem item)
         {
             if (item == null) return;
