@@ -38,4 +38,71 @@
     <SolidColorBrush x:Key="LoginWhitePressedBgBrush" Color="{DynamicResource App.Login.WhitePressedBg}"/>
     <SolidColorBrush x:Key="LoginPlaceholderTextBrush" Color="{DynamicResource App.Login.PlaceholderText}"/>
     <SolidColorBrush x:Key="LoginSecondaryTextBrush" Color="{DynamicResource App.Login.SecondaryText}"/>
+
+    <!-- Admin Page Centralized Brushes -->
+    <SolidColorBrush x:Key="Admin.BackgroundBrush" Color="{DynamicResource Admin.Background.Color}"/>
+    <SolidColorBrush x:Key="Admin.SurfaceBrush" Color="{DynamicResource Admin.Surface.Color}"/>
+    <SolidColorBrush x:Key="Admin.BorderBrush" Color="{DynamicResource Admin.Border.Color}"/>
+    <SolidColorBrush x:Key="Admin.AccentBrush" Color="{DynamicResource Admin.Accent.Color}"/>
+    <SolidColorBrush x:Key="Admin.Text.Secondary" Color="{DynamicResource Admin.Text.Secondary.Color}"/>
+    <SolidColorBrush x:Key="Admin.Button.BgBrush" Color="{DynamicResource Admin.Button.Bg.Color}"/>
+    <SolidColorBrush x:Key="Admin.Button.FgBrush" Color="{DynamicResource Admin.Button.Fg.Color}"/>
+    <SolidColorBrush x:Key="Admin.Button.HoverBgBrush" Color="{DynamicResource Admin.Button.HoverBg.Color}"/>
+    <SolidColorBrush x:Key="Admin.Button.PressedBgBrush" Color="{DynamicResource Admin.Button.PressedBg.Color}"/>
+    <SolidColorBrush x:Key="Admin.Field.BgBrush" Color="{DynamicResource Admin.Field.Bg.Color}"/>
+    <SolidColorBrush x:Key="Admin.Field.FocusedBgBrush" Color="{DynamicResource Admin.Field.FocusedBg.Color}"/>
+    <SolidColorBrush x:Key="Admin.Selection.BgBrush" Color="{DynamicResource Admin.Selection.Bg.Color}"/>
+    <SolidColorBrush x:Key="Admin.CellSelection.BgBrush" Color="{DynamicResource Admin.CellSelection.Bg.Color}"/>
+    <SolidColorBrush x:Key="Admin.RowSelection.BgBrush" Color="{DynamicResource Admin.RowSelection.Bg.Color}"/>
+    <SolidColorBrush x:Key="Admin.Field.HoverBorderBrush" Color="{DynamicResource Admin.Field.HoverBorder.Color}"/>
+    <SolidColorBrush x:Key="Admin.RightSidebar.BgBrush" Color="{DynamicResource Admin.RightSidebar.Bg.Color}"/>
+    <SolidColorBrush x:Key="Admin.Modal.OverlayBrush" Color="{DynamicResource Admin.Modal.Overlay.Color}"/>
+    <SolidColorBrush x:Key="Admin.Loading.OverlayBrush" Color="{DynamicResource Admin.Loading.Overlay.Color}"/>
+    <SolidColorBrush x:Key="Admin.Modal.Bg.StartBrush" Color="{DynamicResource Admin.Modal.Bg.Start.Color}"/>
+    <SolidColorBrush x:Key="Admin.Modal.Bg.EndBrush" Color="{DynamicResource Admin.Modal.Bg.End.Color}"/>
+    <SolidColorBrush x:Key="Admin.Modal.BorderBrush" Color="{DynamicResource Admin.Modal.Border.Color}"/>
+    <SolidColorBrush x:Key="Admin.Details.CardBgBrush" Color="{DynamicResource Admin.Details.CardBg.Color}"/>
+    <SolidColorBrush x:Key="Admin.Loading.PanelBgBrush" Color="{DynamicResource Admin.Loading.PanelBg.Color}"/>
+    <SolidColorBrush x:Key="Admin.DangerZone.BgBrush" Color="{DynamicResource Admin.DangerZone.Bg.Color}"/>
+    <SolidColorBrush x:Key="Admin.CloseButton.HoverBgBrush" Color="{DynamicResource Admin.CloseButton.HoverBg.Color}"/>
+
+    <!-- Translucent Brushes -->
+    <SolidColorBrush x:Key="Admin.Translucent.06" Color="{DynamicResource Admin.Translucent.06.Color}"/>
+    <SolidColorBrush x:Key="Admin.Translucent.12" Color="{DynamicResource Admin.Translucent.12.Color}"/>
+    <SolidColorBrush x:Key="Admin.Translucent.13" Color="{DynamicResource Admin.Translucent.13.Color}"/>
+    <SolidColorBrush x:Key="Admin.Translucent.22" Color="{DynamicResource Admin.Translucent.22.Color}"/>
+    <SolidColorBrush x:Key="Admin.Translucent.33" Color="{DynamicResource Admin.Translucent.33.Color}"/>
+    <SolidColorBrush x:Key="Admin.Translucent.4D" Color="{DynamicResource Admin.Translucent.4D.Color}"/>
+    <SolidColorBrush x:Key="Admin.Translucent.55" Color="{DynamicResource Admin.Translucent.55.Color}"/>
+
+    <!-- Success Brushes -->
+    <SolidColorBrush x:Key="Admin.Success" Color="{DynamicResource Admin.Success.Color}"/>
+    <SolidColorBrush x:Key="Admin.Success.Translucent.11" Color="{DynamicResource Admin.Success.Translucent.11.Color}"/>
+    <SolidColorBrush x:Key="Admin.Success.Translucent.22" Color="{DynamicResource Admin.Success.Translucent.22.Color}"/>
+    <SolidColorBrush x:Key="Admin.Success.Translucent.33" Color="{DynamicResource Admin.Success.Translucent.33.Color}"/>
+    <SolidColorBrush x:Key="Admin.Success.Translucent.44" Color="{DynamicResource Admin.Success.Translucent.44.Color}"/>
+
+    <!-- Danger Brushes -->
+    <SolidColorBrush x:Key="Admin.Danger" Color="{DynamicResource Admin.Danger.Color}"/>
+    <SolidColorBrush x:Key="Admin.Danger.Translucent.22" Color="{DynamicResource Admin.Danger.Translucent.22.Color}"/>
+    <SolidColorBrush x:Key="Admin.Danger.Translucent.33" Color="{DynamicResource Admin.Danger.Translucent.33.Color}"/>
+    <SolidColorBrush x:Key="Admin.Danger.Translucent.44" Color="{DynamicResource Admin.Danger.Translucent.44.Color}"/>
+
+    <!-- Yellow Brushes -->
+    <SolidColorBrush x:Key="Admin.Yellow" Color="{DynamicResource Admin.Yellow.Color}"/>
+    <SolidColorBrush x:Key="Admin.Yellow.Translucent.22" Color="{DynamicResource Admin.Yellow.Translucent.22.Color}"/>
+    <SolidColorBrush x:Key="Admin.Yellow.Translucent.44" Color="{DynamicResource Admin.Yellow.Translucent.44.Color}"/>
+
+    <!-- Purple Brushes -->
+    <SolidColorBrush x:Key="Admin.Purple" Color="{DynamicResource Admin.Purple.Color}"/>
+    <SolidColorBrush x:Key="Admin.Purple.Translucent.22" Color="{DynamicResource Admin.Purple.Translucent.22.Color}"/>
+    <SolidColorBrush x:Key="Admin.Purple.Translucent.44" Color="{DynamicResource Admin.Purple.Translucent.44.Color}"/>
+
+    <!-- Cyan Brushes -->
+    <SolidColorBrush x:Key="Admin.Cyan" Color="{DynamicResource Admin.Cyan.Color}"/>
+    <SolidColorBrush x:Key="Admin.Cyan.Translucent.22" Color="{DynamicResource Admin.Cyan.Translucent.22.Color}"/>
+    <SolidColorBrush x:Key="Admin.Cyan.Translucent.33" Color="{DynamicResource Admin.Cyan.Translucent.33.Color}"/>
+    <SolidColorBrush x:Key="Admin.Cyan.Translucent.44" Color="{DynamicResource Admin.Cyan.Translucent.44.Color}"/>
+    <SolidColorBrush x:Key="Admin.WhiteBrush" Color="{DynamicResource Admin.White}"/>
+    <SolidColorBrush x:Key="Admin.BlackBrush" Color="{DynamicResource Admin.Black}"/>
 </ResourceDictionary>
