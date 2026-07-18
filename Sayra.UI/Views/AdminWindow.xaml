@@ -1283,19 +1283,16 @@
                             </ItemsControl>
                         </ScrollViewer>
 
-                        <!-- Local Sticky Footer for Pagination under Main DataGrid -->
+                        <!-- Local Sticky Footer with Reusable Pagination Control -->
                         <Border Grid.Row="1" Background="#1C1F26" BorderBrush="#2A2D36" BorderThickness="0,1,0,0" Padding="16,8">
                             <Grid>
                                 <Grid.ColumnDefinitions>
-                                    <!-- Left: Info Text -->
-                                    <ColumnDefinition Width="*" />
-                                    <!-- Right: Pagination & Demo State Controls -->
-                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="Auto"/> <!-- View Mode & Demo State on the left -->
+                                    <ColumnDefinition Width="*"/>    <!-- Reusable Pagination component -->
                                 </Grid.ColumnDefinitions>
 
-                                <TextBlock Grid.Column="0" Text="{Binding ShowingText}" Foreground="#9A9A9A" FontSize="11" FontFamily="{StaticResource PeydaMedium}" VerticalAlignment="Center"/>
-
-                                <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                                <!-- Demo / View mode selectors -->
+                                <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
                                     <!-- View Mode Selector -->
                                     <TextBlock Text="View Mode:" Foreground="#9A9A9A" FontSize="11" FontFamily="{StaticResource PeydaMedium}" VerticalAlignment="Center" Margin="0,0,8,0"/>
                                     <ComboBox ItemsSource="{Binding ViewModes}" SelectedItem="{Binding SelectedViewMode}" Width="100" Height="26" Background="#14161C" Foreground="White" BorderBrush="#2A2D36" FontFamily="{StaticResource PeydaMedium}" FontSize="11" VerticalContentAlignment="Center"/>
@@ -1305,25 +1302,14 @@
                                     <!-- Demo State Selector -->
                                     <TextBlock Text="Demo State:" Foreground="#9A9A9A" FontSize="11" FontFamily="{StaticResource PeydaMedium}" VerticalAlignment="Center" Margin="0,0,8,0"/>
                                     <ComboBox ItemsSource="{Binding DemoStates}" SelectedItem="{Binding SelectedDemoState}" Width="100" Height="26" Background="#14161C" Foreground="White" BorderBrush="#2A2D36" FontFamily="{StaticResource PeydaMedium}" FontSize="11" VerticalContentAlignment="Center"/>
-
-                                    <Border Width="16"/>
-
-                                    <!-- Page Size Selector -->
-                                    <TextBlock Text="Show:" Foreground="#9A9A9A" FontSize="11" FontFamily="{StaticResource PeydaMedium}" VerticalAlignment="Center" Margin="0,0,8,0"/>
-                                    <ComboBox x:Name="PageSizeCombo" ItemsSource="{Binding PageSizes}" SelectedItem="{Binding SelectedPageSize}" Width="60" Height="26" Background="#14161C" Foreground="White" BorderBrush="#2A2D36" FontFamily="{StaticResource PeydaMedium}" FontSize="11" VerticalContentAlignment="Center"/>
-
-                                    <Border Width="16"/>
-
-                                    <!-- Pagination Buttons -->
-                                    <Button Style="{StaticResource ToolbarButtonStyle}" Content="Prev" Command="{Binding PrevPageCommand}" Height="26" Width="50" Padding="0"/>
-                                    <Border Width="4"/>
-                                    <!-- Current Page Counter -->
-                                    <Border Background="#252A34" CornerRadius="4" Width="26" Height="26" VerticalAlignment="Center">
-                                        <TextBlock Text="{Binding CurrentPage}" Foreground="#63E6FF" FontSize="11" FontFamily="{StaticResource PeydaBold}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                    </Border>
-                                    <Border Width="4"/>
-                                    <Button Style="{StaticResource ToolbarButtonStyle}" Content="Next" Command="{Binding NextPageCommand}" Height="26" Width="50" Padding="0"/>
                                 </StackPanel>
+
+                                <!-- Reusable Pagination Control -->
+                                <controls:Pagination Grid.Column="1" Margin="24,0,0,0"
+                                                     CurrentPage="{Binding CurrentPage, Mode=TwoWay}"
+                                                     TotalItems="{Binding TotalItemsCount}"
+                                                     PageSize="{Binding SelectedPageSize, Mode=TwoWay}"
+                                                     RefreshCommand="{Binding RefreshCommand}"/>
                             </Grid>
                         </Border>
                     </Grid>
