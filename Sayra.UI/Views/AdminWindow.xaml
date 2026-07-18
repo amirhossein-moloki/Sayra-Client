@@ -63,7 +63,7 @@
             <Setter Property="Background" Value="Transparent"/>
             <Setter Property="BorderBrush" Value="Transparent"/>
             <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="Width" Value="4"/>
+            <Setter Property="Width" Value="3"/>
             <Setter Property="Height" Value="Auto"/>
             <Setter Property="Template">
                 <Setter.Value>
@@ -142,7 +142,7 @@
             <Setter Property="Background" Value="Transparent"/>
             <Setter Property="BorderBrush" Value="Transparent"/>
             <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="Width" Value="6"/>
+            <Setter Property="Width" Value="4"/>
             <Setter Property="Height" Value="Auto"/>
             <Setter Property="Template">
                 <Setter.Value>
@@ -198,6 +198,11 @@
                     </Setter>
                 </Trigger>
             </Style.Triggers>
+        </Style>
+
+        <Style x:Key="PremiumDataGridTextBlockStyle" TargetType="TextBlock" BasedOn="{StaticResource {x:Type TextBlock}}">
+            <Setter Property="Margin" Value="12,0"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
         </Style>
 
         <!-- Custom Expander Style for Admin Right Sidebar -->
@@ -1082,16 +1087,16 @@
                                 </DataGridTemplateColumn>
 
                                 <!-- Name Column -->
-                                <DataGridTextColumn Header="Name" Binding="{Binding Name}" Width="180" ElementStyle="{StaticResource {x:Type TextBlock}}"/>
+                                <DataGridTextColumn Header="Name" Binding="{Binding Name}" Width="180" ElementStyle="{StaticResource PremiumDataGridTextBlockStyle}"/>
 
                                 <!-- Category Column -->
-                                <DataGridTextColumn Header="Category" Binding="{Binding Category}" Width="120" ElementStyle="{StaticResource {x:Type TextBlock}}"/>
+                                <DataGridTextColumn Header="Category" Binding="{Binding Category}" Width="120" ElementStyle="{StaticResource PremiumDataGridTextBlockStyle}"/>
 
                                 <!-- Launcher Column -->
-                                <DataGridTextColumn Header="Launcher" Binding="{Binding Launcher}" Width="110" ElementStyle="{StaticResource {x:Type TextBlock}}"/>
+                                <DataGridTextColumn Header="Launcher" Binding="{Binding Launcher}" Width="110" ElementStyle="{StaticResource PremiumDataGridTextBlockStyle}"/>
 
                                 <!-- Version Column -->
-                                <DataGridTextColumn Header="Version" Binding="{Binding Version}" Width="90" ElementStyle="{StaticResource {x:Type TextBlock}}"/>
+                                <DataGridTextColumn Header="Version" Binding="{Binding Version}" Width="90" ElementStyle="{StaticResource PremiumDataGridTextBlockStyle}"/>
 
                                 <!-- Enabled Checkbox Column -->
                                 <DataGridTemplateColumn Header="Enabled" Width="80" HeaderStyle="{StaticResource PremiumDataGridHeaderCenteredStyle}">
@@ -1106,13 +1111,13 @@
                                 <DataGridTemplateColumn Header="Path" Width="250">
                                     <DataGridTemplateColumn.CellTemplate>
                                         <DataTemplate>
-                                            <TextBlock Text="{Binding InstallationPath}" ToolTip="{Binding InstallationPath}" TextTrimming="CharacterEllipsis" TextWrapping="NoWrap" VerticalAlignment="Center"/>
+                                            <TextBlock Style="{StaticResource PremiumDataGridTextBlockStyle}" Text="{Binding InstallationPath}" ToolTip="{Binding InstallationPath}" TextTrimming="CharacterEllipsis" TextWrapping="NoWrap" VerticalAlignment="Center"/>
                                         </DataTemplate>
                                     </DataGridTemplateColumn.CellTemplate>
                                 </DataGridTemplateColumn>
 
                                 <!-- Source Column -->
-                                <DataGridTextColumn Header="Source" Binding="{Binding InstallationSource}" Width="110" ElementStyle="{StaticResource {x:Type TextBlock}}"/>
+                                <DataGridTextColumn Header="Source" Binding="{Binding InstallationSource}" Width="110" ElementStyle="{StaticResource PremiumDataGridTextBlockStyle}"/>
 
                                 <!-- Enabled/Status Column -->
                                 <DataGridTemplateColumn Header="Status" Width="105" HeaderStyle="{StaticResource PremiumDataGridHeaderCenteredStyle}">
@@ -1178,7 +1183,7 @@
                                 </DataGridTemplateColumn>
 
                                 <!-- Last Modified Column -->
-                                <DataGridTextColumn Header="Last Updated" Binding="{Binding LastUpdated}" Width="130" ElementStyle="{StaticResource {x:Type TextBlock}}"/>
+                                <DataGridTextColumn Header="Last Updated" Binding="{Binding LastUpdated}" Width="130" ElementStyle="{StaticResource PremiumDataGridTextBlockStyle}"/>
                             </DataGrid.Columns>
                         </DataGrid>
 

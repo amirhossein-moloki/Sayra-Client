@@ -160,7 +160,7 @@
         <Setter Property="Background" Value="Transparent"/>
         <Setter Property="BorderBrush" Value="Transparent"/>
         <Setter Property="BorderThickness" Value="0"/>
-        <Setter Property="Width" Value="8"/>
+        <Setter Property="Width" Value="4"/>
         <Setter Property="Height" Value="Auto"/>
         <Setter Property="Template">
             <Setter.Value>
@@ -189,7 +189,7 @@
         <Style.Triggers>
             <Trigger Property="Orientation" Value="Horizontal">
                 <Setter Property="Width" Value="Auto"/>
-                <Setter Property="Height" Value="8"/>
+                <Setter Property="Height" Value="4"/>
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="{x:Type ScrollBar}">
@@ -216,6 +216,84 @@
                 </Setter>
             </Trigger>
         </Style.Triggers>
+    </Style>
+
+    <!-- Modern Premium CheckBox Style -->
+    <Style TargetType="{x:Type CheckBox}">
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="FontFamily" Value="{StaticResource PeydaMedium}"/>
+        <Setter Property="FontSize" Value="12"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="SnapsToDevicePixels" Value="True"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type CheckBox}">
+                    <Grid x:Name="RootGrid" Background="Transparent">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <!-- Check Box Visual -->
+                        <Border x:Name="BoxBorder"
+                                Grid.Column="0"
+                                Width="16"
+                                Height="16"
+                                Background="#1C1F26"
+                                BorderBrush="#4063E6FF"
+                                BorderThickness="1.5"
+                                CornerRadius="4"
+                                VerticalAlignment="Center"
+                                HorizontalAlignment="Center">
+                            <Grid>
+                                <!-- Check Mark Path -->
+                                <Path x:Name="CheckMark"
+                                      Data="M3,8 L7,11 L13,4"
+                                      Stroke="#63E6FF"
+                                      StrokeThickness="2"
+                                      StrokeStartLineCap="Round"
+                                      StrokeEndLineCap="Round"
+                                      StrokeLineJoin="Round"
+                                      Width="10"
+                                      Height="8"
+                                      Stretch="Uniform"
+                                      Visibility="Collapsed"
+                                      VerticalAlignment="Center"
+                                      HorizontalAlignment="Center"/>
+                            </Grid>
+                        </Border>
+
+                        <!-- Content -->
+                        <ContentPresenter Grid.Column="1"
+                                          x:Name="ContentPresenter"
+                                          ContentTemplate="{TemplateBinding ContentTemplate}"
+                                          Content="{TemplateBinding Content}"
+                                          ContentStringFormat="{TemplateBinding ContentStringFormat}"
+                                          Margin="8,0,0,0"
+                                          VerticalAlignment="Center"
+                                          HorizontalAlignment="Left"/>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <!-- Hover State -->
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="BoxBorder" Property="BorderBrush" Value="#63E6FF"/>
+                            <Setter TargetName="BoxBorder" Property="Background" Value="#252A34"/>
+                        </Trigger>
+                        <!-- Checked State -->
+                        <Trigger Property="IsChecked" Value="True">
+                            <Setter TargetName="CheckMark" Property="Visibility" Value="Visible"/>
+                            <Setter TargetName="BoxBorder" Property="BorderBrush" Value="#63E6FF"/>
+                            <Setter TargetName="BoxBorder" Property="Background" Value="#152635"/>
+                        </Trigger>
+                        <!-- Disabled State -->
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter TargetName="BoxBorder" Property="Opacity" Value="0.5"/>
+                            <Setter TargetName="ContentPresenter" Property="Opacity" Value="0.5"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
     </Style>
 
 </ResourceDictionary>
