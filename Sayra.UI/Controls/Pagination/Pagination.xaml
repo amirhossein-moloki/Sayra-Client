@@ -65,15 +65,10 @@
         </Style>
 
         <!-- Dropdown Box Style -->
-        <Style x:Key="PaginationComboBoxStyle" TargetType="ComboBox">
+        <Style x:Key="PaginationComboBoxStyle" TargetType="ComboBox" BasedOn="{StaticResource {x:Type ComboBox}}">
             <Setter Property="Background" Value="#14161C"/>
-            <Setter Property="Foreground" Value="White"/>
-            <Setter Property="BorderBrush" Value="#2A2D36"/>
-            <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="Height" Value="28"/>
-            <Setter Property="FontFamily" Value="{StaticResource PeydaMedium}"/>
             <Setter Property="FontSize" Value="11"/>
-            <Setter Property="VerticalContentAlignment" Value="Center"/>
         </Style>
 
         <!-- Textbox Style -->
