@@ -29,7 +29,18 @@
             <!-- Value Text -->
             <TextBlock x:Name="ValueText" Text="{Binding Text, ElementName=self}"
                        FontFamily="{StaticResource PeydaBold}" FontSize="13"
-                       Foreground="{Binding TextForeground, ElementName=self, FallbackValue={DynamicResource GameDetail.TextPrimary}}" VerticalAlignment="Center"/>
+                       VerticalAlignment="Center">
+                <TextBlock.Style>
+                    <Style TargetType="TextBlock">
+                        <Setter Property="Foreground" Value="{Binding TextForeground, ElementName=self}"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding TextForeground, ElementName=self}" Value="{x:Null}">
+                                <Setter Property="Foreground" Value="{DynamicResource GameDetail.TextPrimary}"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </TextBlock.Style>
+            </TextBlock>
         </StackPanel>
     </Border>
 </UserControl>
