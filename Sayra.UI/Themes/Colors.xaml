@@ -10,6 +10,8 @@
     <Color x:Key="App.Text.Secondary">#9A9A9A</Color>
     <Color x:Key="App.Success">#14BE78</Color>
     <Color x:Key="App.Error">#EF4444</Color>
+    <Color x:Key="App.Warning">#E5A000</Color>
+    <Color x:Key="App.Danger">#F46B6B</Color>
 
     <!-- Specific Login Screen Brand Colors (Yellow accent/glow used in current UI) -->
     <Color x:Key="App.Login.YellowAccent">#F5FF00</Color>
