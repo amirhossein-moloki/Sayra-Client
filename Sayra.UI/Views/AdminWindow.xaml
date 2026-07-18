@@ -592,6 +592,67 @@
             <Setter Property="VirtualizingStackPanel.VirtualizationMode" Value="Recycling"/>
             <Setter Property="ScrollViewer.CanContentScroll" Value="True"/>
         </Style>
+
+        <!-- Premium Dark Custom Styles for editable fields in Admin Details Card -->
+        <Style x:Key="AdminDetailTextBoxStyle" TargetType="TextBox">
+            <Setter Property="Background" Value="#1C1F26"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderBrush" Value="#2A2D36"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="8,4"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="FontFamily" Value="{StaticResource PeydaMedium}"/>
+            <Setter Property="CaretBrush" Value="#63E6FF"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Border x:Name="border" Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="6">
+                            <ScrollViewer x:Name="PART_ContentHost" Focusable="false" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="true">
+                                <Setter TargetName="border" Property="BorderBrush" Value="#4463E6FF"/>
+                            </Trigger>
+                            <Trigger Property="IsFocused" Value="true">
+                                <Setter TargetName="border" Property="BorderBrush" Value="#63E6FF"/>
+                                <Setter Property="Background" Value="#15171C"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="AdminDetailComboBoxItemStyle" TargetType="ComboBoxItem">
+            <Setter Property="Background" Value="#1C1F26"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Padding" Value="8,4"/>
+            <Setter Property="FontFamily" Value="{StaticResource PeydaMedium}"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#63E6FF"/>
+                    <Setter Property="Foreground" Value="Black"/>
+                </Trigger>
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="Background" Value="#63E6FF"/>
+                    <Setter Property="Foreground" Value="Black"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="AdminDetailComboBoxStyle" TargetType="ComboBox">
+            <Setter Property="Background" Value="#1C1F26"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderBrush" Value="#2A2D36"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="8,4"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="FontFamily" Value="{StaticResource PeydaMedium}"/>
+            <Setter Property="ItemContainerStyle" Value="{StaticResource AdminDetailComboBoxItemStyle}"/>
+        </Style>
     </Window.Resources>
 
     <Grid Background="#0F1014">
@@ -2029,16 +2090,16 @@
                                             </Grid.RowDefinitions>
 
                                             <!-- ID -->
-                                            <TextBlock Grid.Row="0" Grid.Column="0" Text="Application ID" Foreground="#9A9A9A" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
-                                            <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding Id, FallbackValue='N/A'}" Foreground="White" FontSize="12" FontFamily="{StaticResource PeydaBold}"/>
+                                            <TextBlock Grid.Row="0" Grid.Column="0" Text="Application ID" Foreground="#9A9A9A" FontSize="12" FontFamily="{StaticResource PeydaMedium}" VerticalAlignment="Center"/>
+                                            <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding Id, FallbackValue='N/A'}" Foreground="White" FontSize="12" FontFamily="{StaticResource PeydaBold}" VerticalAlignment="Center" Margin="8,0,0,0"/>
 
                                             <!-- Name -->
-                                            <TextBlock Grid.Row="2" Grid.Column="0" Text="Name / Title" Foreground="#9A9A9A" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
-                                            <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding Name, FallbackValue='N/A'}" Foreground="White" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
+                                            <TextBlock Grid.Row="2" Grid.Column="0" Text="Name / Title" Foreground="#9A9A9A" FontSize="12" FontFamily="{StaticResource PeydaMedium}" VerticalAlignment="Center"/>
+                                            <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource AdminDetailTextBoxStyle}"/>
 
                                             <!-- Publisher -->
-                                            <TextBlock Grid.Row="4" Grid.Column="0" Text="Developer / Publisher" Foreground="#9A9A9A" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
-                                            <TextBlock Grid.Row="4" Grid.Column="1" Text="{Binding Publisher, FallbackValue='N/A'}" Foreground="White" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
+                                            <TextBlock Grid.Row="4" Grid.Column="0" Text="Developer / Publisher" Foreground="#9A9A9A" FontSize="12" FontFamily="{StaticResource PeydaMedium}" VerticalAlignment="Center"/>
+                                            <TextBox Grid.Row="4" Grid.Column="1" Text="{Binding Publisher, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource AdminDetailTextBoxStyle}"/>
                                         </Grid>
                                     </StackPanel>
                                 </Border>
@@ -2059,12 +2120,12 @@
                                             </Grid.RowDefinitions>
 
                                             <!-- Executable -->
-                                            <TextBlock Grid.Row="0" Grid.Column="0" Text="Executable" Foreground="#9A9A9A" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
-                                            <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding Executable, FallbackValue='launcher.exe'}" Foreground="White" FontSize="12" FontFamily="{StaticResource PeydaBold}" TextWrapping="Wrap"/>
+                                            <TextBlock Grid.Row="0" Grid.Column="0" Text="Executable" Foreground="#9A9A9A" FontSize="12" FontFamily="{StaticResource PeydaMedium}" VerticalAlignment="Center"/>
+                                            <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding Executable, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource AdminDetailTextBoxStyle}"/>
 
                                             <!-- Install Directory -->
-                                            <TextBlock Grid.Row="2" Grid.Column="0" Text="Install Directory" Foreground="#9A9A9A" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
-                                            <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding InstallationPath, FallbackValue='C:\\'}" Foreground="White" FontSize="12" FontFamily="{StaticResource PeydaMedium}" TextWrapping="Wrap"/>
+                                            <TextBlock Grid.Row="2" Grid.Column="0" Text="Install Directory" Foreground="#9A9A9A" FontSize="12" FontFamily="{StaticResource PeydaMedium}" VerticalAlignment="Center"/>
+                                            <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding InstallationPath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource AdminDetailTextBoxStyle}"/>
                                         </Grid>
                                     </StackPanel>
                                 </Border>
@@ -2085,12 +2146,21 @@
                                             </Grid.RowDefinitions>
 
                                             <!-- Launcher Platform -->
-                                            <TextBlock Grid.Row="0" Grid.Column="0" Text="Launcher Platform" Foreground="#9A9A9A" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
-                                            <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding Launcher, FallbackValue='Custom'}" Foreground="White" FontSize="12" FontFamily="{StaticResource PeydaBold}"/>
+                                            <TextBlock Grid.Row="0" Grid.Column="0" Text="Launcher Platform" Foreground="#9A9A9A" FontSize="12" FontFamily="{StaticResource PeydaMedium}" VerticalAlignment="Center"/>
+                                            <ComboBox Grid.Row="0" Grid.Column="1" SelectedValue="{Binding Launcher, Mode=TwoWay}" SelectedValuePath="Content" Style="{StaticResource AdminDetailComboBoxStyle}">
+                                                <ComboBoxItem Content="Steam"/>
+                                                <ComboBoxItem Content="Epic"/>
+                                                <ComboBoxItem Content="Battle.net"/>
+                                                <ComboBoxItem Content="Riot"/>
+                                                <ComboBoxItem Content="Ubisoft"/>
+                                                <ComboBoxItem Content="EA"/>
+                                                <ComboBoxItem Content="Xbox"/>
+                                                <ComboBoxItem Content="Custom"/>
+                                            </ComboBox>
 
                                             <!-- Installation Source -->
-                                            <TextBlock Grid.Row="2" Grid.Column="0" Text="Installation Source" Foreground="#9A9A9A" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
-                                            <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding InstallationSource, FallbackValue='Local'}" Foreground="White" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
+                                            <TextBlock Grid.Row="2" Grid.Column="0" Text="Installation Source" Foreground="#9A9A9A" FontSize="12" FontFamily="{StaticResource PeydaMedium}" VerticalAlignment="Center"/>
+                                            <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding InstallationSource, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource AdminDetailTextBoxStyle}"/>
                                         </Grid>
                                     </StackPanel>
                                 </Border>
@@ -2111,12 +2181,12 @@
                                             </Grid.RowDefinitions>
 
                                             <!-- Arguments -->
-                                            <TextBlock Grid.Row="0" Grid.Column="0" Text="Arguments / Params" Foreground="#9A9A9A" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
-                                            <TextBlock Grid.Row="0" Grid.Column="1" Text="--nosplash --noborder --fullscreen" Foreground="#63E6FF" FontSize="12" FontFamily="Consolas"/>
+                                            <TextBlock Grid.Row="0" Grid.Column="0" Text="Arguments / Params" Foreground="#9A9A9A" FontSize="12" FontFamily="{StaticResource PeydaMedium}" VerticalAlignment="Center"/>
+                                            <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding Arguments, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Foreground="#63E6FF" FontFamily="Consolas" Style="{StaticResource AdminDetailTextBoxStyle}"/>
 
                                             <!-- Working Directory -->
-                                            <TextBlock Grid.Row="2" Grid.Column="0" Text="Working Directory" Foreground="#9A9A9A" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
-                                            <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding InstallationPath, FallbackValue='C:\\'}" Foreground="White" FontSize="12" FontFamily="{StaticResource PeydaMedium}" TextWrapping="Wrap"/>
+                                            <TextBlock Grid.Row="2" Grid.Column="0" Text="Working Directory" Foreground="#9A9A9A" FontSize="12" FontFamily="{StaticResource PeydaMedium}" VerticalAlignment="Center"/>
+                                            <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding InstallationPath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource AdminDetailTextBoxStyle}"/>
                                         </Grid>
                                     </StackPanel>
                                 </Border>
@@ -2137,12 +2207,19 @@
                                             </Grid.RowDefinitions>
 
                                             <!-- Status -->
-                                            <TextBlock Grid.Row="0" Grid.Column="0" Text="Execution Status" Foreground="#9A9A9A" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
-                                            <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding Status, FallbackValue='Installed'}" Foreground="White" FontSize="12" FontFamily="{StaticResource PeydaBold}"/>
+                                            <TextBlock Grid.Row="0" Grid.Column="0" Text="Execution Status" Foreground="#9A9A9A" FontSize="12" FontFamily="{StaticResource PeydaMedium}" VerticalAlignment="Center"/>
+                                            <ComboBox Grid.Row="0" Grid.Column="1" SelectedValue="{Binding Status, Mode=TwoWay}" SelectedValuePath="Content" Style="{StaticResource AdminDetailComboBoxStyle}">
+                                                <ComboBoxItem Content="Installed"/>
+                                                <ComboBoxItem Content="Missing"/>
+                                                <ComboBoxItem Content="Disabled"/>
+                                                <ComboBoxItem Content="Updating"/>
+                                                <ComboBoxItem Content="Corrupted"/>
+                                                <ComboBoxItem Content="Validation Required"/>
+                                            </ComboBox>
 
                                             <!-- Enabled -->
-                                            <TextBlock Grid.Row="2" Grid.Column="0" Text="Is Enabled" Foreground="#9A9A9A" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
-                                            <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding IsEnabled, FallbackValue='True'}" Foreground="White" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
+                                            <TextBlock Grid.Row="2" Grid.Column="0" Text="Is Enabled" Foreground="#9A9A9A" FontSize="12" FontFamily="{StaticResource PeydaMedium}" VerticalAlignment="Center"/>
+                                            <CheckBox Grid.Row="2" Grid.Column="1" IsChecked="{Binding IsEnabled, Mode=TwoWay}" Foreground="White" FontSize="12" FontFamily="{StaticResource PeydaMedium}" VerticalAlignment="Center" Content="Enabled"/>
                                         </Grid>
                                     </StackPanel>
                                 </Border>
@@ -2165,16 +2242,16 @@
                                             </Grid.RowDefinitions>
 
                                             <!-- Cover Image -->
-                                            <TextBlock Grid.Row="0" Grid.Column="0" Text="Cover Image URL" Foreground="#9A9A9A" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
-                                            <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding CoverImage, FallbackValue='N/A'}" Foreground="White" FontSize="12" FontFamily="Consolas" TextWrapping="Wrap"/>
+                                            <TextBlock Grid.Row="0" Grid.Column="0" Text="Cover Image URL" Foreground="#9A9A9A" FontSize="12" FontFamily="{StaticResource PeydaMedium}" VerticalAlignment="Center"/>
+                                            <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding CoverImage, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource AdminDetailTextBoxStyle}"/>
 
                                             <!-- Logo Image -->
-                                            <TextBlock Grid.Row="2" Grid.Column="0" Text="Logo Image URL" Foreground="#9A9A9A" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
-                                            <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding LogoImage, FallbackValue='N/A'}" Foreground="White" FontSize="12" FontFamily="Consolas" TextWrapping="Wrap"/>
+                                            <TextBlock Grid.Row="2" Grid.Column="0" Text="Logo Image URL" Foreground="#9A9A9A" FontSize="12" FontFamily="{StaticResource PeydaMedium}" VerticalAlignment="Center"/>
+                                            <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding LogoImage, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource AdminDetailTextBoxStyle}"/>
 
                                             <!-- Background Image -->
-                                            <TextBlock Grid.Row="4" Grid.Column="0" Text="Background URL" Foreground="#9A9A9A" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
-                                            <TextBlock Grid.Row="4" Grid.Column="1" Text="{Binding BackgroundImage, FallbackValue='N/A'}" Foreground="White" FontSize="12" FontFamily="Consolas" TextWrapping="Wrap"/>
+                                            <TextBlock Grid.Row="4" Grid.Column="0" Text="Background URL" Foreground="#9A9A9A" FontSize="12" FontFamily="{StaticResource PeydaMedium}" VerticalAlignment="Center"/>
+                                            <TextBox Grid.Row="4" Grid.Column="1" Text="{Binding BackgroundImage, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource AdminDetailTextBoxStyle}"/>
                                         </Grid>
                                     </StackPanel>
                                 </Border>
@@ -2197,16 +2274,20 @@
                                             </Grid.RowDefinitions>
 
                                             <!-- Size -->
-                                            <TextBlock Grid.Row="0" Grid.Column="0" Text="Size on Disk" Foreground="#9A9A9A" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
-                                            <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding Size, FallbackValue='0 GB'}" Foreground="White" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
+                                            <TextBlock Grid.Row="0" Grid.Column="0" Text="Size on Disk" Foreground="#9A9A9A" FontSize="12" FontFamily="{StaticResource PeydaMedium}" VerticalAlignment="Center"/>
+                                            <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding Size, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource AdminDetailTextBoxStyle}"/>
 
                                             <!-- License -->
-                                            <TextBlock Grid.Row="2" Grid.Column="0" Text="License Model" Foreground="#9A9A9A" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
-                                            <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding License, FallbackValue='Free'}" Foreground="White" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
+                                            <TextBlock Grid.Row="2" Grid.Column="0" Text="License Model" Foreground="#9A9A9A" FontSize="12" FontFamily="{StaticResource PeydaMedium}" VerticalAlignment="Center"/>
+                                            <ComboBox Grid.Row="2" Grid.Column="1" SelectedValue="{Binding License, Mode=TwoWay}" SelectedValuePath="Content" Style="{StaticResource AdminDetailComboBoxStyle}">
+                                                <ComboBoxItem Content="Commercial"/>
+                                                <ComboBoxItem Content="Free"/>
+                                                <ComboBoxItem Content="Free-to-Play"/>
+                                            </ComboBox>
 
                                             <!-- Release Year -->
-                                            <TextBlock Grid.Row="4" Grid.Column="0" Text="Release Year" Foreground="#9A9A9A" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
-                                            <TextBlock Grid.Row="4" Grid.Column="1" Text="{Binding ReleaseYear, FallbackValue='N/A'}" Foreground="White" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
+                                            <TextBlock Grid.Row="4" Grid.Column="0" Text="Release Year" Foreground="#9A9A9A" FontSize="12" FontFamily="{StaticResource PeydaMedium}" VerticalAlignment="Center"/>
+                                            <TextBox Grid.Row="4" Grid.Column="1" Text="{Binding ReleaseYear, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource AdminDetailTextBoxStyle}"/>
                                         </Grid>
                                     </StackPanel>
                                 </Border>
@@ -2227,12 +2308,12 @@
                                             </Grid.RowDefinitions>
 
                                             <!-- Category -->
-                                            <TextBlock Grid.Row="0" Grid.Column="0" Text="Category / Genre" Foreground="#9A9A9A" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
-                                            <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding Category, FallbackValue='N/A'}" Foreground="White" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
+                                            <TextBlock Grid.Row="0" Grid.Column="0" Text="Category / Genre" Foreground="#9A9A9A" FontSize="12" FontFamily="{StaticResource PeydaMedium}" VerticalAlignment="Center"/>
+                                            <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding Category, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource AdminDetailTextBoxStyle}"/>
 
                                             <!-- Custom Tags -->
-                                            <TextBlock Grid.Row="2" Grid.Column="0" Text="Custom Tags" Foreground="#9A9A9A" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
-                                            <TextBlock Grid.Row="2" Grid.Column="1" Text="Kiosk, GameNet, LAN" Foreground="White" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
+                                            <TextBlock Grid.Row="2" Grid.Column="0" Text="Custom Tags" Foreground="#9A9A9A" FontSize="12" FontFamily="{StaticResource PeydaMedium}" VerticalAlignment="Center"/>
+                                            <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding CustomTags, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource AdminDetailTextBoxStyle}"/>
                                         </Grid>
                                     </StackPanel>
                                 </Border>
@@ -2253,12 +2334,12 @@
                                             </Grid.RowDefinitions>
 
                                             <!-- Verification Status -->
-                                            <TextBlock Grid.Row="0" Grid.Column="0" Text="Verification Status" Foreground="#9A9A9A" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
-                                            <TextBlock Grid.Row="0" Grid.Column="1" Text="Validated" Foreground="#14BE78" FontSize="12" FontFamily="{StaticResource PeydaBold}"/>
+                                            <TextBlock Grid.Row="0" Grid.Column="0" Text="Verification Status" Foreground="#9A9A9A" FontSize="12" FontFamily="{StaticResource PeydaMedium}" VerticalAlignment="Center"/>
+                                            <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding VerificationStatus, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource AdminDetailTextBoxStyle}"/>
 
                                             <!-- Sandbox Mode -->
-                                            <TextBlock Grid.Row="2" Grid.Column="0" Text="Sandbox Mode" Foreground="#9A9A9A" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
-                                            <TextBlock Grid.Row="2" Grid.Column="1" Text="Enforced" Foreground="White" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
+                                            <TextBlock Grid.Row="2" Grid.Column="0" Text="Sandbox Mode" Foreground="#9A9A9A" FontSize="12" FontFamily="{StaticResource PeydaMedium}" VerticalAlignment="Center"/>
+                                            <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding SandboxMode, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource AdminDetailTextBoxStyle}"/>
                                         </Grid>
                                     </StackPanel>
                                 </Border>
@@ -2279,12 +2360,12 @@
                                             </Grid.RowDefinitions>
 
                                             <!-- Hide on Client -->
-                                            <TextBlock Grid.Row="0" Grid.Column="0" Text="Hide on Client" Foreground="#9A9A9A" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
-                                            <TextBlock Grid.Row="0" Grid.Column="1" Text="False" Foreground="White" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
+                                            <TextBlock Grid.Row="0" Grid.Column="0" Text="Hide on Client" Foreground="#9A9A9A" FontSize="12" FontFamily="{StaticResource PeydaMedium}" VerticalAlignment="Center"/>
+                                            <CheckBox Grid.Row="0" Grid.Column="1" IsChecked="{Binding HideOnClient, Mode=TwoWay}" Foreground="White" FontSize="12" FontFamily="{StaticResource PeydaMedium}" VerticalAlignment="Center" Content="Hide"/>
 
                                             <!-- Last Updated -->
-                                            <TextBlock Grid.Row="2" Grid.Column="0" Text="Last Synced / Modified" Foreground="#9A9A9A" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
-                                            <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding LastUpdated, FallbackValue='N/A'}" Foreground="White" FontSize="12" FontFamily="{StaticResource PeydaMedium}"/>
+                                            <TextBlock Grid.Row="2" Grid.Column="0" Text="Last Synced / Modified" Foreground="#9A9A9A" FontSize="12" FontFamily="{StaticResource PeydaMedium}" VerticalAlignment="Center"/>
+                                            <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding LastUpdated, FallbackValue='N/A'}" Foreground="White" FontSize="12" FontFamily="{StaticResource PeydaMedium}" VerticalAlignment="Center" Margin="8,0,0,0"/>
                                         </Grid>
                                     </StackPanel>
                                 </Border>
