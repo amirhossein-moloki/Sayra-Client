@@ -69,6 +69,7 @@ namespace Sayra.UI.ViewModels
             {
                 Sayra.UI.Services.NotificationService.Instance.Dismiss();
                 GlobalExceptionHandler.LogTrace("LOGIN", "Authentication successful");
+                App.IsAdminLoggedIn = isValidAdmin;
                 try
                 {
                     Window targetWindow;

@@ -4,6 +4,8 @@ namespace Sayra.UI
 {
     public partial class App : Application
     {
+        public static bool IsAdminLoggedIn { get; set; }
+
         protected override void OnStartup(StartupEventArgs e)
         {
             // Register Global Exception Handling

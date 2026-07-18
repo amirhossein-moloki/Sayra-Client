@@ -86,6 +86,43 @@
                         </StackPanel>
                     </StackPanel>
 
+                    <!-- NAVIGATION & SESSION CONTROLS (Go to Home & Logout) -->
+                    <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,24,0">
+                        <!-- Go to Home Button -->
+                        <Button Content="صفحه اصلی" Click="GoToHome_Click" Height="34" Margin="0,0,12,0" Padding="14,0">
+                            <Button.Style>
+                                <Style TargetType="Button" BasedOn="{StaticResource ToolbarButtonStyle}">
+                                    <Setter Property="Background" Value="{DynamicResource Admin.Cyan.Translucent.22}"/>
+                                    <Setter Property="BorderBrush" Value="{DynamicResource Admin.Cyan.Translucent.44}"/>
+                                    <Setter Property="Foreground" Value="{DynamicResource Admin.Cyan}"/>
+                                    <Style.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter Property="Background" Value="{DynamicResource Admin.Cyan.Translucent.33}"/>
+                                            <Setter Property="BorderBrush" Value="{DynamicResource Admin.Cyan}"/>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
+                        </Button>
+
+                        <!-- Logout Button -->
+                        <Button Content="خروج از حساب" Click="Logout_Click" Height="34" Padding="14,0">
+                            <Button.Style>
+                                <Style TargetType="Button" BasedOn="{StaticResource ToolbarButtonStyle}">
+                                    <Setter Property="Background" Value="{DynamicResource Admin.Danger.Translucent.22}"/>
+                                    <Setter Property="BorderBrush" Value="{DynamicResource Admin.Danger.Translucent.44}"/>
+                                    <Setter Property="Foreground" Value="{DynamicResource Admin.Danger}"/>
+                                    <Style.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter Property="Background" Value="{DynamicResource Admin.Danger.Translucent.33}"/>
+                                            <Setter Property="BorderBrush" Value="{DynamicResource Admin.Danger}"/>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
+                        </Button>
+                    </StackPanel>
+
                     <!-- STATUS AREA (Height: 40px, Width: 150px per card, spacing 12px) -->
                     <!-- Items: PC Name, Server Status, Last Scan, Games Count, Applications Count -->
                     <StackPanel Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
