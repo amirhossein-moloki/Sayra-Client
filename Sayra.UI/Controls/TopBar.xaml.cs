@@ -57,9 +57,73 @@ namespace Sayra.UI.Controls
         {
             var sw = Stopwatch.StartNew();
             Log("Loaded Event START");
+            try
+            {
+                AdminPanelButton.Visibility = App.IsAdminLoggedIn ? Visibility.Visible : Visibility.Collapsed;
+            }
+            catch (Exception ex)
+            {
+                Log($"Error setting AdminPanelButton visibility: {ex.Message}");
+            }
             Log("Loaded Event END");
             sw.Stop();
             GlobalExceptionHandler.LogTrace("TIMING", $"[TopBar] Loaded event completed in {sw.ElapsedMilliseconds} ms");
+        }
+
+        private void AdminPanelButton_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                GlobalExceptionHandler.LogTrace("TOPBAR_NAV", "Navigating to AdminWindow");
+                var adminWin = new Sayra.UI.Views.AdminWindow();
+                adminWin.Show();
+                Application.Current.MainWindow = adminWin;
+
+                // Close parent HomeWindow
+                var parentWindow = Window.GetWindow(this);
+                parentWindow?.Close();
+            }
+            catch (Exception ex)
+            {
+                GlobalExceptionHandler.HandleException(ex, "AdminPanel Navigation");
+            }
+        }
+
+        private async void LogoutButton_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                var result = MessageBox.Show(
+                    "آیا مطمئن هستید که می‌خواهید خارج شوید؟",
+                    "سیستم سایرا",
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Question,
+                    MessageBoxResult.No,
+                    MessageBoxOptions.RtlReading | MessageBoxOptions.RightAlign
+                );
+
+                if (result == MessageBoxResult.Yes)
+                {
+                    GlobalExceptionHandler.LogTrace("TOPBAR_NAV", "Logging out to LoginWindow");
+                    App.IsAdminLoggedIn = false;
+
+                    Sayra.UI.Services.NotificationService.Instance.ShowLoading("در حال خروج از سیستم...");
+                    await System.Threading.Tasks.Task.Delay(1000);
+                    Sayra.UI.Services.NotificationService.Instance.Dismiss();
+
+                    var loginWin = new Sayra.UI.Views.LoginWindow();
+                    loginWin.Show();
+                    Application.Current.MainWindow = loginWin;
+
+                    // Close parent HomeWindow
+                    var parentWindow = Window.GetWindow(this);
+                    parentWindow?.Close();
+                }
+            }
+            catch (Exception ex)
+            {
+                GlobalExceptionHandler.HandleException(ex, "Logout Navigation");
+            }
         }
 
         private void TopBar_Unloaded(object sender, RoutedEventArgs e)

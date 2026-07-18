@@ -121,8 +121,21 @@ namespace Sayra.UI.Views
 
         private void HomeWindow_Closed(object? sender, EventArgs e)
         {
-            Log("Closed Event - Shutting down application...");
-            Application.Current.Shutdown();
+            Log("Closed Event - Checking if other windows are open...");
+            bool isAnyOtherWindowOpen = false;
+            foreach (Window win in Application.Current.Windows)
+            {
+                if (win is LoginWindow || win is AdminWindow)
+                {
+                    isAnyOtherWindowOpen = true;
+                    break;
+                }
+            }
+            if (!isAnyOtherWindowOpen)
+            {
+                Log("No other windows open, shutting down...");
+                Application.Current.Shutdown();
+            }
         }
 
         private void Log(string message)

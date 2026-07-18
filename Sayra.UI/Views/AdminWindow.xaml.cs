@@ -232,18 +232,51 @@ namespace Sayra.UI.Views
             Sayra.UI.Services.NotificationService.Instance.ShowSuccess("تمامی تصاویر کاور و آیکون های ذخیره شده بازی با موفقیت پاک شدند.");
         }
 
+        private void GoToHome_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                GlobalExceptionHandler.LogTrace("ADMIN_NAV", "Navigating to HomeWindow");
+                var homeWin = new HomeWindow();
+                homeWin.Show();
+                Application.Current.MainWindow = homeWin;
+                this.Close();
+            }
+            catch (Exception ex)
+            {
+                GlobalExceptionHandler.HandleException(ex, "GoToHome Navigation");
+            }
+        }
+
+        private void Logout_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                GlobalExceptionHandler.LogTrace("ADMIN_NAV", "Logging out of admin panel");
+                App.IsAdminLoggedIn = false;
+                var loginWin = new LoginWindow();
+                loginWin.Show();
+                Application.Current.MainWindow = loginWin;
+                this.Close();
+            }
+            catch (Exception ex)
+            {
+                GlobalExceptionHandler.HandleException(ex, "Logout");
+            }
+        }
+
         private void AdminWindow_Closed(object? sender, EventArgs e)
         {
-            bool isLoginOpen = false;
+            bool isAnyOtherWindowOpen = false;
             foreach (Window win in Application.Current.Windows)
             {
-                if (win is LoginWindow)
+                if (win is LoginWindow || win is HomeWindow)
                 {
-                    isLoginOpen = true;
+                    isAnyOtherWindowOpen = true;
                     break;
                 }
             }
-            if (!isLoginOpen)
+            if (!isAnyOtherWindowOpen)
             {
                 Application.Current.Shutdown();
             }
