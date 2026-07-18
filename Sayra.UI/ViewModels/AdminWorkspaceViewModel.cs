@@ -506,114 +506,271 @@ namespace Sayra.UI.ViewModels
             ShowingText = $"Showing {startIdx}–{endIdx} of {TotalItemsCount}";
         }
 
+        private List<AdminAppItem> GetItemsFromParameter(object? parameter)
+        {
+            var list = new List<AdminAppItem>();
+            if (parameter == null) return list;
+
+            if (parameter is System.Collections.IList listParam)
+            {
+                foreach (var item in listParam)
+                {
+                    if (item is AdminAppItem appItem)
+                    {
+                        list.Add(appItem);
+                    }
+                }
+            }
+            else if (parameter is AdminAppItem singleItem)
+            {
+                list.Add(singleItem);
+            }
+
+            return list;
+        }
+
         // Action Commands
         [RelayCommand]
-        private void Launch(AdminAppItem item)
+        private void Launch(object? parameter)
         {
-            if (item == null) return;
-            NotificationService.Instance.ShowSuccess($"در حال اجرای برنامه: {item.Name}");
-        }
+            var items = GetItemsFromParameter(parameter);
+            if (items.Count == 0) return;
 
-        [RelayCommand]
-        private void Stop(AdminAppItem item)
-        {
-            if (item == null) return;
-            NotificationService.Instance.ShowWarning($"پروسه برنامه متوقف شد: {item.Name}");
-        }
-
-        [RelayCommand]
-        private void Restart(AdminAppItem item)
-        {
-            if (item == null) return;
-            NotificationService.Instance.ShowLoading($"در حال راه‌اندازی مجدد {item.Name}...");
-            Task.Delay(1000).ContinueWith(_ =>
+            if (items.Count == 1)
             {
-                App.Current.Dispatcher.Invoke(() =>
-                {
-                    NotificationService.Instance.ShowSuccess($"برنامه {item.Name} با موفقیت ری‌استارت شد.");
-                });
-            });
-        }
-
-        [RelayCommand]
-        private void Edit(AdminAppItem item)
-        {
-            if (item == null) return;
-            NotificationService.Instance.ShowLoading($"در حال ویرایش پیکربندی: {item.Name}");
-        }
-
-        [RelayCommand]
-        private void OpenFolder(AdminAppItem item)
-        {
-            if (item == null) return;
-            NotificationService.Instance.ShowSuccess($"پوشه برنامه باز شد: {item.InstallationPath}");
-        }
-
-        [RelayCommand]
-        private void CopyPath(AdminAppItem item)
-        {
-            if (item == null) return;
-            try
-            {
-                System.Windows.Clipboard.SetText(item.InstallationPath);
-                NotificationService.Instance.ShowSuccess("مسیر نصب برنامه در حافظه کپی شد.");
+                NotificationService.Instance.ShowSuccess($"در حال اجرای برنامه: {items[0].Name}");
             }
-            catch
+            else
             {
-                NotificationService.Instance.ShowError("خطا در دسترسی به Clipboard سیستم.");
+                NotificationService.Instance.ShowSuccess($"در حال اجرای {items.Count} برنامه انتخاب شده...");
             }
         }
 
         [RelayCommand]
-        private void Validate(AdminAppItem item)
+        private void Stop(object? parameter)
         {
-            if (item == null) return;
-            NotificationService.Instance.ShowLoading($"در حال اعتبارسنجی فایل‌ها: {item.Name}");
-            Task.Delay(1500).ContinueWith(_ =>
+            var items = GetItemsFromParameter(parameter);
+            if (items.Count == 0) return;
+
+            if (items.Count == 1)
             {
-                App.Current.Dispatcher.Invoke(() =>
-                {
-                    item.Status = "Installed";
-                    NotificationService.Instance.ShowSuccess($"اعتبارسنجی تکمیل شد. فایل‌های {item.Name} سالم هستند.");
-                });
-            });
-        }
-
-        [RelayCommand]
-        private void ScanMetadata(AdminAppItem item)
-        {
-            if (item == null) return;
-            NotificationService.Instance.ShowLoading($"در حال اسکن متادیتا: {item.Name}");
-        }
-
-        [RelayCommand]
-        private void Rescan(AdminAppItem item)
-        {
-            if (item == null) return;
-            NotificationService.Instance.ShowLoading($"در حال اسکن مجدد: {item.Name}");
-            Task.Delay(1000).ContinueWith(_ =>
+                NotificationService.Instance.ShowWarning($"پروسه برنامه متوقف شد: {items[0].Name}");
+            }
+            else
             {
-                App.Current.Dispatcher.Invoke(() =>
+                NotificationService.Instance.ShowWarning($"پروسه {items.Count} برنامه متوقف شد.");
+            }
+        }
+
+        [RelayCommand]
+        private void Restart(object? parameter)
+        {
+            var items = GetItemsFromParameter(parameter);
+            if (items.Count == 0) return;
+
+            if (items.Count == 1)
+            {
+                var item = items[0];
+                NotificationService.Instance.ShowLoading($"در حال راه‌اندازی مجدد {item.Name}...");
+                Task.Delay(1000).ContinueWith(_ =>
                 {
-                    NotificationService.Instance.ShowSuccess($"اسکن مجدد برنامه {item.Name} با موفقیت انجام شد.");
+                    App.Current.Dispatcher.Invoke(() =>
+                    {
+                        NotificationService.Instance.ShowSuccess($"برنامه {item.Name} با موفقیت ری‌استارت شد.");
+                    });
                 });
-            });
+            }
+            else
+            {
+                NotificationService.Instance.ShowLoading($"در حال راه‌اندازی مجدد {items.Count} برنامه انتخاب شده...");
+                Task.Delay(1000).ContinueWith(_ =>
+                {
+                    App.Current.Dispatcher.Invoke(() =>
+                    {
+                        NotificationService.Instance.ShowSuccess($"تعداد {items.Count} برنامه با موفقیت ری‌استارت شدند.");
+                    });
+                });
+            }
         }
 
         [RelayCommand]
-        private void Export(AdminAppItem item)
+        private void Edit(object? parameter)
         {
-            if (item == null) return;
-            NotificationService.Instance.ShowSuccess($"اطلاعات برنامه صادر شد: {item.Id}.json");
+            var items = GetItemsFromParameter(parameter);
+            if (items.Count == 0) return;
+            if (items.Count == 1)
+            {
+                NotificationService.Instance.ShowLoading($"در حال ویرایش پیکربندی: {items[0].Name}");
+            }
+            else
+            {
+                NotificationService.Instance.ShowLoading($"در حال ویرایش پیکربندی {items.Count} برنامه...");
+            }
         }
 
         [RelayCommand]
-        private void Delete(AdminAppItem item)
+        private void OpenFolder(object? parameter)
         {
-            if (item == null) return;
-            NotificationService.Instance.ShowError($"برنامه {item.Name} از لیست مدیریت حذف شد.");
-            _cachedAllItems.Remove(item);
-            item.PropertyChanged -= Item_PropertyChanged;
+            var items = GetItemsFromParameter(parameter);
+            if (items.Count == 0) return;
+            if (items.Count == 1)
+            {
+                NotificationService.Instance.ShowSuccess($"پوشه برنامه باز شد: {items[0].InstallationPath}");
+            }
+            else
+            {
+                NotificationService.Instance.ShowSuccess($"پوشه {items.Count} برنامه باز شد.");
+            }
+        }
+
+        [RelayCommand]
+        private void CopyPath(object? parameter)
+        {
+            var items = GetItemsFromParameter(parameter);
+            if (items.Count == 0) return;
+            if (items.Count == 1)
+            {
+                try
+                {
+                    System.Windows.Clipboard.SetText(items[0].InstallationPath);
+                    NotificationService.Instance.ShowSuccess("مسیر نصب برنامه در حافظه کپی شد.");
+                }
+                catch
+                {
+                    NotificationService.Instance.ShowError("خطا در دسترسی به Clipboard سیستم.");
+                }
+            }
+            else
+            {
+                try
+                {
+                    var paths = string.Join(Environment.NewLine, items.Select(x => x.InstallationPath));
+                    System.Windows.Clipboard.SetText(paths);
+                    NotificationService.Instance.ShowSuccess($"مسیر نصب {items.Count} برنامه در حافظه کپی شد.");
+                }
+                catch
+                {
+                    NotificationService.Instance.ShowError("خطا در دسترسی به Clipboard سیستم.");
+                }
+            }
+        }
+
+        [RelayCommand]
+        private void Validate(object? parameter)
+        {
+            var items = GetItemsFromParameter(parameter);
+            if (items.Count == 0) return;
+            if (items.Count == 1)
+            {
+                var item = items[0];
+                NotificationService.Instance.ShowLoading($"در حال اعتبارسنجی فایل‌ها: {item.Name}");
+                Task.Delay(1500).ContinueWith(_ =>
+                {
+                    App.Current.Dispatcher.Invoke(() =>
+                    {
+                        item.Status = "Installed";
+                        NotificationService.Instance.ShowSuccess($"اعتبارسنجی تکمیل شد. فایل‌های {item.Name} سالم هستند.");
+                    });
+                });
+            }
+            else
+            {
+                NotificationService.Instance.ShowLoading($"در حال اعتبارسنجی فایل‌های {items.Count} برنامه...");
+                Task.Delay(1500).ContinueWith(_ =>
+                {
+                    App.Current.Dispatcher.Invoke(() =>
+                    {
+                        foreach (var item in items)
+                        {
+                            item.Status = "Installed";
+                        }
+                        NotificationService.Instance.ShowSuccess($"اعتبارسنجی {items.Count} برنامه انتخاب شده تکمیل شد.");
+                    });
+                });
+            }
+        }
+
+        [RelayCommand]
+        private void ScanMetadata(object? parameter)
+        {
+            var items = GetItemsFromParameter(parameter);
+            if (items.Count == 0) return;
+            if (items.Count == 1)
+            {
+                NotificationService.Instance.ShowLoading($"در حال اسکن متادیتا: {items[0].Name}");
+            }
+            else
+            {
+                NotificationService.Instance.ShowLoading($"در حال اسکن متادیتا برای {items.Count} برنامه...");
+            }
+        }
+
+        [RelayCommand]
+        private void Rescan(object? parameter)
+        {
+            var items = GetItemsFromParameter(parameter);
+            if (items.Count == 0) return;
+            if (items.Count == 1)
+            {
+                var item = items[0];
+                NotificationService.Instance.ShowLoading($"در حال اسکن مجدد: {item.Name}");
+                Task.Delay(1000).ContinueWith(_ =>
+                {
+                    App.Current.Dispatcher.Invoke(() =>
+                    {
+                        NotificationService.Instance.ShowSuccess($"اسکن مجدد برنامه {item.Name} با موفقیت انجام شد.");
+                    });
+                });
+            }
+            else
+            {
+                NotificationService.Instance.ShowLoading($"در حال اسکن مجدد {items.Count} برنامه...");
+                Task.Delay(1000).ContinueWith(_ =>
+                {
+                    App.Current.Dispatcher.Invoke(() =>
+                    {
+                        NotificationService.Instance.ShowSuccess($"اسکن مجدد {items.Count} برنامه با موفقیت انجام شد.");
+                    });
+                });
+            }
+        }
+
+        [RelayCommand]
+        private void Export(object? parameter)
+        {
+            var items = GetItemsFromParameter(parameter);
+            if (items.Count == 0) return;
+            if (items.Count == 1)
+            {
+                NotificationService.Instance.ShowSuccess($"اطلاعات برنامه صادر شد: {items[0].Id}.json");
+            }
+            else
+            {
+                NotificationService.Instance.ShowSuccess($"اطلاعات {items.Count} برنامه با موفقیت صادر شد.");
+            }
+        }
+
+        [RelayCommand]
+        private void Delete(object? parameter)
+        {
+            var items = GetItemsFromParameter(parameter);
+            if (items.Count == 0) return;
+            if (items.Count == 1)
+            {
+                var item = items[0];
+                NotificationService.Instance.ShowError($"برنامه {item.Name} از لیست مدیریت حذف شد.");
+                _cachedAllItems.Remove(item);
+                item.PropertyChanged -= Item_PropertyChanged;
+            }
+            else
+            {
+                NotificationService.Instance.ShowError($"تعداد {items.Count} برنامه از لیست مدیریت حذف شدند.");
+                foreach (var item in items)
+                {
+                    _cachedAllItems.Remove(item);
+                    item.PropertyChanged -= Item_PropertyChanged;
+                }
+            }
             UpdateSelectedCount();
             ApplyFilterAndPagination();
         }

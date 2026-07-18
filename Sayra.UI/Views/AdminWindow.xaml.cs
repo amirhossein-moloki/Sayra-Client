@@ -29,11 +29,81 @@ namespace Sayra.UI.Views
             }
         }
 
-        private void GamesDataGrid_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        private bool _isDraggingSelection = false;
+
+        public void DataGridRow_PreviewMouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            if (GamesDataGrid.SelectedItem is Sayra.UI.Models.AdminAppItem selectedItem)
+            // If user clicked inside an interactive element (e.g. CheckBox), let's not start drag selection on rows
+            var depObj = e.OriginalSource as DependencyObject;
+            while (depObj != null && depObj != sender as DependencyObject)
             {
-                OpenModal(selectedItem);
+                if (depObj is System.Windows.Controls.CheckBox)
+                {
+                    return;
+                }
+                depObj = System.Windows.Media.VisualTreeHelper.GetParent(depObj);
+            }
+
+            if (sender is System.Windows.Controls.DataGridRow row)
+            {
+                _isDraggingSelection = true;
+
+                // Focus on row to make sure it selects properly
+                row.Focus();
+
+                // Toggle or adjust selection depending on modifier keys
+                if (System.Windows.Input.Keyboard.Modifiers == System.Windows.Input.ModifierKeys.None)
+                {
+                    if (!row.IsSelected)
+                    {
+                        GamesDataGrid.SelectedItems.Clear();
+                        row.IsSelected = true;
+                    }
+                }
+                else if (System.Windows.Input.Keyboard.Modifiers == System.Windows.Input.ModifierKeys.Control)
+                {
+                    row.IsSelected = !row.IsSelected;
+                }
+
+                // Capture the mouse to make sure drag tracking stays active
+                GamesDataGrid.CaptureMouse();
+                e.Handled = true;
+            }
+        }
+
+        public void DataGridRow_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
+        {
+            if (_isDraggingSelection && sender is System.Windows.Controls.DataGridRow row)
+            {
+                row.IsSelected = true;
+            }
+        }
+
+        public void GamesDataGrid_PreviewMouseLeftButtonUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            if (_isDraggingSelection)
+            {
+                _isDraggingSelection = false;
+                GamesDataGrid.ReleaseMouseCapture();
+            }
+        }
+
+        private void GamesDataGrid_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            // Double click on a row to open detail modal
+            var depObj = e.OriginalSource as DependencyObject;
+            while (depObj != null && depObj != GamesDataGrid)
+            {
+                if (depObj is System.Windows.Controls.DataGridRow row)
+                {
+                    if (row.DataContext is Sayra.UI.Models.AdminAppItem selectedItem)
+                    {
+                        OpenModal(selectedItem);
+                        e.Handled = true;
+                    }
+                    break;
+                }
+                depObj = System.Windows.Media.VisualTreeHelper.GetParent(depObj);
             }
         }
 
