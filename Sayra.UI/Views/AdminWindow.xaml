@@ -1929,7 +1929,12 @@
                                 <WrapPanel Margin="0,6,0,0" VerticalAlignment="Center">
                                     <!-- Category Badge -->
                                     <Border Background="#252A34" CornerRadius="4" Padding="8,4" Margin="0,0,8,0">
-                                        <TextBlock Text="{Binding Category, FallbackValue='Action'}" Foreground="#9A9A9A" FontSize="11" FontFamily="{StaticResource PeydaMedium}"/>
+                                        <TextBlock Text="{Binding Category, FallbackValue='Games'}" Foreground="#9A9A9A" FontSize="11" FontFamily="{StaticResource PeydaMedium}"/>
+                                    </Border>
+
+                                    <!-- Game Type Badge -->
+                                    <Border Background="#228A5CFF" BorderBrush="#448A5CFF" BorderThickness="1" CornerRadius="4" Padding="8,4" Margin="0,0,8,0">
+                                        <TextBlock Text="{Binding GameType, FallbackValue='Action'}" Foreground="#8A5CFF" FontSize="11" FontFamily="{StaticResource PeydaBold}"/>
                                     </Border>
 
                                     <!-- Platform Launcher -->
@@ -2319,15 +2324,39 @@
                                                 <RowDefinition Height="Auto" />
                                                 <RowDefinition Height="12" />
                                                 <RowDefinition Height="Auto" />
+                                                <RowDefinition Height="12" />
+                                                <RowDefinition Height="Auto" />
                                             </Grid.RowDefinitions>
 
                                             <!-- Category -->
-                                            <TextBlock Grid.Row="0" Grid.Column="0" Text="Category / Genre" Foreground="#9A9A9A" FontSize="12" FontFamily="{StaticResource PeydaMedium}" VerticalAlignment="Center"/>
-                                            <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding Category, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource AdminDetailTextBoxStyle}"/>
+                                            <TextBlock Grid.Row="0" Grid.Column="0" Text="Category" Foreground="#9A9A9A" FontSize="12" FontFamily="{StaticResource PeydaMedium}" VerticalAlignment="Center"/>
+                                            <ComboBox Grid.Row="0" Grid.Column="1"
+                                                      SelectedItem="{Binding Category, Mode=TwoWay}"
+                                                      ItemsSource="{Binding DataContext.ExtensiveCategories, RelativeSource={RelativeSource AncestorType=Window}}"
+                                                      Style="{StaticResource AdminDetailComboBoxStyle}">
+                                                <ComboBox.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <TextBlock Text="{Binding}"/>
+                                                    </DataTemplate>
+                                                </ComboBox.ItemTemplate>
+                                            </ComboBox>
+
+                                            <!-- Game Type / Genre -->
+                                            <TextBlock Grid.Row="2" Grid.Column="0" Text="Game Type / Genre" Foreground="#9A9A9A" FontSize="12" FontFamily="{StaticResource PeydaMedium}" VerticalAlignment="Center"/>
+                                            <ComboBox Grid.Row="2" Grid.Column="1"
+                                                      SelectedItem="{Binding GameType, Mode=TwoWay}"
+                                                      ItemsSource="{Binding DataContext.ExtensiveGameTypes, RelativeSource={RelativeSource AncestorType=Window}}"
+                                                      Style="{StaticResource AdminDetailComboBoxStyle}">
+                                                <ComboBox.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <TextBlock Text="{Binding}"/>
+                                                    </DataTemplate>
+                                                </ComboBox.ItemTemplate>
+                                            </ComboBox>
 
                                             <!-- Custom Tags -->
-                                            <TextBlock Grid.Row="2" Grid.Column="0" Text="Custom Tags" Foreground="#9A9A9A" FontSize="12" FontFamily="{StaticResource PeydaMedium}" VerticalAlignment="Center"/>
-                                            <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding CustomTags, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource AdminDetailTextBoxStyle}"/>
+                                            <TextBlock Grid.Row="4" Grid.Column="0" Text="Custom Tags" Foreground="#9A9A9A" FontSize="12" FontFamily="{StaticResource PeydaMedium}" VerticalAlignment="Center"/>
+                                            <TextBox Grid.Row="4" Grid.Column="1" Text="{Binding CustomTags, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource AdminDetailTextBoxStyle}"/>
                                         </Grid>
                                     </StackPanel>
                                 </Border>

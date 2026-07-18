@@ -23,6 +23,9 @@ namespace Sayra.UI.Models
         private string _category = string.Empty;
 
         [ObservableProperty]
+        private string _gameType = string.Empty;
+
+        [ObservableProperty]
         private string _launcher = string.Empty; // Steam, Epic, Battle.net, Riot, EA, Ubisoft, Xbox, Custom
 
         [ObservableProperty]
@@ -92,8 +95,8 @@ namespace Sayra.UI.Models
 
         public string Genre
         {
-            get => Category;
-            set => Category = value;
+            get => GameType;
+            set => GameType = value;
         }
 
         public string ImagePath

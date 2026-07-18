@@ -18,6 +18,49 @@ namespace Sayra.UI.ViewModels
         public List<int> PageSizes { get; } = new() { 25, 50, 100 };
         public List<string> DemoStates { get; } = new() { "Normal", "Loading", "Empty" };
 
+        // Extensive predefined lists of Categories and Game Types (Genres) so admins do not need to add manually
+        public List<string> ExtensiveCategories { get; } = new()
+        {
+            "Games",
+            "Applications",
+            "Developer Tools",
+            "Web Browsers",
+            "Social & Chat",
+            "Virtualization & Hypervisors",
+            "Databases",
+            "Office & Productivity",
+            "Media Players",
+            "Design & Graphics",
+            "Utilities"
+        };
+
+        public List<string> ExtensiveGameTypes { get; } = new()
+        {
+            "Action",
+            "Adventure",
+            "RPG",
+            "Strategy",
+            "Simulation",
+            "Shooter",
+            "Survival",
+            "Racing",
+            "Sports",
+            "Indie",
+            "Fighting",
+            "Platformer",
+            "Puzzle",
+            "MMORPG",
+            "MOBA",
+            "Horror",
+            "Battle Royale",
+            "Arcade",
+            "Family",
+            "Sandbox",
+            "Virtual Reality",
+            "Co-op",
+            "Tactical"
+        };
+
         [ObservableProperty]
         private string _selectedViewMode = "List View";
 
@@ -100,12 +143,17 @@ namespace Sayra.UI.ViewModels
 
         private bool IsApplication(AdminAppItem item)
         {
-            return item.Category == "Developer Tools" ||
+            return item.Category == "Applications" ||
+                   item.Category == "Developer Tools" ||
                    item.Category == "Web Browser" ||
+                   item.Category == "Web Browsers" ||
                    item.Category == "Social / Chat" ||
+                   item.Category == "Social & Chat" ||
                    item.Category == "Virtualization" ||
+                   item.Category == "Virtualization & Hypervisors" ||
                    item.Category == "Hypervisor" ||
-                   item.Category == "Database Console";
+                   item.Category == "Database Console" ||
+                   item.Category == "Databases";
         }
 
         private bool MatchesCategory(AdminAppItem item, int index, string categoryName)
@@ -309,12 +357,15 @@ namespace Sayra.UI.ViewModels
                 else if (i % 35 == 0) status = "Validation Required";
                 else if (i % 41 == 0) status = "Disabled";
 
+                var isApp = (temp.Cat == "Developer Tools" || temp.Cat == "Web Browser" || temp.Cat == "Social / Chat" || temp.Cat == "Virtualization" || temp.Cat == "Hypervisor" || temp.Cat == "Database Console");
+                var resolvedCategory = isApp ? "Applications" : "Games";
                 var item = new AdminAppItem
                 {
                     Id = $"APP-{1000 + i}",
                     Name = name,
                     Executable = exec,
-                    Category = temp.Cat,
+                    Category = resolvedCategory,
+                    GameType = temp.Cat,
                     Launcher = temp.Launcher,
                     Version = temp.Ver,
                     Publisher = temp.Pub,
@@ -422,6 +473,7 @@ namespace Sayra.UI.ViewModels
                     x.Publisher.ToLower().Contains(searchLower) ||
                     x.Launcher.ToLower().Contains(searchLower) ||
                     x.Category.ToLower().Contains(searchLower) ||
+                    x.GameType.ToLower().Contains(searchLower) ||
                     x.InstallationPath.ToLower().Contains(searchLower)
                 );
             }
