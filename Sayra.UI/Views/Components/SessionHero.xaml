@@ -14,30 +14,6 @@
     </UserControl.DataContext>
 
     <UserControl.Resources>
-        <!-- Soft breathing and glow animation for the background SAYRA logo -->
-        <Style x:Key="HeroLogoStyle" TargetType="svgc:SvgViewbox">
-            <Setter Property="Opacity" Value="0.15" />
-            <Setter Property="Effect">
-                <Setter.Value>
-                    <DropShadowEffect x:Name="HeroLogoGlow" Color="{DynamicResource Theme.Colors.Primary}" BlurRadius="20" ShadowDepth="0" Opacity="0.3" />
-                </Setter.Value>
-            </Setter>
-            <Style.Triggers>
-                <EventTrigger RoutedEvent="Loaded">
-                    <BeginStoryboard>
-                        <Storyboard RepeatBehavior="Forever" AutoReverse="True">
-                            <DoubleAnimation Storyboard.TargetProperty="(UIElement.Effect).(DropShadowEffect.Opacity)"
-                                             From="0.3" To="0.85" Duration="0:0:4" />
-                            <DoubleAnimation Storyboard.TargetProperty="(UIElement.Effect).(DropShadowEffect.BlurRadius)"
-                                             From="20" To="60" Duration="0:0:4" />
-                            <DoubleAnimation Storyboard.TargetProperty="Opacity"
-                                             From="0.15" To="0.45" Duration="0:0:4" />
-                        </Storyboard>
-                    </BeginStoryboard>
-                </EventTrigger>
-            </Style.Triggers>
-        </Style>
-
         <!-- Premium style for the single merged pricing container - Glass Effect -->
         <Style x:Key="MergedPricingContainerStyle" TargetType="Border">
             <Setter Property="Background" Value="#CC1F1F23" /> <!-- #1F1F23 with transparency -->
@@ -75,14 +51,34 @@
                 </Border.Background>
             </Border>
 
-            <!-- 1. BACKGROUND LAYER: Large Faded SAYRA Logo -->
+            <!-- 1. BACKGROUND LAYER: Large Faded SAYRA Logo with direct safe element properties and triggers to prevent frozen freezable exceptions -->
             <svgc:SvgViewbox Source="/Assets/sayra.svg"
                              Width="456" Height="456"
-                             Style="{StaticResource HeroLogoStyle}"
+                             Opacity="0.15"
                              HorizontalAlignment="Right"
                              VerticalAlignment="Center"
                              Margin="0,0,110,0"
-                             IsHitTestVisible="False" />
+                             IsHitTestVisible="False">
+                <svgc:SvgViewbox.Effect>
+                    <DropShadowEffect x:Name="HeroLogoGlow" Color="{DynamicResource Theme.Colors.Primary}" BlurRadius="20" ShadowDepth="0" Opacity="0.3" />
+                </svgc:SvgViewbox.Effect>
+                <svgc:SvgViewbox.Triggers>
+                    <EventTrigger RoutedEvent="FrameworkElement.Loaded">
+                        <BeginStoryboard>
+                            <Storyboard RepeatBehavior="Forever" AutoReverse="True">
+                                <DoubleAnimation Storyboard.TargetName="HeroLogoGlow"
+                                                 Storyboard.TargetProperty="Opacity"
+                                                 From="0.3" To="0.85" Duration="0:0:4" />
+                                <DoubleAnimation Storyboard.TargetName="HeroLogoGlow"
+                                                 Storyboard.TargetProperty="BlurRadius"
+                                                 From="20" To="60" Duration="0:0:4" />
+                                <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                                 From="0.15" To="0.45" Duration="0:0:4" />
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </EventTrigger>
+                </svgc:SvgViewbox.Triggers>
+            </svgc:SvgViewbox>
 
             <!-- 2. FOREGROUND CONTENT LAYER -->
             <Grid Margin="60,0">
