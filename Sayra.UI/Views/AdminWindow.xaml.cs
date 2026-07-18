@@ -46,8 +46,6 @@ namespace Sayra.UI.Views
 
             if (sender is System.Windows.Controls.DataGridRow row)
             {
-                _isDraggingSelection = true;
-
                 // Focus on row to make sure it selects properly
                 row.Focus();
 
@@ -65,9 +63,13 @@ namespace Sayra.UI.Views
                     row.IsSelected = !row.IsSelected;
                 }
 
-                // Capture the mouse to make sure drag tracking stays active
-                GamesDataGrid.CaptureMouse();
                 e.Handled = true;
+
+                // Open game detail modal on single left-click
+                if (row.DataContext is Sayra.UI.Models.AdminAppItem selectedItem)
+                {
+                    OpenModal(selectedItem);
+                }
             }
         }
 
