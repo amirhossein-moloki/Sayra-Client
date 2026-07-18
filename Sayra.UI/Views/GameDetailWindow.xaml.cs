@@ -19,67 +19,60 @@ namespace Sayra.UI.Views
             _game = game;
             _dashboard = dashboard;
 
-            // Wire up Play button click event on Hero component
-            if (Hero != null && Hero.PlayButtonControl != null)
-            {
-                Hero.PlayButtonControl.Click += PlayGame_Click;
-            }
-
             PopulateDetails();
         }
 
         private void PopulateDetails()
         {
-            if (_game == null || Hero == null) return;
+            if (_game == null) return;
 
-            // Bind values directly to Hero controls
-            Hero.TitleText.Text = _game.Title;
-            Hero.GenreText.Text = _game.Genre;
+            // مقداردهی مستقیم به کنترل‌های والد در پنجره
+            DetailTitle.Text = _game.Title;
+            DetailGenre.Text = _game.Genre;
             BreadcrumbGameTitle.Text = _game.Title;
-            Hero.DescriptionText.Text = string.IsNullOrEmpty(_game.Description)
+            DetailDescription.Text = string.IsNullOrEmpty(_game.Description)
                 ? "توضیحاتی برای این بازی ثبت نشده است."
                 : _game.Description;
 
-            // Rich metadata binding on Hero badges
-            Hero.DeveloperBadgeControl.Text = string.IsNullOrEmpty(_game.Developer) ? "نا مشخص" : _game.Developer;
-            Hero.ReleaseYearBadgeControl.Text = string.IsNullOrEmpty(_game.ReleaseYear) ? "نا مشخص" : _game.ReleaseYear;
-            Hero.LauncherBadgeControl.Text = string.IsNullOrEmpty(_game.Launcher) ? "Custom" : _game.Launcher;
+            // مپ کردن تگ‌های کپسولی اختصاصی
+            DeveloperBadge.Text = string.IsNullOrEmpty(_game.Developer) ? "نا مشخص" : _game.Developer;
+            ReleaseYearBadge.Text = string.IsNullOrEmpty(_game.ReleaseYear) ? "نا مشخص" : _game.ReleaseYear;
+            LauncherBadge.Text = string.IsNullOrEmpty(_game.Launcher) ? "Custom" : _game.Launcher;
 
-            // Status mapping and styling on Hero status controls
+            // تنظیم وضعیت و استایل داینامیک آن با تم سنترال
             string status = _game.Status;
-            Hero.StatusText.Text = status;
+            DetailStatus.Text = status;
 
-            // Update badge color using dynamic resources
             if (!string.IsNullOrEmpty(status))
             {
                 string upperStatus = status.ToUpperInvariant();
                 if (upperStatus == "CURRENTLY PLAYING" || upperStatus == "PLAYING" || upperStatus == "RUNNING")
                 {
-                    Hero.StatusBadgeBorderControl.BorderBrush = (Brush)FindResource("GameDetail.Status.SuccessBorder");
-                    Hero.StatusBadgeBorderControl.Background = (Brush)FindResource("GameDetail.Status.SuccessBackground");
-                    Hero.StatusBadgeDotControl.Fill = (Brush)FindResource("GameDetail.Status.SuccessBorder");
-                    Hero.StatusText.Foreground = (Brush)FindResource("GameDetail.Status.SuccessBorder");
-                    Hero.StatusText.Text = "در حال بازی";
+                    StatusBadgeBorder.BorderBrush = (Brush)FindResource("GameDetail.Status.SuccessBorder");
+                    StatusBadgeBorder.Background = (Brush)FindResource("GameDetail.Status.SuccessBackground");
+                    StatusBadgeDot.Fill = (Brush)FindResource("GameDetail.Status.SuccessBorder");
+                    DetailStatus.Foreground = (Brush)FindResource("GameDetail.Status.SuccessBorder");
+                    DetailStatus.Text = "در حال بازی";
                 }
                 else if (upperStatus == "LOCKED" || upperStatus == "UNAVAILABLE")
                 {
-                    Hero.StatusBadgeBorderControl.BorderBrush = (Brush)FindResource("GameDetail.Status.DangerBorder");
-                    Hero.StatusBadgeBorderControl.Background = (Brush)FindResource("GameDetail.Status.DangerBackground");
-                    Hero.StatusBadgeDotControl.Fill = (Brush)FindResource("GameDetail.Status.DangerBorder");
-                    Hero.StatusText.Foreground = (Brush)FindResource("GameDetail.Status.DangerBorder");
-                    Hero.StatusText.Text = upperStatus == "LOCKED" ? "قفل شده" : "غیر فعال";
+                    StatusBadgeBorder.BorderBrush = (Brush)FindResource("GameDetail.Status.DangerBorder");
+                    StatusBadgeBorder.Background = (Brush)FindResource("GameDetail.Status.DangerBackground");
+                    StatusBadgeDot.Fill = (Brush)FindResource("GameDetail.Status.DangerBorder");
+                    DetailStatus.Foreground = (Brush)FindResource("GameDetail.Status.DangerBorder");
+                    DetailStatus.Text = upperStatus == "LOCKED" ? "قفل شده" : "غیر فعال";
                 }
                 else
                 {
-                    Hero.StatusBadgeBorderControl.BorderBrush = (Brush)FindResource("GameDetail.Status.WarningBorder");
-                    Hero.StatusBadgeBorderControl.Background = (Brush)FindResource("GameDetail.Status.WarningBackground");
-                    Hero.StatusBadgeDotControl.Fill = (Brush)FindResource("GameDetail.Status.WarningBorder");
-                    Hero.StatusText.Foreground = (Brush)FindResource("GameDetail.Status.WarningBorder");
-                    Hero.StatusText.Text = "آماده بازی";
+                    StatusBadgeBorder.BorderBrush = (Brush)FindResource("GameDetail.Status.WarningBorder");
+                    StatusBadgeBorder.Background = (Brush)FindResource("GameDetail.Status.WarningBackground");
+                    StatusBadgeDot.Fill = (Brush)FindResource("GameDetail.Status.WarningBorder");
+                    DetailStatus.Foreground = (Brush)FindResource("GameDetail.Status.WarningBorder");
+                    DetailStatus.Text = "آماده بازی";
                 }
             }
 
-            // Update large artwork, logo, and blurred ambient backdrop on Hero
+            // لود آرت‌ورک، لوگو و بک‌دراپ اتمسفریک کلی پنجره
             UpdateCoverImage();
             UpdateLogoImage();
             UpdateBackgroundImage();
@@ -87,149 +80,85 @@ namespace Sayra.UI.Views
 
         private void UpdateCoverImage()
         {
-            if (Hero?.CoverImage == null) return;
-
+            if (DetailCoverImage == null) return;
             string path = _game.ImagePath;
-            if (string.IsNullOrEmpty(path))
-            {
-                Hero.CoverImage.Source = null;
-                return;
-            }
+            if (string.IsNullOrEmpty(path)) { DetailCoverImage.Source = null; return; }
 
             try
             {
                 var bitmap = new BitmapImage();
                 bitmap.BeginInit();
-
-                if (path.StartsWith("pack://") || path.Contains("://"))
-                {
-                    bitmap.UriSource = new Uri(path);
-                }
+                if (path.StartsWith("pack://") || path.Contains("://")) bitmap.UriSource = new Uri(path);
                 else
                 {
                     string fullPath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, path);
-                    if (!System.IO.File.Exists(fullPath))
-                    {
-                        bitmap.UriSource = new Uri(path, UriKind.RelativeOrAbsolute);
-                    }
-                    else
-                    {
-                        bitmap.UriSource = new Uri(fullPath, UriKind.Absolute);
-                    }
+                    bitmap.UriSource = !System.IO.File.Exists(fullPath) ? new Uri(path, UriKind.RelativeOrAbsolute) : new Uri(fullPath, UriKind.Absolute);
                 }
-
                 bitmap.CacheOption = BitmapCacheOption.OnLoad;
                 bitmap.CreateOptions = BitmapCreateOptions.DelayCreation;
                 bitmap.EndInit();
                 bitmap.Freeze();
-
-                Hero.CoverImage.Source = bitmap;
+                DetailCoverImage.Source = bitmap;
             }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"[GameDetailWindow] Error loading image {path}: {ex.Message}");
-                Hero.CoverImage.Source = null;
-            }
+            catch { DetailCoverImage.Source = null; }
         }
 
         private void UpdateLogoImage()
         {
-            if (Hero?.LogoImage == null) return;
-
+            if (DetailLogoImage == null) return;
             string path = _game.LogoImage;
-            if (string.IsNullOrEmpty(path))
-            {
-                Hero.LogoImage.Source = null;
-                return;
-            }
+            if (string.IsNullOrEmpty(path)) { DetailLogoImage.Source = null; return; }
 
             try
             {
                 var bitmap = new BitmapImage();
                 bitmap.BeginInit();
-
-                if (path.StartsWith("pack://") || path.Contains("://"))
-                {
-                    bitmap.UriSource = new Uri(path);
-                }
+                if (path.StartsWith("pack://") || path.Contains("://")) bitmap.UriSource = new Uri(path);
                 else
                 {
                     string fullPath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, path);
-                    if (!System.IO.File.Exists(fullPath))
-                    {
-                        bitmap.UriSource = new Uri(path, UriKind.RelativeOrAbsolute);
-                    }
-                    else
-                    {
-                        bitmap.UriSource = new Uri(fullPath, UriKind.Absolute);
-                    }
+                    bitmap.UriSource = !System.IO.File.Exists(fullPath) ? new Uri(path, UriKind.RelativeOrAbsolute) : new Uri(fullPath, UriKind.Absolute);
                 }
-
                 bitmap.CacheOption = BitmapCacheOption.OnLoad;
                 bitmap.CreateOptions = BitmapCreateOptions.DelayCreation;
                 bitmap.EndInit();
                 bitmap.Freeze();
-
-                Hero.LogoImage.Source = bitmap;
+                DetailLogoImage.Source = bitmap;
             }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"[GameDetailWindow] Error loading logo image {path}: {ex.Message}");
-                Hero.LogoImage.Source = null;
-            }
+            catch { DetailLogoImage.Source = null; }
         }
 
         private void UpdateBackgroundImage()
         {
-            if (Hero?.BackgroundImage == null) return;
-
+            if (DetailBackgroundImage == null) return;
             string path = _game.BackgroundImage;
-            if (string.IsNullOrEmpty(path))
-            {
-                Hero.BackgroundImage.Source = null;
-                return;
-            }
+            if (string.IsNullOrEmpty(path)) { DetailBackgroundImage.Source = null; return; }
 
             try
             {
                 var bitmap = new BitmapImage();
                 bitmap.BeginInit();
-
-                if (path.StartsWith("pack://") || path.Contains("://"))
-                {
-                    bitmap.UriSource = new Uri(path);
-                }
+                if (path.StartsWith("pack://") || path.Contains("://")) bitmap.UriSource = new Uri(path);
                 else
                 {
                     string fullPath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, path);
-                    if (!System.IO.File.Exists(fullPath))
-                    {
-                        bitmap.UriSource = new Uri(path, UriKind.RelativeOrAbsolute);
-                    }
-                    else
-                    {
-                        bitmap.UriSource = new Uri(fullPath, UriKind.Absolute);
-                    }
+                    bitmap.UriSource = !System.IO.File.Exists(fullPath) ? new Uri(path, UriKind.RelativeOrAbsolute) : new Uri(fullPath, UriKind.Absolute);
                 }
-
                 bitmap.CacheOption = BitmapCacheOption.OnLoad;
                 bitmap.CreateOptions = BitmapCreateOptions.DelayCreation;
                 bitmap.EndInit();
                 bitmap.Freeze();
-
-                Hero.BackgroundImage.Source = bitmap;
+                DetailBackgroundImage.Source = bitmap;
             }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"[GameDetailWindow] Error loading background image {path}: {ex.Message}");
-                Hero.BackgroundImage.Source = null;
-            }
+            catch { DetailBackgroundImage.Source = null; }
         }
 
-        private void Back_Click(object sender, RoutedEventArgs e)
+        private void DetailCoverImage_ImageFailed(object sender, ExceptionRoutedEventArgs e)
         {
-            this.Close();
+            try { if (sender is Image img) img.Visibility = Visibility.Collapsed; } catch { }
         }
+
+        private void Back_Click(object sender, RoutedEventArgs e) => this.Close();
 
         private async void EndSession_Click(object sender, RoutedEventArgs e)
         {
@@ -252,7 +181,6 @@ namespace Sayra.UI.Views
 
         private void PlayGame_Click(object sender, RoutedEventArgs e)
         {
-            // Trigger command on GameLib VM
             try
             {
                 if (_dashboard.GameLib?.DataContext is GameLibraryViewModel vm)
