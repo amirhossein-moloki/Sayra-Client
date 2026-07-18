@@ -73,34 +73,8 @@ namespace Sayra.UI.Views
             }
 
             // لود آرت‌ورک، لوگو و بک‌دراپ اتمسفریک کلی پنجره
-            UpdateCoverImage();
             UpdateLogoImage();
             UpdateBackgroundImage();
-        }
-
-        private void UpdateCoverImage()
-        {
-            if (DetailCoverImage == null) return;
-            string path = _game.ImagePath;
-            if (string.IsNullOrEmpty(path)) { DetailCoverImage.Source = null; return; }
-
-            try
-            {
-                var bitmap = new BitmapImage();
-                bitmap.BeginInit();
-                if (path.StartsWith("pack://") || path.Contains("://")) bitmap.UriSource = new Uri(path);
-                else
-                {
-                    string fullPath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, path);
-                    bitmap.UriSource = !System.IO.File.Exists(fullPath) ? new Uri(path, UriKind.RelativeOrAbsolute) : new Uri(fullPath, UriKind.Absolute);
-                }
-                bitmap.CacheOption = BitmapCacheOption.OnLoad;
-                bitmap.CreateOptions = BitmapCreateOptions.DelayCreation;
-                bitmap.EndInit();
-                bitmap.Freeze();
-                DetailCoverImage.Source = bitmap;
-            }
-            catch { DetailCoverImage.Source = null; }
         }
 
         private void UpdateLogoImage()
@@ -153,10 +127,6 @@ namespace Sayra.UI.Views
             catch { DetailBackgroundImage.Source = null; }
         }
 
-        private void DetailCoverImage_ImageFailed(object sender, ExceptionRoutedEventArgs e)
-        {
-            try { if (sender is Image img) img.Visibility = Visibility.Collapsed; } catch { }
-        }
 
         private void Back_Click(object sender, RoutedEventArgs e) => this.Close();
 
