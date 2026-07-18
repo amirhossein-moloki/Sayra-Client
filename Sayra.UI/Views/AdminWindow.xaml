@@ -2226,6 +2226,8 @@
                                                 <RowDefinition Height="Auto" />
                                                 <RowDefinition Height="8" />
                                                 <RowDefinition Height="Auto" />
+                                                <RowDefinition Height="8" />
+                                                <RowDefinition Height="Auto" />
                                             </Grid.RowDefinitions>
 
                                             <!-- Column Headers -->
@@ -2259,6 +2261,36 @@
                                                     <Image Source="{Binding BackgroundImage}" Stretch="UniformToFill" RenderOptions.BitmapScalingMode="HighQuality"/>
                                                 </Grid>
                                             </Border>
+
+                                            <!-- Cover Input -->
+                                            <Grid Grid.Row="4" Grid.Column="0" Margin="0,4,0,0">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*" />
+                                                    <ColumnDefinition Width="Auto" />
+                                                </Grid.ColumnDefinitions>
+                                                <TextBox Grid.Column="0" Text="{Binding CoverImage, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource AdminDetailTextBoxStyle}"/>
+                                                <Button Grid.Column="1" Content="Browse" Height="28" Padding="8,0" Style="{StaticResource ToolbarButtonStyle}" Margin="4,0,0,0" Click="BrowseCover_Click"/>
+                                            </Grid>
+
+                                            <!-- Logo Input -->
+                                            <Grid Grid.Row="4" Grid.Column="2" Margin="0,4,0,0">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*" />
+                                                    <ColumnDefinition Width="Auto" />
+                                                </Grid.ColumnDefinitions>
+                                                <TextBox Grid.Column="0" Text="{Binding LogoImage, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource AdminDetailTextBoxStyle}"/>
+                                                <Button Grid.Column="1" Content="Browse" Height="28" Padding="8,0" Style="{StaticResource ToolbarButtonStyle}" Margin="4,0,0,0" Click="BrowseLogo_Click"/>
+                                            </Grid>
+
+                                            <!-- Background Input -->
+                                            <Grid Grid.Row="4" Grid.Column="4" Margin="0,4,0,0">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*" />
+                                                    <ColumnDefinition Width="Auto" />
+                                                </Grid.ColumnDefinitions>
+                                                <TextBox Grid.Column="0" Text="{Binding BackgroundImage, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource AdminDetailTextBoxStyle}"/>
+                                                <Button Grid.Column="1" Content="Browse" Height="28" Padding="8,0" Style="{StaticResource ToolbarButtonStyle}" Margin="4,0,0,0" Click="BrowseBackground_Click"/>
+                                            </Grid>
                                         </Grid>
                                     </StackPanel>
                                 </Border>

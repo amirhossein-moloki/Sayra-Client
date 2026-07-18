@@ -99,6 +99,57 @@ namespace Sayra.UI.Views
             CloseModal();
         }
 
+        private void BrowseCover_Click(object sender, RoutedEventArgs e)
+        {
+            if (ModalOverlay.DataContext is Sayra.UI.Models.AdminAppItem selectedItem)
+            {
+                var dialog = new Microsoft.Win32.OpenFileDialog
+                {
+                    Filter = "Image Files|*.jpg;*.jpeg;*.png;*.bmp;*.gif;*.webp|All Files|*.*",
+                    Title = "Select Cover Image"
+                };
+
+                if (dialog.ShowDialog() == true)
+                {
+                    selectedItem.CoverImage = dialog.FileName;
+                }
+            }
+        }
+
+        private void BrowseLogo_Click(object sender, RoutedEventArgs e)
+        {
+            if (ModalOverlay.DataContext is Sayra.UI.Models.AdminAppItem selectedItem)
+            {
+                var dialog = new Microsoft.Win32.OpenFileDialog
+                {
+                    Filter = "Image Files|*.jpg;*.jpeg;*.png;*.bmp;*.gif;*.webp|All Files|*.*",
+                    Title = "Select Logo Image"
+                };
+
+                if (dialog.ShowDialog() == true)
+                {
+                    selectedItem.LogoImage = dialog.FileName;
+                }
+            }
+        }
+
+        private void BrowseBackground_Click(object sender, RoutedEventArgs e)
+        {
+            if (ModalOverlay.DataContext is Sayra.UI.Models.AdminAppItem selectedItem)
+            {
+                var dialog = new Microsoft.Win32.OpenFileDialog
+                {
+                    Filter = "Image Files|*.jpg;*.jpeg;*.png;*.bmp;*.gif;*.webp|All Files|*.*",
+                    Title = "Select Background Image"
+                };
+
+                if (dialog.ShowDialog() == true)
+                {
+                    selectedItem.BackgroundImage = dialog.FileName;
+                }
+            }
+        }
+
         private void ResetConfig_Click(object sender, RoutedEventArgs e)
         {
             Sayra.UI.Services.NotificationService.Instance.ShowWarning("پیکربندی بازی با موفقیت به حالت اولیه بازنشانی شد.");
