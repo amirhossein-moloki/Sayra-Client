@@ -221,21 +221,69 @@
                     <!-- بخش بالایی (TOP SECTION) -->
                     <!-- ========================================== -->
 
-                    <!-- ستون چپ: کارت هیرو ایمیج / بنر بزرگ بازی -->
-                    <c:GameInfoCard Grid.Row="0" Grid.Column="0" Width="1296" Height="406" CornerRadius="20" Padding="0"
+                    <!-- ستون چپ: کارت اطلاعات تفصیلی بازی به همراه لوگو و مشخصات متنی (منتقل شده به بالا) -->
+                    <c:GameInfoCard Grid.Row="0" Grid.Column="0" Width="1296" Height="406" CornerRadius="20" Padding="30" VerticalAlignment="Stretch"
                                     Background="{DynamicResource GameDetail.CardBackground}"
                                     BorderBrush="{DynamicResource GameDetail.Border}"
                                     BorderThickness="1">
-                        <Grid ClipToBounds="True">
-                            <Grid Background="{DynamicResource GameDetail.CoverPlaceholderBackground}">
-                                <!-- آیکون پیش‌فرض دسته بازی در صورت عدم وجود پوستر -->
-                                <Path Data="M21,6H3C1.9,6 1,6.9 1,8V16C1,17.1 1.9,18 3,18H21C22.1,18 23,17.1 23,16V8C23,6.9 22.1,6 21,6M6,15H4V13H2V11H4V9H6V11H8V13H6V15M15,11A1.5,1.5 0 1,1 16.5,9.5A1.5,1.5 0 0,1 15,11M19,14A1.5,1.5 0 1,1 20.5,12.5A1.5,1.5 0 0,1 19,14Z"
-                                      Fill="{DynamicResource GameDetail.GamepadIconFill}"
-                                      Width="50" Height="50"
-                                      Stretch="Uniform"
-                                      HorizontalAlignment="Center"
-                                      VerticalAlignment="Center" />
-                                <Image x:Name="DetailCoverImage" Stretch="UniformToFill" ImageFailed="DetailCoverImage_ImageFailed"/>
+                        <Grid FlowDirection="RightToLeft">
+                            <Grid.ColumnDefinitions>
+                                <!-- بخش راست کارت (RTL Col 0): متون و دکمه شروع بازی -->
+                                <ColumnDefinition Width="*" />
+                                <!-- فاصله‌گذار ستونی -->
+                                <ColumnDefinition Width="30" />
+                                <!-- بخش چپ کارت (RTL Col 2): لوگوی تفصیلی بازی -->
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+
+                            <!-- چپ: لوگوی بازی (بازیابی لوگوی حذف شده) -->
+                            <Border Grid.Column="2" VerticalAlignment="Center" Width="240" Height="240" Background="{DynamicResource GameDetail.BadgeBackground}" CornerRadius="16" BorderBrush="{DynamicResource GameDetail.Border}" BorderThickness="1" ClipToBounds="True">
+                                <Image x:Name="DetailLogoImage" Stretch="Uniform" Margin="10" RenderOptions.BitmapScalingMode="HighQuality">
+                                    <Image.Effect>
+                                        <DropShadowEffect Color="Black" BlurRadius="5" ShadowDepth="1" Opacity="0.5"/>
+                                    </Image.Effect>
+                                </Image>
+                            </Border>
+
+                            <!-- راست: مشخصات متنی بازی (شامل عنوان، توضیحات، سازنده و لانچر) -->
+                            <Grid Grid.Column="0" VerticalAlignment="Stretch">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" /> <!-- عنوان و ژانر بازی -->
+                                    <RowDefinition Height="*" />    <!-- توضیحات بازی -->
+                                    <RowDefinition Height="Auto" /> <!-- مدال‌های متادیتا -->
+                                    <RowDefinition Height="Auto" /> <!-- وضعیت آماده به بازی / در حال بازی -->
+                                </Grid.RowDefinitions>
+
+                                <!-- عنوان و ژانر -->
+                                <StackPanel Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,0,10">
+                                    <TextBlock x:Name="DetailTitle" Style="{DynamicResource GameHeroTitleStyle}" />
+                                    <TextBlock x:Name="DetailGenre" Style="{DynamicResource GameHeroGenreStyle}" />
+                                </StackPanel>
+
+                                <!-- توضیحات بازی -->
+                                <TextBlock x:Name="DetailDescription" Grid.Row="1" Style="{DynamicResource GameHeroDescriptionStyle}" />
+
+                                <!-- متادیتاها با استایل سنترالیزه جدید و اولویت تصحیح‌شده WPF -->
+                                <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" FlowDirection="RightToLeft" Margin="0,0,0,20">
+                                    <c:GameBadge x:Name="DeveloperBadge" Style="{DynamicResource CategoryBadgeStyle}" HasLabel="True" Label="سازنده: " Margin="0,0,10,0"/>
+                                    <c:GameBadge x:Name="ReleaseYearBadge" Style="{DynamicResource CategoryBadgeStyle}" HasLabel="True" Label="سال انتشار: " Margin="0,0,10,0"/>
+                                    <c:GameBadge x:Name="LauncherBadge" Style="{DynamicResource GenreBadgeStyle}" HasLabel="True" Label="لانچر: " TextForeground="{DynamicResource GameDetail.Highlight}"/>
+                                </StackPanel>
+
+                                <!-- دکمه بزرگ آماده به بازی / درحال بازی -->
+                                <Button Grid.Row="3" x:Name="PlayButton" Click="PlayGame_Click" Style="{DynamicResource PrimaryActionButtonStyle}" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" HorizontalAlignment="Right" Padding="0" Cursor="Hand" Margin="0,0,0,10">
+                                    <Button.Template>
+                                        <ControlTemplate TargetType="Button">
+                                            <ContentPresenter />
+                                        </ControlTemplate>
+                                    </Button.Template>
+                                    <Border x:Name="StatusBadgeBorder" Width="288" Height="50" Style="{DynamicResource StatusBadgeStyle}">
+                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                            <Ellipse x:Name="StatusBadgeDot" Width="8" Height="8" Fill="{DynamicResource GameDetail.Status.SuccessBorder}" Margin="0,0,10,0" VerticalAlignment="Center"/>
+                                            <TextBlock x:Name="DetailStatus" Text="وضعیت" FontFamily="{StaticResource PeydaMedium}" FontSize="15" Foreground="{DynamicResource GameDetail.Status.SuccessBorder}" VerticalAlignment="Center"/>
+                                        </StackPanel>
+                                    </Border>
+                                </Button>
                             </Grid>
                         </Grid>
                     </c:GameInfoCard>
@@ -332,79 +380,14 @@
                     <!-- بخش پایینی (BOTTOM SECTION) -->
                     <!-- ========================================== -->
 
-                    <!-- ستون چپ: کارت اطلاعات تفصیلی بازی به همراه لوگو و مشخصات متنی -->
-                    <c:GameInfoCard Grid.Row="2" Grid.Column="0" Width="1296" CornerRadius="20" Padding="30" VerticalAlignment="Stretch"
-                                    Background="{DynamicResource GameDetail.CardBackground}"
-                                    BorderBrush="{DynamicResource GameDetail.Border}"
-                                    BorderThickness="1">
-                        <Grid FlowDirection="RightToLeft">
-                            <Grid.ColumnDefinitions>
-                                <!-- بخش راست کارت (RTL Col 0): متون و دکمه شروع بازی -->
-                                <ColumnDefinition Width="*" />
-                                <!-- فاصله‌گذار ستونی -->
-                                <ColumnDefinition Width="30" />
-                                <!-- بخش چپ کارت (RTL Col 2): لوگوی تفصیلی بازی -->
-                                <ColumnDefinition Width="Auto" />
-                            </Grid.ColumnDefinitions>
-
-                            <!-- چپ: لوگوی بازی (بازیابی لوگوی حذف شده) -->
-                            <Border Grid.Column="2" VerticalAlignment="Center" Width="240" Height="240" Background="{DynamicResource GameDetail.BadgeBackground}" CornerRadius="16" BorderBrush="{DynamicResource GameDetail.Border}" BorderThickness="1" ClipToBounds="True">
-                                <Image x:Name="DetailLogoImage" Stretch="Uniform" Margin="10" RenderOptions.BitmapScalingMode="HighQuality">
-                                    <Image.Effect>
-                                        <DropShadowEffect Color="Black" BlurRadius="5" ShadowDepth="1" Opacity="0.5"/>
-                                    </Image.Effect>
-                                </Image>
-                            </Border>
-
-                            <!-- راست: مشخصات متنی بازی (شامل عنوان، توضیحات، سازنده و لانچر) -->
-                            <Grid Grid.Column="0" VerticalAlignment="Stretch">
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto" /> <!-- عنوان و ژانر بازی -->
-                                    <RowDefinition Height="*" />    <!-- توضیحات بازی -->
-                                    <RowDefinition Height="Auto" /> <!-- مدال‌های متادیتا -->
-                                    <RowDefinition Height="Auto" /> <!-- وضعیت آماده به بازی / در حال بازی -->
-                                </Grid.RowDefinitions>
-
-                                <!-- عنوان و ژانر -->
-                                <StackPanel Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,0,10">
-                                    <TextBlock x:Name="DetailTitle" Style="{DynamicResource GameHeroTitleStyle}" />
-                                    <TextBlock x:Name="DetailGenre" Style="{DynamicResource GameHeroGenreStyle}" />
-                                </StackPanel>
-
-                                <!-- توضیحات بازی -->
-                                <TextBlock x:Name="DetailDescription" Grid.Row="1" Style="{DynamicResource GameHeroDescriptionStyle}" />
-
-                                <!-- متادیتاها با استایل سنترالیزه جدید و اولویت تصحیح‌شده WPF -->
-                                <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" FlowDirection="RightToLeft" Margin="0,0,0,20">
-                                    <c:GameBadge x:Name="DeveloperBadge" Style="{DynamicResource CategoryBadgeStyle}" HasLabel="True" Label="سازنده: " Margin="0,0,10,0"/>
-                                    <c:GameBadge x:Name="ReleaseYearBadge" Style="{DynamicResource CategoryBadgeStyle}" HasLabel="True" Label="سال انتشار: " Margin="0,0,10,0"/>
-                                    <c:GameBadge x:Name="LauncherBadge" Style="{DynamicResource GenreBadgeStyle}" HasLabel="True" Label="لانچر: " TextForeground="{DynamicResource GameDetail.Highlight}"/>
-                                </StackPanel>
-
-                                <!-- دکمه بزرگ آماده به بازی / درحال بازی -->
-                                <Button Grid.Row="3" x:Name="PlayButton" Click="PlayGame_Click" Style="{DynamicResource PrimaryActionButtonStyle}" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" HorizontalAlignment="Right" Padding="0" Cursor="Hand" Margin="0,0,0,10">
-                                    <Button.Template>
-                                        <ControlTemplate TargetType="Button">
-                                            <ContentPresenter />
-                                        </ControlTemplate>
-                                    </Button.Template>
-                                    <Border x:Name="StatusBadgeBorder" Width="288" Height="50" Style="{DynamicResource StatusBadgeStyle}">
-                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-                                            <Ellipse x:Name="StatusBadgeDot" Width="8" Height="8" Fill="{DynamicResource GameDetail.Status.SuccessBorder}" Margin="0,0,10,0" VerticalAlignment="Center"/>
-                                            <TextBlock x:Name="DetailStatus" Text="وضعیت" FontFamily="{StaticResource PeydaMedium}" FontSize="15" Foreground="{DynamicResource GameDetail.Status.SuccessBorder}" VerticalAlignment="Center"/>
-                                        </StackPanel>
-                                    </Border>
-                                </Button>
-                            </Grid>
-                        </Grid>
-                    </c:GameInfoCard>
+                    <!-- ستون چپ: لوگوی بزرگ سایرا (منتقل شده به بخش پایینی خالی) -->
+                    <Grid Grid.Row="2" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center">
+                        <svgc:SvgViewbox Source="/Assets/sayra.svg" Width="800" Height="250" Opacity="0.25" IsHitTestVisible="False" />
+                    </Grid>
 
                     <!-- ستون راست: پنل اطلاعات تفصیلی سخت‌افزار سیستم (هم‌تراز با ردیف پایینی) -->
                     <StackPanel Grid.Row="2" Grid.Column="2" VerticalAlignment="Top" Width="454">
                         <c:HardwarePanel x:Name="Hardware" Width="454" HorizontalAlignment="Stretch" VerticalAlignment="Top" />
-
-                        <!-- لوگوی سایرا در زیر کل بخش چیدمان متقارن -->
-                        <svgc:SvgViewbox Source="/Assets/sayra.svg" Width="Auto" Height="Auto" Opacity="0.2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,20,0,0" IsHitTestVisible="False" />
                     </StackPanel>
                 </Grid>
             </Grid>
