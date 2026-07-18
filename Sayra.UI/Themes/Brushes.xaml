@@ -1,0 +1,33 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <!-- Import Colors resource dictionary for resolving references -->
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="Colors.xaml" />
+    </ResourceDictionary.MergedDictionaries>
+
+    <!-- Base SolidColorBrush resources matching design tokens -->
+    <SolidColorBrush x:Key="BackgroundBrush" Color="{DynamicResource App.Background}"/>
+    <SolidColorBrush x:Key="SurfaceBrush" Color="{DynamicResource App.Surface}"/>
+    <SolidColorBrush x:Key="PrimaryBrush" Color="{DynamicResource App.Primary}"/>
+    <SolidColorBrush x:Key="AccentBrush" Color="{DynamicResource App.Accent}"/>
+    <SolidColorBrush x:Key="BorderBrush" Color="{DynamicResource App.Border}"/>
+    <SolidColorBrush x:Key="TextPrimaryBrush" Color="{DynamicResource App.Text.Primary}"/>
+    <SolidColorBrush x:Key="TextSecondaryBrush" Color="{DynamicResource App.Text.Secondary}"/>
+    <SolidColorBrush x:Key="SuccessBrush" Color="{DynamicResource App.Success}"/>
+    <SolidColorBrush x:Key="ErrorBrush" Color="{DynamicResource App.Error}"/>
+
+    <!-- Specific Login Screen Brushes -->
+    <SolidColorBrush x:Key="LoginYellowAccentBrush" Color="{DynamicResource App.Login.YellowAccent}"/>
+    <SolidColorBrush x:Key="LoginYellowBorderBrush" Color="{DynamicResource App.Login.YellowBorder}"/>
+    <SolidColorBrush x:Key="LoginGlassInputBgBrush" Color="{DynamicResource App.Login.GlassInputBg}"/>
+    <SolidColorBrush x:Key="LoginGlassInputBorderBrush" Color="{DynamicResource App.Login.GlassInputBorder}"/>
+    <SolidColorBrush x:Key="LoginGlassPanelBgBrush" Color="{DynamicResource App.Login.GlassPanelBg}"/>
+    <SolidColorBrush x:Key="LoginDarkBgBrush" Color="{DynamicResource App.Login.DarkBg}"/>
+    <SolidColorBrush x:Key="LoginDarkBgTransparentBrush" Color="{DynamicResource App.Login.DarkBgTransparent}"/>
+    <SolidColorBrush x:Key="LoginWhiteBorderBrush" Color="{DynamicResource App.Login.WhiteBorder}"/>
+    <SolidColorBrush x:Key="LoginWhiteHoverBgBrush" Color="{DynamicResource App.Login.WhiteHoverBg}"/>
+    <SolidColorBrush x:Key="LoginWhiteHoverBorderBrush" Color="{DynamicResource App.Login.WhiteHoverBorder}"/>
+    <SolidColorBrush x:Key="LoginWhitePressedBgBrush" Color="{DynamicResource App.Login.WhitePressedBg}"/>
+    <SolidColorBrush x:Key="LoginPlaceholderTextBrush" Color="{DynamicResource App.Login.PlaceholderText}"/>
+    <SolidColorBrush x:Key="LoginSecondaryTextBrush" Color="{DynamicResource App.Login.SecondaryText}"/>
+</ResourceDictionary>

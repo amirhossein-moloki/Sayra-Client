@@ -121,22 +121,34 @@ namespace Sayra.UI.Controls
             Color targetBorderColor;
             double targetShadowOpacity;
 
+            // Retrieve yellow accent color from dynamic resources if defined, otherwise fall back to #F5FF00
+            Color yellowAccent;
+            var yellowAccentObj = TryFindResource("App.Login.YellowAccent");
+            if (yellowAccentObj is Color c)
+            {
+                yellowAccent = c;
+            }
+            else
+            {
+                yellowAccent = Color.FromRgb(245, 255, 0);
+            }
+
             if (_isFocused)
             {
                 // Full focus: Solid Yellow, glow high
-                targetBorderColor = Color.FromRgb(245, 255, 0);
+                targetBorderColor = yellowAccent;
                 targetShadowOpacity = 0.6;
             }
             else if (IsMouseOver || NormalTextBox.IsMouseOver || SecuredPasswordBox.IsMouseOver)
             {
                 // Hover: Semi-transparent Yellow glow
-                targetBorderColor = Color.FromArgb(102, 245, 255, 0);
+                targetBorderColor = Color.FromArgb(102, yellowAccent.R, yellowAccent.G, yellowAccent.B);
                 targetShadowOpacity = 0.3;
             }
             else
             {
                 // Normal state
-                targetBorderColor = Color.FromArgb(34, 245, 255, 0);
+                targetBorderColor = Color.FromArgb(34, yellowAccent.R, yellowAccent.G, yellowAccent.B);
                 targetShadowOpacity = 0.0;
             }
 
