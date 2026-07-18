@@ -131,18 +131,18 @@
                                                 <DoubleAnimation Storyboard.TargetName="GlowEffect"
                                                                  Storyboard.TargetProperty="Opacity"
                                                                  To="0.0" Duration="0:0:0.2"/>
-                                            </Storyboard>
-                                        </BeginStoryboard>
-                                    </Trigger.ExitActions>
-                                </Trigger>
-                                <Trigger Property="IsPressed" Value="True">
-                                    <Setter TargetName="ButtonBorder" Property="Background" Value="{DynamicResource GameDetail.Button.DangerPressedBg}"/>
-                                </Trigger>
-                            </ControlTemplate.Triggers>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-            </Style>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </Trigger.ExitActions>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="ButtonBorder" Property="Background" Value="{DynamicResource GameDetail.Button.DangerPressedBg}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
         </ResourceDictionary>
     </Window.Resources>
 
@@ -163,7 +163,7 @@
             <Border Background="{DynamicResource GameDetail.HeroOverlay}"/>
         </Grid>
 
-        <!-- CONTENT CONTAINER -->
+        <!-- 2. CONTENT CONTAINER -->
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" /> <!-- Top Bar Row -->
@@ -180,7 +180,7 @@
                     <RowDefinition Height="Auto" />
                     <!-- Row 1: Spacer -->
                     <RowDefinition Height="35" />
-                    <!-- Row 2: Content Row containing columns -->
+                    <!-- Row 2: Content Grid (2 Columns, Top and Bottom sections) -->
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
 
@@ -218,238 +218,344 @@
                                Foreground="{DynamicResource GameDetail.Highlight}"/>
                 </StackPanel>
 
-                <!-- Row 2: Columns -->
+                <!-- Row 2: Symmetric Page Grid Structure -->
                 <Grid Grid.Row="2" VerticalAlignment="Stretch">
                     <Grid.ColumnDefinitions>
-                        <!-- Left Column: Large Game Box & Logo (Width: 1296) -->
+                        <!-- Left Column (Width: 1296) -->
                         <ColumnDefinition Width="Auto" />
                         <!-- Spacer -->
                         <ColumnDefinition Width="*" />
-                        <!-- Right Column: Session Box & Hardware Panel (Width: 454) -->
+                        <!-- Right Column (Width: 454) -->
                         <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
 
-                    <!-- Left Column Content -->
-                    <Grid Grid.Column="0" VerticalAlignment="Stretch" Width="1296">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="*" />
-                        </Grid.RowDefinitions>
+                    <Grid.RowDefinitions>
+                        <!-- Row 0: Top Section (Hero Image and Session Info) -->
+                        <RowDefinition Height="Auto" />
+                        <!-- Row 1: Spacer -->
+                        <RowDefinition Height="20" />
+                        <!-- Row 2: Bottom Section (Game Detail & System Details) -->
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
 
-                        <!-- GameHero encapsulating entire details presentation -->
-                        <c:GameHero x:Name="Hero" Grid.Row="0" />
+                    <!-- ========================================== -->
+                    <!-- TOP SECTION -->
+                    <!-- ========================================== -->
 
-                        <!-- Sayra Logo below the box aligned and sized proportionally (Width: 400, Height: 100) -->
-                        <svgc:SvgViewbox Grid.Row="1" Source="/Assets/sayra.svg"
+                    <!-- LEFT COLUMN (Row 0, Col 0): Hero Image / Banner -->
+                    <c:GameInfoCard Grid.Row="0" Grid.Column="0" Width="1296" Height="406" CornerRadius="20" Padding="0"
+                                    Background="{DynamicResource GameDetail.CardBackground}"
+                                    BorderBrush="{DynamicResource GameDetail.Border}"
+                                    BorderThickness="1">
+                        <Grid ClipToBounds="True">
+                            <Grid Background="{DynamicResource GameDetail.CoverPlaceholderBackground}">
+                                <!-- Gamepad Fallback Vector Graphic -->
+                                <Path Data="M21,6H3C1.9,6 1,6.9 1,8V16C1,17.1 1.9,18 3,18H21C22.1,18 23,17.1 23,16V8C23,6.9 22.1,6 21,6M6,15H4V13H2V11H4V9H6V11H8V13H6V15M15,11A1.5,1.5 0 1,1 16.5,9.5A1.5,1.5 0 0,1 15,11M19,14A1.5,1.5 0 1,1 20.5,12.5A1.5,1.5 0 0,1 19,14Z"
+                                      Fill="{DynamicResource GameDetail.GamepadIconFill}"
+                                      Width="50" Height="50"
+                                      Stretch="Uniform"
+                                      HorizontalAlignment="Center"
+                                      VerticalAlignment="Center" />
+                                <Image x:Name="DetailCoverImage" Stretch="UniformToFill" ImageFailed="DetailCoverImage_ImageFailed"/>
+                            </Grid>
+                        </Grid>
+                    </c:GameInfoCard>
+
+                    <!-- RIGHT COLUMN (Row 0, Col 2): Session Information -->
+                    <c:GameInfoCard Grid.Row="0" Grid.Column="2" Width="454" Height="406" CornerRadius="20" Padding="25"
+                                    Background="{DynamicResource GameDetail.CardBackground}"
+                                    BorderBrush="{DynamicResource GameDetail.Border}"
+                                    BorderThickness="1">
+                        <c:GameInfoCard.DataContext>
+                            <vm:SessionHeroViewModel />
+                        </c:GameInfoCard.DataContext>
+                        <c:GameInfoCard.Effect>
+                            <DropShadowEffect Color="{DynamicResource App.Accent}" BlurRadius="12" ShadowDepth="0" Opacity="0.1" />
+                        </c:GameInfoCard.Effect>
+
+                        <Grid FlowDirection="RightToLeft">
+                            <Grid.RowDefinitions>
+                                <!-- Row 0: Header (PC Name & Session Info with Icon) -->
+                                <RowDefinition Height="Auto" />
+                                <!-- Row 1: Time Used & Timer (Left Aligned) -->
+                                <RowDefinition Height="Auto" />
+                                <!-- Row 2: Divider Line -->
+                                <RowDefinition Height="Auto" />
+                                <!-- Row 3: Stats Details Key/Value list -->
+                                <RowDefinition Height="*" />
+                                <!-- Row 4: Centered End Session Button -->
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+
+                            <!-- Row 0: Header -->
+                            <Grid Grid.Row="0" Margin="0,0,0,12">
+                                <!-- PC Name -->
+                                <TextBlock Text="PC-08"
+                                           FontFamily="{StaticResource PeydaBold}"
+                                           FontSize="24"
+                                           Foreground="{DynamicResource GameDetail.Highlight}"
+                                           HorizontalAlignment="Left"
+                                           VerticalAlignment="Center" />
+
+                                <!-- Session Information + Icon -->
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+                                    <Path Data="M12 6v6h4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                                          Stroke="{DynamicResource GameDetail.Highlight}"
+                                          StrokeThickness="2"
+                                          StrokeStartLineCap="Round"
+                                          StrokeEndLineCap="Round"
+                                          Fill="Transparent"
+                                          Width="22" Height="22"
+                                          Stretch="Uniform"
+                                          VerticalAlignment="Center"
+                                          Margin="0,0,8,0"/>
+                                    <TextBlock Text="session information"
+                                               FontFamily="{StaticResource PeydaBold}"
+                                               FontSize="20"
+                                               Foreground="{DynamicResource GameDetail.Highlight}"
+                                               VerticalAlignment="Center" />
+                                </StackPanel>
+                            </Grid>
+
+                            <!-- Row 1: Time Used & Timer -->
+                            <StackPanel Grid.Row="1" HorizontalAlignment="Right" Margin="0,0,0,15">
+                                <TextBlock Text="زمان استفاده شده"
+                                           FontFamily="{StaticResource PeydaMedium}"
+                                           FontSize="18"
+                                           Foreground="{DynamicResource GameDetail.Highlight}"
+                                           HorizontalAlignment="Right" />
+                                <TextBlock Text="{Binding SessionTime}"
+                                           FontFamily="{StaticResource BlackOpsOne}"
+                                           FontSize="54"
+                                           Foreground="{DynamicResource GameDetail.Highlight}"
+                                           HorizontalAlignment="Right"
+                                           Margin="0,4,0,0">
+                                    <TextBlock.Effect>
+                                        <DropShadowEffect Color="{DynamicResource App.Primary}" BlurRadius="15" ShadowDepth="0" Opacity="0.4" />
+                                    </TextBlock.Effect>
+                                </TextBlock>
+                            </StackPanel>
+
+                            <!-- Row 2: Divider Line -->
+                            <Border Grid.Row="2"
+                                    Height="1.5"
+                                    Background="{DynamicResource GameDetail.Highlight}"
+                                    Margin="0,0,0,15" />
+
+                            <!-- Row 3: Stats Details Key/Value list -->
+                            <Grid Grid.Row="3" Margin="0,0,0,15">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+
+                                <!-- Hourly Rate -->
+                                <Grid Grid.Row="0" Margin="0,0,0,10">
+                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center">
+                                        <Path Data="{DynamicResource HourlyRateIconGeometry}"
+                                              Stroke="{DynamicResource GameDetail.Highlight}"
+                                              StrokeThickness="1.5"
+                                              StrokeStartLineCap="Round"
+                                              StrokeEndLineCap="Round"
+                                              Fill="Transparent"
+                                              Width="18" Height="18"
+                                              Stretch="Uniform"
+                                              VerticalAlignment="Center"
+                                              Margin="0,0,8,0">
+                                            <Path.Effect>
+                                                <DropShadowEffect Color="{DynamicResource App.Primary}" BlurRadius="6" ShadowDepth="0" Opacity="0.3"/>
+                                            </Path.Effect>
+                                        </Path>
+                                        <TextBlock Text="نرخ ساعتی"
+                                                   FontFamily="{StaticResource PeydaMedium}"
+                                                   FontSize="19"
+                                                   Foreground="{DynamicResource GameDetail.Highlight}"
+                                                   VerticalAlignment="Center" />
+                                    </StackPanel>
+                                    <TextBlock Text="{Binding HourlyRate}"
+                                               FontFamily="{StaticResource PeydaBold}"
+                                               FontSize="20"
+                                               Foreground="{DynamicResource GameDetail.Highlight}"
+                                               HorizontalAlignment="Right"
+                                               VerticalAlignment="Center" />
+                                </Grid>
+
+                                <!-- Cost so far -->
+                                <Grid Grid.Row="1" Margin="0,0,0,10">
+                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center">
+                                        <Path Data="{DynamicResource CurrentCostIconGeometry}"
+                                              Stroke="{DynamicResource GameDetail.Highlight}"
+                                              StrokeThickness="1.5"
+                                              StrokeStartLineCap="Round"
+                                              StrokeEndLineCap="Round"
+                                              Fill="Transparent"
+                                              Width="18" Height="18"
+                                              Stretch="Uniform"
+                                              VerticalAlignment="Center"
+                                              Margin="0,0,8,0">
+                                            <Path.Effect>
+                                                <DropShadowEffect Color="{DynamicResource App.Primary}" BlurRadius="6" ShadowDepth="0" Opacity="0.3"/>
+                                            </Path.Effect>
+                                        </Path>
+                                        <TextBlock Text="هزینه تا کنون"
+                                                   FontFamily="{StaticResource PeydaMedium}"
+                                                   FontSize="19"
+                                                   Foreground="{DynamicResource GameDetail.Highlight}"
+                                                   VerticalAlignment="Center" />
+                                    </StackPanel>
+                                    <TextBlock Text="{Binding CurrentCost}"
+                                               FontFamily="{StaticResource PeydaBold}"
+                                               FontSize="20"
+                                               Foreground="{DynamicResource GameDetail.Highlight}"
+                                               HorizontalAlignment="Right"
+                                               VerticalAlignment="Center" />
+                                </Grid>
+
+                                <!-- Start Time -->
+                                <Grid Grid.Row="2" Margin="0,0,0,10">
+                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center">
+                                        <Path Data="{DynamicResource StartTimeIconGeometry}"
+                                              Stroke="{DynamicResource GameDetail.Highlight}"
+                                              StrokeThickness="1.5"
+                                              StrokeStartLineCap="Round"
+                                              StrokeEndLineCap="Round"
+                                              Fill="Transparent"
+                                              Width="18" Height="18"
+                                              Stretch="Uniform"
+                                              VerticalAlignment="Center"
+                                              Margin="0,0,8,0">
+                                            <Path.Effect>
+                                                <DropShadowEffect Color="{DynamicResource App.Primary}" BlurRadius="6" ShadowDepth="0" Opacity="0.3"/>
+                                            </Path.Effect>
+                                        </Path>
+                                        <TextBlock Text="زمان شروع"
+                                                   FontFamily="{StaticResource PeydaMedium}"
+                                                   FontSize="19"
+                                                   Foreground="{DynamicResource GameDetail.Highlight}"
+                                                   VerticalAlignment="Center" />
+                                    </StackPanel>
+                                    <TextBlock Text="{Binding StartTime}"
+                                               FontFamily="{StaticResource PeydaBold}"
+                                               FontSize="20"
+                                               Foreground="{DynamicResource GameDetail.Highlight}"
+                                               HorizontalAlignment="Right"
+                                               VerticalAlignment="Center" />
+                                </Grid>
+                            </Grid>
+
+                            <!-- Row 4: Centered End Session Button -->
+                            <Button Grid.Row="4"
+                                    Style="{DynamicResource EndSessionButtonStyle}"
+                                    Click="EndSession_Click"
+                                    Width="240" Height="48"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Bottom"/>
+                        </Grid>
+                    </c:GameInfoCard>
+
+
+                    <!-- ========================================== -->
+                    <!-- BOTTOM SECTION -->
+                    <!-- ========================================== -->
+
+                    <!-- LEFT COLUMN (Row 2, Col 0): Game Logo & Game Detail Panel -->
+                    <c:GameInfoCard Grid.Row="2" Grid.Column="0" Width="1296" CornerRadius="20" Padding="30" VerticalAlignment="Stretch"
+                                    Background="{DynamicResource GameDetail.CardBackground}"
+                                    BorderBrush="{DynamicResource GameDetail.Border}"
+                                    BorderThickness="1">
+                        <Grid FlowDirection="RightToLeft">
+                            <Grid.ColumnDefinitions>
+                                <!-- Right Column (RTL Column 0): Game Details -->
+                                <ColumnDefinition Width="*" />
+                                <!-- Spacer -->
+                                <ColumnDefinition Width="30" />
+                                <!-- Left Column (RTL Column 2): Game Logo -->
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+
+                            <!-- LEFT: Game Logo (sits to the left under RTL, meaning right/left visually) -->
+                            <Border Grid.Column="2" VerticalAlignment="Center" Width="240" Height="240" Background="{DynamicResource GameDetail.BadgeBackground}" CornerRadius="16" BorderBrush="{DynamicResource GameDetail.Border}" BorderThickness="1" ClipToBounds="True">
+                                <Image x:Name="DetailLogoImage" Stretch="Uniform" Margin="10" RenderOptions.BitmapScalingMode="HighQuality">
+                                    <Image.Effect>
+                                        <DropShadowEffect Color="Black" BlurRadius="5" ShadowDepth="1" Opacity="0.5"/>
+                                    </Image.Effect>
+                                </Image>
+                            </Border>
+
+                            <!-- RIGHT: Game Details (sits to the right of the logo) -->
+                            <Grid Grid.Column="0" VerticalAlignment="Stretch">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" /> <!-- Title / Genre -->
+                                    <RowDefinition Height="*" />    <!-- Description -->
+                                    <RowDefinition Height="Auto" /> <!-- Metadata Badge List -->
+                                    <RowDefinition Height="Auto" /> <!-- Play / Status Button -->
+                                </Grid.RowDefinitions>
+
+                                <!-- Title / Genre Stack -->
+                                <StackPanel Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,0,10">
+                                    <TextBlock x:Name="DetailTitle" Style="{DynamicResource GameHeroTitleStyle}" />
+                                    <TextBlock x:Name="DetailGenre" Style="{DynamicResource GameHeroGenreStyle}" />
+                                </StackPanel>
+
+                                <!-- Description Segment -->
+                                <TextBlock x:Name="DetailDescription" Grid.Row="1" Style="{DynamicResource GameHeroDescriptionStyle}" />
+
+                                <!-- Rich Metadata Segment -->
+                                <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" FlowDirection="RightToLeft" Margin="0,0,0,20">
+                                    <!-- Developer Pill -->
+                                    <c:GameBadge x:Name="DeveloperBadge" Style="{DynamicResource CategoryBadgeStyle}" HasLabel="True" Label="سازنده: " Margin="0,0,10,0"/>
+
+                                    <!-- Year Pill -->
+                                    <c:GameBadge x:Name="ReleaseYearBadge" Style="{DynamicResource CategoryBadgeStyle}" HasLabel="True" Label="سال انتشار: " Margin="0,0,10,0"/>
+
+                                    <!-- Launcher Platform Pill -->
+                                    <c:GameBadge x:Name="LauncherBadge" Style="{DynamicResource GenreBadgeStyle}" HasLabel="True" Label="لانچر: " TextForeground="{DynamicResource GameDetail.Highlight}"/>
+                                </StackPanel>
+
+                                <!-- Game Status Badge / Button -->
+                                <Button Grid.Row="3"
+                                        x:Name="PlayButton"
+                                        Click="PlayGame_Click"
+                                        Style="{DynamicResource PrimaryActionButtonStyle}"
+                                        Background="Transparent"
+                                        BorderBrush="Transparent"
+                                        BorderThickness="0"
+                                        HorizontalAlignment="Right"
+                                        Padding="0"
+                                        Cursor="Hand"
+                                        Margin="0,0,0,10">
+                                    <Button.Template>
+                                        <ControlTemplate TargetType="Button">
+                                            <ContentPresenter />
+                                        </ControlTemplate>
+                                    </Button.Template>
+                                    <Border x:Name="StatusBadgeBorder" Width="288" Height="50" Style="{DynamicResource StatusBadgeStyle}">
+                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                            <Ellipse x:Name="StatusBadgeDot" Width="8" Height="8" Fill="{DynamicResource GameDetail.Status.SuccessBorder}" Margin="0,0,10,0" VerticalAlignment="Center"/>
+                                            <TextBlock x:Name="DetailStatus" Text="وضعیت" FontFamily="{StaticResource PeydaMedium}" FontSize="15" Foreground="{DynamicResource GameDetail.Status.SuccessBorder}" VerticalAlignment="Center"/>
+                                        </StackPanel>
+                                    </Border>
+                                </Button>
+                            </Grid>
+                        </Grid>
+                    </c:GameInfoCard>
+
+                    <!-- RIGHT COLUMN (Row 2, Col 2): System Detail Panel -->
+                    <StackPanel Grid.Row="2" Grid.Column="2" VerticalAlignment="Top" Width="454">
+                        <!-- Hardware Panel -->
+                        <c:HardwarePanel x:Name="Hardware" Width="454" HorizontalAlignment="Stretch" VerticalAlignment="Top" />
+
+                        <!-- Sayra Logo below hardware panel aligned and sized proportionally -->
+                        <svgc:SvgViewbox Source="/Assets/sayra.svg"
                                          Width="Auto" Height="Auto"
                                          Opacity="0.2"
                                          HorizontalAlignment="Stretch"
                                          VerticalAlignment="Stretch"
                                          Margin="0,20,0,0"
                                          IsHitTestVisible="False" />
-                    </Grid>
-
-                    <!-- Right Column Content -->
-                    <StackPanel Grid.Column="2" VerticalAlignment="Top" Width="454">
-                        <!-- Session Info Box (Width: 454, Height: 406, CornerRadius: 20, Border: 1) -->
-                        <c:GameInfoCard Height="406" CornerRadius="20" Padding="25"
-                                        Background="{DynamicResource GameDetail.CardBackground}"
-                                        BorderBrush="{DynamicResource GameDetail.Border}"
-                                        BorderThickness="1">
-                            <c:GameInfoCard.DataContext>
-                                <vm:SessionHeroViewModel />
-                            </c:GameInfoCard.DataContext>
-                            <c:GameInfoCard.Effect>
-                                <DropShadowEffect Color="{DynamicResource App.Accent}" BlurRadius="12" ShadowDepth="0" Opacity="0.1" />
-                            </c:GameInfoCard.Effect>
-
-                            <Grid FlowDirection="RightToLeft">
-                                <Grid.RowDefinitions>
-                                    <!-- Row 0: Header (PC Name & Session Info with Icon) -->
-                                    <RowDefinition Height="Auto" />
-                                    <!-- Row 1: Time Used & Timer (Left Aligned) -->
-                                    <RowDefinition Height="Auto" />
-                                    <!-- Row 2: Yellow Divider Line -->
-                                    <RowDefinition Height="Auto" />
-                                    <!-- Row 3: Stats Details Key/Value list -->
-                                    <RowDefinition Height="*" />
-                                    <!-- Row 4: Centered End Session Button -->
-                                    <RowDefinition Height="Auto" />
-                                </Grid.RowDefinitions>
-
-                                <!-- Row 0: Header -->
-                                <Grid Grid.Row="0" Margin="0,0,0,12">
-                                    <!-- PC Name (Aligned to the physical right under RTL using HorizontalAlignment="Left") -->
-                                    <TextBlock Text="PC-08"
-                                               FontFamily="{StaticResource PeydaBold}"
-                                               FontSize="24"
-                                               Foreground="{DynamicResource GameDetail.Highlight}"
-                                               HorizontalAlignment="Left"
-                                               VerticalAlignment="Center" />
-
-                                    <!-- Session Information + Icon (Aligned to the physical left under RTL using HorizontalAlignment="Right") -->
-                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
-                                        <!-- Suitable clock icon to the right of text in StackPanel -->
-                                        <Path Data="M12 6v6h4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                                              Stroke="{DynamicResource GameDetail.Highlight}"
-                                              StrokeThickness="2"
-                                              StrokeStartLineCap="Round"
-                                              StrokeEndLineCap="Round"
-                                              Fill="Transparent"
-                                              Width="22" Height="22"
-                                              Stretch="Uniform"
-                                              VerticalAlignment="Center"
-                                              Margin="0,0,8,0"/>
-                                        <!-- Text -->
-                                        <TextBlock Text="session information"
-                                                   FontFamily="{StaticResource PeydaBold}"
-                                                   FontSize="20"
-                                                   Foreground="{DynamicResource GameDetail.Highlight}"
-                                                   VerticalAlignment="Center" />
-                                    </StackPanel>
-                                </Grid>
-
-                                <!-- Row 1: Time Used & Timer (Aligned to physical left using HorizontalAlignment="Right") -->
-                                <StackPanel Grid.Row="1" HorizontalAlignment="Right" Margin="0,0,0,15">
-                                    <TextBlock Text="زمان استفاده شده"
-                                               FontFamily="{StaticResource PeydaMedium}"
-                                               FontSize="18"
-                                               Foreground="{DynamicResource GameDetail.Highlight}"
-                                               HorizontalAlignment="Right" />
-                                    <TextBlock Text="{Binding SessionTime}"
-                                               FontFamily="{StaticResource BlackOpsOne}"
-                                               FontSize="54"
-                                               Foreground="{DynamicResource GameDetail.Highlight}"
-                                               HorizontalAlignment="Right"
-                                               Margin="0,4,0,0">
-                                        <TextBlock.Effect>
-                                            <DropShadowEffect Color="{DynamicResource App.Primary}" BlurRadius="15" ShadowDepth="0" Opacity="0.4" />
-                                        </TextBlock.Effect>
-                                    </TextBlock>
-                                </StackPanel>
-
-                                <!-- Row 2: Yellow Divider Line -->
-                                <Border Grid.Row="2"
-                                        Height="1.5"
-                                        Background="{DynamicResource GameDetail.Highlight}"
-                                        Margin="0,0,0,15" />
-
-                                <!-- Row 3: Stats Details Key/Value list -->
-                                <Grid Grid.Row="3" Margin="0,0,0,15">
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="Auto" />
-                                        <RowDefinition Height="Auto" />
-                                        <RowDefinition Height="Auto" />
-                                    </Grid.RowDefinitions>
-
-                                    <!-- Hourly Rate -->
-                                    <Grid Grid.Row="0" Margin="0,0,0,10">
-                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center">
-                                            <Path Data="{DynamicResource HourlyRateIconGeometry}"
-                                                  Stroke="{DynamicResource GameDetail.Highlight}"
-                                                  StrokeThickness="1.5"
-                                                  StrokeStartLineCap="Round"
-                                                  StrokeEndLineCap="Round"
-                                                  Fill="Transparent"
-                                                  Width="18" Height="18"
-                                                  Stretch="Uniform"
-                                                  VerticalAlignment="Center"
-                                                  Margin="0,0,8,0">
-                                                <Path.Effect>
-                                                    <DropShadowEffect Color="{DynamicResource App.Primary}" BlurRadius="6" ShadowDepth="0" Opacity="0.3"/>
-                                                </Path.Effect>
-                                            </Path>
-                                            <TextBlock Text="نرخ ساعتی"
-                                                       FontFamily="{StaticResource PeydaMedium}"
-                                                       FontSize="19"
-                                                       Foreground="{DynamicResource GameDetail.Highlight}"
-                                                       VerticalAlignment="Center" />
-                                        </StackPanel>
-                                        <TextBlock Text="{Binding HourlyRate}"
-                                                   FontFamily="{StaticResource PeydaBold}"
-                                                   FontSize="20"
-                                                   Foreground="{DynamicResource GameDetail.Highlight}"
-                                                   HorizontalAlignment="Right"
-                                                   VerticalAlignment="Center" />
-                                    </Grid>
-
-                                    <!-- Cost so far -->
-                                    <Grid Grid.Row="1" Margin="0,0,0,10">
-                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center">
-                                            <Path Data="{DynamicResource CurrentCostIconGeometry}"
-                                                  Stroke="{DynamicResource GameDetail.Highlight}"
-                                                  StrokeThickness="1.5"
-                                                  StrokeStartLineCap="Round"
-                                                  StrokeEndLineCap="Round"
-                                                  Fill="Transparent"
-                                                  Width="18" Height="18"
-                                                  Stretch="Uniform"
-                                                  VerticalAlignment="Center"
-                                                  Margin="0,0,8,0">
-                                                <Path.Effect>
-                                                    <DropShadowEffect Color="{DynamicResource App.Primary}" BlurRadius="6" ShadowDepth="0" Opacity="0.3"/>
-                                                </Path.Effect>
-                                            </Path>
-                                            <TextBlock Text="هزینه تا کنون"
-                                                       FontFamily="{StaticResource PeydaMedium}"
-                                                       FontSize="19"
-                                                       Foreground="{DynamicResource GameDetail.Highlight}"
-                                                       VerticalAlignment="Center" />
-                                        </StackPanel>
-                                        <TextBlock Text="{Binding CurrentCost}"
-                                                   FontFamily="{StaticResource PeydaBold}"
-                                                   FontSize="20"
-                                                   Foreground="{DynamicResource GameDetail.Highlight}"
-                                                   HorizontalAlignment="Right"
-                                                   VerticalAlignment="Center" />
-                                    </Grid>
-
-                                    <!-- Start Time -->
-                                    <Grid Grid.Row="2" Margin="0,0,0,10">
-                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center">
-                                            <Path Data="{DynamicResource StartTimeIconGeometry}"
-                                                  Stroke="{DynamicResource GameDetail.Highlight}"
-                                                  StrokeThickness="1.5"
-                                                  StrokeStartLineCap="Round"
-                                                  StrokeEndLineCap="Round"
-                                                  Fill="Transparent"
-                                                  Width="18" Height="18"
-                                                  Stretch="Uniform"
-                                                  VerticalAlignment="Center"
-                                                  Margin="0,0,8,0">
-                                                <Path.Effect>
-                                                    <DropShadowEffect Color="{DynamicResource App.Primary}" BlurRadius="6" ShadowDepth="0" Opacity="0.3"/>
-                                                </Path.Effect>
-                                            </Path>
-                                            <TextBlock Text="زمان شروع"
-                                                       FontFamily="{StaticResource PeydaMedium}"
-                                                       FontSize="19"
-                                                       Foreground="{DynamicResource GameDetail.Highlight}"
-                                                       VerticalAlignment="Center" />
-                                        </StackPanel>
-                                        <TextBlock Text="{Binding StartTime}"
-                                                   FontFamily="{StaticResource PeydaBold}"
-                                                   FontSize="20"
-                                                   Foreground="{DynamicResource GameDetail.Highlight}"
-                                                   HorizontalAlignment="Right"
-                                                   VerticalAlignment="Center" />
-                                    </Grid>
-                                </Grid>
-
-                                <!-- Row 4: Centered End Session Button -->
-                                <Button Grid.Row="4"
-                                        Style="{DynamicResource EndSessionButtonStyle}"
-                                        Click="EndSession_Click"
-                                        Width="240" Height="48"
-                                        HorizontalAlignment="Center"
-                                        VerticalAlignment="Bottom"/>
-                            </Grid>
-                        </c:GameInfoCard>
-
-                        <!-- Hardware Panel directly below -->
-                        <!-- Scaled and margin-aligned to right column width -->
-                        <c:HardwarePanel x:Name="Hardware" Width="454" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="0,20,0,0" />
                     </StackPanel>
+
                 </Grid>
             </Grid>
         </Grid>
