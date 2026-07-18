@@ -1769,61 +1769,47 @@
 
                     <!-- Left: Status Stat Cards -->
                     <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
-                        <!-- Stat Card: Games -->
-                        <Border Background="#1C1F26" CornerRadius="6" Padding="12,6" Margin="0,0,8,0" BorderBrush="#2A2D36" BorderThickness="1">
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="GAMES: " Foreground="#9A9A9A" FontSize="11" FontFamily="{StaticResource PeydaBold}"/>
-                                <TextBlock Text="{Binding Categories[1].Count}" Foreground="#63E6FF" FontSize="11" FontFamily="{StaticResource PeydaBold}"/>
-                            </StackPanel>
-                        </Border>
+                        <!-- Stat: Games -->
+                        <StackPanel Orientation="Horizontal" Margin="0,0,24,0" VerticalAlignment="Center">
+                            <TextBlock Text="GAMES: " Foreground="#63E6FF" FontSize="14" FontFamily="{StaticResource PeydaBold}" VerticalAlignment="Center"/>
+                            <TextBlock Text="{Binding Categories[1].Count}" Foreground="#63E6FF" FontSize="18" FontFamily="{StaticResource PeydaBold}" VerticalAlignment="Center"/>
+                        </StackPanel>
 
-                        <!-- Stat Card: Applications -->
-                        <Border Background="#1C1F26" CornerRadius="6" Padding="12,6" Margin="0,0,8,0" BorderBrush="#2A2D36" BorderThickness="1">
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="APPLICATIONS: " Foreground="#9A9A9A" FontSize="11" FontFamily="{StaticResource PeydaBold}"/>
-                                <TextBlock Text="{Binding Categories[2].Count}" Foreground="#63E6FF" FontSize="11" FontFamily="{StaticResource PeydaBold}"/>
-                            </StackPanel>
-                        </Border>
+                        <!-- Stat: Applications -->
+                        <StackPanel Orientation="Horizontal" Margin="0,0,24,0" VerticalAlignment="Center">
+                            <TextBlock Text="APPLICATIONS: " Foreground="#63E6FF" FontSize="14" FontFamily="{StaticResource PeydaBold}" VerticalAlignment="Center"/>
+                            <TextBlock Text="{Binding Categories[2].Count}" Foreground="#63E6FF" FontSize="18" FontFamily="{StaticResource PeydaBold}" VerticalAlignment="Center"/>
+                        </StackPanel>
 
-                        <!-- Stat Card: Installed -->
-                        <Border Background="#1C1F26" CornerRadius="6" Padding="12,6" Margin="0,0,8,0" BorderBrush="#2A2D36" BorderThickness="1">
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="INSTALLED: " Foreground="#9A9A9A" FontSize="11" FontFamily="{StaticResource PeydaBold}"/>
-                                <TextBlock Text="{Binding Categories[0].Count}" Foreground="#14BE78" FontSize="11" FontFamily="{StaticResource PeydaBold}"/>
-                            </StackPanel>
-                        </Border>
+                        <!-- Stat: Installed -->
+                        <StackPanel Orientation="Horizontal" Margin="0,0,24,0" VerticalAlignment="Center">
+                            <TextBlock Text="INSTALLED: " Foreground="#14BE78" FontSize="14" FontFamily="{StaticResource PeydaBold}" VerticalAlignment="Center"/>
+                            <TextBlock Text="{Binding Categories[0].Count}" Foreground="#14BE78" FontSize="18" FontFamily="{StaticResource PeydaBold}" VerticalAlignment="Center"/>
+                        </StackPanel>
 
-                        <!-- Stat Card: Missing -->
-                        <Border Background="#1C1F26" CornerRadius="6" Padding="12,6" Margin="0,0,8,0" BorderBrush="#2A2D36" BorderThickness="1">
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="MISSING: " Foreground="#9A9A9A" FontSize="11" FontFamily="{StaticResource PeydaBold}"/>
-                                <TextBlock Text="{Binding Categories[15].Count}" Foreground="#F46B6B" FontSize="11" FontFamily="{StaticResource PeydaBold}"/>
-                            </StackPanel>
-                        </Border>
+                        <!-- Stat: Missing -->
+                        <StackPanel Orientation="Horizontal" Margin="0,0,24,0" VerticalAlignment="Center">
+                            <TextBlock Text="MISSING: " Foreground="#F46B6B" FontSize="14" FontFamily="{StaticResource PeydaBold}" VerticalAlignment="Center"/>
+                            <TextBlock Text="{Binding Categories[15].Count}" Foreground="#F46B6B" FontSize="18" FontFamily="{StaticResource PeydaBold}" VerticalAlignment="Center"/>
+                        </StackPanel>
 
-                        <!-- Stat Card: Broken -->
-                        <Border Background="#1C1F26" CornerRadius="6" Padding="12,6" Margin="0,0,8,0" BorderBrush="#2A2D36" BorderThickness="1">
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="INVALID: " Foreground="#9A9A9A" FontSize="11" FontFamily="{StaticResource PeydaBold}"/>
-                                <TextBlock Text="{Binding Categories[15].Count}" Foreground="#F46B6B" FontSize="11" FontFamily="{StaticResource PeydaBold}"/>
-                            </StackPanel>
-                        </Border>
+                        <!-- Stat: Broken / Invalid -->
+                        <StackPanel Orientation="Horizontal" Margin="0,0,24,0" VerticalAlignment="Center">
+                            <TextBlock Text="INVALID: " Foreground="#F46B6B" FontSize="14" FontFamily="{StaticResource PeydaBold}" VerticalAlignment="Center"/>
+                            <TextBlock Text="{Binding Categories[15].Count}" Foreground="#F46B6B" FontSize="18" FontFamily="{StaticResource PeydaBold}" VerticalAlignment="Center"/>
+                        </StackPanel>
 
-                        <!-- Stat Card: Need Scan -->
-                        <Border Background="#1C1F26" CornerRadius="6" Padding="12,6" Margin="0,0,8,0" BorderBrush="#2A2D36" BorderThickness="1">
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="NEED SCAN: " Foreground="#9A9A9A" FontSize="11" FontFamily="{StaticResource PeydaBold}"/>
-                                <TextBlock Text="{Binding Categories[16].Count}" Foreground="#ffff3d" FontSize="11" FontFamily="{StaticResource PeydaBold}"/>
-                            </StackPanel>
-                        </Border>
+                        <!-- Stat: Need Scan -->
+                        <StackPanel Orientation="Horizontal" Margin="0,0,24,0" VerticalAlignment="Center">
+                            <TextBlock Text="NEED SCAN: " Foreground="#ffff3d" FontSize="14" FontFamily="{StaticResource PeydaBold}" VerticalAlignment="Center"/>
+                            <TextBlock Text="{Binding Categories[16].Count}" Foreground="#ffff3d" FontSize="18" FontFamily="{StaticResource PeydaBold}" VerticalAlignment="Center"/>
+                        </StackPanel>
 
-                        <!-- Stat Card: Disabled -->
-                        <Border Background="#1C1F26" CornerRadius="6" Padding="12,6" Margin="0,0,8,0" BorderBrush="#2A2D36" BorderThickness="1">
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="DISABLED: " Foreground="#9A9A9A" FontSize="11" FontFamily="{StaticResource PeydaBold}"/>
-                                <TextBlock Text="{Binding Categories[14].Count}" Foreground="#9A9A9A" FontSize="11" FontFamily="{StaticResource PeydaBold}"/>
-                            </StackPanel>
-                        </Border>
+                        <!-- Stat: Disabled -->
+                        <StackPanel Orientation="Horizontal" Margin="0,0,24,0" VerticalAlignment="Center">
+                            <TextBlock Text="DISABLED: " Foreground="#9A9A9A" FontSize="14" FontFamily="{StaticResource PeydaBold}" VerticalAlignment="Center"/>
+                            <TextBlock Text="{Binding Categories[14].Count}" Foreground="#9A9A9A" FontSize="18" FontFamily="{StaticResource PeydaBold}" VerticalAlignment="Center"/>
+                        </StackPanel>
                     </StackPanel>
                 </Grid>
             </Border>
