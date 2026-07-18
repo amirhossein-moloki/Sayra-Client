@@ -2230,28 +2230,49 @@
                                         <TextBlock Text="6. IMAGES" FontFamily="{StaticResource PeydaBold}" FontSize="12" Foreground="#63E6FF" Margin="0,0,0,12" FontWeight="Bold"/>
                                         <Grid>
                                             <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="1.5*" />
-                                                <ColumnDefinition Width="2*" />
+                                                <ColumnDefinition Width="*" />
+                                                <ColumnDefinition Width="16" />
+                                                <ColumnDefinition Width="*" />
+                                                <ColumnDefinition Width="16" />
+                                                <ColumnDefinition Width="*" />
                                             </Grid.ColumnDefinitions>
                                             <Grid.RowDefinitions>
                                                 <RowDefinition Height="Auto" />
-                                                <RowDefinition Height="12" />
-                                                <RowDefinition Height="Auto" />
-                                                <RowDefinition Height="12" />
+                                                <RowDefinition Height="8" />
                                                 <RowDefinition Height="Auto" />
                                             </Grid.RowDefinitions>
 
-                                            <!-- Cover Image -->
-                                            <TextBlock Grid.Row="0" Grid.Column="0" Text="Cover Image URL" Foreground="#9A9A9A" FontSize="12" FontFamily="{StaticResource PeydaMedium}" VerticalAlignment="Center"/>
-                                            <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding CoverImage, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource AdminDetailTextBoxStyle}"/>
+                                            <!-- Column Headers -->
+                                            <TextBlock Grid.Row="0" Grid.Column="0" Text="Cover Image" Foreground="#9A9A9A" FontSize="11" FontFamily="{StaticResource PeydaMedium}" HorizontalAlignment="Center"/>
+                                            <TextBlock Grid.Row="0" Grid.Column="2" Text="Logo Image" Foreground="#9A9A9A" FontSize="11" FontFamily="{StaticResource PeydaMedium}" HorizontalAlignment="Center"/>
+                                            <TextBlock Grid.Row="0" Grid.Column="4" Text="Background Image" Foreground="#9A9A9A" FontSize="11" FontFamily="{StaticResource PeydaMedium}" HorizontalAlignment="Center"/>
 
-                                            <!-- Logo Image -->
-                                            <TextBlock Grid.Row="2" Grid.Column="0" Text="Logo Image URL" Foreground="#9A9A9A" FontSize="12" FontFamily="{StaticResource PeydaMedium}" VerticalAlignment="Center"/>
-                                            <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding LogoImage, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource AdminDetailTextBoxStyle}"/>
+                                            <!-- Cover Image Container -->
+                                            <Border Grid.Row="2" Grid.Column="0" Height="140" Background="#1C1F26" BorderBrush="#2A2D36" BorderThickness="1" CornerRadius="8" ClipToBounds="True">
+                                                <Grid>
+                                                    <Path Data="M21,6H3C1.9,6 1,6.9 1,8V16C1,17.1 1.9,18 3,18H21C22.1,18 23,17.1 23,16V8C23,6.9 22.1,6 21,6M6,15H4V13H2V11H4V9H6V11H8V13H6V15M15,11A1.5,1.5 0 1,1 16.5,9.5A1.5,1.5 0 0,1 15,11M19,14A1.5,1.5 0 1,1 20.5,12.5A1.5,1.5 0 0,1 19,14Z"
+                                                          Fill="#22FFFFFF" Width="32" Height="32" Stretch="Uniform" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                    <Image Source="{Binding CoverImage}" Stretch="UniformToFill" RenderOptions.BitmapScalingMode="HighQuality"/>
+                                                </Grid>
+                                            </Border>
 
-                                            <!-- Background Image -->
-                                            <TextBlock Grid.Row="4" Grid.Column="0" Text="Background URL" Foreground="#9A9A9A" FontSize="12" FontFamily="{StaticResource PeydaMedium}" VerticalAlignment="Center"/>
-                                            <TextBox Grid.Row="4" Grid.Column="1" Text="{Binding BackgroundImage, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource AdminDetailTextBoxStyle}"/>
+                                            <!-- Logo Image Container -->
+                                            <Border Grid.Row="2" Grid.Column="2" Height="140" Background="#1C1F26" BorderBrush="#2A2D36" BorderThickness="1" CornerRadius="8" ClipToBounds="True">
+                                                <Grid>
+                                                    <Path Data="M21,6H3C1.9,6 1,6.9 1,8V16C1,17.1 1.9,18 3,18H21C22.1,18 23,17.1 23,16V8C23,6.9 22.1,6 21,6M6,15H4V13H2V11H4V9H6V11H8V13H6V15M15,11A1.5,1.5 0 1,1 16.5,9.5A1.5,1.5 0 0,1 15,11M19,14A1.5,1.5 0 1,1 20.5,12.5A1.5,1.5 0 0,1 19,14Z"
+                                                          Fill="#22FFFFFF" Width="32" Height="32" Stretch="Uniform" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                    <Image Source="{Binding LogoImage}" Stretch="Uniform" RenderOptions.BitmapScalingMode="HighQuality"/>
+                                                </Grid>
+                                            </Border>
+
+                                            <!-- Background Image Container -->
+                                            <Border Grid.Row="2" Grid.Column="4" Height="140" Background="#1C1F26" BorderBrush="#2A2D36" BorderThickness="1" CornerRadius="8" ClipToBounds="True">
+                                                <Grid>
+                                                    <Path Data="M21,6H3C1.9,6 1,6.9 1,8V16C1,17.1 1.9,18 3,18H21C22.1,18 23,17.1 23,16V8C23,6.9 22.1,6 21,6M6,15H4V13H2V11H4V9H6V11H8V13H6V15M15,11A1.5,1.5 0 1,1 16.5,9.5A1.5,1.5 0 0,1 15,11M19,14A1.5,1.5 0 1,1 20.5,12.5A1.5,1.5 0 0,1 19,14Z"
+                                                          Fill="#22FFFFFF" Width="32" Height="32" Stretch="Uniform" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                    <Image Source="{Binding BackgroundImage}" Stretch="UniformToFill" RenderOptions.BitmapScalingMode="HighQuality"/>
+                                                </Grid>
+                                            </Border>
                                         </Grid>
                                     </StackPanel>
                                 </Border>
