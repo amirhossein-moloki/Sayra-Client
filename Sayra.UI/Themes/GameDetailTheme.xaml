@@ -55,14 +55,14 @@
 
     <!-- استایل متون هیرو کارت -->
     <Style x:Key="GameHeroTitleStyle" TargetType="TextBlock">
-        <Setter Property="FontFamily" Value="{StaticResource PeydaBold}"/>
+        <Setter Property="FontFamily" Value="{DynamicResource PeydaBold}"/>
         <Setter Property="FontSize" Value="32"/>
         <Setter Property="Foreground" Value="{DynamicResource GameDetail.TextPrimary}"/>
         <Setter Property="HorizontalAlignment" Value="Right"/>
     </Style>
 
     <Style x:Key="GameHeroGenreStyle" TargetType="TextBlock">
-        <Setter Property="FontFamily" Value="{StaticResource PeydaLight}"/>
+        <Setter Property="FontFamily" Value="{DynamicResource PeydaLight}"/>
         <Setter Property="FontSize" Value="17"/>
         <Setter Property="Foreground" Value="{DynamicResource GameDetail.TextSecondary}"/>
         <Setter Property="Margin" Value="0,2,0,0"/>
@@ -70,7 +70,7 @@
     </Style>
 
     <Style x:Key="GameHeroDescriptionStyle" TargetType="TextBlock">
-        <Setter Property="FontFamily" Value="{StaticResource PeydaLight}"/>
+        <Setter Property="FontFamily" Value="{DynamicResource PeydaLight}"/>
         <Setter Property="FontSize" Value="18"/>
         <Setter Property="Foreground" Value="{DynamicResource GameDetail.TextPrimary}"/>
         <Setter Property="TextWrapping" Value="Wrap"/>
@@ -182,12 +182,12 @@
                                      Visibility="{Binding HasDot, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=Collapsed}"/>
                             <!-- برچسب (مثلاً سازنده:) -->
                             <TextBlock x:Name="LabelText" Text="{TemplateBinding Label}"
-                                       FontFamily="{StaticResource PeydaMedium}" FontSize="13"
+                                       FontFamily="{DynamicResource PeydaMedium}" FontSize="13"
                                        Foreground="{DynamicResource GameDetail.TextSecondary}" VerticalAlignment="Center" Margin="0,0,4,0"
                                        Visibility="{Binding HasLabel, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=Collapsed}"/>
                             <!-- مقدار متنی -->
                             <TextBlock x:Name="ValueText" Text="{TemplateBinding Text}"
-                                       FontFamily="{StaticResource PeydaBold}" FontSize="13"
+                                       FontFamily="{DynamicResource PeydaBold}" FontSize="13"
                                        Foreground="{TemplateBinding TextForeground}" VerticalAlignment="Center"/>
                         </StackPanel>
                     </Border>
