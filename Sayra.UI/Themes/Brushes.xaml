@@ -18,6 +18,12 @@
     <SolidColorBrush x:Key="WarningBrush" Color="{DynamicResource App.Warning}"/>
     <SolidColorBrush x:Key="DangerBrush" Color="{DynamicResource App.Danger}"/>
 
+    <!-- Home Page Centralized Brushes -->
+    <SolidColorBrush x:Key="Home.Background" Color="{DynamicResource Home.Background.Color}"/>
+    <SolidColorBrush x:Key="Home.AccentYellow" Color="{DynamicResource Home.AccentYellow.Color}"/>
+    <SolidColorBrush x:Key="Home.EndSession.HoverBg" Color="{DynamicResource Home.EndSession.HoverBg.Color}"/>
+    <SolidColorBrush x:Key="Home.EndSession.PressedBg" Color="{DynamicResource Home.EndSession.PressedBg.Color}"/>
+
     <!-- Specific Login Screen Brushes -->
     <SolidColorBrush x:Key="LoginYellowAccentBrush" Color="{DynamicResource App.Login.YellowAccent}"/>
     <SolidColorBrush x:Key="LoginYellowBorderBrush" Color="{DynamicResource App.Login.YellowBorder}"/>

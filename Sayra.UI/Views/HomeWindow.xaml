@@ -22,87 +22,6 @@
         <Storyboard x:Key="WindowFadeInStoryboard">
             <DoubleAnimation Storyboard.TargetProperty="Opacity" From="0" To="1" Duration="0:0:1.0" />
         </Storyboard>
-
-        <!-- Premium End Session Button Style -->
-        <Style x:Key="EndSessionButtonStyle" TargetType="Button">
-            <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="BorderBrush" Value="{DynamicResource RedBrush}"/>
-            <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="Height" Value="50"/>
-            <Setter Property="Cursor" Value="Hand"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Border x:Name="ButtonBorder"
-                                Background="{TemplateBinding Background}"
-                                BorderBrush="{TemplateBinding BorderBrush}"
-                                BorderThickness="{TemplateBinding BorderThickness}"
-                                CornerRadius="12">
-                            <Border.Effect>
-                                <DropShadowEffect x:Name="GlowEffect" Color="#F46B6B" BlurRadius="10" ShadowDepth="0" Opacity="0"/>
-                            </Border.Effect>
-                            <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto" />
-                                    <ColumnDefinition Width="10" />
-                                    <ColumnDefinition Width="Auto" />
-                                </Grid.ColumnDefinitions>
-
-                                <!-- Specified End Session Button Icon with stroke style, 1.5 thickness, and transparent fill -->
-                                <Path Grid.Column="0"
-                                      Data="{DynamicResource EndSessionIconGeometry}"
-                                      Stroke="{DynamicResource RedBrush}"
-                                      StrokeThickness="1.5"
-                                      StrokeStartLineCap="Round"
-                                      StrokeEndLineCap="Round"
-                                      Fill="Transparent"
-                                      Width="16" Height="16"
-                                      Stretch="Uniform"
-                                      VerticalAlignment="Center"/>
-
-                                <!-- Text with Peyda Bold, Numbers/Buttons -->
-                                <TextBlock Grid.Column="2"
-                                           Text="پایان دادن به استفاده"
-                                           Foreground="{DynamicResource RedBrush}"
-                                           FontFamily="{StaticResource PeydaBold}"
-                                           FontSize="15"
-                                           VerticalAlignment="Center"/>
-                            </Grid>
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="ButtonBorder" Property="Background" Value="#1AF46B6B"/>
-                                <Setter TargetName="ButtonBorder" Property="BorderThickness" Value="1.5"/>
-                                <Trigger.EnterActions>
-                                    <BeginStoryboard>
-                                        <Storyboard>
-                                            <DoubleAnimation Storyboard.TargetName="GlowEffect"
-                                                             Storyboard.TargetProperty="Opacity"
-                                                             To="0.6" Duration="0:0:0.2"/>
-                                            <DoubleAnimation Storyboard.TargetName="GlowEffect"
-                                                             Storyboard.TargetProperty="BlurRadius"
-                                                             To="15" Duration="0:0:0.2"/>
-                                        </Storyboard>
-                                    </BeginStoryboard>
-                                </Trigger.EnterActions>
-                                <Trigger.ExitActions>
-                                    <BeginStoryboard>
-                                        <Storyboard>
-                                            <DoubleAnimation Storyboard.TargetName="GlowEffect"
-                                                             Storyboard.TargetProperty="Opacity"
-                                                             To="0.0" Duration="0:0:0.2"/>
-                                        </Storyboard>
-                                    </BeginStoryboard>
-                                </Trigger.ExitActions>
-                            </Trigger>
-                            <Trigger Property="IsPressed" Value="True">
-                                <Setter TargetName="ButtonBorder" Property="Background" Value="#33F46B6B"/>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
     </Window.Resources>
 
     <Window.Triggers>
@@ -111,7 +30,7 @@
         </EventTrigger>
     </Window.Triggers>
 
-    <Grid x:Name="RootGrid" Background="#08090D">
+    <Grid x:Name="RootGrid" Background="{DynamicResource Home.Background}">
         <!-- 2. MAIN LAYOUT GRID -->
         <Grid>
             <Grid.RowDefinitions>
@@ -168,7 +87,7 @@
                                    Foreground="White"
                                    VerticalAlignment="Center" />
                         <!-- Subtle yellow accent indicator bar -->
-                        <Border Width="4" Height="26" Background="#F5FF00" CornerRadius="2" Margin="12,0,0,0"/>
+                        <Border Width="4" Height="26" Background="{DynamicResource Home.AccentYellow}" CornerRadius="2" Margin="12,0,0,0"/>
                     </StackPanel>
 
                     <!-- Shifted HardwarePanel (System Detail) to align with Game Cards (22px down from top label row) -->

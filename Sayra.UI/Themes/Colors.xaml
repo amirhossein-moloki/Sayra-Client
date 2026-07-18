@@ -13,6 +13,12 @@
     <Color x:Key="App.Warning">#E5A000</Color>
     <Color x:Key="App.Danger">#F46B6B</Color>
 
+    <!-- Home Page Centralized Colors -->
+    <Color x:Key="Home.Background.Color">#08090D</Color>
+    <Color x:Key="Home.AccentYellow.Color">#F5FF00</Color>
+    <Color x:Key="Home.EndSession.HoverBg.Color">#1AF46B6B</Color>
+    <Color x:Key="Home.EndSession.PressedBg.Color">#33F46B6B</Color>
+
     <!-- Specific Login Screen Brand Colors (Yellow accent/glow used in current UI) -->
     <Color x:Key="App.Login.YellowAccent">#F5FF00</Color>
     <Color x:Key="App.Login.YellowBorder">#29F5FF00</Color>
