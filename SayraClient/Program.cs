@@ -4,6 +4,8 @@ using SayraClient.Services;
 using Sayra.Client.Discovery.Services;
 using Sayra.Client.GameLibrary;
 using Sayra.Client.LocalAdmin;
+using Sayra.Client.Launcher;
+using Sayra.Client.Diagnostics.Extensions;
 using Microsoft.Extensions.Hosting.WindowsServices;
 using Serilog;
 
@@ -42,10 +44,13 @@ builder.Services.AddGameLibrary();
 // Register Local Admin Component
 builder.Services.AddLocalAdmin();
 
+// Register Launcher Component
+builder.Services.AddLauncherServices();
+
+// Register Diagnostics Component
+builder.Services.AddDiagnosticsServices(builder.Configuration);
+
 // Register Application Services
-builder.Services.AddSingleton<ProcessManager>();
-builder.Services.AddSingleton<GameLauncher>();
-builder.Services.AddSingleton<ProcessMonitor>();
 builder.Services.AddSingleton<SessionManager>();
 builder.Services.AddSingleton<KioskManager>();
 builder.Services.AddSingleton<RecoveryManager>();
