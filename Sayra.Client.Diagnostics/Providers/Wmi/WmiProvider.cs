@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Sayra.Client.Diagnostics.Interfaces.Providers;
+using Sayra.Client.Diagnostics.Models;
 
 namespace Sayra.Client.Diagnostics.Providers
 {
@@ -12,9 +13,16 @@ namespace Sayra.Client.Diagnostics.Providers
     {
         private readonly ILogger<WmiProvider> _logger;
 
+        public string ProviderName => "WMI Provider";
+
         public WmiProvider(ILogger<WmiProvider> logger)
         {
             _logger = logger;
+        }
+
+        public Task<ValidationResult> ValidateAsync(CancellationToken cancellationToken = default)
+        {
+            return Task.FromResult(new ValidationResult(RuntimeInformation.IsOSPlatform(OSPlatform.Windows), new(), new()));
         }
 
         public Task<List<Dictionary<string, object>>> QueryAsync(string query, string scope = "root\\CIMV2", CancellationToken cancellationToken = default)
@@ -29,7 +37,6 @@ namespace Sayra.Client.Diagnostics.Providers
 
             try
             {
-                // Execute WMI on Windows
                 ExecuteWmiOnWindows(query, scope, results);
             }
             catch (Exception ex)
@@ -40,13 +47,11 @@ namespace Sayra.Client.Diagnostics.Providers
             return Task.FromResult(results);
         }
 
-        // Keep this in a separate method to prevent JIT load issues of System.Management on Linux/Mac
         private void ExecuteWmiOnWindows(string query, string scope, List<Dictionary<string, object>> results)
         {
 #if NET8_0_OR_GREATER
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
-                // Suppress CA1416 warning locally if needed, but standard guard is sufficient.
                 using (var searcher = new System.Management.ManagementObjectSearcher(scope, query))
                 using (var collection = searcher.Get())
                 {

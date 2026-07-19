@@ -6,7 +6,7 @@ using Sayra.Client.Diagnostics.Models;
 
 namespace Sayra.Client.Diagnostics.Interfaces.Providers
 {
-    public interface INetworkProvider
+    public interface INetworkProvider : IHardwareProvider
     {
         Task<List<NetworkInformation>> GetNetworksAsync(CancellationToken cancellationToken = default);
         Task<double> GetNetworkUsageAsync(CancellationToken cancellationToken = default);

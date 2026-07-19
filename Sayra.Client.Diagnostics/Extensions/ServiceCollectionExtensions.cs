@@ -22,6 +22,16 @@ namespace Sayra.Client.Diagnostics.Extensions
             services.AddSingleton<INetworkProvider, NetworkProvider>();
             services.AddSingleton<IGpuProvider, GpuProvider>();
 
+            // New Providers added in Phase 2
+            services.AddSingleton<ICpuProvider, CpuProvider>();
+            services.AddSingleton<IMemoryProvider, MemoryProvider>();
+            services.AddSingleton<IStorageProvider, StorageProvider>();
+            services.AddSingleton<IMotherboardProvider, MotherboardProvider>();
+            services.AddSingleton<IOperatingSystemProvider, OperatingSystemProvider>();
+            services.AddSingleton<IDirectXProvider, DirectXProvider>();
+            services.AddSingleton<IVulkanProvider, VulkanProvider>();
+            services.AddSingleton<IOpenGLProvider, OpenGLProvider>();
+
             // Register Core Services
             services.AddSingleton<IHardwareCacheService, HardwareCacheService>();
             services.AddSingleton<IHardwareSpecificationService, HardwareSpecificationService>();
