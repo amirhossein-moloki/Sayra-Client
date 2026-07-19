@@ -2,6 +2,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Sayra.Client.Shared.Ipc;
 using Sayra.Client.Shared.Models;
+using Sayra.Client.Launcher.Services;
 using System.Diagnostics;
 
 namespace SayraClient.Services;
@@ -10,7 +11,7 @@ public class WhitelistingService : BackgroundService
 {
     private readonly ILogger<WhitelistingService> _logger;
     private readonly IpcServer _ipcServer;
-    private readonly GameLauncher _gameLauncher;
+    private readonly IProcessMonitorService _processMonitor;
 
     private readonly HashSet<string> _systemWhitelist = new()
     {
@@ -24,11 +25,11 @@ public class WhitelistingService : BackgroundService
     public WhitelistingService(
         ILogger<WhitelistingService> logger,
         IpcServer ipcServer,
-        GameLauncher gameLauncher)
+        IProcessMonitorService processMonitor)
     {
         _logger = logger;
         _ipcServer = ipcServer;
-        _gameLauncher = gameLauncher;
+        _processMonitor = processMonitor;
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -52,7 +53,7 @@ public class WhitelistingService : BackgroundService
 
     private async Task CheckRunningProcessesAsync()
     {
-        var runningGames = _gameLauncher.GetRunningGames().Select(g => g.Name.ToLowerInvariant()).ToHashSet();
+        var runningGames = _processMonitor.GetRunningProcesses().Select(g => g.Name.ToLowerInvariant()).ToHashSet();
         var processes = Process.GetProcesses();
 
         foreach (var proc in processes)
