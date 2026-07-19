@@ -1,11 +1,21 @@
+using System;
+using System.Threading.Tasks;
+using System.Windows;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using System.Windows;
+using Microsoft.Extensions.Logging;
+using Sayra.Client.LocalAdmin.Services;
+using SayraClient.Services;
 
 namespace Sayra.UI.ViewModels
 {
     public partial class LoginViewModel : ObservableObject
     {
+        private readonly ILocalAdminService? _localAdminService;
+        private readonly IClientConfigurationService? _clientConfigurationService;
+        private readonly SessionManager? _sessionManager;
+        private readonly ILogger<LoginViewModel>? _logger;
+
         [ObservableProperty]
         private string _username = string.Empty;
 
@@ -18,6 +28,27 @@ namespace Sayra.UI.ViewModels
         [ObservableProperty]
         private string _errorMessage = string.Empty;
 
+        public LoginViewModel() : this(
+            App.ServiceProvider?.GetService(typeof(ILocalAdminService)) as ILocalAdminService,
+            App.ServiceProvider?.GetService(typeof(IClientConfigurationService)) as IClientConfigurationService,
+            App.ServiceProvider?.GetService(typeof(SessionManager)) as SessionManager,
+            App.ServiceProvider?.GetService(typeof(ILogger<LoginViewModel>)) as ILogger<LoginViewModel>
+        )
+        {
+        }
+
+        public LoginViewModel(
+            ILocalAdminService? localAdminService,
+            IClientConfigurationService? clientConfigurationService,
+            SessionManager? sessionManager,
+            ILogger<LoginViewModel>? logger)
+        {
+            _localAdminService = localAdminService;
+            _clientConfigurationService = clientConfigurationService;
+            _sessionManager = sessionManager;
+            _logger = logger;
+        }
+
         [RelayCommand]
         private async Task LoginAsync()
         {
@@ -29,12 +60,40 @@ namespace Sayra.UI.ViewModels
             }
 
             bool isValidAmir = Username == "amir" && Password == "amir";
-            bool isValidAdmin = (Username == "admin" || Username == "afmin") && Password == "admin";
+            bool isValidAdmin = false;
+            string? localAdminError = null;
+
+            if (Username == "admin" || Username == "afmin")
+            {
+                if (_localAdminService != null)
+                {
+                    try
+                    {
+                        var authResult = await _localAdminService.Authenticate(Username, Password);
+                        isValidAdmin = authResult.Success;
+                        if (!isValidAdmin)
+                        {
+                            localAdminError = authResult.ErrorReason;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger?.LogError(ex, "Local admin authentication service threw an exception.");
+                        localAdminError = $"خطای سیستم: {ex.Message}";
+                    }
+                }
+                else
+                {
+                    // Fallback to static credentials if service is not registered/active (e.g., designer/simple test mode)
+                    isValidAdmin = Password == "admin";
+                }
+            }
 
             if (!isValidAmir && !isValidAdmin)
             {
-                ErrorMessage = "نام کاربری یا رمز عبور اشتباه است.";
-                Sayra.UI.Services.NotificationService.Instance.ShowError("نام کاربری یا رمز عبور اشتباه است.");
+                string displayError = localAdminError ?? "نام کاربری یا رمز عبور اشتباه است.";
+                ErrorMessage = displayError;
+                Sayra.UI.Services.NotificationService.Instance.ShowError(displayError);
                 return;
             }
 
@@ -77,6 +136,29 @@ namespace Sayra.UI.ViewModels
                     {
                         GlobalExceptionHandler.CurrentOperation = "Creating HomeWindow";
                         GlobalExceptionHandler.LogTrace("DASHBOARD", "Creating HomeWindow");
+
+                        // Trigger session startup if session manager is available
+                        if (_sessionManager != null)
+                        {
+                            try
+                            {
+                                var sessionModel = new SayraClient.Models.SessionModel
+                                {
+                                    SessionId = Guid.NewGuid().ToString(),
+                                    PcId = "LocalPC",
+                                    SiteId = "LocalSite",
+                                    Duration = 120, // default 2 hours session duration
+                                    RatePerHour = 15000, // default rate
+                                    StartTime = DateTime.UtcNow
+                                };
+                                _sessionManager.StartSession(sessionModel);
+                            }
+                            catch (Exception ex)
+                            {
+                                _logger?.LogError(ex, "Failed to start session on SessionManager.");
+                            }
+                        }
+
                         targetWindow = new Sayra.UI.Views.HomeWindow();
                     }
                     else

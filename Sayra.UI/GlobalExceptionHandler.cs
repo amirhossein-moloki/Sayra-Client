@@ -3,12 +3,12 @@ using System.IO;
 using System.Windows;
 using System.Threading.Tasks;
 using System.Linq;
+using Serilog;
 
 namespace Sayra.UI
 {
     public static class GlobalExceptionHandler
     {
-        private static readonly object _logLock = new object();
         private static string _currentOperation = "Application Startup";
 
         public static string CurrentOperation
@@ -45,34 +45,14 @@ namespace Sayra.UI
 
         public static void LogTrace(string category, string message)
         {
-            string timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff");
-            string logText = $"{timestamp}\n[{category}]\n{message}\n\n";
-
-            try
-            {
-                string logDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Logs");
-                if (!Directory.Exists(logDir))
-                {
-                    Directory.CreateDirectory(logDir);
-                }
-                string logPath = Path.Combine(logDir, "application.log");
-
-                lock (_logLock)
-                {
-                    File.AppendAllText(logPath, logText);
-                }
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"[GlobalExceptionHandler] Logging failed: {ex.Message}");
-            }
+            // Unify WPF tracing logs with Serilog
+            Log.Information("[{Category}] {Message}", category, message);
         }
 
         public static void HandleException(Exception? exception, string source)
         {
             if (exception == null) return;
 
-            string timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
             string currentWindow = "Unknown";
 
             if (Application.Current != null)
@@ -113,20 +93,9 @@ namespace Sayra.UI
                 }
             }
 
-            string innerMsg = exception.InnerException != null ? exception.InnerException.Message : "None";
-            string innerTrace = exception.InnerException != null ? exception.InnerException.StackTrace ?? "" : "";
-
-            string details = $"Date/Time: {timestamp}\n" +
-                             $"Exception Type: {exception.GetType().FullName}\n" +
-                             $"Source: {source}\n" +
-                             $"Message: {exception.Message}\n" +
-                             $"StackTrace: {exception.StackTrace}\n" +
-                             $"InnerException: {innerMsg}\n" +
-                             $"InnerStackTrace: {innerTrace}\n" +
-                             $"Current Window: {currentWindow}\n" +
-                             $"Current Operation: {CurrentOperation}";
-
-            LogTrace("EXCEPTION", details);
+            // Log exception details using Serilog
+            Log.Fatal(exception, "CRITICAL ERROR: Source={Source}, Window={Window}, Operation={Operation}",
+                source, currentWindow, CurrentOperation);
 
             // Show error dialog
             ShowErrorDialog(exception, source);
