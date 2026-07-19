@@ -12,6 +12,18 @@
   <ItemGroup>
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.2" />
     <PackageReference Include="SharpVectors.Wpf" Version="1.8.4" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="10.0.0" />
+    <PackageReference Include="Serilog" Version="4.3.0" />
+    <PackageReference Include="Serilog.Extensions.Logging" Version="10.0.0" />
+    <PackageReference Include="Serilog.Sinks.Console" Version="6.1.1" />
+    <PackageReference Include="Serilog.Sinks.File" Version="7.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Sayra.Client.LocalAdmin\Sayra.Client.LocalAdmin.csproj" />
+    <ProjectReference Include="..\Sayra.Client.Shared\Sayra.Client.Shared.csproj" />
+    <ProjectReference Include="..\SayraClient\SayraClient.csproj" />
   </ItemGroup>
 
   <ItemGroup>
