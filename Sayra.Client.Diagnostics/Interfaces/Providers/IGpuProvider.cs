@@ -6,7 +6,7 @@ using Sayra.Client.Diagnostics.Models;
 
 namespace Sayra.Client.Diagnostics.Interfaces.Providers
 {
-    public interface IGpuProvider
+    public interface IGpuProvider : IHardwareProvider
     {
         Task<List<GpuInformation>> GetGpusAsync(CancellationToken cancellationToken = default);
         Task<double> GetGpuUsageAsync(CancellationToken cancellationToken = default);
