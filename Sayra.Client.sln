@@ -25,6 +25,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sayra.Client.Scanner", "Say
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sayra.Client.Diagnostics", "Sayra.Client.Diagnostics\Sayra.Client.Diagnostics.csproj", "{2D05EFAF-62FF-431E-9E4F-778A7C11161F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sayra.Client.Authentication", "Sayra.Client.Authentication\Sayra.Client.Authentication.csproj", "{44518FA5-B4CC-4662-9AB5-C751E5734641}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -163,6 +165,18 @@ Global
 		{2D05EFAF-62FF-431E-9E4F-778A7C11161F}.Release|x64.Build.0 = Release|Any CPU
 		{2D05EFAF-62FF-431E-9E4F-778A7C11161F}.Release|x86.ActiveCfg = Release|Any CPU
 		{2D05EFAF-62FF-431E-9E4F-778A7C11161F}.Release|x86.Build.0 = Release|Any CPU
+		{44518FA5-B4CC-4662-9AB5-C751E5734641}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{44518FA5-B4CC-4662-9AB5-C751E5734641}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{44518FA5-B4CC-4662-9AB5-C751E5734641}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{44518FA5-B4CC-4662-9AB5-C751E5734641}.Debug|x64.Build.0 = Debug|Any CPU
+		{44518FA5-B4CC-4662-9AB5-C751E5734641}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{44518FA5-B4CC-4662-9AB5-C751E5734641}.Debug|x86.Build.0 = Debug|Any CPU
+		{44518FA5-B4CC-4662-9AB5-C751E5734641}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{44518FA5-B4CC-4662-9AB5-C751E5734641}.Release|Any CPU.Build.0 = Release|Any CPU
+		{44518FA5-B4CC-4662-9AB5-C751E5734641}.Release|x64.ActiveCfg = Release|Any CPU
+		{44518FA5-B4CC-4662-9AB5-C751E5734641}.Release|x64.Build.0 = Release|Any CPU
+		{44518FA5-B4CC-4662-9AB5-C751E5734641}.Release|x86.ActiveCfg = Release|Any CPU
+		{44518FA5-B4CC-4662-9AB5-C751E5734641}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
