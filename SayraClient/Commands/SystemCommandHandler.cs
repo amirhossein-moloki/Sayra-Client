@@ -1,4 +1,7 @@
+using System;
 using System.Runtime.InteropServices;
+using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using SayraClient.Models;
 using SayraClient.Services;
@@ -9,21 +12,23 @@ public class SystemCommandHandler : ICommandHandler
 {
     private readonly ILogger<SystemCommandHandler> _logger;
     private readonly DiagnosticsService _diagnosticsService;
+    private readonly IPowerManagementService _powerManagementService;
 
-    [DllImport("user32.dll", SetLastError = true)]
-    private static extern bool LockWorkStation();
-
-    public SystemCommandHandler(ILogger<SystemCommandHandler> logger, DiagnosticsService diagnosticsService)
+    public SystemCommandHandler(
+        ILogger<SystemCommandHandler> logger,
+        DiagnosticsService diagnosticsService,
+        IPowerManagementService powerManagementService)
     {
         _logger = logger;
         _diagnosticsService = diagnosticsService;
+        _powerManagementService = powerManagementService;
     }
 
     public bool CanHandle(string action)
     {
         return action.ToUpper() switch
         {
-            "LOCK_PC" or "UNLOCK_PC" or "PING" or "GET_DIAGNOSTICS" => true,
+            "LOCK_PC" or "UNLOCK_PC" or "PING" or "GET_DIAGNOSTICS" or "RESTART_PC" or "SHUTDOWN_PC" or "LOGOFF_PC" => true,
             _ => false
         };
     }
@@ -32,53 +37,38 @@ public class SystemCommandHandler : ICommandHandler
     {
         _logger.LogInformation("Executing action: {action}", command.Action);
 
-        var result = command.Action.ToUpper() switch
-        {
-            "PING" => ExecutionResult.Success("PING", "PONG", command.PcId),
-            "GET_DIAGNOSTICS" => HandleGetDiagnostics(command.PcId),
-            "LOCK_PC" => HandleLockPc(command.PcId),
-            "UNLOCK_PC" => HandleUnlockPc(command.PcId),
-            _ => ExecutionResult.Error(command.Action, "Unsupported action", command.PcId)
-        };
-
-        return result;
-    }
-
-    private ExecutionResult HandleLockPc(string pcId)
-    {
         try
         {
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            switch (command.Action.ToUpper())
             {
-                _logger.LogInformation("Attempting to lock workstation...");
-                if (LockWorkStation())
-                {
-                    return ExecutionResult.Success("LOCK_PC", "PC locked successfully", pcId);
-                }
-                else
-                {
-                    int error = Marshal.GetLastWin32Error();
-                    return ExecutionResult.Error("LOCK_PC", $"Failed to lock PC. Win32 Error: {error}", pcId);
-                }
-            }
-            else
-            {
-                _logger.LogError("LOCK_PC called on non-Windows platform.");
-                return ExecutionResult.Error("LOCK_PC", "LOCK_PC is only supported on Windows", pcId);
+                case "PING":
+                    return ExecutionResult.Success("PING", "PONG", command.PcId);
+                case "GET_DIAGNOSTICS":
+                    return HandleGetDiagnostics(command.PcId);
+                case "LOCK_PC":
+                    await _powerManagementService.LockWorkstationAsync(cancellationToken);
+                    return ExecutionResult.Success("LOCK_PC", "PC locked successfully", command.PcId);
+                case "RESTART_PC":
+                    await _powerManagementService.RestartAsync(cancellationToken);
+                    return ExecutionResult.Success("RESTART_PC", "PC restart initiated", command.PcId);
+                case "SHUTDOWN_PC":
+                    await _powerManagementService.ShutdownAsync(cancellationToken);
+                    return ExecutionResult.Success("SHUTDOWN_PC", "PC shutdown initiated", command.PcId);
+                case "LOGOFF_PC":
+                    await _powerManagementService.LogoffAsync(cancellationToken);
+                    return ExecutionResult.Success("LOGOFF_PC", "PC logoff initiated", command.PcId);
+                case "UNLOCK_PC":
+                    _logger.LogWarning("UNLOCK_PC received (not fully implemented for production)");
+                    return ExecutionResult.Error("UNLOCK_PC", "UNLOCK_PC is not fully implemented in this version", command.PcId);
+                default:
+                    return ExecutionResult.Error(command.Action, "Unsupported action", command.PcId);
             }
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error executing LOCK_PC");
-            return ExecutionResult.Error("LOCK_PC", ex.Message, pcId);
+            _logger.LogError(ex, "Error executing action {action}", command.Action);
+            return ExecutionResult.Error(command.Action, ex.Message, command.PcId);
         }
-    }
-
-    private ExecutionResult HandleUnlockPc(string pcId)
-    {
-        // Unlock workstation usually requires more complex session management or a credential provider
-        _logger.LogWarning("UNLOCK_PC received (not fully implemented for production)");
-        return ExecutionResult.Error("UNLOCK_PC", "UNLOCK_PC is not fully implemented in this version", pcId);
     }
 
     private ExecutionResult HandleGetDiagnostics(string pcId)

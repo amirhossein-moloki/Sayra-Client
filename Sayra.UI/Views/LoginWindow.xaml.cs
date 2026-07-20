@@ -23,6 +23,11 @@ namespace Sayra.UI.Views
 
         private void LoginWindow_Closed(object? sender, EventArgs e)
         {
+            if (this.DataContext is IDisposable disposable)
+            {
+                disposable.Dispose();
+            }
+
             // Only shut down if the user closed the window and we are not transitioning to the home window or admin window
             bool isDashboardOpen = false;
             foreach (Window win in Application.Current.Windows)

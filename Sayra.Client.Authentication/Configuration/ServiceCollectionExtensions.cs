@@ -23,6 +23,7 @@ namespace Sayra.Client.Authentication.Configuration
             services.AddTransient<IAuthenticationProvider, ServerAuthenticationProvider>();
 
             // Register Services
+            services.AddSingleton<IServerReservationService, ServerReservationService>();
             services.AddSingleton<IAuthenticationService, AuthenticationService>();
             services.AddSingleton<IAuthorizationService, AuthorizationService>();
 

@@ -75,7 +75,14 @@ namespace Sayra.Client.Tests
         public async Task AuthenticateAsync_ReservationProvider_AuthenticatesAmirWithPlayerRole()
         {
             // Arrange
-            var provider = new ReservationAuthenticationProvider();
+            var mockReservationService = new Mock<IServerReservationService>();
+            mockReservationService.Setup(s => s.GetOfflineCachedReservationAsync(It.IsAny<string>()))
+                .ReturnsAsync((ReservationInfo?)null);
+
+            mockReservationService.Setup(s => s.ValidateReservationAsync("amir", "RSV_AMIR", It.IsAny<System.Threading.CancellationToken>()))
+                .ReturnsAsync(new ReservationValidationResult { Success = false });
+
+            var provider = new ReservationAuthenticationProvider(mockReservationService.Object);
 
             // Act
             var result = await provider.AuthenticateAsync("amir", "amir");

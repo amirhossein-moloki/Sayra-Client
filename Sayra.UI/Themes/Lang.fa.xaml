@@ -1,0 +1,19 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:sys="clr-namespace:System;assembly=mscorlib">
+    <sys:String x:Key="TerminalAccessHeader">دسترسی به ترمینال سیستم</sys:String>
+    <sys:String x:Key="TerminalAccessSubtitle">جهت فعال‌سازی ایستگاه، مشخصات خود را وارد کنید</sys:String>
+    <sys:String x:Key="Username">نام کاربری</sys:String>
+    <sys:String x:Key="Password">رمز عبور</sys:String>
+    <sys:String x:Key="LoginToStation">ورود به ایستگاه</sys:String>
+    <sys:String x:Key="AuthorizingConnection">در حال تایید اتصال...</sys:String>
+    <sys:String x:Key="StatusConnected">متصل</sys:String>
+    <sys:String x:Key="StatusConnecting">در حال اتصال...</sys:String>
+    <sys:String x:Key="StatusDisconnected">قطع اتصال</sys:String>
+
+    <sys:String x:Key="GoToHome">صفحه اصلی</sys:String>
+    <sys:String x:Key="Logout">خروج از حساب</sys:String>
+    <sys:String x:Key="AdminPanel">پنل مدیریت</sys:String>
+    <sys:String x:Key="Games">بازی ها</sys:String>
+    <sys:String x:Key="Settings">تنظیمات</sys:String>
+</ResourceDictionary>

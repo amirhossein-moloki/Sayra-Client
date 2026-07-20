@@ -428,14 +428,14 @@
                                     </StackPanel>
                                 </Button>
                                 <Border Width="6"/>
-                                <Button Style="{StaticResource MainToolbarButtonStyle}" Command="{Binding RefreshCategoriesCommand}">
+                                <Button Style="{StaticResource MainToolbarButtonStyle}" Command="{Binding BackupCommand}">
                                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                                         <Path Data="{StaticResource BackupIconGeometry}" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" Width="13" Height="13" Stretch="Uniform" Margin="0,0,6,0"/>
                                         <TextBlock Text="Backup" VerticalAlignment="Center"/>
                                     </StackPanel>
                                 </Button>
                                 <Border Width="6"/>
-                                <Button Style="{StaticResource MainToolbarButtonStyle}" Command="{Binding RefreshCategoriesCommand}">
+                                <Button Style="{StaticResource MainToolbarButtonStyle}" Command="{Binding RestoreCommand}">
                                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                                         <Path Data="{StaticResource RestoreIconGeometry}" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" Width="13" Height="13" Stretch="Uniform" Margin="0,0,6,0"/>
                                         <TextBlock Text="Restore" VerticalAlignment="Center"/>

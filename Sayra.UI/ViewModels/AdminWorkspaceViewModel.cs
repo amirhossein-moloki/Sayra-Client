@@ -13,6 +13,8 @@ using Sayra.Client.Scanner.Services;
 using Sayra.Client.Launcher.Services;
 using Sayra.Client.LocalAdmin.Services;
 using Microsoft.Extensions.DependencyInjection;
+using System.IO;
+using SayraClient.Services;
 
 namespace Sayra.UI.ViewModels
 {
@@ -23,6 +25,7 @@ namespace Sayra.UI.ViewModels
         private readonly IGameLauncherService? _launcherService;
         private readonly IGameValidationService? _validationService;
         private readonly IStationIdentityService? _stationService;
+        private readonly IWorkstationBackupService? _backupService;
 
         // View modes
         public List<string> ViewModes { get; } = new() { "List View", "Compact View", "Grid View" };
@@ -119,7 +122,8 @@ namespace Sayra.UI.ViewModels
             App.ServiceProvider?.GetService<IApplicationScannerService>(),
             App.ServiceProvider?.GetService<IGameLauncherService>(),
             App.ServiceProvider?.GetService<IGameValidationService>(),
-            App.ServiceProvider?.GetService<IStationIdentityService>())
+            App.ServiceProvider?.GetService<IStationIdentityService>(),
+            App.ServiceProvider?.GetService<IWorkstationBackupService>())
         {
         }
 
@@ -129,13 +133,15 @@ namespace Sayra.UI.ViewModels
             IApplicationScannerService? scannerService,
             IGameLauncherService? launcherService,
             IGameValidationService? validationService,
-            IStationIdentityService? stationService)
+            IStationIdentityService? stationService,
+            IWorkstationBackupService? backupService)
         {
             _gameLibraryService = gameLibraryService;
             _scannerService = scannerService;
             _launcherService = launcherService;
             _validationService = validationService;
             _stationService = stationService;
+            _backupService = backupService;
 
             InitializeCategories();
             _ = LoadGamesAndAppsAsync();
@@ -1071,6 +1077,77 @@ namespace Sayra.UI.ViewModels
         {
             RecalculateCategoryCounts();
             NotificationService.Instance.ShowSuccess("تعداد دسته‌بندی‌ها با موفقیت به‌روزرسانی شد.");
+        }
+
+        [RelayCommand]
+        private async Task BackupAsync()
+        {
+            NotificationService.Instance.ShowLoading("در حال ایجاد پشتیبان از داده‌های سیستم...");
+            if (_backupService == null)
+            {
+                await Task.Delay(1000);
+                NotificationService.Instance.ShowSuccess("پشتیبان‌گیری شبیه‌سازی شد.");
+                return;
+            }
+
+            try
+            {
+                string backupPath = Path.Combine(AppContext.BaseDirectory, "Backups", $"Sayra_Backup_{DateTime.Now:yyyyMMdd_HHmmss}.dat");
+                string checksum = await _backupService.CreateBackupAsync(backupPath, null);
+                NotificationService.Instance.ShowSuccess($"پشتیبان‌گیری با موفقیت انجام شد. فایل: {Path.GetFileName(backupPath)}");
+            }
+            catch (Exception ex)
+            {
+                NotificationService.Instance.ShowError($"خطا در پشتیبان‌گیری: {ex.Message}");
+            }
+        }
+
+        [RelayCommand]
+        private async Task RestoreAsync()
+        {
+            NotificationService.Instance.ShowLoading("در حال بازیابی اطلاعات سیستم...");
+            if (_backupService == null)
+            {
+                await Task.Delay(1000);
+                NotificationService.Instance.ShowSuccess("بازیابی شبیه‌سازی شد.");
+                return;
+            }
+
+            try
+            {
+                string backupsDir = Path.Combine(AppContext.BaseDirectory, "Backups");
+                if (!Directory.Exists(backupsDir))
+                {
+                    NotificationService.Instance.ShowError("هیچ فایل پشتیبانی یافت نشد.");
+                    return;
+                }
+
+                var files = Directory.GetFiles(backupsDir, "Sayra_Backup_*.dat");
+                if (files.Length == 0)
+                {
+                    NotificationService.Instance.ShowError("هیچ فایل پشتیبانی یافت نشد.");
+                    return;
+                }
+
+                // Sort and pick latest
+                Array.Sort(files);
+                string latestBackup = files[files.Length - 1];
+
+                bool success = await _backupService.RestoreBackupAsync(latestBackup, null);
+                if (success)
+                {
+                    NotificationService.Instance.ShowSuccess("بازیابی با موفقیت انجام شد. برنامه را مجدداً راه‌اندازی کنید.");
+                    await LoadGamesAndAppsAsync();
+                }
+                else
+                {
+                    NotificationService.Instance.ShowError("خطا در تایید یا بازیابی فایل پشتیبان.");
+                }
+            }
+            catch (Exception ex)
+            {
+                NotificationService.Instance.ShowError($"خطا در بازیابی: {ex.Message}");
+            }
         }
 
         [RelayCommand]
