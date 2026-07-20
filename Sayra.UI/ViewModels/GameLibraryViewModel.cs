@@ -7,6 +7,9 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Sayra.UI.Models;
 using Sayra.UI.Services;
+using Microsoft.Extensions.DependencyInjection;
+using Sayra.Client.GameLibrary.Services;
+using Sayra.Client.Launcher.Services;
 
 namespace Sayra.UI.ViewModels
 {
@@ -19,23 +22,157 @@ namespace Sayra.UI.ViewModels
         private string _selectedCategory = "All";
 
         private readonly List<GameItem> _allGames = new();
+        private readonly IGameLibraryService? _gameLibraryService;
+        private readonly IGameLauncherService? _launcherService;
 
         public ObservableCollection<GameItem> Games { get; } = new();
 
-        public GameLibraryViewModel()
+        // Parameterless constructor for XAML support and design-time fallback
+        public GameLibraryViewModel() : this(
+            App.ServiceProvider?.GetService<IGameLibraryService>(),
+            App.ServiceProvider?.GetService<IGameLauncherService>())
         {
+        }
+
+        // DI-friendly constructor
+        public GameLibraryViewModel(IGameLibraryService? gameLibraryService, IGameLauncherService? launcherService)
+        {
+            _gameLibraryService = gameLibraryService;
+            _launcherService = launcherService;
+
             Log("Constructor START");
             _ = LoadGamesAsync();
+            SubscribeToLauncherEvents();
             Log("Constructor END");
+        }
+
+        private void SubscribeToLauncherEvents()
+        {
+            if (_launcherService == null) return;
+
+            try
+            {
+                _launcherService.GameStarted += LauncherService_GameStarted;
+                _launcherService.GameExited += LauncherService_GameExited;
+                _launcherService.GameCrashed += LauncherService_GameCrashed;
+                _launcherService.LaunchFailed += LauncherService_LaunchFailed;
+                Log("Successfully subscribed to core launcher lifecycle events.");
+            }
+            catch (Exception ex)
+            {
+                Log($"Failed to subscribe to launcher events: {ex}");
+            }
+        }
+
+        private void LauncherService_GameStarted(object? sender, Sayra.Client.Launcher.Events.GameStartedEventArgs e)
+        {
+            UpdateGameStatusInUI(e.GameId, "Currently Playing", isSelected: true);
+        }
+
+        private void LauncherService_GameExited(object? sender, Sayra.Client.Launcher.Events.GameExitedEventArgs e)
+        {
+            UpdateGameStatusInUI(e.GameId, "Installed", isSelected: false);
+            ShowNotification("سیستم سایرا", $"بازی با موفقیت بسته شد.");
+        }
+
+        private void LauncherService_GameCrashed(object? sender, Sayra.Client.Launcher.Events.GameCrashedEventArgs e)
+        {
+            UpdateGameStatusInUI(e.GameId, "Installed", isSelected: false);
+            ShowNotification("خطای بازی", $"بازی به طور غیرمنتظره‌ای متوقف شد.");
+        }
+
+        private void LauncherService_LaunchFailed(object? sender, Sayra.Client.Launcher.Events.LaunchFailedEventArgs e)
+        {
+            UpdateGameStatusInUI(e.GameId, "Installed", isSelected: false);
+            ShowNotification("خطای اجرا", $"خطا در اجرای بازی: {e.Reason}");
+        }
+
+        private void UpdateGameStatusInUI(string gameId, string status, bool isSelected)
+        {
+            System.Windows.Application.Current?.Dispatcher?.Invoke(() =>
+            {
+                try
+                {
+                    foreach (var g in _allGames)
+                    {
+                        if (g.Id == gameId)
+                        {
+                            g.Status = status;
+                            g.IsSelected = isSelected;
+                        }
+                        else if (isSelected)
+                        {
+                            g.IsSelected = false;
+                            if (g.Status == "Currently Playing")
+                            {
+                                g.Status = "Installed";
+                            }
+                        }
+                    }
+
+                    ApplyFilter();
+                }
+                catch (Exception ex)
+                {
+                    Log($"Error updating game status in UI: {ex}");
+                }
+            });
+        }
+
+        private void ShowNotification(string title, string message)
+        {
+            System.Windows.Application.Current?.Dispatcher?.Invoke(() =>
+            {
+                try
+                {
+                    Sayra.UI.Services.NotificationService.Instance.ShowSuccess(message);
+                }
+                catch
+                {
+                    // Ignore fallback errors
+                }
+            });
         }
 
         private async Task LoadGamesAsync()
         {
             try
             {
-                Log("Loading games asynchronously from MockGameService...");
-                var service = new MockGameService();
-                var list = await service.GetGamesAsync();
+                List<GameItem>? list = null;
+
+                if (_gameLibraryService != null)
+                {
+                    Log("Attempting to load games from core IGameLibraryService...");
+                    var coreGames = await _gameLibraryService.GetGames();
+                    if (coreGames != null && coreGames.Any())
+                    {
+                        list = coreGames.Select(g => new GameItem
+                        {
+                            Id = g.Id,
+                            Title = g.Title,
+                            Genre = g.Genre,
+                            ImagePath = g.CoverImage,
+                            Status = g.Enabled ? "Installed" : "Locked",
+                            IsAvailable = g.Enabled,
+                            Description = g.Description,
+                            LogoImage = g.LogoImage,
+                            BackgroundImage = g.BackgroundImage,
+                            Launcher = g.Launcher,
+                            Developer = g.Developer,
+                            ReleaseYear = g.ReleaseYear,
+                            ExecutablePath = g.ExecutablePath
+                        }).ToList();
+                        Log($"Successfully loaded {list.Count} games from core database.");
+                    }
+                }
+
+                if (list == null || list.Count == 0)
+                {
+                    Log("Core library returned zero items. Loading games from rich static MockGameService fallback...");
+                    var service = new MockGameService();
+                    var collection = await service.GetGamesAsync();
+                    list = collection.ToList();
+                }
 
                 _allGames.Clear();
                 foreach (var game in list)
@@ -44,11 +181,11 @@ namespace Sayra.UI.ViewModels
                 }
 
                 ApplyFilter();
-                Log("Mock Games populated and filtered successfully");
+                Log("Games list successfully populated and filtered.");
             }
             catch (Exception ex)
             {
-                Log($"Mock population failed: {ex}");
+                Log($"Population failed: {ex}");
             }
         }
 
@@ -91,40 +228,38 @@ namespace Sayra.UI.ViewModels
         }
 
         [RelayCommand]
-        private void PlayGame(GameItem? game)
+        private async Task PlayGameAsync(GameItem? game)
         {
             if (game == null) return;
 
-            // Update IsSelected in master list and active UI list
-            foreach (var g in _allGames)
+            if (game.Status == "Currently Playing")
             {
-                g.IsSelected = (g.Id == game.Id);
-                // If currently playing, update status string
-                if (g.IsSelected)
-                {
-                    g.Status = "Currently Playing";
-                }
-                else if (g.Status == "Currently Playing")
-                {
-                    g.Status = "Installed"; // revert back to Installed if deselected
-                }
+                ShowNotification("سیستم سایرا", "این بازی در حال حاضر در حال اجراست.");
+                return;
             }
 
-            // Sync selection state to the filtered collection
-            foreach (var g in Games)
+            if (_launcherService != null)
             {
-                g.IsSelected = (g.Id == game.Id);
-                if (g.IsSelected)
+                Log($"Invoking core launcher service for game: {game.Title} (Id: {game.Id})");
+                bool success = await _launcherService.LaunchGameAsync(game.Id);
+                if (!success)
                 {
-                    g.Status = "Currently Playing";
-                }
-                else if (g.Status == "Currently Playing")
-                {
-                    g.Status = "Installed";
+                    Log($"Failed to launch game: {game.Title}");
                 }
             }
+            else
+            {
+                // Fallback simulation for visual demonstration if running without Core
+                Log($"Mock launch for game: {game.Title}");
+                UpdateGameStatusInUI(game.Id, "Currently Playing", isSelected: true);
 
-            Debug.WriteLine($"Playing game: {game.Title}");
+                // Simulate exit after 10 seconds
+                _ = Task.Delay(10000).ContinueWith(_ =>
+                {
+                    UpdateGameStatusInUI(game.Id, "Installed", isSelected: false);
+                    ShowNotification("سیستم سایرا", $"بازی {game.Title} بسته شد.");
+                });
+            }
         }
 
         private void Log(string message)
