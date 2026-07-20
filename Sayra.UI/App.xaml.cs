@@ -20,6 +20,7 @@ using Sayra.Client.GameLibrary;
 using Sayra.Client.Diagnostics.Extensions;
 using Sayra.Client.Launcher;
 using Sayra.Client.Launcher.Services;
+using Sayra.Client.Scanner;
 
 namespace Sayra.UI
 {
@@ -211,6 +212,7 @@ namespace Sayra.UI
             services.AddGameLibrary();
             services.AddDiagnosticsServices(config);
             services.AddLauncherServices();
+            services.AddApplicationScanner();
 
             // Register ViewModels
             services.AddTransient<Sayra.UI.ViewModels.LoginViewModel>();
@@ -219,6 +221,7 @@ namespace Sayra.UI
             services.AddTransient<Sayra.UI.ViewModels.HardwarePanelViewModel>();
             services.AddTransient<Sayra.UI.ViewModels.AdPanelViewModel>();
             services.AddTransient<Sayra.UI.ViewModels.GameDetailViewModel>();
+            services.AddTransient<Sayra.UI.ViewModels.AdminWorkspaceViewModel>();
         }
     }
 
