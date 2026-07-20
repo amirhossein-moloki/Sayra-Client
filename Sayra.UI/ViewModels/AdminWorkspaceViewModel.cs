@@ -8,11 +8,22 @@ using System.Linq;
 using System.Threading.Tasks;
 using Sayra.UI.Models;
 using Sayra.UI.Services;
+using Sayra.Client.GameLibrary.Services;
+using Sayra.Client.Scanner.Services;
+using Sayra.Client.Launcher.Services;
+using Sayra.Client.LocalAdmin.Services;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Sayra.UI.ViewModels
 {
     public partial class AdminWorkspaceViewModel : ObservableObject
     {
+        private readonly IGameLibraryService? _gameLibraryService;
+        private readonly IApplicationScannerService? _scannerService;
+        private readonly IGameLauncherService? _launcherService;
+        private readonly IGameValidationService? _validationService;
+        private readonly IStationIdentityService? _stationService;
+
         // View modes
         public List<string> ViewModes { get; } = new() { "List View", "Compact View", "Grid View" };
         public List<int> PageSizes { get; } = new() { 25, 50, 100 };
@@ -102,12 +113,47 @@ namespace Sayra.UI.ViewModels
 
         private readonly List<AdminAppItem> _cachedAllItems = new();
 
-        public AdminWorkspaceViewModel()
+        // Parameterless constructor for design-time and fallback compatibility
+        public AdminWorkspaceViewModel() : this(
+            App.ServiceProvider?.GetService<IGameLibraryService>(),
+            App.ServiceProvider?.GetService<IApplicationScannerService>(),
+            App.ServiceProvider?.GetService<IGameLauncherService>(),
+            App.ServiceProvider?.GetService<IGameValidationService>(),
+            App.ServiceProvider?.GetService<IStationIdentityService>())
         {
-            GenerateMockData();
+        }
+
+        // DI-friendly constructor
+        public AdminWorkspaceViewModel(
+            IGameLibraryService? gameLibraryService,
+            IApplicationScannerService? scannerService,
+            IGameLauncherService? launcherService,
+            IGameValidationService? validationService,
+            IStationIdentityService? stationService)
+        {
+            _gameLibraryService = gameLibraryService;
+            _scannerService = scannerService;
+            _launcherService = launcherService;
+            _validationService = validationService;
+            _stationService = stationService;
+
             InitializeCategories();
-            RecalculateCategoryCounts();
-            ApplyFilterAndPagination();
+            _ = LoadGamesAndAppsAsync();
+        }
+
+        private async Task LoadGamesAndAppsAsync()
+        {
+            try
+            {
+                IsLoading = true;
+                await GenerateMockDataAsync();
+                RecalculateCategoryCounts();
+                ApplyFilterAndPagination();
+            }
+            finally
+            {
+                IsLoading = false;
+            }
         }
 
         private void InitializeCategories()
@@ -263,7 +309,64 @@ namespace Sayra.UI.ViewModels
             }
         }
 
-        private void GenerateMockData()
+        private AdminAppItem MapFromGame(Sayra.Client.GameLibrary.Models.Game g, int i)
+        {
+            string status = g.Enabled ? "Installed" : "Disabled";
+
+            var isApp = (g.Genre == "Developer Tools" || g.Genre == "Web Browser" || g.Genre == "Social / Chat" || g.Genre == "Virtualization" || g.Genre == "Hypervisor" || g.Genre == "Database Console" || g.Genre == "Applications");
+            var resolvedCategory = isApp ? "Applications" : "Games";
+
+            var item = new AdminAppItem
+            {
+                Id = g.Id,
+                Name = g.Name,
+                Executable = System.IO.Path.GetFileName(g.ExecutablePath),
+                Category = resolvedCategory,
+                GameType = g.Genre,
+                Launcher = g.Launcher,
+                Version = "1.0.0",
+                Publisher = g.Developer,
+                InstallationPath = g.WorkingDirectory,
+                InstallationSource = g.Source == Sayra.Client.GameLibrary.Models.GameSource.Scanner ? "Scanner" : "Manual",
+                Status = status,
+                IsEnabled = g.Enabled,
+                LastUpdated = g.UpdatedAt.ToString("yyyy-MM-dd HH:mm"),
+                ModifiedBy = g.Source == Sayra.Client.GameLibrary.Models.GameSource.Scanner ? "System Scan" : "Administrator",
+                Size = "45.0 GB",
+                License = "Commercial",
+                IconGeometry = "M12 2H2v10h10V2z",
+                CoverImage = g.CoverImage,
+                LogoImage = g.LogoImage,
+                BackgroundImage = g.BackgroundImage,
+                ReleaseYear = g.ReleaseYear
+            };
+
+            item.PropertyChanged += Item_PropertyChanged;
+            return item;
+        }
+
+        private Sayra.Client.GameLibrary.Models.Game MapToGame(AdminAppItem item)
+        {
+            return new Sayra.Client.GameLibrary.Models.Game
+            {
+                Id = item.Id,
+                Name = item.Name,
+                ExecutablePath = System.IO.Path.Combine(item.InstallationPath, item.Executable),
+                WorkingDirectory = item.InstallationPath,
+                CoverImage = item.CoverImage,
+                LogoImage = item.LogoImage,
+                BackgroundImage = item.BackgroundImage,
+                Launcher = item.Launcher,
+                Genre = item.GameType,
+                Enabled = item.IsEnabled,
+                Developer = item.Publisher,
+                ReleaseYear = item.ReleaseYear,
+                Source = item.InstallationSource == "Scanner" ? Sayra.Client.GameLibrary.Models.GameSource.Scanner : Sayra.Client.GameLibrary.Models.GameSource.Manual,
+                UpdatedAt = DateTime.UtcNow
+            };
+        }
+
+        private async Task GenerateMockDataAsync()
         {
             // Clean up old subscriptions
             foreach (var item in _cachedAllItems)
@@ -271,6 +374,35 @@ namespace Sayra.UI.ViewModels
                 item.PropertyChanged -= Item_PropertyChanged;
             }
             _cachedAllItems.Clear();
+
+            // Attempt to load from IGameLibraryService
+            List<Sayra.Client.GameLibrary.Models.Game> coreGamesList = new();
+            if (_gameLibraryService != null)
+            {
+                try
+                {
+                    var coreGames = await _gameLibraryService.GetGames();
+                    if (coreGames != null)
+                    {
+                        coreGamesList = coreGames.ToList();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine($"Failed to load core games: {ex}");
+                }
+            }
+
+            if (coreGamesList.Count > 0)
+            {
+                int i = 0;
+                foreach (var g in coreGamesList)
+                {
+                    var item = MapFromGame(g, i++);
+                    _cachedAllItems.Add(item);
+                }
+                return;
+            }
 
             // Load 61 popular games from single source of truth MockGameService
             var games = MockGameService.GetStaticGames();
@@ -386,6 +518,12 @@ namespace Sayra.UI.ViewModels
 
                 item.PropertyChanged += Item_PropertyChanged;
                 _cachedAllItems.Add(item);
+
+                if (_gameLibraryService != null)
+                {
+                    var game = MapToGame(item);
+                    _ = Task.Run(async () => await _gameLibraryService.AddGame(game));
+                }
             }
         }
 
@@ -415,6 +553,12 @@ namespace Sayra.UI.ViewModels
                     {
                         item.Status = "Disabled";
                     }
+
+                    if (_gameLibraryService != null)
+                    {
+                        var game = MapToGame(item);
+                        Task.Run(async () => await _gameLibraryService.UpdateGame(game));
+                    }
                 }
                 finally
                 {
@@ -436,6 +580,12 @@ namespace Sayra.UI.ViewModels
                     {
                         item.IsEnabled = true;
                     }
+
+                    if (_gameLibraryService != null)
+                    {
+                        var game = MapToGame(item);
+                        Task.Run(async () => await _gameLibraryService.UpdateGame(game));
+                    }
                 }
                 finally
                 {
@@ -443,6 +593,22 @@ namespace Sayra.UI.ViewModels
                 }
                 RecalculateCategoryCounts();
                 ApplyFilterAndPagination();
+            }
+            else if (e.PropertyName == nameof(AdminAppItem.Name) ||
+                     e.PropertyName == nameof(AdminAppItem.Executable) ||
+                     e.PropertyName == nameof(AdminAppItem.InstallationPath) ||
+                     e.PropertyName == nameof(AdminAppItem.CoverImage) ||
+                     e.PropertyName == nameof(AdminAppItem.LogoImage) ||
+                     e.PropertyName == nameof(AdminAppItem.BackgroundImage) ||
+                     e.PropertyName == nameof(AdminAppItem.ReleaseYear) ||
+                     e.PropertyName == nameof(AdminAppItem.GameType) ||
+                     e.PropertyName == nameof(AdminAppItem.Publisher))
+            {
+                if (_gameLibraryService != null)
+                {
+                    var game = MapToGame(item);
+                    Task.Run(async () => await _gameLibraryService.UpdateGame(game));
+                }
             }
         }
 
@@ -531,39 +697,63 @@ namespace Sayra.UI.ViewModels
 
         // Action Commands
         [RelayCommand]
-        private void Launch(object? parameter)
+        private async Task Launch(object? parameter)
         {
             var items = GetItemsFromParameter(parameter);
             if (items.Count == 0) return;
 
             if (items.Count == 1)
             {
-                NotificationService.Instance.ShowSuccess($"در حال اجرای برنامه: {items[0].Name}");
+                var item = items[0];
+                NotificationService.Instance.ShowSuccess($"در حال اجرای برنامه: {item.Name}");
+                if (_launcherService != null)
+                {
+                    await _launcherService.LaunchGameAsync(item.Id);
+                }
             }
             else
             {
                 NotificationService.Instance.ShowSuccess($"در حال اجرای {items.Count} برنامه انتخاب شده...");
+                if (_launcherService != null)
+                {
+                    foreach (var item in items)
+                    {
+                        await _launcherService.LaunchGameAsync(item.Id);
+                    }
+                }
             }
         }
 
         [RelayCommand]
-        private void Stop(object? parameter)
+        private async Task Stop(object? parameter)
         {
             var items = GetItemsFromParameter(parameter);
             if (items.Count == 0) return;
 
             if (items.Count == 1)
             {
-                NotificationService.Instance.ShowWarning($"پروسه برنامه متوقف شد: {items[0].Name}");
+                var item = items[0];
+                NotificationService.Instance.ShowWarning($"پروسه برنامه متوقف شد: {item.Name}");
+                if (_launcherService != null)
+                {
+                    await _launcherService.StopGameAsync(item.Id);
+                }
             }
             else
             {
                 NotificationService.Instance.ShowWarning($"پروسه {items.Count} برنامه متوقف شد.");
+                if (_launcherService != null)
+                {
+                    foreach (var item in items)
+                    {
+                        await _launcherService.StopGameAsync(item.Id);
+                    }
+                }
             }
         }
 
         [RelayCommand]
-        private void Restart(object? parameter)
+        private async Task Restart(object? parameter)
         {
             var items = GetItemsFromParameter(parameter);
             if (items.Count == 0) return;
@@ -572,24 +762,33 @@ namespace Sayra.UI.ViewModels
             {
                 var item = items[0];
                 NotificationService.Instance.ShowLoading($"در حال راه‌اندازی مجدد {item.Name}...");
-                Task.Delay(1000).ContinueWith(_ =>
+                if (_launcherService != null)
                 {
-                    App.Current.Dispatcher.Invoke(() =>
-                    {
-                        NotificationService.Instance.ShowSuccess($"برنامه {item.Name} با موفقیت ری‌استارت شد.");
-                    });
-                });
+                    await _launcherService.RestartGameAsync(item.Id);
+                    NotificationService.Instance.ShowSuccess($"برنامه {item.Name} با موفقیت ری‌استارت شد.");
+                }
+                else
+                {
+                    await Task.Delay(1000);
+                    NotificationService.Instance.ShowSuccess($"برنامه {item.Name} با موفقیت ری‌استارت شد.");
+                }
             }
             else
             {
                 NotificationService.Instance.ShowLoading($"در حال راه‌اندازی مجدد {items.Count} برنامه انتخاب شده...");
-                Task.Delay(1000).ContinueWith(_ =>
+                if (_launcherService != null)
                 {
-                    App.Current.Dispatcher.Invoke(() =>
+                    foreach (var item in items)
                     {
-                        NotificationService.Instance.ShowSuccess($"تعداد {items.Count} برنامه با موفقیت ری‌استارت شدند.");
-                    });
-                });
+                        await _launcherService.RestartGameAsync(item.Id);
+                    }
+                    NotificationService.Instance.ShowSuccess($"تعداد {items.Count} برنامه با موفقیت ری‌استارت شدند.");
+                }
+                else
+                {
+                    await Task.Delay(1000);
+                    NotificationService.Instance.ShowSuccess($"تعداد {items.Count} برنامه با موفقیت ری‌استارت شدند.");
+                }
             }
         }
 
@@ -656,37 +855,67 @@ namespace Sayra.UI.ViewModels
         }
 
         [RelayCommand]
-        private void Validate(object? parameter)
+        private async Task Validate(object? parameter)
         {
             var items = GetItemsFromParameter(parameter);
             if (items.Count == 0) return;
+
             if (items.Count == 1)
             {
                 var item = items[0];
                 NotificationService.Instance.ShowLoading($"در حال اعتبارسنجی فایل‌ها: {item.Name}");
-                Task.Delay(1500).ContinueWith(_ =>
+                if (_validationService != null)
                 {
-                    App.Current.Dispatcher.Invoke(() =>
+                    var result = await _validationService.ValidateGameAsync(MapToGame(item));
+                    item.Status = result.Status switch
                     {
-                        item.Status = "Installed";
-                        NotificationService.Instance.ShowSuccess($"اعتبارسنجی تکمیل شد. فایل‌های {item.Name} سالم هستند.");
-                    });
-                });
+                        GameValidationStatus.Installed => "Installed",
+                        GameValidationStatus.Missing => "Missing",
+                        GameValidationStatus.Corrupted => "Corrupted",
+                        GameValidationStatus.Disabled => "Disabled",
+                        GameValidationStatus.NeedsVerification => "Validation Required",
+                        GameValidationStatus.Unsupported => "Unsupported",
+                        _ => "Unknown"
+                    };
+                    NotificationService.Instance.ShowSuccess($"اعتبارسنجی تکمیل شد. {result.Message}");
+                }
+                else
+                {
+                    await Task.Delay(1500);
+                    item.Status = "Installed";
+                    NotificationService.Instance.ShowSuccess($"اعتبارسنجی تکمیل شد. فایل‌های {item.Name} سالم هستند.");
+                }
             }
             else
             {
                 NotificationService.Instance.ShowLoading($"در حال اعتبارسنجی فایل‌های {items.Count} برنامه...");
-                Task.Delay(1500).ContinueWith(_ =>
+                if (_validationService != null)
                 {
-                    App.Current.Dispatcher.Invoke(() =>
+                    foreach (var item in items)
                     {
-                        foreach (var item in items)
+                        var result = await _validationService.ValidateGameAsync(MapToGame(item));
+                        item.Status = result.Status switch
                         {
-                            item.Status = "Installed";
-                        }
-                        NotificationService.Instance.ShowSuccess($"اعتبارسنجی {items.Count} برنامه انتخاب شده تکمیل شد.");
-                    });
-                });
+                            GameValidationStatus.Installed => "Installed",
+                            GameValidationStatus.Missing => "Missing",
+                            GameValidationStatus.Corrupted => "Corrupted",
+                            GameValidationStatus.Disabled => "Disabled",
+                            GameValidationStatus.NeedsVerification => "Validation Required",
+                            GameValidationStatus.Unsupported => "Unsupported",
+                            _ => "Unknown"
+                        };
+                    }
+                    NotificationService.Instance.ShowSuccess($"اعتبارسنجی {items.Count} برنامه انتخاب شده تکمیل شد.");
+                }
+                else
+                {
+                    await Task.Delay(1500);
+                    foreach (var item in items)
+                    {
+                        item.Status = "Installed";
+                    }
+                    NotificationService.Instance.ShowSuccess($"اعتبارسنجی {items.Count} برنامه انتخاب شده تکمیل شد.");
+                }
             }
         }
 
@@ -761,6 +990,11 @@ namespace Sayra.UI.ViewModels
                 NotificationService.Instance.ShowError($"برنامه {item.Name} از لیست مدیریت حذف شد.");
                 _cachedAllItems.Remove(item);
                 item.PropertyChanged -= Item_PropertyChanged;
+
+                if (_gameLibraryService != null)
+                {
+                    Task.Run(async () => await _gameLibraryService.RemoveGame(item.Id));
+                }
             }
             else
             {
@@ -769,6 +1003,11 @@ namespace Sayra.UI.ViewModels
                 {
                     _cachedAllItems.Remove(item);
                     item.PropertyChanged -= Item_PropertyChanged;
+
+                    if (_gameLibraryService != null)
+                    {
+                        Task.Run(async () => await _gameLibraryService.RemoveGame(item.Id));
+                    }
                 }
             }
             UpdateSelectedCount();
@@ -776,10 +1015,48 @@ namespace Sayra.UI.ViewModels
         }
 
         [RelayCommand]
-        private void ScanComputer()
+        private async Task ScanComputer()
         {
             NotificationService.Instance.ShowLoading("در حال اسکن سیستم برای بازی‌ها و برنامه‌ها...");
-            SelectedDemoState = "Loading";
+
+            if (_scannerService == null)
+            {
+                // Fallback / simulation if service is missing
+                TriggerLoadingDemo();
+                return;
+            }
+
+            IsLoading = true;
+            LoadingProgress = 0;
+
+            try
+            {
+                var progressReporter = new Progress<ScanProgress>(progress =>
+                {
+                    App.Current.Dispatcher.Invoke(() =>
+                    {
+                        LoadingProgress = progress.TotalFiles > 0
+                            ? (double)progress.ScannedFiles / progress.TotalFiles * 100
+                            : 0;
+                    });
+                });
+
+                var detectedApps = await Task.Run(() => _scannerService.ScanAsync(null, progressReporter));
+                var count = detectedApps?.Count() ?? 0;
+
+                NotificationService.Instance.ShowSuccess($"اسکن سیستم تکمیل شد. تعداد {count} برنامه و بازی اسکن شدند.");
+
+                // Re-load everything from the database
+                await LoadGamesAndAppsAsync();
+            }
+            catch (Exception ex)
+            {
+                NotificationService.Instance.ShowError($"خطا در اسکن سیستم: {ex.Message}");
+            }
+            finally
+            {
+                IsLoading = false;
+            }
         }
 
         // Left Nav Bottom Actions Commands
@@ -809,11 +1086,11 @@ namespace Sayra.UI.ViewModels
         }
 
         [RelayCommand]
-        private void Refresh()
+        private async Task Refresh()
         {
             SearchText = string.Empty;
             CurrentPage = 1;
-            GenerateMockData();
+            await GenerateMockDataAsync();
             RecalculateCategoryCounts();
             ApplyFilterAndPagination();
             NotificationService.Instance.ShowSuccess("لیست برنامه‌ها مجدداً بارگذاری شد.");

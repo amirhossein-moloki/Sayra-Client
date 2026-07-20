@@ -1,5 +1,6 @@
 using System;
 using System.Windows;
+using Microsoft.Extensions.DependencyInjection;
 using Sayra.UI.ViewModels;
 
 namespace Sayra.UI.Views
@@ -12,7 +13,7 @@ namespace Sayra.UI.Views
 
         public AdminWindow()
         {
-            ViewModel = new AdminWorkspaceViewModel();
+            ViewModel = App.ServiceProvider?.GetService<AdminWorkspaceViewModel>() ?? new AdminWorkspaceViewModel();
             this.DataContext = ViewModel;
 
             InitializeComponent();
