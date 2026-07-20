@@ -70,9 +70,9 @@
 
             <!-- Subtitle/Atmospheric hint -->
             <StackPanel Grid.Row="1" Margin="0,0,0,25" HorizontalAlignment="Center">
-                <TextBlock Text="SYSTEM TERMINAL ACCESS"
+                <TextBlock Text="{DynamicResource TerminalAccessHeader}"
                            Style="{DynamicResource TerminalAccessHeaderLabelStyle}"/>
-                <TextBlock Text="Enter credentials to activate station"
+                <TextBlock Text="{Binding ConnectionStatusText, FallbackValue='Enter credentials to activate station'}"
                            Style="{DynamicResource TerminalAccessSubtitleLabelStyle}"/>
             </StackPanel>
 
@@ -80,7 +80,7 @@
             <Border Grid.Row="2" Style="{DynamicResource LoginCardStyle}">
                 <StackPanel>
                     <!-- Username Input field (User outline icon) -->
-                    <TextBlock Text="USERNAME" Style="{DynamicResource InputHeaderLabelStyle}" />
+                    <TextBlock Text="{DynamicResource Username}" Style="{DynamicResource InputHeaderLabelStyle}" />
                     <c:GlassInput Text="{Binding Username, Mode=TwoWay}"
                                   Placeholder="Enter user handle..."
                                   IsPassword="False"
@@ -93,7 +93,7 @@
                     </c:GlassInput>
 
                     <!-- Password Input field (Key/Lock icon) -->
-                    <TextBlock Text="PASSWORD" Style="{DynamicResource InputHeaderLabelStyle}" />
+                    <TextBlock Text="{DynamicResource Password}" Style="{DynamicResource InputHeaderLabelStyle}" />
                     <c:GlassInput Text="{Binding Password, Mode=TwoWay}"
                                   Placeholder="Enter secure code..."
                                   IsPassword="True"
@@ -114,12 +114,12 @@
                     <Grid Height="20" Margin="0,0,0,15" Visibility="{Binding IsLoggingIn, Converter={StaticResource BooleanToVisibilityConverter}}">
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                             <ProgressBar IsIndeterminate="True" Width="20" Height="20" BorderThickness="0" Background="Transparent" Foreground="{DynamicResource LoginYellowAccentBrush}" />
-                            <TextBlock Text="Authorizing connection..." Style="{DynamicResource LoginLoadingTextBlockStyle}" />
+                            <TextBlock Text="{DynamicResource AuthorizingConnection}" Style="{DynamicResource LoginLoadingTextBlockStyle}" />
                         </StackPanel>
                     </Grid>
 
                     <!-- 3. Primary Futuristic Action Button (Yellow outline, dark bg, yellow text) -->
-                    <c:PrimaryButton ButtonContent="LOGIN TO STATION"
+                    <c:PrimaryButton ButtonContent="{DynamicResource LoginToStation}"
                                      Command="{Binding LoginCommand}"
                                      IsEnabled="{Binding IsLoggingIn, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=Inverse}"
                                      Height="54" />

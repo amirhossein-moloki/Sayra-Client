@@ -9,14 +9,24 @@ namespace Sayra.Client.Authentication.Providers
 {
     public class ReservationAuthenticationProvider : IAuthenticationProvider
     {
+        private readonly IServerReservationService _reservationService;
+
         public string ProviderName => "Reservation";
+
+        public ReservationAuthenticationProvider(IServerReservationService reservationService)
+        {
+            _reservationService = reservationService;
+        }
 
         public bool CanHandle(string username, string password)
         {
             if (string.IsNullOrWhiteSpace(username)) return false;
             string lower = username.ToLowerInvariant();
-            // In a real system, we'd query the reservation system.
-            // For now, "amir" represents our primary reserved gamer.
+
+            // Check if we have an offline cached reservation for this user
+            var cached = Task.Run(async () => await _reservationService.GetOfflineCachedReservationAsync(username)).GetAwaiter().GetResult();
+            if (cached != null) return true;
+
             return lower == "amir" || lower.StartsWith("reserved_") || lower == "gamer";
         }
 
@@ -27,16 +37,12 @@ namespace Sayra.Client.Authentication.Providers
                 return AuthenticationResult.CreateFailure("This provider cannot handle the specified credentials.");
             }
 
-            // Let's simulate checking a reservation database/service
-            await Task.Delay(100); // Simulate network latency
+            // Call Server Reservation Service to validate reservation and session ownership
+            var validationResult = await _reservationService.ValidateReservationAsync(username, "RSV_" + username.ToUpperInvariant());
 
-            string lowerUser = username.ToLowerInvariant();
-            bool isSuccess = (lowerUser == "amir" && password == "amir") ||
-                             (lowerUser == "gamer" && password == "gamer") ||
-                             lowerUser.StartsWith("reserved_"); // Auto-success for automated test users if needed, or specific password
-
-            if (isSuccess)
+            if (validationResult.Success && validationResult.Reservation != null)
             {
+                var rsv = validationResult.Reservation;
                 var permissions = new List<UserPermission>
                 {
                     UserPermission.LaunchGame,
@@ -44,23 +50,94 @@ namespace Sayra.Client.Authentication.Providers
                 };
 
                 var user = new AuthenticatedUser(
-                    id: $"RSV_{username.ToUpperInvariant()}",
-                    username: username,
-                    displayName: username == "amir" ? "امیر محمدی" : "کاربر رزرو شده",
+                    id: rsv.ReservationId,
+                    username: rsv.Username,
+                    displayName: rsv.Username == "amir" ? "امیر محمدی" : "کاربر رزرو شده",
                     role: UserRole.Player,
                     permissions: permissions.AsReadOnly(),
                     avatar: "player_avatar.png",
                     lastLogin: DateTime.UtcNow,
                     preferredLanguage: "fa",
                     preferredTheme: "Dark",
-                    stationId: "LocalPC"
+                    stationId: rsv.StationId
                 );
 
                 return AuthenticationResult.CreateSuccess(user, ProviderName);
             }
             else
             {
-                return AuthenticationResult.CreateFailure("رمز عبور برای کاربر رزرو شده نادرست است.");
+                // Fallback authentication for development / initial setup or if offline fallback cache is empty
+                if (username == "amir" && password == "amir")
+                {
+                    // Cache a default reservation so that future offline logins work flawlessly!
+                    var defaultRsv = new ReservationInfo
+                    {
+                        ReservationId = "RSV_AMIR",
+                        Username = "amir",
+                        StationId = "LocalPC",
+                        StartTime = DateTime.UtcNow,
+                        EndTime = DateTime.UtcNow.AddHours(2),
+                        RemainingCredits = 50000
+                    };
+                    await _reservationService.CacheReservationOfflineAsync(defaultRsv);
+
+                    var permissions = new List<UserPermission>
+                    {
+                        UserPermission.LaunchGame,
+                        UserPermission.EndSession
+                    };
+
+                    var user = new AuthenticatedUser(
+                        id: defaultRsv.ReservationId,
+                        username: "amir",
+                        displayName: "امیر محمدی",
+                        role: UserRole.Player,
+                        permissions: permissions.AsReadOnly(),
+                        avatar: "player_avatar.png",
+                        lastLogin: DateTime.UtcNow,
+                        preferredLanguage: "fa",
+                        preferredTheme: "Dark",
+                        stationId: "LocalPC"
+                    );
+
+                    return AuthenticationResult.CreateSuccess(user, ProviderName);
+                }
+                else if (username == "gamer" && password == "gamer")
+                {
+                    var defaultRsv = new ReservationInfo
+                    {
+                        ReservationId = "RSV_GAMER",
+                        Username = "gamer",
+                        StationId = "LocalPC",
+                        StartTime = DateTime.UtcNow,
+                        EndTime = DateTime.UtcNow.AddHours(2),
+                        RemainingCredits = 30000
+                    };
+                    await _reservationService.CacheReservationOfflineAsync(defaultRsv);
+
+                    var permissions = new List<UserPermission>
+                    {
+                        UserPermission.LaunchGame,
+                        UserPermission.EndSession
+                    };
+
+                    var user = new AuthenticatedUser(
+                        id: defaultRsv.ReservationId,
+                        username: "gamer",
+                        displayName: "کاربر رزرو شده",
+                        role: UserRole.Player,
+                        permissions: permissions.AsReadOnly(),
+                        avatar: "player_avatar.png",
+                        lastLogin: DateTime.UtcNow,
+                        preferredLanguage: "fa",
+                        preferredTheme: "Dark",
+                        stationId: "LocalPC"
+                    );
+
+                    return AuthenticationResult.CreateSuccess(user, ProviderName);
+                }
+
+                return AuthenticationResult.CreateFailure(validationResult.Message);
             }
         }
     }

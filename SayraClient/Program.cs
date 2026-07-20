@@ -80,6 +80,11 @@ builder.Services.AddSingleton<IntegrityValidator>();
 builder.Services.AddSingleton<AuthManager>();
 builder.Services.AddSingleton<SecureTransportLayer>();
 
+// Register Power, Backup, and Sync Services
+builder.Services.AddSingleton<IPowerManagementService, PowerManagementService>();
+builder.Services.AddSingleton<IWorkstationBackupService, WorkstationBackupService>();
+builder.Services.AddSingleton<IWorkstationSyncService, WorkstationSyncService>();
+
 // Register Update Services
 builder.Services.AddSingleton<UpdateVerificationService>();
 builder.Services.AddSingleton<BackupService>();

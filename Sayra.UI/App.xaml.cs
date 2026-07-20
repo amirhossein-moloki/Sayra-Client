@@ -150,14 +150,46 @@ namespace Sayra.UI
                     var kioskManager = ServiceProvider.GetRequiredService<KioskManager>();
                     kioskManager.Lockdown();
                 }
+
+                // Set language dynamically on startup
+                string preferredLang = configModel.LocalPreferences.Language ?? "fa-IR";
+                SetLanguage(preferredLang);
             }
             catch (Exception ex)
             {
                 Log.Error(ex, "Failed to retrieve or apply local client configuration on startup.");
+                // Fallback to Persian
+                SetLanguage("fa-IR");
             }
 
             // Use OnExplicitShutdown to prevent automatic application exit during the Login to Dashboard transition.
             this.ShutdownMode = ShutdownMode.OnExplicitShutdown;
+        }
+
+        public static void SetLanguage(string lang)
+        {
+            var app = Application.Current;
+            if (app == null) return;
+
+            // Find existing language dictionary
+            ResourceDictionary? existingLangDict = null;
+            foreach (var dict in app.Resources.MergedDictionaries)
+            {
+                if (dict.Source != null && (dict.Source.OriginalString.Contains("Lang.en.xaml") || dict.Source.OriginalString.Contains("Lang.fa.xaml")))
+                {
+                    existingLangDict = dict;
+                    break;
+                }
+            }
+
+            if (existingLangDict != null)
+            {
+                app.Resources.MergedDictionaries.Remove(existingLangDict);
+            }
+
+            string sourcePath = lang == "en-US" ? "Themes/Lang.en.xaml" : "Themes/Lang.fa.xaml";
+            var newLangDict = new ResourceDictionary { Source = new Uri(sourcePath, UriKind.Relative) };
+            app.Resources.MergedDictionaries.Add(newLangDict);
         }
 
         private void ConfigureServices(IServiceCollection services)
@@ -177,6 +209,11 @@ namespace Sayra.UI
 
             // Add ClientStateManager
             services.AddSingleton<ClientStateManager>();
+
+            // Add Power, Backup, and Sync Services
+            services.AddSingleton<IPowerManagementService, PowerManagementService>();
+            services.AddSingleton<IWorkstationBackupService, WorkstationBackupService>();
+            services.AddSingleton<IWorkstationSyncService, WorkstationSyncService>();
 
             // Add Security Services
             services.AddSingleton<SessionKeyManager>();

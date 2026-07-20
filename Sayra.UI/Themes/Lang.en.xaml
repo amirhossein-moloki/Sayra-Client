@@ -1,0 +1,19 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:sys="clr-namespace:System;assembly=mscorlib">
+    <sys:String x:Key="TerminalAccessHeader">SYSTEM TERMINAL ACCESS</sys:String>
+    <sys:String x:Key="TerminalAccessSubtitle">Enter credentials to activate station</sys:String>
+    <sys:String x:Key="Username">USERNAME</sys:String>
+    <sys:String x:Key="Password">PASSWORD</sys:String>
+    <sys:String x:Key="LoginToStation">LOGIN TO STATION</sys:String>
+    <sys:String x:Key="AuthorizingConnection">Authorizing connection...</sys:String>
+    <sys:String x:Key="StatusConnected">Connected</sys:String>
+    <sys:String x:Key="StatusConnecting">Connecting...</sys:String>
+    <sys:String x:Key="StatusDisconnected">Disconnected</sys:String>
+
+    <sys:String x:Key="GoToHome">Go to Home</sys:String>
+    <sys:String x:Key="Logout">Logout</sys:String>
+    <sys:String x:Key="AdminPanel">Admin Panel</sys:String>
+    <sys:String x:Key="Games">Games</sys:String>
+    <sys:String x:Key="Settings">Settings</sys:String>
+</ResourceDictionary>

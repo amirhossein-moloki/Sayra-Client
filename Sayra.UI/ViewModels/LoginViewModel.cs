@@ -9,10 +9,11 @@ using Sayra.Client.Authentication.Enums;
 
 namespace Sayra.UI.ViewModels
 {
-    public partial class LoginViewModel : ObservableObject
+    public partial class LoginViewModel : ObservableObject, IDisposable
     {
         private readonly IAuthenticationService? _authService;
         private readonly ILogger<LoginViewModel>? _logger;
+        private readonly ClientStateManager? _stateManager;
 
         [ObservableProperty]
         private string _username = string.Empty;
@@ -26,19 +27,75 @@ namespace Sayra.UI.ViewModels
         [ObservableProperty]
         private string _errorMessage = string.Empty;
 
+        [ObservableProperty]
+        private string _connectionStatusText = "Connected";
+
         public LoginViewModel() : this(
             App.ServiceProvider?.GetService(typeof(IAuthenticationService)) as IAuthenticationService,
-            App.ServiceProvider?.GetService(typeof(ILogger<LoginViewModel>)) as ILogger<LoginViewModel>
+            App.ServiceProvider?.GetService(typeof(ILogger<LoginViewModel>)) as ILogger<LoginViewModel>,
+            App.ServiceProvider?.GetService(typeof(ClientStateManager)) as ClientStateManager
         )
         {
         }
 
         public LoginViewModel(
             IAuthenticationService? authService,
-            ILogger<LoginViewModel>? logger)
+            ILogger<LoginViewModel>? logger,
+            ClientStateManager? stateManager)
         {
             _authService = authService;
             _logger = logger;
+            _stateManager = stateManager;
+
+            if (_stateManager != null)
+            {
+                UpdateConnectionStatus(_stateManager.CurrentState);
+                _stateManager.StateChanged += OnStateChanged;
+            }
+            else
+            {
+                ConnectionStatusText = "Connected";
+            }
+        }
+
+        private void OnStateChanged(ClientState oldState, ClientState newState)
+        {
+            if (Application.Current?.Dispatcher != null)
+            {
+                Application.Current.Dispatcher.Invoke(() => UpdateConnectionStatus(newState));
+            }
+            else
+            {
+                UpdateConnectionStatus(newState);
+            }
+        }
+
+        private void UpdateConnectionStatus(ClientState state)
+        {
+            string key = state switch
+            {
+                ClientState.CONNECTING or ClientState.AUTHENTICATING => "StatusConnecting",
+                ClientState.READY or ClientState.IN_SESSION => "StatusConnected",
+                ClientState.DISCONNECTED or ClientState.RECOVERING => "StatusDisconnected",
+                _ => "StatusConnected"
+            };
+
+            if (Application.Current != null)
+            {
+                ConnectionStatusText = Application.Current.TryFindResource(key) as string ?? "Connected";
+            }
+            else
+            {
+                ConnectionStatusText = key == "StatusConnected" ? "Connected" : (key == "StatusConnecting" ? "Connecting..." : "Disconnected");
+            }
+        }
+
+        public void Dispose()
+        {
+            if (_stateManager != null)
+            {
+                _stateManager.StateChanged -= OnStateChanged;
+            }
         }
 
         [RelayCommand]
