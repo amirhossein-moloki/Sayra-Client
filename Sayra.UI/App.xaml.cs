@@ -16,6 +16,10 @@ using System.IO;
 using System.Threading.Tasks;
 using Sayra.Client.Authentication.Configuration;
 using Sayra.Client.Authentication.Contracts;
+using Sayra.Client.GameLibrary;
+using Sayra.Client.Diagnostics.Extensions;
+using Sayra.Client.Launcher;
+using Sayra.Client.Launcher.Services;
 
 namespace Sayra.UI
 {
@@ -98,7 +102,7 @@ namespace Sayra.UI
                     {
                         try
                         {
-                            sessionManager.StopSession();
+                            sessionManager.StopSession(args.User?.StationId ?? "LocalPC");
                             Log.Information("Decoupled session end triggered for user: {Username}", args.User?.Username);
                         }
                         catch (Exception ex)
@@ -184,12 +188,21 @@ namespace Sayra.UI
 
             // Add Session Manager
             services.AddSingleton<SessionManager>();
+            services.AddSingleton<ISessionStateProvider>(sp => sp.GetRequiredService<SessionManager>());
 
             // Add TcpClientManager (Fully supported with valid dependencies)
             services.AddSingleton<TcpClientManager>();
 
+            // Add Core GameLibrary, Diagnostics and Launcher Services
+            services.AddGameLibrary();
+            services.AddDiagnosticsServices(config);
+            services.AddLauncherServices();
+
             // Register ViewModels
             services.AddTransient<Sayra.UI.ViewModels.LoginViewModel>();
+            services.AddTransient<Sayra.UI.ViewModels.GameLibraryViewModel>();
+            services.AddTransient<Sayra.UI.ViewModels.SessionHeroViewModel>();
+            services.AddTransient<Sayra.UI.ViewModels.HardwarePanelViewModel>();
         }
     }
 
