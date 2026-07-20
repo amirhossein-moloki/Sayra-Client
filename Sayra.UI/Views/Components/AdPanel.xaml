@@ -86,7 +86,7 @@
             <!-- 1. HEADER SECTION -->
             <StackPanel Grid.Row="0" Orientation="Horizontal" VerticalAlignment="Center">
                 <Border Width="4" Height="16" Background="#F5FF00" CornerRadius="2" Margin="0,0,8,0"/>
-                <TextBlock Text="پیشنهاد ویژه سایرا"
+                <TextBlock Text="{Binding Title}"
                            FontFamily="{StaticResource PeydaBold}"
                            FontSize="16"
                            Foreground="White"
@@ -102,13 +102,13 @@
                 </Grid.RowDefinitions>
 
                 <StackPanel Grid.Row="0" Margin="0,0,0,15">
-                    <TextBlock Text="شارژ کیف پول با ۲۰٪ هدیه"
+                    <TextBlock Text="{Binding PromoTitle}"
                                FontFamily="{StaticResource PeydaBold}"
                                FontSize="18"
                                Foreground="#ffff3d"
                                TextAlignment="Right"
                                TextWrapping="Wrap" />
-                    <TextBlock Text="به مدت محدود"
+                    <TextBlock Text="{Binding Subtitle}"
                                FontFamily="{StaticResource PeydaLight}"
                                FontSize="11"
                                Foreground="#9A9A9A"
@@ -118,7 +118,7 @@
 
                 <!-- Detailed offer description using premium fonts -->
                 <TextBlock Grid.Row="1"
-                           Text="با شارژ حساب خود در جشنواره تابستانه سایرا، از ۲۰٪ اعتبار هدیه بدون سقف بهره‌مند شوید. این اعتبار بلافاصله فعال شده و برای تمام بازی‌ها قابل استفاده است."
+                           Text="{Binding Description}"
                            FontFamily="{StaticResource PeydaMedium}"
                            FontSize="13"
                            Foreground="#E1E1E6"
@@ -164,9 +164,10 @@
             <!-- 3. CALL TO ACTION BUTTON -->
             <Button Grid.Row="3"
                     Style="{StaticResource AdButtonStyle}"
+                    Command="{Binding ExecuteCtaCommand}"
                     HorizontalAlignment="Stretch"
                     Margin="0,10,0,0">
-                <TextBlock Text="شارژ آنلاین حساب"
+                <TextBlock Text="{Binding ButtonText}"
                            FontFamily="{StaticResource PeydaBold}"
                            FontSize="15" />
             </Button>

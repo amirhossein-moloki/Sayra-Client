@@ -7,6 +7,7 @@ namespace Sayra.UI.Views.Components
         public AdPanel()
         {
             InitializeComponent();
+            this.DataContext = App.ServiceProvider?.GetService<Sayra.UI.ViewModels.AdPanelViewModel>() ?? new Sayra.UI.ViewModels.AdPanelViewModel();
         }
     }
 }

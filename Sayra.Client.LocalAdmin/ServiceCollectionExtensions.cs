@@ -30,6 +30,8 @@ namespace Sayra.Client.LocalAdmin
             services.AddSingleton<IAdminSessionManager, AdminSessionManager>();
             services.AddSingleton<ILocalAdminService, LocalAdminService>();
             services.AddSingleton<IClientConfigurationService, ClientConfigurationService>();
+            services.AddSingleton<IStationIdentityService, StationIdentityService>();
+            services.AddSingleton<IAdvertisementService, AdvertisementService>();
 
             services.AddHostedService<LocalAdminInitializer>();
 

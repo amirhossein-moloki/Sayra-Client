@@ -26,6 +26,19 @@ namespace Sayra.UI.Views
         {
             if (_game == null) return;
 
+            try
+            {
+                var stationService = App.ServiceProvider?.GetService<Sayra.Client.LocalAdmin.Services.IStationIdentityService>();
+                if (stationService != null)
+                {
+                    DetailPcNameText.Text = stationService.GetIdentity().ResolvedStationName;
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Failed to set DetailPcNameText: {ex.Message}");
+            }
+
             // مقداردهی مستقیم به کنترل‌های والد در پنجره
             DetailTitle.Text = _game.Title;
             DetailGenre.Text = _game.Genre;
@@ -144,8 +157,21 @@ namespace Sayra.UI.Views
             if (result == MessageBoxResult.Yes)
             {
                 Sayra.UI.Services.NotificationService.Instance.ShowLoading("در حال خروج از سیستم...");
+
+                var authService = App.ServiceProvider?.GetService<Sayra.Client.Authentication.Contracts.IAuthenticationService>();
+                if (authService != null)
+                {
+                    await authService.LogoutAsync();
+                }
+
                 await System.Threading.Tasks.Task.Delay(1000);
-                Application.Current.Shutdown();
+                Sayra.UI.Services.NotificationService.Instance.Dismiss();
+
+                var loginWin = new Sayra.UI.Views.LoginWindow();
+                loginWin.Show();
+                Application.Current.MainWindow = loginWin;
+
+                this.Close();
             }
         }
 

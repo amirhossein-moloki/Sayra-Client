@@ -8,6 +8,9 @@ namespace Sayra.Client.LocalAdmin.Models
         public GameLibrarySettings GameLibrary { get; set; } = new();
         public List<string> ScannerPaths { get; set; } = new();
         public LocalPreferencesSettings LocalPreferences { get; set; } = new();
+        public string? StationName { get; set; }
+        public string? StationId { get; set; }
+        public string? ClientId { get; set; }
     }
 
     public class ServerDiscoverySettings
