@@ -24,21 +24,27 @@ namespace Sayra.UI.ViewModels
         private readonly List<GameItem> _allGames = new();
         private readonly IGameLibraryService? _gameLibraryService;
         private readonly IGameLauncherService? _launcherService;
+        private readonly IGameValidationService? _validationService;
 
         public ObservableCollection<GameItem> Games { get; } = new();
 
         // Parameterless constructor for XAML support and design-time fallback
         public GameLibraryViewModel() : this(
             App.ServiceProvider?.GetService<IGameLibraryService>(),
-            App.ServiceProvider?.GetService<IGameLauncherService>())
+            App.ServiceProvider?.GetService<IGameLauncherService>(),
+            App.ServiceProvider?.GetService<IGameValidationService>())
         {
         }
 
         // DI-friendly constructor
-        public GameLibraryViewModel(IGameLibraryService? gameLibraryService, IGameLauncherService? launcherService)
+        public GameLibraryViewModel(
+            IGameLibraryService? gameLibraryService,
+            IGameLauncherService? launcherService,
+            IGameValidationService? validationService)
         {
             _gameLibraryService = gameLibraryService;
             _launcherService = launcherService;
+            _validationService = validationService;
 
             Log("Constructor START");
             _ = LoadGamesAsync();
@@ -146,22 +152,63 @@ namespace Sayra.UI.ViewModels
                     var coreGames = await _gameLibraryService.GetGames();
                     if (coreGames != null && coreGames.Any())
                     {
-                        list = coreGames.Select(g => new GameItem
+                        list = new List<GameItem>();
+                        foreach (var g in coreGames)
                         {
-                            Id = g.Id,
-                            Title = g.Title,
-                            Genre = g.Genre,
-                            ImagePath = g.CoverImage,
-                            Status = g.Enabled ? "Installed" : "Locked",
-                            IsAvailable = g.Enabled,
-                            Description = g.Description,
-                            LogoImage = g.LogoImage,
-                            BackgroundImage = g.BackgroundImage,
-                            Launcher = g.Launcher,
-                            Developer = g.Developer,
-                            ReleaseYear = g.ReleaseYear,
-                            ExecutablePath = g.ExecutablePath
-                        }).ToList();
+                            string displayStatus = "Installed";
+                            bool isAvailable = g.Enabled;
+
+                            if (_validationService != null)
+                            {
+                                var valResult = await _validationService.ValidateGameAsync(g);
+                                isAvailable = valResult.IsPlayable;
+                                switch (valResult.Status)
+                                {
+                                    case GameValidationStatus.Installed:
+                                        displayStatus = "Installed";
+                                        break;
+                                    case GameValidationStatus.Missing:
+                                        displayStatus = "Missing";
+                                        break;
+                                    case GameValidationStatus.Corrupted:
+                                        displayStatus = "Corrupted";
+                                        break;
+                                    case GameValidationStatus.Disabled:
+                                        displayStatus = "Disabled";
+                                        break;
+                                    case GameValidationStatus.NeedsVerification:
+                                        displayStatus = "Validation Required";
+                                        break;
+                                    case GameValidationStatus.Unsupported:
+                                        displayStatus = "Unsupported";
+                                        break;
+                                    default:
+                                        displayStatus = "Unknown";
+                                        break;
+                                }
+                            }
+                            else
+                            {
+                                displayStatus = g.Enabled ? "Installed" : "Locked";
+                            }
+
+                            list.Add(new GameItem
+                            {
+                                Id = g.Id,
+                                Title = g.Title,
+                                Genre = g.Genre,
+                                ImagePath = g.CoverImage,
+                                Status = displayStatus,
+                                IsAvailable = isAvailable,
+                                Description = g.Description,
+                                LogoImage = g.LogoImage,
+                                BackgroundImage = g.BackgroundImage,
+                                Launcher = g.Launcher,
+                                Developer = g.Developer,
+                                ReleaseYear = g.ReleaseYear,
+                                ExecutablePath = g.ExecutablePath
+                            });
+                        }
                         Log($"Successfully loaded {list.Count} games from core database.");
                     }
                 }

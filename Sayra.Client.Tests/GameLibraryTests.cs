@@ -218,5 +218,72 @@ namespace Sayra.Client.Tests
             Assert.Equal("persisted-1", loadedGames.First().Id);
             Assert.Equal("GTA VI", loadedGames.First().Name);
         }
+
+        [Fact]
+        public async Task ValidateGameAsync_WhenDisabled_ShouldReturnDisabled()
+        {
+            // Arrange
+            var service = new GameValidationService(null);
+            var game = new Game
+            {
+                Id = "g-disabled",
+                Name = "Disabled Game",
+                Enabled = false,
+                ExecutablePath = "C:\\game.exe"
+            };
+
+            // Act
+            var result = await service.ValidateGameAsync(game);
+
+            // Assert
+            Assert.Equal(GameValidationStatus.Disabled, result.Status);
+            Assert.False(result.IsPlayable);
+        }
+
+        [Fact]
+        public async Task ValidateGameAsync_WhenExecutableDoesNotExist_ShouldReturnMissing()
+        {
+            // Arrange
+            var service = new GameValidationService(null);
+            var game = new Game
+            {
+                Id = "g-missing",
+                Name = "Missing Game",
+                Enabled = true,
+                ExecutablePath = Path.Combine(_testDataDir, "nonexistent_executable.exe")
+            };
+
+            // Act
+            var result = await service.ValidateGameAsync(game);
+
+            // Assert
+            Assert.Equal(GameValidationStatus.Missing, result.Status);
+            Assert.False(result.IsPlayable);
+        }
+
+        [Fact]
+        public async Task ValidateGameAsync_WhenExecutableExists_ShouldReturnInstalled()
+        {
+            // Arrange
+            var service = new GameValidationService(null);
+            string dummyExe = Path.Combine(_testDataDir, "valid_test_validation.exe");
+            await File.WriteAllTextAsync(dummyExe, "MZ..."); // Dummy exe headers
+
+            var game = new Game
+            {
+                Id = "g-valid",
+                Name = "Valid Game",
+                Enabled = true,
+                ExecutablePath = dummyExe,
+                WorkingDirectory = _testDataDir
+            };
+
+            // Act
+            var result = await service.ValidateGameAsync(game);
+
+            // Assert
+            Assert.Equal(GameValidationStatus.Installed, result.Status);
+            Assert.True(result.IsPlayable);
+        }
     }
 }

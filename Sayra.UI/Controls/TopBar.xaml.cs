@@ -60,10 +60,16 @@ namespace Sayra.UI.Controls
             try
             {
                 AdminPanelButton.Visibility = App.IsAdminLoggedIn ? Visibility.Visible : Visibility.Collapsed;
+
+                var stationService = App.ServiceProvider?.GetService<Sayra.Client.LocalAdmin.Services.IStationIdentityService>();
+                if (stationService != null)
+                {
+                    PcNameText.Text = stationService.GetIdentity().ResolvedStationName;
+                }
             }
             catch (Exception ex)
             {
-                Log($"Error setting AdminPanelButton visibility: {ex.Message}");
+                Log($"Error setting AdminPanelButton or PcNameText: {ex.Message}");
             }
             Log("Loaded Event END");
             sw.Stop();
@@ -108,6 +114,13 @@ namespace Sayra.UI.Controls
                     App.IsAdminLoggedIn = false;
 
                     Sayra.UI.Services.NotificationService.Instance.ShowLoading("در حال خروج از سیستم...");
+
+                    var authService = App.ServiceProvider?.GetService<Sayra.Client.Authentication.Contracts.IAuthenticationService>();
+                    if (authService != null)
+                    {
+                        await authService.LogoutAsync();
+                    }
+
                     await System.Threading.Tasks.Task.Delay(1000);
                     Sayra.UI.Services.NotificationService.Instance.Dismiss();
 

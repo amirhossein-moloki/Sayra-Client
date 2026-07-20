@@ -205,7 +205,8 @@
 
             <!-- CENTER AREA: PC identity section + status badge -->
             <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
-                <TextBlock Text="PC-08"
+                <TextBlock x:Name="PcNameText"
+                           Text="PC-08"
                            FontFamily="{StaticResource PeydaBold}"
                            FontSize="22"
                            Foreground="White"

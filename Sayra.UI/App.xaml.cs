@@ -76,16 +76,23 @@ namespace Sayra.UI
                     {
                         try
                         {
+                            var stationService = ServiceProvider.GetRequiredService<Sayra.Client.LocalAdmin.Services.IStationIdentityService>();
+                            var identity = stationService.GetIdentity();
+
                             var sessionModel = new SayraClient.Models.SessionModel
                             {
                                 SessionId = args.SessionId,
-                                PcId = args.User.StationId ?? "LocalPC",
+                                PcId = identity.ResolvedStationName,
                                 SiteId = "LocalSite",
                                 Duration = 120, // default 2 hours session duration
                                 RatePerHour = 15000, // default rate
                                 StartTime = DateTime.UtcNow
                             };
                             sessionManager.StartSession(sessionModel);
+
+                            var stateManager = ServiceProvider.GetRequiredService<ClientStateManager>();
+                            stateManager.TransitionTo(ClientState.IN_SESSION);
+
                             Log.Information("Decoupled session startup triggered for user: {Username}", args.User.Username);
                         }
                         catch (Exception ex)
@@ -102,7 +109,14 @@ namespace Sayra.UI
                     {
                         try
                         {
-                            sessionManager.StopSession(args.User?.StationId ?? "LocalPC");
+                            var stationService = ServiceProvider.GetRequiredService<Sayra.Client.LocalAdmin.Services.IStationIdentityService>();
+                            var identity = stationService.GetIdentity();
+
+                            sessionManager.StopSession(identity.ResolvedStationName);
+
+                            var stateManager = ServiceProvider.GetRequiredService<ClientStateManager>();
+                            stateManager.TransitionTo(ClientState.READY);
+
                             Log.Information("Decoupled session end triggered for user: {Username}", args.User?.Username);
                         }
                         catch (Exception ex)
@@ -203,6 +217,7 @@ namespace Sayra.UI
             services.AddTransient<Sayra.UI.ViewModels.GameLibraryViewModel>();
             services.AddTransient<Sayra.UI.ViewModels.SessionHeroViewModel>();
             services.AddTransient<Sayra.UI.ViewModels.HardwarePanelViewModel>();
+            services.AddTransient<Sayra.UI.ViewModels.AdPanelViewModel>();
         }
     }
 

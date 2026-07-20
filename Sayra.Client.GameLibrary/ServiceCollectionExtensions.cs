@@ -11,6 +11,7 @@ namespace Sayra.Client.GameLibrary
             services.AddSingleton<IGameLibraryRepository>(sp =>
                 new GameLibraryRepository(basePath, sp.GetService<Microsoft.Extensions.Logging.ILogger<GameLibraryRepository>>()));
             services.AddSingleton<IGameLibraryService, GameLibraryService>();
+            services.AddSingleton<IGameValidationService, GameValidationService>();
             return services;
         }
     }

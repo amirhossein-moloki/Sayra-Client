@@ -310,7 +310,7 @@
                             </Grid.RowDefinitions>
 
                             <Grid Grid.Row="0" Margin="0,0,0,12">
-                                <TextBlock Text="PC-08" FontFamily="{StaticResource PeydaBold}" FontSize="24" Foreground="{DynamicResource GameDetail.Highlight}" HorizontalAlignment="Left" VerticalAlignment="Center" />
+                                <TextBlock x:Name="DetailPcNameText" Text="PC-08" FontFamily="{StaticResource PeydaBold}" FontSize="24" Foreground="{DynamicResource GameDetail.Highlight}" HorizontalAlignment="Left" VerticalAlignment="Center" />
                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
                                     <Path Data="M12 6v6h4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z" Stroke="{DynamicResource GameDetail.Highlight}" StrokeThickness="2" StrokeStartLineCap="Round" StrokeEndLineCap="Round" Fill="Transparent" Width="22" Height="22" Stretch="Uniform" VerticalAlignment="Center" Margin="0,0,8,0"/>
                                     <TextBlock Text="session information" FontFamily="{StaticResource PeydaBold}" FontSize="20" Foreground="{DynamicResource GameDetail.Highlight}" VerticalAlignment="Center" />

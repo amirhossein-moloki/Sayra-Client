@@ -14,7 +14,7 @@ namespace Sayra.UI.ViewModels
     public partial class HardwarePanelViewModel : ObservableObject
     {
         [ObservableProperty]
-        private string _pcName = "PC-08";
+        private string _pcName = "Station";
 
         public ObservableCollection<HardwareInfo> HardwareItems { get; } = new();
 
@@ -46,6 +46,13 @@ namespace Sayra.UI.ViewModels
         {
             try
             {
+                // Resolve station name dynamically
+                var stationService = App.ServiceProvider?.GetService<Sayra.Client.LocalAdmin.Services.IStationIdentityService>();
+                if (stationService != null)
+                {
+                    PcName = stationService.GetIdentity().ResolvedStationName;
+                }
+
                 // 1. Initially set high-fidelity fallback values to prevent empty fields
                 PopulateDefaultHardware();
 
@@ -96,6 +103,17 @@ namespace Sayra.UI.ViewModels
 
             HardwareItems.Add(new HardwareInfo
             {
+                Label = "MOTHERBOARD",
+                Value = "ASUS ROG STRIX B760-I",
+                IconPathData = "M2,3H22V21H2V3M4,5V19H20V5H4M7,7H10V9H7V7M12,7H17V9H12V7M7,11H12V13H7V11M14,11H17V13H14V11M7,15H10V17H7V15M12,15H17V17H12V15Z",
+                Temperature = 0,
+                Usage = 0,
+                Availability = "Active",
+                Health = "Healthy"
+            });
+
+            HardwareItems.Add(new HardwareInfo
+            {
                 Label = "RAM",
                 Value = "32 GB DDR5",
                 IconPathData = "M2 6H22V14H2V6M5 8V12M8 8V12M11 8V12M14 8V12M17 8V12M20 8V12 M2 15H22V16H2",
@@ -107,12 +125,45 @@ namespace Sayra.UI.ViewModels
 
             HardwareItems.Add(new HardwareInfo
             {
+                Label = "STORAGE",
+                Value = "SSD NVMe 1TB\n(342 GB Free)",
+                IconPathData = "M6,2H18A2,2 0 0,1 20,4V20A2,2 0 0,1 18,22H6A2,2 0 0,1 4,20V4A2,2 0 0,1 6,2M6,4V8H18V4H6M6,10V20H18V10H6M8,12H11V14H8V12M8,16H13V18H8V16Z",
+                Temperature = 38.0,
+                Usage = 0.0,
+                Availability = "Active",
+                Health = "Healthy"
+            });
+
+            HardwareItems.Add(new HardwareInfo
+            {
                 Label = "DISPLAY",
                 Value = "27\" 4K OLED\n3840×2160\n144Hz",
                 IconPathData = "M21,16H3V4H21M21,2H3C1.89,2 1,2.89 1,4V16A2,2 0 0,0 3,18H10V21H8V23H16V21H14V18H21A2,2 0 0,0 23,16V4C23,2.89 22.1,2 21,2Z",
                 Temperature = 0.0,
                 Usage = 0.0,
                 Availability = "Active",
+                Health = "Healthy"
+            });
+
+            HardwareItems.Add(new HardwareInfo
+            {
+                Label = "GRAPHICS API",
+                Value = "DirectX 12, Vulkan,\nOpenGL 4.6",
+                IconPathData = "M4,4H20V20H4V4M6,6V18H18V6H6M8,8H16V10H8V8M8,12H16V16H8V12Z",
+                Temperature = 0,
+                Usage = 0,
+                Availability = "Active",
+                Health = "Healthy"
+            });
+
+            HardwareItems.Add(new HardwareInfo
+            {
+                Label = "NETWORK",
+                Value = "Intel Wi-Fi 6E AX211\n(192.168.1.108)",
+                IconPathData = "M4,1C2.9,1 2,1.9 2,3V21C2,22.1 2.9,23 4,23H20C21.1,23 22,22.1 22,21V3C22,1.9 21.1,1 20,1H4M4,3H20V16.5L16,12.5L12,16.5L8,12.5L4,16.5V3M4,21V19.5L8,15.5L12,19.5L16,15.5L20,19.5V21H4Z",
+                Temperature = 0,
+                Usage = 0,
+                Availability = "Connected",
                 Health = "Healthy"
             });
         }
@@ -146,16 +197,42 @@ namespace Sayra.UI.ViewModels
                         }
                     }
 
-                    // 3. Update Memory details
+                    // 3. Update Motherboard model
+                    var mbItem = HardwareItems.FirstOrDefault(i => i.Label == "MOTHERBOARD");
+                    if (mbItem != null && spec.Motherboard != null)
+                    {
+                        string manufacturer = string.IsNullOrWhiteSpace(spec.Motherboard.Manufacturer) ? "Unknown" : spec.Motherboard.Manufacturer;
+                        string product = string.IsNullOrWhiteSpace(spec.Motherboard.Product) ? "Motherboard" : spec.Motherboard.Product;
+                        mbItem.Value = $"{manufacturer} {product}";
+                    }
+
+                    // 4. Update Memory details (including Modules and Speed)
                     var ramItem = HardwareItems.FirstOrDefault(i => i.Label == "RAM");
                     if (ramItem != null && spec.Memory != null)
                     {
                         double gigabytes = spec.Memory.InstalledMemory / (1024.0 * 1024.0 * 1024.0);
                         string memoryType = string.IsNullOrWhiteSpace(spec.Memory.MemoryType) ? "DDR" : spec.Memory.MemoryType;
-                        ramItem.Value = $"{Math.Round(gigabytes)} GB {memoryType}";
+                        string speedStr = spec.Memory.Speed > 0 ? $" @ {spec.Memory.Speed}MHz" : "";
+                        string modulesStr = "";
+                        if (spec.Memory.Modules != null && spec.Memory.Modules.Any())
+                        {
+                            modulesStr = $" ({spec.Memory.Modules.Count}x{Math.Round(spec.Memory.Modules[0].Capacity / (1024.0 * 1024.0 * 1024.0))}GB)";
+                        }
+                        ramItem.Value = $"{Math.Round(gigabytes)} GB {memoryType}{speedStr}{modulesStr}";
                     }
 
-                    // 4. Update Display details
+                    // 5. Update Storage Devices
+                    var storageItem = HardwareItems.FirstOrDefault(i => i.Label == "STORAGE");
+                    if (storageItem != null && spec.Storage != null && spec.Storage.Any())
+                    {
+                        var mainDrive = spec.Storage.First();
+                        double totalGb = mainDrive.Capacity / (1024.0 * 1024.0 * 1024.0);
+                        double freeGb = mainDrive.FreeSpace / (1024.0 * 1024.0 * 1024.0);
+                        string driveType = string.IsNullOrWhiteSpace(mainDrive.SsdHdd) ? "Drive" : mainDrive.SsdHdd;
+                        storageItem.Value = $"{driveType} {Math.Round(totalGb)}GB\n({Math.Round(freeGb)}GB Free)";
+                    }
+
+                    // 6. Update Display details
                     var displayItem = HardwareItems.FirstOrDefault(i => i.Label == "DISPLAY");
                     if (displayItem != null && spec.Displays != null && spec.Displays.Any())
                     {
@@ -164,6 +241,26 @@ namespace Sayra.UI.ViewModels
                         double rate = firstDisplay.RefreshRate > 0 ? firstDisplay.RefreshRate : 60.0;
                         string monitorName = string.IsNullOrWhiteSpace(firstDisplay.MonitorName) ? "Monitor" : firstDisplay.MonitorName;
                         displayItem.Value = $"{monitorName}\n{resolution}\n{rate}Hz";
+                    }
+
+                    // 7. Update Graphics APIs (DirectX, Vulkan, OpenGL)
+                    var apiItem = HardwareItems.FirstOrDefault(i => i.Label == "GRAPHICS API");
+                    if (apiItem != null && spec.OperatingSystem != null)
+                    {
+                        string dx = string.IsNullOrWhiteSpace(spec.OperatingSystem.DirectXVersion) ? "DirectX 12" : spec.OperatingSystem.DirectXVersion;
+                        string vulkan = spec.OperatingSystem.VulkanSupport ? "Vulkan" : "No Vulkan";
+                        string opengl = string.IsNullOrWhiteSpace(spec.OperatingSystem.OpenGlVersion) ? "OpenGL" : $"OpenGL {spec.OperatingSystem.OpenGlVersion}";
+                        apiItem.Value = $"{dx}, {vulkan},\n{opengl}";
+                    }
+
+                    // 8. Update Network details
+                    var netItem = HardwareItems.FirstOrDefault(i => i.Label == "NETWORK");
+                    if (netItem != null && spec.Networks != null && spec.Networks.Any())
+                    {
+                        var activeNet = spec.Networks.FirstOrDefault(n => n.ConnectionStatus == "Connected") ?? spec.Networks.First();
+                        string name = activeNet.AdapterName ?? "Ethernet";
+                        string ip = activeNet.IPv4 ?? "0.0.0.0";
+                        netItem.Value = $"{name}\n({ip})";
                     }
 
                     Log("Hardware specifications successfully resolved and updated in the UI.");
