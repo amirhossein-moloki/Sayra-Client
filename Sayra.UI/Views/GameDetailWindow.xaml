@@ -155,7 +155,7 @@
     <Grid x:Name="RootGrid" Background="{DynamicResource GameDetail.Background}">
         <!-- 1. Atmospheric heavily blurred game backdrop -->
         <Grid IsHitTestVisible="False">
-            <Image x:Name="DetailBackgroundImage" Stretch="UniformToFill" Opacity="0.18">
+            <Image x:Name="DetailBackgroundImage" Source="{Binding BackgroundImageSource}" Stretch="UniformToFill" Opacity="0.18">
                 <Image.Effect>
                     <BlurEffect Radius="45" RenderingBias="Quality" />
                 </Image.Effect>
@@ -185,7 +185,7 @@
                 </Grid.RowDefinitions>
 
                 <!-- هدر: دکمه بازگشت و نان‌ریزه -->
-                <Button Grid.Row="0" Style="{DynamicResource GlassDetailButtonStyle}" Click="Back_Click" HorizontalAlignment="Left" Width="160">
+                <Button Grid.Row="0" Command="{Binding BackCommand}" Style="{DynamicResource GlassDetailButtonStyle}" HorizontalAlignment="Left" Width="160">
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
                         <Path Data="M10 19l-7-7m0 0l7-7m-7 7h18" Stroke="{DynamicResource TextPrimaryBrush}" StrokeThickness="2" Width="16" Height="16" Stretch="Uniform" Margin="0,0,10,0"/>
                         <TextBlock Text="بازگشت" FontFamily="{StaticResource PeydaMedium}" FontSize="15" Foreground="{DynamicResource TextPrimaryBrush}"/>
@@ -194,7 +194,7 @@
 
                 <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center" FlowDirection="RightToLeft">
                     <TextBlock Text="داشبورد / بازی ها / " FontFamily="{StaticResource PeydaMedium}" FontSize="16" Foreground="{DynamicResource TextSecondaryBrush}"/>
-                    <TextBlock x:Name="BreadcrumbGameTitle" Text="ولورانت" FontFamily="{StaticResource PeydaBold}" FontSize="16" Foreground="{DynamicResource GameDetail.Highlight}"/>
+                    <TextBlock x:Name="BreadcrumbGameTitle" Text="{Binding Game.Title}" FontFamily="{StaticResource PeydaBold}" FontSize="16" Foreground="{DynamicResource GameDetail.Highlight}"/>
                 </StackPanel>
 
                 <!-- گرید چیدمان اصلی متقارن (کارت‌ها و پنل‌ها به صورت متقارن روی یک ردیف و ستون چیده می‌شوند) -->
@@ -238,7 +238,7 @@
 
                             <!-- چپ: لوگوی بازی (بازیابی لوگوی حذف شده) -->
                             <Border Grid.Column="2" VerticalAlignment="Bottom" Width="326" Height="326" Margin="0,10,0,10" Background="{DynamicResource GameDetail.BadgeBackground}" CornerRadius="16" BorderBrush="{DynamicResource GameDetail.Border}" BorderThickness="1" ClipToBounds="True">
-                                <Image x:Name="DetailLogoImage" Stretch="Uniform" Margin="10" RenderOptions.BitmapScalingMode="HighQuality">
+                                <Image x:Name="DetailLogoImage" Source="{Binding LogoImageSource}" Stretch="Uniform" Margin="10" RenderOptions.BitmapScalingMode="HighQuality">
                                     <Image.Effect>
                                         <DropShadowEffect Color="Black" BlurRadius="5" ShadowDepth="1" Opacity="0.5"/>
                                     </Image.Effect>
@@ -256,31 +256,31 @@
 
                                 <!-- عنوان و ژانر -->
                                 <StackPanel Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,0,10">
-                                    <TextBlock x:Name="DetailTitle" Style="{DynamicResource GameHeroTitleStyle}" />
-                                    <TextBlock x:Name="DetailGenre" Style="{DynamicResource GameHeroGenreStyle}" />
+                                    <TextBlock x:Name="DetailTitle" Text="{Binding Game.Title}" Style="{DynamicResource GameHeroTitleStyle}" />
+                                    <TextBlock x:Name="DetailGenre" Text="{Binding Game.Genre}" Style="{DynamicResource GameHeroGenreStyle}" />
                                 </StackPanel>
 
                                 <!-- توضیحات بازی -->
-                                <TextBlock x:Name="DetailDescription" Grid.Row="1" Style="{DynamicResource GameHeroDescriptionStyle}" />
+                                <TextBlock x:Name="DetailDescription" Grid.Row="1" Text="{Binding Game.Description}" Style="{DynamicResource GameHeroDescriptionStyle}" />
 
                                 <!-- متادیتاها با استایل سنترالیزه جدید و اولویت تصحیح‌شده WPF -->
                                 <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" FlowDirection="RightToLeft" Margin="0,0,0,20">
-                                    <c:GameBadge x:Name="DeveloperBadge" Style="{DynamicResource CategoryBadgeStyle}" HasLabel="True" Label="سازنده: " Margin="0,0,10,0"/>
-                                    <c:GameBadge x:Name="ReleaseYearBadge" Style="{DynamicResource CategoryBadgeStyle}" HasLabel="True" Label="سال انتشار: " Margin="0,0,10,0"/>
-                                    <c:GameBadge x:Name="LauncherBadge" Style="{DynamicResource GenreBadgeStyle}" HasLabel="True" Label="لانچر: " TextForeground="{DynamicResource GameDetail.Highlight}"/>
+                                    <c:GameBadge x:Name="DeveloperBadge" Text="{Binding Game.Developer}" Style="{DynamicResource CategoryBadgeStyle}" HasLabel="True" Label="سازنده: " Margin="0,0,10,0"/>
+                                    <c:GameBadge x:Name="ReleaseYearBadge" Text="{Binding Game.ReleaseYear}" Style="{DynamicResource CategoryBadgeStyle}" HasLabel="True" Label="سال انتشار: " Margin="0,0,10,0"/>
+                                    <c:GameBadge x:Name="LauncherBadge" Text="{Binding Game.Launcher}" Style="{DynamicResource GenreBadgeStyle}" HasLabel="True" Label="لانچر: " TextForeground="{DynamicResource GameDetail.Highlight}"/>
                                 </StackPanel>
 
                                 <!-- دکمه بزرگ آماده به بازی / درحال بازی -->
-                                <Button Grid.Row="3" x:Name="PlayButton" Click="PlayGame_Click" Style="{DynamicResource PrimaryActionButtonStyle}" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" HorizontalAlignment="Right" Padding="0" Cursor="Hand" Margin="0,0,0,10">
+                                <Button Grid.Row="3" x:Name="PlayButton" Command="{Binding PlayGameCommand}" Style="{DynamicResource PrimaryActionButtonStyle}" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" HorizontalAlignment="Right" Padding="0" Cursor="Hand" Margin="0,0,0,10">
                                     <Button.Template>
                                         <ControlTemplate TargetType="Button">
                                             <ContentPresenter />
                                         </ControlTemplate>
                                     </Button.Template>
-                                    <Border x:Name="StatusBadgeBorder" Width="288" Height="50" Style="{DynamicResource StatusBadgeStyle}">
+                                    <Border x:Name="StatusBadgeBorder" Width="288" Height="50" BorderBrush="{Binding StatusBorderBrush}" Background="{Binding StatusBackgroundBrush}" CornerRadius="10" BorderThickness="1">
                                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-                                            <Ellipse x:Name="StatusBadgeDot" Width="8" Height="8" Fill="{DynamicResource GameDetail.Status.SuccessBorder}" Margin="0,0,10,0" VerticalAlignment="Center"/>
-                                            <TextBlock x:Name="DetailStatus" Text="وضعیت" FontFamily="{StaticResource PeydaMedium}" FontSize="15" Foreground="{DynamicResource GameDetail.Status.SuccessBorder}" VerticalAlignment="Center"/>
+                                            <Ellipse x:Name="StatusBadgeDot" Width="8" Height="8" Fill="{Binding StatusDotBrush}" Margin="0,0,10,0" VerticalAlignment="Center"/>
+                                            <TextBlock x:Name="DetailStatus" Text="{Binding StatusText}" Foreground="{Binding StatusForegroundBrush}" FontFamily="{StaticResource PeydaMedium}" FontSize="15" VerticalAlignment="Center"/>
                                         </StackPanel>
                                     </Border>
                                 </Button>
@@ -310,7 +310,7 @@
                             </Grid.RowDefinitions>
 
                             <Grid Grid.Row="0" Margin="0,0,0,12">
-                                <TextBlock x:Name="DetailPcNameText" Text="PC-08" FontFamily="{StaticResource PeydaBold}" FontSize="24" Foreground="{DynamicResource GameDetail.Highlight}" HorizontalAlignment="Left" VerticalAlignment="Center" />
+                                <TextBlock x:Name="DetailPcNameText" Text="{Binding PcName}" FontFamily="{StaticResource PeydaBold}" FontSize="24" Foreground="{DynamicResource GameDetail.Highlight}" HorizontalAlignment="Left" VerticalAlignment="Center" />
                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
                                     <Path Data="M12 6v6h4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z" Stroke="{DynamicResource GameDetail.Highlight}" StrokeThickness="2" StrokeStartLineCap="Round" StrokeEndLineCap="Round" Fill="Transparent" Width="22" Height="22" Stretch="Uniform" VerticalAlignment="Center" Margin="0,0,8,0"/>
                                     <TextBlock Text="session information" FontFamily="{StaticResource PeydaBold}" FontSize="20" Foreground="{DynamicResource GameDetail.Highlight}" VerticalAlignment="Center" />
@@ -372,7 +372,7 @@
                                 </Grid>
                             </Grid>
 
-                            <Button Grid.Row="4" Style="{DynamicResource EndSessionButtonStyle}" Click="EndSession_Click" Width="240" Height="48" HorizontalAlignment="Center" VerticalAlignment="Bottom"/>
+                            <Button Grid.Row="4" Style="{DynamicResource EndSessionButtonStyle}" Command="{Binding EndSessionCommand}" Width="240" Height="48" HorizontalAlignment="Center" VerticalAlignment="Bottom"/>
                         </Grid>
                     </c:GameInfoCard>
 

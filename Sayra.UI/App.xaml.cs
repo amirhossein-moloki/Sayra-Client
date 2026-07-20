@@ -218,6 +218,7 @@ namespace Sayra.UI
             services.AddTransient<Sayra.UI.ViewModels.SessionHeroViewModel>();
             services.AddTransient<Sayra.UI.ViewModels.HardwarePanelViewModel>();
             services.AddTransient<Sayra.UI.ViewModels.AdPanelViewModel>();
+            services.AddTransient<Sayra.UI.ViewModels.GameDetailViewModel>();
         }
     }
 

@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Threading;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Sayra.UI.Controls
 {
