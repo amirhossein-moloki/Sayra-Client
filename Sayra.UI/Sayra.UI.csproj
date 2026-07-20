@@ -24,6 +24,7 @@
     <ProjectReference Include="..\Sayra.Client.LocalAdmin\Sayra.Client.LocalAdmin.csproj" />
     <ProjectReference Include="..\Sayra.Client.Shared\Sayra.Client.Shared.csproj" />
     <ProjectReference Include="..\SayraClient\SayraClient.csproj" />
+    <ProjectReference Include="..\Sayra.Client.Authentication\Sayra.Client.Authentication.csproj" />
   </ItemGroup>
 
   <ItemGroup>

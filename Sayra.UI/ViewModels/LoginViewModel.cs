@@ -4,16 +4,14 @@ using System.Windows;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
-using Sayra.Client.LocalAdmin.Services;
-using SayraClient.Services;
+using Sayra.Client.Authentication.Contracts;
+using Sayra.Client.Authentication.Enums;
 
 namespace Sayra.UI.ViewModels
 {
     public partial class LoginViewModel : ObservableObject
     {
-        private readonly ILocalAdminService? _localAdminService;
-        private readonly IClientConfigurationService? _clientConfigurationService;
-        private readonly SessionManager? _sessionManager;
+        private readonly IAuthenticationService? _authService;
         private readonly ILogger<LoginViewModel>? _logger;
 
         [ObservableProperty]
@@ -29,23 +27,17 @@ namespace Sayra.UI.ViewModels
         private string _errorMessage = string.Empty;
 
         public LoginViewModel() : this(
-            App.ServiceProvider?.GetService(typeof(ILocalAdminService)) as ILocalAdminService,
-            App.ServiceProvider?.GetService(typeof(IClientConfigurationService)) as IClientConfigurationService,
-            App.ServiceProvider?.GetService(typeof(SessionManager)) as SessionManager,
+            App.ServiceProvider?.GetService(typeof(IAuthenticationService)) as IAuthenticationService,
             App.ServiceProvider?.GetService(typeof(ILogger<LoginViewModel>)) as ILogger<LoginViewModel>
         )
         {
         }
 
         public LoginViewModel(
-            ILocalAdminService? localAdminService,
-            IClientConfigurationService? clientConfigurationService,
-            SessionManager? sessionManager,
+            IAuthenticationService? authService,
             ILogger<LoginViewModel>? logger)
         {
-            _localAdminService = localAdminService;
-            _clientConfigurationService = clientConfigurationService;
-            _sessionManager = sessionManager;
+            _authService = authService;
             _logger = logger;
         }
 
@@ -59,48 +51,15 @@ namespace Sayra.UI.ViewModels
                 return;
             }
 
-            bool isValidAmir = Username == "amir" && Password == "amir";
-            bool isValidAdmin = false;
-            string? localAdminError = null;
-
-            if (Username == "admin" || Username == "afmin")
+            if (_authService == null)
             {
-                if (_localAdminService != null)
-                {
-                    try
-                    {
-                        var authResult = await _localAdminService.Authenticate(Username, Password);
-                        isValidAdmin = authResult.Success;
-                        if (!isValidAdmin)
-                        {
-                            localAdminError = authResult.ErrorReason;
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        _logger?.LogError(ex, "Local admin authentication service threw an exception.");
-                        localAdminError = $"خطای سیستم: {ex.Message}";
-                    }
-                }
-                else
-                {
-                    // Fallback to static credentials if service is not registered/active (e.g., designer/simple test mode)
-                    isValidAdmin = Password == "admin";
-                }
-            }
-
-            if (!isValidAmir && !isValidAdmin)
-            {
-                string displayError = localAdminError ?? "نام کاربری یا رمز عبور اشتباه است.";
-                ErrorMessage = displayError;
-                Sayra.UI.Services.NotificationService.Instance.ShowError(displayError);
+                ErrorMessage = "سامانه احراز هویت در دسترس نیست.";
+                Sayra.UI.Services.NotificationService.Instance.ShowError(ErrorMessage);
                 return;
             }
 
             ErrorMessage = string.Empty;
             IsLoggingIn = true;
-            bool loginSuccessful = false;
-
             GlobalExceptionHandler.CurrentOperation = "Authentication started";
             GlobalExceptionHandler.LogTrace("LOGIN", "Authentication started");
 
@@ -109,83 +68,76 @@ namespace Sayra.UI.ViewModels
 
             try
             {
-                // Simulate network latency / loading animation
+                // Simulate network latency / loading animation as before
                 await Task.Delay(1500);
-                loginSuccessful = true;
+
+                // Call the unified core authentication service gateway
+                var authResult = await _authService.AuthenticateAsync(Username, Password);
+
+                if (authResult.Success && authResult.AuthenticatedUser != null)
+                {
+                    Sayra.UI.Services.NotificationService.Instance.Dismiss();
+                    GlobalExceptionHandler.LogTrace("LOGIN", "Authentication successful");
+
+                    var role = authResult.AuthenticatedUser.Role;
+                    bool isAdmin = (role == UserRole.LocalAdministrator ||
+                                    role == UserRole.Administrator ||
+                                    role == UserRole.SuperAdministrator);
+
+                    App.IsAdminLoggedIn = isAdmin;
+
+                    try
+                    {
+                        Window targetWindow;
+                        if (!isAdmin)
+                        {
+                            GlobalExceptionHandler.CurrentOperation = "Creating HomeWindow";
+                            GlobalExceptionHandler.LogTrace("DASHBOARD", "Creating HomeWindow");
+                            targetWindow = new Sayra.UI.Views.HomeWindow();
+                        }
+                        else
+                        {
+                            GlobalExceptionHandler.CurrentOperation = "Creating AdminWindow";
+                            GlobalExceptionHandler.LogTrace("DASHBOARD", "Creating AdminWindow");
+                            targetWindow = new Sayra.UI.Views.AdminWindow();
+                        }
+
+                        GlobalExceptionHandler.CurrentOperation = "Showing window";
+                        GlobalExceptionHandler.LogTrace("DASHBOARD", "Showing window");
+
+                        targetWindow.Show();
+
+                        GlobalExceptionHandler.CurrentOperation = "Window displayed";
+                        GlobalExceptionHandler.LogTrace("DASHBOARD", "Window displayed");
+
+                        var oldWindow = Application.Current.MainWindow;
+                        Application.Current.MainWindow = targetWindow;
+                        oldWindow?.Close();
+                    }
+                    catch (Exception ex)
+                    {
+                        ErrorMessage = $"Failed to load dashboard: {ex.Message}";
+                        GlobalExceptionHandler.LogTrace("DASHBOARD", $"Dashboard load/show exception: {ex}");
+                        GlobalExceptionHandler.HandleException(ex, "Dashboard Creation Flow");
+                    }
+                }
+                else
+                {
+                    string displayError = authResult.FailureReason ?? "نام کاربری یا رمز عبور اشتباه است.";
+                    ErrorMessage = displayError;
+                    Sayra.UI.Services.NotificationService.Instance.ShowError(displayError);
+                    GlobalExceptionHandler.LogTrace("LOGIN", $"Authentication failed: {displayError}");
+                }
             }
             catch (Exception ex)
             {
-                ErrorMessage = $"Login failed: {ex.Message}";
-                GlobalExceptionHandler.LogTrace("LOGIN", $"Authentication failed: {ex.Message}");
+                ErrorMessage = $"خطا در ورود: {ex.Message}";
+                GlobalExceptionHandler.LogTrace("LOGIN", $"Authentication failed with exception: {ex.Message}");
                 Sayra.UI.Services.NotificationService.Instance.ShowError($"خطا در ورود: {ex.Message}");
             }
             finally
             {
                 IsLoggingIn = false;
-            }
-
-            if (loginSuccessful)
-            {
-                Sayra.UI.Services.NotificationService.Instance.Dismiss();
-                GlobalExceptionHandler.LogTrace("LOGIN", "Authentication successful");
-                App.IsAdminLoggedIn = isValidAdmin;
-                try
-                {
-                    Window targetWindow;
-                    if (isValidAmir)
-                    {
-                        GlobalExceptionHandler.CurrentOperation = "Creating HomeWindow";
-                        GlobalExceptionHandler.LogTrace("DASHBOARD", "Creating HomeWindow");
-
-                        // Trigger session startup if session manager is available
-                        if (_sessionManager != null)
-                        {
-                            try
-                            {
-                                var sessionModel = new SayraClient.Models.SessionModel
-                                {
-                                    SessionId = Guid.NewGuid().ToString(),
-                                    PcId = "LocalPC",
-                                    SiteId = "LocalSite",
-                                    Duration = 120, // default 2 hours session duration
-                                    RatePerHour = 15000, // default rate
-                                    StartTime = DateTime.UtcNow
-                                };
-                                _sessionManager.StartSession(sessionModel);
-                            }
-                            catch (Exception ex)
-                            {
-                                _logger?.LogError(ex, "Failed to start session on SessionManager.");
-                            }
-                        }
-
-                        targetWindow = new Sayra.UI.Views.HomeWindow();
-                    }
-                    else
-                    {
-                        GlobalExceptionHandler.CurrentOperation = "Creating AdminWindow";
-                        GlobalExceptionHandler.LogTrace("DASHBOARD", "Creating AdminWindow");
-                        targetWindow = new Sayra.UI.Views.AdminWindow();
-                    }
-
-                    GlobalExceptionHandler.CurrentOperation = "Showing window";
-                    GlobalExceptionHandler.LogTrace("DASHBOARD", "Showing window");
-
-                    targetWindow.Show();
-
-                    GlobalExceptionHandler.CurrentOperation = "Window displayed";
-                    GlobalExceptionHandler.LogTrace("DASHBOARD", "Window displayed");
-
-                    var oldWindow = Application.Current.MainWindow;
-                    Application.Current.MainWindow = targetWindow;
-                    oldWindow?.Close();
-                }
-                catch (Exception ex)
-                {
-                    ErrorMessage = $"Failed to load dashboard: {ex.Message}";
-                    GlobalExceptionHandler.LogTrace("DASHBOARD", $"Dashboard load/show exception: {ex}");
-                    GlobalExceptionHandler.HandleException(ex, "Dashboard Creation Flow");
-                }
             }
         }
     }

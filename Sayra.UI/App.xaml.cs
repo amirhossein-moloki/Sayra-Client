@@ -14,6 +14,8 @@ using SayraClient;
 using SayraClient.Commands;
 using System.IO;
 using System.Threading.Tasks;
+using Sayra.Client.Authentication.Configuration;
+using Sayra.Client.Authentication.Contracts;
 
 namespace Sayra.UI
 {
@@ -55,6 +57,60 @@ namespace Sayra.UI
             catch (Exception ex)
             {
                 Log.Error(ex, "Failed to initialize local admin service.");
+            }
+
+            // Hook up authentication core decoupled event listeners
+            try
+            {
+                var authService = ServiceProvider.GetRequiredService<IAuthenticationService>();
+                var sessionManager = ServiceProvider.GetRequiredService<SessionManager>();
+
+                authService.AuthenticationSucceeded += (sender, args) =>
+                {
+                    if (args.User.Role == Sayra.Client.Authentication.Enums.UserRole.Player ||
+                        args.User.Role == Sayra.Client.Authentication.Enums.UserRole.Guest)
+                    {
+                        try
+                        {
+                            var sessionModel = new SayraClient.Models.SessionModel
+                            {
+                                SessionId = args.SessionId,
+                                PcId = args.User.StationId ?? "LocalPC",
+                                SiteId = "LocalSite",
+                                Duration = 120, // default 2 hours session duration
+                                RatePerHour = 15000, // default rate
+                                StartTime = DateTime.UtcNow
+                            };
+                            sessionManager.StartSession(sessionModel);
+                            Log.Information("Decoupled session startup triggered for user: {Username}", args.User.Username);
+                        }
+                        catch (Exception ex)
+                        {
+                            Log.Error(ex, "Failed to start session via decoupled authentication event subscription.");
+                        }
+                    }
+                };
+
+                authService.LogoutStarted += (sender, args) =>
+                {
+                    if (args.User?.Role == Sayra.Client.Authentication.Enums.UserRole.Player ||
+                        args.User?.Role == Sayra.Client.Authentication.Enums.UserRole.Guest)
+                    {
+                        try
+                        {
+                            sessionManager.StopSession();
+                            Log.Information("Decoupled session end triggered for user: {Username}", args.User?.Username);
+                        }
+                        catch (Exception ex)
+                        {
+                            Log.Error(ex, "Failed to end session via decoupled logout event subscription.");
+                        }
+                    }
+                };
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Failed to subscribe to core authentication events during startup.");
             }
 
             // Load and apply workstation configuration
@@ -119,6 +175,9 @@ namespace Sayra.UI
 
             // Add Local Admin Services & Repositories
             services.AddLocalAdmin();
+
+            // Add Unified Authentication Core Services
+            services.AddSayraAuthentication();
 
             // Add Kiosk Manager
             services.AddSingleton<KioskManager>();
