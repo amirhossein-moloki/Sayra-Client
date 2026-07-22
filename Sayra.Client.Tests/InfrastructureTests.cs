@@ -55,8 +55,8 @@ public class InfrastructureTests
 
         supervisor.RegisterWorker("WorkerA", async (token) =>
         {
+            await Task.Delay(20, token);
             orderOfExecution.Add("WorkerA");
-            await Task.CompletedTask;
         }, new[] { "WorkerB" }); // WorkerA depends on WorkerB
 
         supervisor.RegisterWorker("WorkerB", async (token) =>

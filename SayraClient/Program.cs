@@ -1,6 +1,8 @@
 using SayraClient;
 using SayraClient.Commands;
 using SayraClient.Services;
+using SayraClient.Services.OfflineQueue;
+using Sayra.Client.OfflineQueue.Extensions;
 using Sayra.Client.Discovery.Services;
 using Sayra.Client.GameLibrary;
 using Sayra.Client.LocalAdmin;
@@ -82,6 +84,9 @@ builder.Services.AddSingleton<IPowerManagementService, PowerManagementService>()
 builder.Services.AddSingleton<IWorkstationBackupService, WorkstationBackupService>();
 builder.Services.AddSingleton<IWorkstationSyncService, WorkstationSyncService>();
 
+// Register Offline Queue Services
+builder.Services.AddOfflineQueue();
+
 // Register Update Services
 builder.Services.AddSingleton<UpdateVerificationService>();
 builder.Services.AddSingleton<BackupService>();
@@ -116,6 +121,8 @@ builder.Services.AddSingleton<AntiTamperService>();
 builder.Services.AddSingleton<WhitelistingService>();
 builder.Services.AddSingleton<UpdateManager>();
 builder.Services.AddSingleton<LauncherIntegrationService>();
+builder.Services.AddSingleton<QueueProcessorWorker>();
+builder.Services.AddSingleton<QueueHealthWorker>();
 
 // Register Lifetime Orchestrator Hosted Service
 builder.Services.AddHostedService<ClientAppLifetimeWorker>();

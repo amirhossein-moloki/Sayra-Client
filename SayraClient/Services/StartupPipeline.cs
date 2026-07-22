@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using SayraClient.Services.OfflineQueue;
 
 namespace SayraClient.Services;
 
@@ -160,6 +161,8 @@ public class StartupPipeline : IStartupPipeline
         var antiTamperService = _serviceProvider.GetRequiredService<AntiTamperService>();
         var whitelistingService = _serviceProvider.GetRequiredService<WhitelistingService>();
         var updateManager = _serviceProvider.GetRequiredService<UpdateManager>();
+        var queueProcessor = _serviceProvider.GetRequiredService<QueueProcessorWorker>();
+        var queueHealth = _serviceProvider.GetRequiredService<QueueHealthWorker>();
 
         // Register workers with proper dependency hierarchy in WorkerSupervisor
         _workerSupervisor.RegisterWorker("IpcServer", token => ipcServer.RunSupervisedAsync(token));
@@ -186,6 +189,14 @@ public class StartupPipeline : IStartupPipeline
 
         _workerSupervisor.RegisterWorker("UpdateManager",
             token => updateManager.RunSupervisedAsync(token),
+            new[] { "IpcServer" });
+
+        _workerSupervisor.RegisterWorker("QueueProcessorWorker",
+            token => queueProcessor.RunSupervisedAsync(token),
+            new[] { "IpcServer" });
+
+        _workerSupervisor.RegisterWorker("QueueHealthWorker",
+            token => queueHealth.RunSupervisedAsync(token),
             new[] { "IpcServer" });
 
         // Start all supervised background workers
