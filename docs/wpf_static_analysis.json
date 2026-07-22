@@ -1,0 +1,1078 @@
+{
+  "screens": [
+    {
+      "filepath": "Sayra.UI/App.xaml",
+      "filename": "App.xaml",
+      "bindings": [],
+      "controls": [
+        "Application",
+        "ResourceDictionary"
+      ],
+      "styles_targets": []
+    },
+    {
+      "filepath": "Sayra.UI/Resources/Colors.xaml",
+      "filename": "Colors.xaml",
+      "bindings": [],
+      "controls": [
+        "Color",
+        "ResourceDictionary",
+        "SolidColorBrush"
+      ],
+      "styles_targets": []
+    },
+    {
+      "filepath": "Sayra.UI/Resources/Templates.xaml",
+      "filename": "Templates.xaml",
+      "bindings": [],
+      "controls": [
+        "ResourceDictionary"
+      ],
+      "styles_targets": []
+    },
+    {
+      "filepath": "Sayra.UI/Resources/GameCardStyles.xaml",
+      "filename": "GameCardStyles.xaml",
+      "bindings": [],
+      "controls": [
+        "BeginStoryboard",
+        "Border",
+        "ControlTemplate",
+        "DataTrigger",
+        "DoubleAnimation",
+        "DropShadowEffect",
+        "ResourceDictionary",
+        "ScaleTransform",
+        "Setter",
+        "Storyboard",
+        "Style",
+        "TextBlock",
+        "Trigger"
+      ],
+      "styles_targets": []
+    },
+    {
+      "filepath": "Sayra.UI/Resources/Styles.xaml",
+      "filename": "Styles.xaml",
+      "bindings": [
+        "ActualHeight",
+        "ActualWidth",
+        "Background",
+        "Foreground",
+        "IsDropDownOpen"
+      ],
+      "controls": [
+        "BeginStoryboard",
+        "Border",
+        "Canvas",
+        "ColorAnimation",
+        "ColumnDefinition",
+        "ContentPresenter",
+        "ControlTemplate",
+        "DropShadowEffect",
+        "Geometry",
+        "Grid",
+        "ItemsPresenter",
+        "Path",
+        "Popup",
+        "Rectangle",
+        "RepeatButton",
+        "ResourceDictionary",
+        "ScrollViewer",
+        "Setter",
+        "SolidColorBrush",
+        "StackPanel",
+        "Storyboard",
+        "Style",
+        "Thumb",
+        "ToggleButton",
+        "Track",
+        "Trigger"
+      ],
+      "styles_targets": [
+        "CheckBox",
+        "ComboBox",
+        "ComboBoxItem",
+        "ContextMenu",
+        "MenuItem",
+        "ScrollBar",
+        "Separator"
+      ]
+    },
+    {
+      "filepath": "Sayra.UI/Resources/Fonts.xaml",
+      "filename": "Fonts.xaml",
+      "bindings": [],
+      "controls": [
+        "FontFamily",
+        "FontFamilyMap",
+        "ResourceDictionary"
+      ],
+      "styles_targets": []
+    },
+    {
+      "filepath": "Sayra.UI/Views/LoginWindow.xaml",
+      "filename": "LoginWindow.xaml",
+      "bindings": [
+        "CurrentNotification",
+        "ErrorMessage",
+        "IsLoggingIn",
+        "IsNotificationVisible",
+        "LoginCommand",
+        "Password",
+        "Username"
+      ],
+      "controls": [
+        "BeginStoryboard",
+        "BooleanToVisibilityConverter",
+        "Border",
+        "Button",
+        "DoubleAnimation",
+        "EventTrigger",
+        "Grid",
+        "Path",
+        "ProgressBar",
+        "RowDefinition",
+        "StackPanel",
+        "Storyboard",
+        "TextBlock",
+        "Window"
+      ],
+      "styles_targets": []
+    },
+    {
+      "filepath": "Sayra.UI/Views/HomeWindow.xaml",
+      "filename": "HomeWindow.xaml",
+      "bindings": [
+        "CurrentNotification",
+        "IsNotificationVisible"
+      ],
+      "controls": [
+        "BeginStoryboard",
+        "BooleanToVisibilityConverter",
+        "Border",
+        "Button",
+        "ColumnDefinition",
+        "DoubleAnimation",
+        "EventTrigger",
+        "Grid",
+        "RowDefinition",
+        "StackPanel",
+        "Storyboard",
+        "TextBlock",
+        "Window"
+      ],
+      "styles_targets": []
+    },
+    {
+      "filepath": "Sayra.UI/Views/AdminWindow.xaml",
+      "filename": "AdminWindow.xaml",
+      "bindings": [
+        "ActualHeight",
+        "ActualWidth",
+        "Arguments",
+        "BackgroundImage",
+        "Categories",
+        "Categories[0].Count",
+        "Categories[14].Count",
+        "Categories[15].Count",
+        "Categories[16].Count",
+        "Categories[1].Count",
+        "Categories[2].Count",
+        "Category",
+        "Count",
+        "CoverImage",
+        "CurrentNotification",
+        "CurrentPage",
+        "CustomTags",
+        "DataContext",
+        "DataContext.DeleteCommand",
+        "DataContext.ExportCommand",
+        "DataContext.ExtensiveCategories",
+        "DataContext.ExtensiveGameTypes",
+        "DataContext.LaunchCommand",
+        "DataContext.OpenFolderCommand",
+        "DataContext.RestartCommand",
+        "DataContext.StopCommand",
+        "DataContext.ValidateCommand",
+        "DemoStates",
+        "Executable",
+        "Foreground",
+        "GameType",
+        "Genre",
+        "HideOnClient",
+        "IconGeometry",
+        "Id",
+        "InstallationPath",
+        "InstallationSource",
+        "IsBrandIcon",
+        "IsChecked",
+        "IsEnabled",
+        "IsLoading",
+        "IsMouseOver",
+        "IsNotificationVisible",
+        "IsSelected",
+        "LastUpdated",
+        "Launcher",
+        "License",
+        "LoadingProgress",
+        "LogoImage",
+        "ManageCategoriesCommand",
+        "Name",
+        "Publisher",
+        "RefreshCategoriesCommand",
+        "RefreshCommand",
+        "ReleaseYear",
+        "SandboxMode",
+        "ScanComputerCommand",
+        "SearchText",
+        "SelectedCategory",
+        "SelectedDemoState",
+        "SelectedPageSize",
+        "SelectedViewMode",
+        "Size",
+        "Status",
+        "Text",
+        "Title",
+        "TotalItemsCount",
+        "VerificationStatus",
+        "Version",
+        "ViewModes",
+        "VisibleItems"
+      ],
+      "controls": [
+        "BlurEffect",
+        "Border",
+        "Button",
+        "CheckBox",
+        "ColumnDefinition",
+        "ComboBox",
+        "ComboBoxItem",
+        "Condition",
+        "ContentPresenter",
+        "ControlTemplate",
+        "DataGrid",
+        "DataGridTemplateColumn",
+        "DataGridTextColumn",
+        "DataTemplate",
+        "DataTrigger",
+        "DropShadowEffect",
+        "Ellipse",
+        "EventSetter",
+        "Expander",
+        "GradientStop",
+        "Grid",
+        "Image",
+        "ItemsControl",
+        "ItemsPanelTemplate",
+        "LinearGradientBrush",
+        "ListBox",
+        "MultiDataTrigger",
+        "Path",
+        "ProgressBar",
+        "RadioButton",
+        "ResourceDictionary",
+        "RotateTransform",
+        "RowDefinition",
+        "ScaleTransform",
+        "ScrollViewer",
+        "Setter",
+        "StackPanel",
+        "Style",
+        "TextBlock",
+        "TextBox",
+        "Trigger",
+        "VisualBrush",
+        "Window",
+        "WrapPanel"
+      ],
+      "styles_targets": []
+    },
+    {
+      "filepath": "Sayra.UI/Views/GameDetailWindow.xaml",
+      "filename": "GameDetailWindow.xaml",
+      "bindings": [
+        "CurrentCost",
+        "HourlyRate",
+        "SessionTime",
+        "StartTime"
+      ],
+      "controls": [
+        "BeginStoryboard",
+        "BlurEffect",
+        "BooleanToVisibilityConverter",
+        "Border",
+        "Button",
+        "ColumnDefinition",
+        "ContentPresenter",
+        "ControlTemplate",
+        "DoubleAnimation",
+        "DropShadowEffect",
+        "Ellipse",
+        "EventTrigger",
+        "Grid",
+        "Image",
+        "Path",
+        "ResourceDictionary",
+        "RowDefinition",
+        "Setter",
+        "StackPanel",
+        "Storyboard",
+        "Style",
+        "TextBlock",
+        "Trigger",
+        "Window"
+      ],
+      "styles_targets": []
+    },
+    {
+      "filepath": "Sayra.UI/Views/Components/SessionHero.xaml",
+      "filename": "SessionHero.xaml",
+      "bindings": [
+        "CurrentCost",
+        "HourlyRate",
+        "SessionTime"
+      ],
+      "controls": [
+        "BeginStoryboard",
+        "Border",
+        "ColumnDefinition",
+        "DoubleAnimation",
+        "DropShadowEffect",
+        "EventTrigger",
+        "GradientStop",
+        "Grid",
+        "LinearGradientBrush",
+        "Path",
+        "Rectangle",
+        "Setter",
+        "StackPanel",
+        "Storyboard",
+        "Style",
+        "TextBlock",
+        "Trigger",
+        "UserControl"
+      ],
+      "styles_targets": []
+    },
+    {
+      "filepath": "Sayra.UI/Views/Components/AdPanel.xaml",
+      "filename": "AdPanel.xaml",
+      "bindings": [
+        "Foreground"
+      ],
+      "controls": [
+        "BeginStoryboard",
+        "Border",
+        "Button",
+        "ContentPresenter",
+        "ControlTemplate",
+        "DoubleAnimation",
+        "DropShadowEffect",
+        "Grid",
+        "Path",
+        "RowDefinition",
+        "Setter",
+        "StackPanel",
+        "Storyboard",
+        "Style",
+        "TextBlock",
+        "Trigger",
+        "UserControl"
+      ],
+      "styles_targets": []
+    },
+    {
+      "filepath": "Sayra.UI/Themes/Colors.xaml",
+      "filename": "Colors.xaml",
+      "bindings": [],
+      "controls": [
+        "Color",
+        "ResourceDictionary"
+      ],
+      "styles_targets": []
+    },
+    {
+      "filepath": "Sayra.UI/Themes/AdminTheme.xaml",
+      "filename": "AdminTheme.xaml",
+      "bindings": [
+        "HeadersVisibility",
+        "HorizontalOffset",
+        "IsExpanded",
+        "PlacementTarget.Tag.DataContext.CopyPathCommand",
+        "PlacementTarget.Tag.DataContext.DeleteCommand",
+        "PlacementTarget.Tag.DataContext.ExportCommand",
+        "PlacementTarget.Tag.DataContext.LaunchCommand",
+        "PlacementTarget.Tag.DataContext.OpenFolderCommand",
+        "PlacementTarget.Tag.DataContext.RescanCommand",
+        "PlacementTarget.Tag.DataContext.RestartCommand",
+        "PlacementTarget.Tag.DataContext.ScanMetadataCommand",
+        "PlacementTarget.Tag.DataContext.StopCommand",
+        "PlacementTarget.Tag.DataContext.ValidateCommand",
+        "PlacementTarget.Tag.SelectedItems",
+        "VerticalOffset"
+      ],
+      "controls": [
+        "Border",
+        "ColumnDefinition",
+        "ContentPresenter",
+        "ContextMenu",
+        "ControlTemplate",
+        "CubicEase",
+        "DataGridColumnHeadersPresenter",
+        "DoubleAnimation",
+        "Geometry",
+        "Grid",
+        "MenuItem",
+        "Path",
+        "RepeatButton",
+        "ResourceDictionary",
+        "RotateTransform",
+        "RowDefinition",
+        "ScrollBar",
+        "ScrollContentPresenter",
+        "ScrollViewer",
+        "Separator",
+        "Setter",
+        "SolidColorBrush",
+        "Storyboard",
+        "Style",
+        "Thumb",
+        "ToggleButton",
+        "Track",
+        "Trigger"
+      ],
+      "styles_targets": [
+        "ScrollViewer"
+      ]
+    },
+    {
+      "filepath": "Sayra.UI/Themes/Brushes.xaml",
+      "filename": "Brushes.xaml",
+      "bindings": [],
+      "controls": [
+        "ResourceDictionary",
+        "SolidColorBrush"
+      ],
+      "styles_targets": []
+    },
+    {
+      "filepath": "Sayra.UI/Themes/Styles.xaml",
+      "filename": "Styles.xaml",
+      "bindings": [],
+      "controls": [
+        "Border",
+        "ContentPresenter",
+        "ControlTemplate",
+        "DropShadowEffect",
+        "ResourceDictionary",
+        "Setter",
+        "Style",
+        "Trigger"
+      ],
+      "styles_targets": []
+    },
+    {
+      "filepath": "Sayra.UI/Themes/LoginTheme.xaml",
+      "filename": "LoginTheme.xaml",
+      "bindings": [],
+      "controls": [
+        "ResourceDictionary"
+      ],
+      "styles_targets": []
+    },
+    {
+      "filepath": "Sayra.UI/Themes/HomeTheme.xaml",
+      "filename": "HomeTheme.xaml",
+      "bindings": [],
+      "controls": [
+        "BeginStoryboard",
+        "Border",
+        "ColumnDefinition",
+        "ControlTemplate",
+        "DoubleAnimation",
+        "DropShadowEffect",
+        "Grid",
+        "Path",
+        "ResourceDictionary",
+        "Setter",
+        "Storyboard",
+        "Style",
+        "TextBlock",
+        "Trigger"
+      ],
+      "styles_targets": []
+    },
+    {
+      "filepath": "Sayra.UI/Themes/GameDetailTheme.xaml",
+      "filename": "GameDetailTheme.xaml",
+      "bindings": [
+        "HasDot",
+        "HasLabel"
+      ],
+      "controls": [
+        "BeginStoryboard",
+        "BooleanToVisibilityConverter",
+        "Border",
+        "Color",
+        "ContentPresenter",
+        "ControlTemplate",
+        "DoubleAnimation",
+        "DropShadowEffect",
+        "Ellipse",
+        "GradientStop",
+        "LinearGradientBrush",
+        "ResourceDictionary",
+        "Setter",
+        "SolidColorBrush",
+        "StackPanel",
+        "Storyboard",
+        "Style",
+        "TextBlock",
+        "Trigger"
+      ],
+      "styles_targets": []
+    },
+    {
+      "filepath": "Sayra.UI/Controls/GameLibrary.xaml",
+      "filename": "GameLibrary.xaml",
+      "bindings": [
+        "DataContext.PlayGameCommand",
+        "Games",
+        "Genre",
+        "GridColumns",
+        "ImagePath",
+        "IsAvailable",
+        "IsSelected",
+        "SearchText",
+        "SelectedCategory",
+        "Status",
+        "Tag",
+        "Title"
+      ],
+      "controls": [
+        "BeginStoryboard",
+        "Border",
+        "ColumnDefinition",
+        "ContentPresenter",
+        "ControlTemplate",
+        "DataTemplate",
+        "DoubleAnimation",
+        "DropShadowEffect",
+        "Grid",
+        "ItemsControl",
+        "ItemsPanelTemplate",
+        "ListBox",
+        "ListBoxItem",
+        "Path",
+        "RowDefinition",
+        "ScrollViewer",
+        "Setter",
+        "StackPanel",
+        "Storyboard",
+        "Style",
+        "TextBlock",
+        "TextBox",
+        "Trigger",
+        "UniformGrid",
+        "UserControl"
+      ],
+      "styles_targets": []
+    },
+    {
+      "filepath": "Sayra.UI/Controls/CategoryListContainer.xaml",
+      "filename": "CategoryListContainer.xaml",
+      "bindings": [],
+      "controls": [
+        "Border",
+        "ColumnDefinition",
+        "ControlTemplate",
+        "Grid",
+        "Rectangle",
+        "RepeatButton",
+        "ScrollBar",
+        "ScrollContentPresenter",
+        "ScrollViewer",
+        "Setter",
+        "StackPanel",
+        "Style",
+        "Thumb",
+        "Track",
+        "Trigger",
+        "UserControl"
+      ],
+      "styles_targets": []
+    },
+    {
+      "filepath": "Sayra.UI/Controls/NotificationCard.xaml",
+      "filename": "NotificationCard.xaml",
+      "bindings": [
+        "Message",
+        "NotificationType"
+      ],
+      "controls": [
+        "Border",
+        "ColumnDefinition",
+        "DataTrigger",
+        "DoubleAnimation",
+        "GradientStop",
+        "Grid",
+        "LinearGradientBrush",
+        "PowerEase",
+        "Setter",
+        "Storyboard",
+        "Style",
+        "TextBlock",
+        "TranslateTransform",
+        "UserControl"
+      ],
+      "styles_targets": []
+    },
+    {
+      "filepath": "Sayra.UI/Controls/HardwarePanel.xaml",
+      "filename": "HardwarePanel.xaml",
+      "bindings": [
+        "HardwareItems",
+        "IconPathData",
+        "Label",
+        "PcName",
+        "Value"
+      ],
+      "controls": [
+        "BeginStoryboard",
+        "Border",
+        "ColumnDefinition",
+        "CubicEase",
+        "DataTemplate",
+        "DoubleAnimation",
+        "DropShadowEffect",
+        "EventTrigger",
+        "Grid",
+        "ItemsControl",
+        "ItemsPanelTemplate",
+        "Path",
+        "RowDefinition",
+        "Setter",
+        "StackPanel",
+        "Storyboard",
+        "TextBlock",
+        "TranslateTransform",
+        "Trigger",
+        "UserControl"
+      ],
+      "styles_targets": []
+    },
+    {
+      "filepath": "Sayra.UI/Controls/NavigationContainer.xaml",
+      "filename": "NavigationContainer.xaml",
+      "bindings": [],
+      "controls": [
+        "Border",
+        "DropShadowEffect",
+        "Grid",
+        "RowDefinition",
+        "UserControl"
+      ],
+      "styles_targets": []
+    },
+    {
+      "filepath": "Sayra.UI/Controls/GameHero.xaml",
+      "filename": "GameHero.xaml",
+      "bindings": [],
+      "controls": [
+        "BlurEffect",
+        "Border",
+        "Button",
+        "ColumnDefinition",
+        "ContentPresenter",
+        "ControlTemplate",
+        "DropShadowEffect",
+        "Ellipse",
+        "Grid",
+        "Image",
+        "Path",
+        "RowDefinition",
+        "StackPanel",
+        "TextBlock",
+        "UserControl"
+      ],
+      "styles_targets": []
+    },
+    {
+      "filepath": "Sayra.UI/Controls/CategoryItem.xaml",
+      "filename": "CategoryItem.xaml",
+      "bindings": [],
+      "controls": [
+        "Border",
+        "ColumnDefinition",
+        "Grid",
+        "Rectangle",
+        "UserControl"
+      ],
+      "styles_targets": []
+    },
+    {
+      "filepath": "Sayra.UI/Controls/VideoBackground.xaml",
+      "filename": "VideoBackground.xaml",
+      "bindings": [
+        "OverlayBackground"
+      ],
+      "controls": [
+        "Border",
+        "Grid",
+        "MediaElement",
+        "UserControl"
+      ],
+      "styles_targets": []
+    },
+    {
+      "filepath": "Sayra.UI/Controls/GlassInput.xaml",
+      "filename": "GlassInput.xaml",
+      "bindings": [
+        "Icon",
+        "IsPassword",
+        "Placeholder",
+        "Text"
+      ],
+      "controls": [
+        "Border",
+        "ColumnDefinition",
+        "ContentPresenter",
+        "DropShadowEffect",
+        "Grid",
+        "PasswordBox",
+        "Setter",
+        "SolidColorBrush",
+        "Style",
+        "TextBlock",
+        "TextBox",
+        "UserControl"
+      ],
+      "styles_targets": []
+    },
+    {
+      "filepath": "Sayra.UI/Controls/TopBar.xaml",
+      "filename": "TopBar.xaml",
+      "bindings": [],
+      "controls": [
+        "BeginStoryboard",
+        "Border",
+        "Button",
+        "ColumnDefinition",
+        "ContentPresenter",
+        "ControlTemplate",
+        "DoubleAnimation",
+        "DropShadowEffect",
+        "Ellipse",
+        "Grid",
+        "Path",
+        "ScaleTransform",
+        "Setter",
+        "StackPanel",
+        "Storyboard",
+        "Style",
+        "TextBlock",
+        "Trigger",
+        "UserControl"
+      ],
+      "styles_targets": []
+    },
+    {
+      "filepath": "Sayra.UI/Controls/GameCard.xaml",
+      "filename": "GameCard.xaml",
+      "bindings": [
+        "ButtonText",
+        "DataContext",
+        "DataContext.Developer",
+        "DataContext.GenreAndYear",
+        "DataContext.Launcher",
+        "DataContext.LogoImage",
+        "IsAvailable",
+        "IsSelected",
+        "PlayCommand",
+        "Title"
+      ],
+      "controls": [
+        "Border",
+        "Button",
+        "DropShadowEffect",
+        "GradientStop",
+        "Grid",
+        "Image",
+        "LinearGradientBrush",
+        "Path",
+        "RowDefinition",
+        "ScaleTransform",
+        "SolidColorBrush",
+        "TextBlock",
+        "UserControl"
+      ],
+      "styles_targets": []
+    },
+    {
+      "filepath": "Sayra.UI/Controls/StatusWidget.xaml",
+      "filename": "StatusWidget.xaml",
+      "bindings": [
+        "Icon",
+        "Label",
+        "Value"
+      ],
+      "controls": [
+        "ColumnDefinition",
+        "Grid",
+        "Path",
+        "StackPanel",
+        "TextBlock",
+        "UserControl"
+      ],
+      "styles_targets": []
+    },
+    {
+      "filepath": "Sayra.UI/Controls/PrimaryButton.xaml",
+      "filename": "PrimaryButton.xaml",
+      "bindings": [
+        "ButtonContent",
+        "Command"
+      ],
+      "controls": [
+        "BeginStoryboard",
+        "Border",
+        "Button",
+        "ColorAnimation",
+        "ColumnDefinition",
+        "ContentPresenter",
+        "ControlTemplate",
+        "DoubleAnimation",
+        "DropShadowEffect",
+        "Grid",
+        "Path",
+        "ScaleTransform",
+        "Setter",
+        "SolidColorBrush",
+        "Storyboard",
+        "Style",
+        "TranslateTransform",
+        "Trigger",
+        "UserControl"
+      ],
+      "styles_targets": []
+    },
+    {
+      "filepath": "Sayra.UI/Controls/GameBadge.xaml",
+      "filename": "GameBadge.xaml",
+      "bindings": [
+        "BadgeBackground",
+        "BadgeBorderBrush",
+        "BadgeBorderThickness",
+        "BadgeStyle",
+        "DotBrush",
+        "HasDot",
+        "HasLabel",
+        "Label",
+        "Text",
+        "TextForeground"
+      ],
+      "controls": [
+        "BooleanToVisibilityConverter",
+        "Border",
+        "DataTrigger",
+        "Ellipse",
+        "Setter",
+        "StackPanel",
+        "Style",
+        "TextBlock",
+        "UserControl"
+      ],
+      "styles_targets": []
+    },
+    {
+      "filepath": "Sayra.UI/Controls/CategoryItemContainer.xaml",
+      "filename": "CategoryItemContainer.xaml",
+      "bindings": [
+        "BadgeContent",
+        "IconContent",
+        "TextContent"
+      ],
+      "controls": [
+        "Border",
+        "ColumnDefinition",
+        "ContentPresenter",
+        "Grid",
+        "UserControl"
+      ],
+      "styles_targets": []
+    },
+    {
+      "filepath": "Sayra.UI/Controls/NavigationHeader.xaml",
+      "filename": "NavigationHeader.xaml",
+      "bindings": [],
+      "controls": [
+        "BeginStoryboard",
+        "Border",
+        "Button",
+        "ColorAnimation",
+        "ColumnDefinition",
+        "ControlTemplate",
+        "Grid",
+        "Path",
+        "RowDefinition",
+        "Setter",
+        "SolidColorBrush",
+        "StackPanel",
+        "Storyboard",
+        "Style",
+        "TextBlock",
+        "Trigger",
+        "UserControl"
+      ],
+      "styles_targets": []
+    },
+    {
+      "filepath": "Sayra.UI/Controls/Pagination/Pagination.xaml",
+      "filename": "Pagination.xaml",
+      "bindings": [
+        "Foreground",
+        "IsButtonVisibility",
+        "IsEllipsisVisibility",
+        "IsSelected",
+        "Text"
+      ],
+      "controls": [
+        "Border",
+        "Button",
+        "ColumnDefinition",
+        "ComboBox",
+        "ComboBoxItem",
+        "ContentPresenter",
+        "ControlTemplate",
+        "DataTemplate",
+        "DataTrigger",
+        "Grid",
+        "ItemsControl",
+        "ItemsPanelTemplate",
+        "Path",
+        "ScrollViewer",
+        "Setter",
+        "StackPanel",
+        "Style",
+        "TextBlock",
+        "TextBox",
+        "Trigger",
+        "UserControl"
+      ],
+      "styles_targets": []
+    }
+  ],
+  "viewmodels": {
+    "HardwarePanelViewModel.cs": {
+      "properties": [
+        "HardwareItems"
+      ],
+      "commands": [],
+      "all_members": [
+        "HardwareItems"
+      ]
+    },
+    "LoginViewModel.cs": {
+      "properties": [
+        "IsLoggingIn"
+      ],
+      "commands": [
+        "LoginAsyncCommand"
+      ],
+      "all_members": [
+        "IsLoggingIn",
+        "LoginAsyncCommand"
+      ]
+    },
+    "GameLibraryViewModel.cs": {
+      "properties": [
+        "Games"
+      ],
+      "commands": [
+        "PlayGameCommand"
+      ],
+      "all_members": [
+        "Games",
+        "PlayGameCommand"
+      ]
+    },
+    "AdminWorkspaceViewModel.cs": {
+      "properties": [
+        "AllItems",
+        "Categories",
+        "DemoStates",
+        "ExtensiveCategories",
+        "ExtensiveGameTypes",
+        "IsLoading",
+        "LoadingProgress",
+        "PageSizes",
+        "SelectedCount",
+        "TotalItemsCount",
+        "ViewModes",
+        "VisibleItems"
+      ],
+      "commands": [
+        "CollapseAllCommand",
+        "CopyPathCommand",
+        "DeleteCommand",
+        "EditCommand",
+        "ExportCommand",
+        "LaunchCommand",
+        "ManageCategoriesCommand",
+        "NextPageCommand",
+        "OpenFolderCommand",
+        "PrevPageCommand",
+        "RefreshCategoriesCommand",
+        "RefreshCommand",
+        "RescanCommand",
+        "RestartCommand",
+        "ScanComputerCommand",
+        "ScanMetadataCommand",
+        "SetPageCommand",
+        "SettingsCommand",
+        "StopCommand",
+        "ValidateCommand"
+      ],
+      "all_members": [
+        "AllItems",
+        "Categories",
+        "CollapseAllCommand",
+        "CopyPathCommand",
+        "DeleteCommand",
+        "DemoStates",
+        "EditCommand",
+        "ExportCommand",
+        "ExtensiveCategories",
+        "ExtensiveGameTypes",
+        "IsLoading",
+        "LaunchCommand",
+        "LoadingProgress",
+        "ManageCategoriesCommand",
+        "NextPageCommand",
+        "OpenFolderCommand",
+        "PageSizes",
+        "PrevPageCommand",
+        "RefreshCategoriesCommand",
+        "RefreshCommand",
+        "RescanCommand",
+        "RestartCommand",
+        "ScanComputerCommand",
+        "ScanMetadataCommand",
+        "SelectedCount",
+        "SetPageCommand",
+        "SettingsCommand",
+        "StopCommand",
+        "TotalItemsCount",
+        "ValidateCommand",
+        "ViewModes",
+        "VisibleItems"
+      ]
+    },
+    "SessionHeroViewModel.cs": {
+      "properties": [],
+      "commands": [],
+      "all_members": []
+    }
+  }
+}
