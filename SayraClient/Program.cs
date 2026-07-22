@@ -30,9 +30,6 @@ builder.Services.AddWindowsService(options =>
     options.ServiceName = "Sayra Client";
 });
 
-// Configure service recovery (this is better done via installer or sc.exe, but we can hint at it)
-// In .NET 8, the WindowsServiceLifetime handles basic lifecycle.
-
 // Register Core Services
 builder.Services.AddSingleton<ReconnectManager>();
 builder.Services.AddSingleton<TcpClientManager>();
@@ -96,20 +93,32 @@ builder.Services.AddSingleton<ICommandHandler, SystemCommandHandler>();
 builder.Services.AddSingleton<ICommandHandler, AppCommandHandler>();
 builder.Services.AddSingleton<ICommandHandler, SessionCommandHandler>();
 
-// Register IPC Server
-builder.Services.AddSingleton<IpcServer>();
-builder.Services.AddHostedService(sp => sp.GetRequiredService<IpcServer>());
-
-// MessageHandler depends on Command System
+// Register MessageHandler (depends on Command System)
 builder.Services.AddSingleton<MessageHandler>();
 
-builder.Services.AddHostedService<Worker>();
-builder.Services.AddHostedService<HeartbeatService>();
-builder.Services.AddHostedService<WatchdogService>();
-builder.Services.AddHostedService<AntiTamperService>();
-builder.Services.AddHostedService<WhitelistingService>();
-builder.Services.AddHostedService<UpdateManager>();
-builder.Services.AddHostedService<LauncherIntegrationService>();
+// ==========================================
+// REGISTER SPRINT 1 FOUNDATION INFRASTRUCTURE
+// ==========================================
+builder.Services.AddSingleton<IServiceHealthMonitor, ServiceHealthMonitor>();
+builder.Services.AddSingleton<IWorkerSupervisor, WorkerSupervisor>();
+builder.Services.AddSingleton<IHeartbeatManager, HeartbeatManager>();
+builder.Services.AddSingleton<IModuleLifecycleManager, ModuleLifecycleManager>();
+builder.Services.AddSingleton<IStartupPipeline, StartupPipeline>();
+builder.Services.AddSingleton<IShutdownCoordinator, ShutdownCoordinator>();
+builder.Services.AddSingleton<IDependencyValidator, DependencyValidator>();
+
+// Register All Supervised Workers and Modules as Singletons
+builder.Services.AddSingleton<IpcServer>();
+builder.Services.AddSingleton<Worker>();
+builder.Services.AddSingleton<HeartbeatService>();
+builder.Services.AddSingleton<WatchdogService>();
+builder.Services.AddSingleton<AntiTamperService>();
+builder.Services.AddSingleton<WhitelistingService>();
+builder.Services.AddSingleton<UpdateManager>();
+builder.Services.AddSingleton<LauncherIntegrationService>();
+
+// Register Lifetime Orchestrator Hosted Service
+builder.Services.AddHostedService<ClientAppLifetimeWorker>();
 
 var host = builder.Build();
 host.Run();

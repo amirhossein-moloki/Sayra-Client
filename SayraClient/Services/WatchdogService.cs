@@ -1,12 +1,13 @@
-using Microsoft.Extensions.Hosting;
+using System;
+using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Sayra.Client.Launcher.Services;
 
 namespace SayraClient.Services;
 
-public class WatchdogService : BackgroundService
+public class WatchdogService : SupervisedBackgroundService
 {
-    private readonly ILogger<WatchdogService> _logger;
     private readonly RecoveryManager _recoveryManager;
     private readonly TcpClientManager _networkManager;
     private readonly IGameLauncherService _gameLauncher;
@@ -15,9 +16,10 @@ public class WatchdogService : BackgroundService
         ILogger<WatchdogService> logger,
         RecoveryManager recoveryManager,
         TcpClientManager networkManager,
-        IGameLauncherService gameLauncher)
+        IGameLauncherService gameLauncher,
+        IServiceHealthMonitor healthMonitor)
+        : base(logger, healthMonitor, "WatchdogService")
     {
-        _logger = logger;
         _recoveryManager = recoveryManager;
         _networkManager = networkManager;
         _gameLauncher = gameLauncher;
@@ -34,6 +36,8 @@ public class WatchdogService : BackgroundService
         {
             try
             {
+                _healthMonitor.ReportHeartbeat("WatchdogService");
+
                 EnsureGuardianRunning();
 
                 _logger.LogDebug("Watchdog performing health check...");
@@ -46,7 +50,7 @@ public class WatchdogService : BackgroundService
                 _logger.LogError(ex, "Error in Watchdog health check.");
             }
 
-            await Task.Delay(TimeSpan.FromMinutes(1), stoppingToken);
+            await Task.Delay(TimeSpan.FromSeconds(30), stoppingToken);
         }
 
         _logger.LogInformation("Watchdog Service stopping.");

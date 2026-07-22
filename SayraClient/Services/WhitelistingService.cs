@@ -1,15 +1,18 @@
-using Microsoft.Extensions.Hosting;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using Sayra.Client.Launcher.Services;
 using Sayra.Client.Shared.Ipc;
 using Sayra.Client.Shared.Models;
-using Sayra.Client.Launcher.Services;
-using System.Diagnostics;
 
 namespace SayraClient.Services;
 
-public class WhitelistingService : BackgroundService
+public class WhitelistingService : SupervisedBackgroundService
 {
-    private readonly ILogger<WhitelistingService> _logger;
     private readonly IpcServer _ipcServer;
     private readonly IProcessMonitorService _processMonitor;
 
@@ -25,9 +28,10 @@ public class WhitelistingService : BackgroundService
     public WhitelistingService(
         ILogger<WhitelistingService> logger,
         IpcServer ipcServer,
-        IProcessMonitorService processMonitor)
+        IProcessMonitorService processMonitor,
+        IServiceHealthMonitor healthMonitor)
+        : base(logger, healthMonitor, "WhitelistingService")
     {
-        _logger = logger;
         _ipcServer = ipcServer;
         _processMonitor = processMonitor;
     }
@@ -40,6 +44,8 @@ public class WhitelistingService : BackgroundService
         {
             try
             {
+                _healthMonitor.ReportHeartbeat("WhitelistingService");
+
                 await CheckRunningProcessesAsync();
             }
             catch (Exception ex)

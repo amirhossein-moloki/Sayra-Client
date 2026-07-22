@@ -1,20 +1,23 @@
-using Microsoft.Extensions.Hosting;
+using System;
+using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using SayraClient.Services;
 
 namespace SayraClient;
 
-public class Worker : BackgroundService
+public class Worker : SupervisedBackgroundService
 {
-    private readonly ILogger<Worker> _logger;
     private readonly TcpClientManager _networkManager;
     private readonly SayraClient.Services.KioskManager _kioskManager;
 
     public Worker(
         ILogger<Worker> logger,
         TcpClientManager networkManager,
-        SayraClient.Services.KioskManager kioskManager)
+        SayraClient.Services.KioskManager kioskManager,
+        IServiceHealthMonitor healthMonitor)
+        : base(logger, healthMonitor, "NetworkWorker")
     {
-        _logger = logger;
         _networkManager = networkManager;
         _kioskManager = kioskManager;
     }
@@ -28,6 +31,16 @@ public class Worker : BackgroundService
 
         try
         {
+            // Report periodic heartbeat while running
+            _ = Task.Run(async () =>
+            {
+                while (!stoppingToken.IsCancellationRequested)
+                {
+                    _healthMonitor.ReportHeartbeat("NetworkWorker");
+                    await Task.Delay(TimeSpan.FromSeconds(10), stoppingToken);
+                }
+            }, stoppingToken);
+
             await _networkManager.StartAsync(stoppingToken);
         }
         catch (OperationCanceledException)
