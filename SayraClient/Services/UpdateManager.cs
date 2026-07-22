@@ -1,18 +1,21 @@
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using Sayra.Client.Shared.Ipc;
-using Sayra.Client.Shared.Models;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Net.Http;
 using System.Net.Http.Json;
 using System.Text.Json;
-using System.Diagnostics;
+using System.Threading;
+using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Sayra.Client.Launcher.Services;
+using Sayra.Client.Shared.Ipc;
+using Sayra.Client.Shared.Models;
 
 namespace SayraClient.Services;
 
-public class UpdateManager : BackgroundService
+public class UpdateManager : SupervisedBackgroundService
 {
-    private readonly ILogger<UpdateManager> _logger;
     private readonly IConfiguration _configuration;
     private readonly SessionManager _sessionManager;
     private readonly UpdateVerificationService _verificationService;
@@ -30,9 +33,10 @@ public class UpdateManager : BackgroundService
         UpdateVerificationService verificationService,
         BackupService backupService,
         IpcServer ipcServer,
-        IGameLauncherService gameLauncher)
+        IGameLauncherService gameLauncher,
+        IServiceHealthMonitor healthMonitor)
+        : base(logger, healthMonitor, "UpdateManager")
     {
-        _logger = logger;
         _configuration = configuration;
         _sessionManager = sessionManager;
         _verificationService = verificationService;
@@ -66,6 +70,8 @@ public class UpdateManager : BackgroundService
         {
             try
             {
+                _healthMonitor.ReportHeartbeat("UpdateManager");
+
                 await CheckAndApplyUpdateAsync(stoppingToken);
             }
             catch (Exception ex)
@@ -166,10 +172,6 @@ public class UpdateManager : BackgroundService
 
             _logger.LogInformation("Handing over to Updater utility...");
             LaunchUpdater(packagePath, backupPath);
-
-            // 5. Exit so Updater can replace files
-            // Environment.Exit(0) will be called by the host when it receives the stop signal or we can force it.
-            // But usually we should allow the host to shut down gracefully.
         }
         catch (Exception ex)
         {

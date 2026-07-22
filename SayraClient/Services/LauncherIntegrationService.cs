@@ -1,8 +1,8 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Sayra.Client.Launcher.Events;
 using Sayra.Client.Launcher.Services;
@@ -11,7 +11,7 @@ using Sayra.Client.Shared.Models;
 
 namespace SayraClient.Services;
 
-public class LauncherIntegrationService : IHostedService
+public class LauncherIntegrationService : IModule
 {
     private readonly IGameLauncherService _launcherService;
     private readonly IProcessMonitorService _processMonitor;
@@ -19,6 +19,9 @@ public class LauncherIntegrationService : IHostedService
     private readonly IpcServer _ipcServer;
     private readonly TcpClientManager _tcpClientManager;
     private readonly ILogger<LauncherIntegrationService> _logger;
+
+    public string Name => "LauncherIntegrationModule";
+    public IReadOnlyCollection<string> Dependencies => Array.Empty<string>();
 
     public LauncherIntegrationService(
         IGameLauncherService launcherService,
@@ -36,9 +39,15 @@ public class LauncherIntegrationService : IHostedService
         _logger = logger;
     }
 
+    public Task InitializeAsync(CancellationToken cancellationToken)
+    {
+        _logger.LogInformation("Launcher Integration Module initialized.");
+        return Task.CompletedTask;
+    }
+
     public Task StartAsync(CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Launcher Integration Service starting...");
+        _logger.LogInformation("Launcher Integration Module starting...");
 
         _launcherService.GameLaunching += OnGameLaunching;
         _launcherService.GameStarted += OnGameStarted;
@@ -53,7 +62,7 @@ public class LauncherIntegrationService : IHostedService
 
     public Task StopAsync(CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Launcher Integration Service stopping...");
+        _logger.LogInformation("Launcher Integration Module stopping...");
 
         _launcherService.GameLaunching -= OnGameLaunching;
         _launcherService.GameStarted -= OnGameStarted;

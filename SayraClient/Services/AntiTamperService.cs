@@ -1,11 +1,12 @@
-using Microsoft.Extensions.Hosting;
+using System;
+using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 
 namespace SayraClient.Services;
 
-public class AntiTamperService : BackgroundService
+public class AntiTamperService : SupervisedBackgroundService
 {
-    private readonly ILogger<AntiTamperService> _logger;
     private readonly KioskManager _kioskManager;
     private readonly SecurityManager _securityManager;
     private readonly IntegrityValidator _integrityValidator;
@@ -16,9 +17,10 @@ public class AntiTamperService : BackgroundService
         KioskManager kioskManager,
         SecurityManager securityManager,
         IntegrityValidator integrityValidator,
-        IpcServer ipcServer)
+        IpcServer ipcServer,
+        IServiceHealthMonitor healthMonitor)
+        : base(logger, healthMonitor, "AntiTamperService")
     {
-        _logger = logger;
         _kioskManager = kioskManager;
         _securityManager = securityManager;
         _integrityValidator = integrityValidator;
@@ -35,6 +37,8 @@ public class AntiTamperService : BackgroundService
         {
             try
             {
+                _healthMonitor.ReportHeartbeat("AntiTamperService");
+
                 _logger.LogDebug("Anti-Tamper check performing...");
 
                 // Ensure critical security settings are still in place
@@ -48,11 +52,6 @@ public class AntiTamperService : BackgroundService
                         Description = "Process security check failed (Debugger or suspicious modules detected)."
                     });
                 }
-
-                // Integrity check for core binary (simplified example)
-                // In production, the expected hash would be fetched from a secure remote or local manifest
-                // string corePath = typeof(Program).Assembly.Location;
-                // _integrityValidator.VerifyFileIntegrity(corePath, "EXPECTED_SHA256_HASH");
 
                 _kioskManager.ReapplyPolicies();
             }

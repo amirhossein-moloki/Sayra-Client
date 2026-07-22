@@ -1,10 +1,3 @@
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using Sayra.Client.Shared.Ipc;
-using Sayra.Client.Shared.Models;
-using Sayra.Client.Launcher.Services;
-using Sayra.Client.GameLibrary.Services;
-using SayraClient.Services;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -13,13 +6,17 @@ using System.Linq;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
+using Sayra.Client.GameLibrary.Services;
+using Sayra.Client.Launcher.Services;
+using Sayra.Client.Shared.Ipc;
+using Sayra.Client.Shared.Models;
 
 namespace SayraClient.Services;
 
-public class IpcServer : BackgroundService
+public class IpcServer : SupervisedBackgroundService
 {
     private const string PipeName = "SayraClientIpcPipe";
-    private readonly ILogger<IpcServer> _logger;
     private readonly SessionManager _sessionManager;
     private readonly ClientStateManager _stateManager;
     private readonly KioskManager _kioskManager;
@@ -36,9 +33,10 @@ public class IpcServer : BackgroundService
         KioskManager kioskManager,
         IGameLauncherService gameLauncher,
         IProcessMonitorService processMonitor,
-        IGameLibraryService gameLibrary)
+        IGameLibraryService gameLibrary,
+        IServiceHealthMonitor healthMonitor)
+        : base(logger, healthMonitor, "IpcServer")
     {
-        _logger = logger;
         _sessionManager = sessionManager;
         _stateManager = stateManager;
         _kioskManager = kioskManager;
@@ -50,6 +48,16 @@ public class IpcServer : BackgroundService
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         _logger.LogInformation("IPC Server starting...");
+
+        // Start a task to periodically report heartbeats
+        _ = Task.Run(async () =>
+        {
+            while (!stoppingToken.IsCancellationRequested)
+            {
+                _healthMonitor.ReportHeartbeat("IpcServer");
+                await Task.Delay(TimeSpan.FromSeconds(10), stoppingToken);
+            }
+        }, stoppingToken);
 
         while (!stoppingToken.IsCancellationRequested)
         {

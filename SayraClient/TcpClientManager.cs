@@ -182,6 +182,12 @@ public class TcpClientManager
         }
     }
 
+    public void Disconnect()
+    {
+        _logger.LogWarning("Manually triggering connection disconnect.");
+        CleanupConnection();
+    }
+
     private void CleanupConnection()
     {
         _stream?.Dispose();

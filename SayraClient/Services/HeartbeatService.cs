@@ -1,53 +1,42 @@
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Hosting;
+using System;
+using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 
 namespace SayraClient.Services;
 
-public class HeartbeatService : BackgroundService
+public class HeartbeatService : SupervisedBackgroundService
 {
-    private readonly ILogger<HeartbeatService> _logger;
-    private readonly TcpClientManager _tcpClientManager;
-    private readonly ClientStateManager _stateManager;
-    private readonly int _intervalSeconds;
+    private readonly IHeartbeatManager _heartbeatManager;
 
     public HeartbeatService(
         ILogger<HeartbeatService> logger,
-        TcpClientManager tcpClientManager,
-        ClientStateManager stateManager,
-        IConfiguration configuration)
+        IHeartbeatManager heartbeatManager,
+        IServiceHealthMonitor healthMonitor)
+        : base(logger, healthMonitor, "HeartbeatService")
     {
-        _logger = logger;
-        _tcpClientManager = tcpClientManager;
-        _stateManager = stateManager;
-        _intervalSeconds = int.Parse(configuration["ServerConfig:HeartbeatIntervalSeconds"] ?? "10");
+        _heartbeatManager = heartbeatManager;
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        _logger.LogInformation("HeartbeatService starting with interval: {interval}s", _intervalSeconds);
+        _logger.LogInformation("Heartbeat Service starting and delegating to Heartbeat Manager...");
 
-        while (!stoppingToken.IsCancellationRequested)
+        // Start heartbeat manager
+        await _heartbeatManager.StartAsync(stoppingToken);
+
+        try
         {
-            try
-            {
-                if (_stateManager.IsReady())
-                {
-                    var heartbeat = new
-                    {
-                        type = "HEARTBEAT",
-                        timestamp = DateTime.UtcNow
-                    };
-                    await _tcpClientManager.SendMessageAsync(heartbeat, stoppingToken);
-                    _logger.LogDebug("Heartbeat sent.");
-                }
-            }
-            catch (Exception ex) when (ex is not OperationCanceledException)
-            {
-                _logger.LogError(ex, "Error sending heartbeat.");
-            }
-
-            await Task.Delay(TimeSpan.FromSeconds(_intervalSeconds), stoppingToken);
+            // Just await cancellation
+            await Task.Delay(Timeout.Infinite, stoppingToken);
+        }
+        catch (OperationCanceledException)
+        {
+            _logger.LogInformation("Heartbeat Service is stopping.");
+        }
+        finally
+        {
+            await _heartbeatManager.StopAsync();
         }
     }
 }
