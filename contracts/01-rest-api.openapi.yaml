@@ -1,0 +1,1616 @@
+openapi: 3.1.0
+info:
+  title: SAYRA Server REST API Specification
+  description: >
+    Official REST API contract specification for SAYRA Client to SAYRA Server communication.
+    The SAYRA Server provides central authentication, workstation reservation status validation,
+    binary updates distribution, client metrics aggregation, configuration synchronization,
+    and system administrative management.
+
+    All client requests expecting security MUST handle appropriate bearer authorization where marked.
+  version: 1.1.0
+servers:
+  - url: http://localhost:5000
+    description: Local development server
+  - url: https://api.sayra-gamenet.lan
+    description: Production secure LAN gateway
+tags:
+  - name: Authentication
+    description: Client authentication and workstation admin login services
+  - name: Reservations
+    description: Terminals reservation scheduling and player session validation
+  - name: Clients
+    description: Workstation registration, detailed telemetry collection, and status query
+  - name: Sessions
+    description: Remote player session controllers, active timers, and billing tracking
+  - name: Commands
+    description: Administrative shell payload router and remote command tracking
+  - name: Billing
+    description: Invoicing summaries, billing reports, and monetary transactions
+  - name: Monitoring
+    description: Core diagnostics, live system telemetry metrics, and health reports
+  - name: Configuration
+    description: Client/Server behavior adjustments, features flags, and registry preferences
+  - name: Licensing
+    description: License key validation and tier enforcement
+  - name: Updates
+    description: Binary update manifest polling and packages distribution
+
+paths:
+  /api/auth/login:
+    post:
+      operationId: loginAdmin
+      tags:
+        - Authentication
+      summary: Login credentials authentication
+      description: Authenticates admin users or workstations and issues a secure JWT bearer token.
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: Successfully authenticated
+          headers:
+            Set-Cookie:
+              description: Optional secure HTTP-only session cookie for stateful environments
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthTokenResponse'
+        '401':
+          description: Unauthorized - Invalid username or password
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '423':
+          description: Locked - Account is suspended or locked due to excessive failed attempts
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/reservations/validate:
+    get:
+      operationId: validateReservation
+      tags:
+        - Reservations
+      summary: Verify active terminal reservation
+      description: Validates dynamic client-side reservation schedules or dynamic player sessions for terminal unlock.
+      parameters:
+        - name: username
+          in: query
+          required: true
+          description: Username of the reserving gamer
+          schema:
+            type: string
+        - name: reservationId
+          in: query
+          required: false
+          description: Optional specific reservation Identifier
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Reservation is valid and active
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReservationValidationResponse'
+        '404':
+          description: Reservation not found or expired
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/clients:
+    get:
+      operationId: listClients
+      tags:
+        - Clients
+      summary: List all client workstations
+      description: Retrieves a paginated list of registered client workstations.
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 50
+        - name: status
+          in: query
+          required: false
+          description: Filter clients by state
+          schema:
+            type: string
+            enum: [Offline, Online, Locked, InUse, Maintenance]
+      responses:
+        '200':
+          description: Successfully retrieved clients list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ClientResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+    post:
+      operationId: registerClient
+      tags:
+        - Clients
+      summary: Register a workstation
+      description: Registers a new workstation terminal into the central database hierarchy.
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterClientRequest'
+      responses:
+        '201':
+          description: Workstation registered successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClientResponse'
+        '400':
+          description: Bad Request - Missing macAddress or malformed data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /api/clients/{pcId}:
+    get:
+      operationId: getClientDetails
+      tags:
+        - Clients
+      summary: Retrieve client details
+      description: Fetches static workstation configuration profile metrics and identifying properties.
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: pcId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Workstation details retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClientResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /api/clients/{pcId}/status:
+    get:
+      operationId: getClientRealtimeState
+      tags:
+        - Clients
+      summary: Get detailed real-time state
+      description: Returns the active system telemetry runtime states reported dynamically by the agent.
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: pcId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Real-time status state retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClientStateDto'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /api/clients/{pcId}/disconnect:
+    delete:
+      operationId: forceDisconnectClient
+      tags:
+        - Clients
+      summary: Force disconnect workstation
+      description: Forcibly drops the client's socket connection and terminates active player state.
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: pcId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Client disconnect scheduled and socket terminated
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /api/sessions:
+    get:
+      operationId: getSessionsHistory
+      tags:
+        - Sessions
+      summary: Query session history
+      description: Retrieves a filtered timeline of previous player sessions.
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: pcId
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 50
+      responses:
+        '200':
+          description: Sessions timeline retrieved
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SessionResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /api/sessions/start:
+    post:
+      operationId: startSession
+      tags:
+        - Sessions
+      summary: Start player session
+      description: Initiates a physical/virtual game terminal timer and activates client capabilities.
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StartSessionRequest'
+      responses:
+        '201':
+          description: Workstation session initiated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SessionResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '409':
+          description: Conflict - Target PC already has an active session
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/sessions/{sessionId}/stop:
+    post:
+      operationId: stopSession
+      tags:
+        - Sessions
+      summary: Stop player session
+      description: Explicitly stops active player billing, captures elapsed statistics, and locks the kiosk.
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: sessionId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Session terminated successfully
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /api/sessions/{sessionId}/pause:
+    post:
+      operationId: pauseSession
+      tags:
+        - Sessions
+      summary: Pause player session
+      description: Temporarily pauses session countdown and suspends billing accumulate calculations.
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: sessionId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Session paused successfully
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /api/sessions/{sessionId}/resume:
+    post:
+      operationId: resumeSession
+      tags:
+        - Sessions
+      summary: Resume paused session
+      description: Resumes a paused workstation timer and reactivates regular billing.
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: sessionId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Session resumed successfully
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /api/commands/send:
+    post:
+      operationId: sendCommand
+      tags:
+        - Commands
+      summary: Remote commands dispatcher
+      description: Envelops and queues a secure structural command for transmission over the persistent TCP channel.
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SendCommandRequest'
+      responses:
+        '202':
+          description: Command accepted and queued for client dispatch
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommandResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /api/commands/{commandId}:
+    get:
+      operationId: getCommandResult
+      tags:
+        - Commands
+      summary: Query command execution result
+      description: Inspects execution status and payload receipt returned by the client.
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: commandId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Command execution receipt fetched
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommandResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /api/commands/history/{pcId}:
+    get:
+      operationId: getCommandHistory
+      tags:
+        - Commands
+      summary: Get commands history timeline
+      description: Returns previous command execution logs generated for a specific workstation.
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: pcId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Workstation history timeline fetched
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CommandResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /api/billing/summary/{pcId}:
+    get:
+      operationId: getBillingSummary
+      tags:
+        - Billing
+      summary: Query client billing summary
+      description: Retrieves accumulated unpaid dues and current active bill rates for the terminal.
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: pcId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Billing summary calculated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BillingSummaryResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /api/billing/invoice/{sessionId}:
+    post:
+      operationId: createSessionInvoice
+      tags:
+        - Billing
+      summary: Create session invoice
+      description: Finalizes pricing cost and generates a secure checkout invoice for a completed player session.
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: sessionId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '201':
+          description: Invoice successfully processed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvoiceResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /api/billing/report:
+    get:
+      operationId: exportBillingReport
+      tags:
+        - Billing
+      summary: Fetch financial report overview
+      description: Compiles session billing charts, revenue totals, and metadata within date ranges.
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: startDate
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date-time
+        - name: endDate
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date-time
+      responses:
+        '200':
+          description: Financial report compiled
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BillingReportMetadata'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /api/monitoring/telemetry/{pcId}:
+    get:
+      operationId: getTelemetryTimeline
+      tags:
+        - Monitoring
+      summary: Fetch client diagnostics telemetry
+      description: Fetches raw historic timeline metrics (CPU, RAM utilization, active process names).
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: pcId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 100
+      responses:
+        '200':
+          description: Telemetry data retrieved
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TelemetryResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /api/monitoring/health:
+    get:
+      operationId: getSystemHealth
+      tags:
+        - Monitoring
+      summary: Retrieve server health status
+      description: Returns internal server runtime parameters, database bindings, and cache statuses.
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Health stats computed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SystemHealthResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /api/monitoring/status:
+    get:
+      operationId: getRealtimeSnapshot
+      tags:
+        - Monitoring
+      summary: Get network-wide snapshot
+      description: Consolidated view of all active workstations, player timers, and socket handshakes.
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Realtime dashboard overview retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatusSnapshotResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /api/updates/manifest:
+    get:
+      operationId: getUpdateManifest
+      tags:
+        - Updates
+      summary: Poll client updates manifest
+      description: Returns structural version numbers, zip download paths, and SHA256 checksum signatures.
+      responses:
+        '200':
+          description: Manifest schema compiled
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpdateManifest'
+
+  /api/config:
+    get:
+      operationId: getSystemConfig
+      tags:
+        - Configuration
+      summary: Query server configuration settings
+      description: Retrieves server heartbeat profiles, security restrictions, and database configurations.
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: System settings configured
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SayraConfigResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+    put:
+      operationId: updateSystemConfig
+      tags:
+        - Configuration
+      summary: Modify server configuration settings
+      description: Updates central runtime policies, backup directories, or scaling clusters.
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateSayraConfigRequest'
+      responses:
+        '200':
+          description: Configuration updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SayraConfigResponse'
+        '400':
+          description: Bad request - Validation properties rejected
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /api/config/features:
+    get:
+      operationId: getLicenseFeatures
+      tags:
+        - Configuration
+      summary: Fetch enabled feature flags
+      description: Returns available server modules derived dynamically from the active license tier.
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Map of enabled feature toggles
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties:
+                  type: boolean
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /api/license/validate:
+    post:
+      operationId: validateLicenseKey
+      tags:
+        - Licensing
+      summary: Submit license validation request
+      description: Validates dynamic system license credentials and computes terminal allocations.
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ValidateLicenseRequest'
+      responses:
+        '200':
+          description: License validation completed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LicenseStatusResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /api/license/status:
+    get:
+      operationId: getLicenseStatus
+      tags:
+        - Licensing
+      summary: Retrieve license status metrics
+      description: Returns registered site names, license expiry thresholds, and active tier designations.
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Active license profile calculated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LicenseStatusResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /api/advertisements:
+    get:
+      operationId: getAdvertisements
+      tags:
+        - Configuration
+      summary: Get active marketing advertisements
+      description: Returns local active advertising resources, carousel timing intervals, and asset pathways.
+      responses:
+        '200':
+          description: Synchronized list of promotional advertisements
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AdvertisementItem'
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  responses:
+    Unauthorized:
+      description: Access denied - Missing or invalid JWT bearer authorization header
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    NotFound:
+      description: Requested item resource could not be found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+
+  schemas:
+    LoginRequest:
+      type: object
+      required:
+        - username
+        - password
+      properties:
+        username:
+          type: string
+          description: Admin username matching configured credential database parameters
+          example: admin
+        password:
+          type: string
+          format: password
+          description: Cleartext login validation secret
+          example: StrongSecureP@ssw0rd
+
+    AuthTokenResponse:
+      type: object
+      required:
+        - accessToken
+        - expiresIn
+        - tokenType
+      properties:
+        accessToken:
+          type: string
+          description: Signed JSON Web Token authorizing further API operations
+        expiresIn:
+          type: integer
+          description: JWT lifespan in seconds
+          example: 3600
+        tokenType:
+          type: string
+          description: Base scheme identifier
+          example: Bearer
+
+    ReservationValidationResponse:
+      type: object
+      required:
+        - success
+        - reservation
+      properties:
+        success:
+          type: boolean
+          description: Indicates whether verification of reservation constraints was successful
+        reservation:
+          $ref: '#/components/schemas/ReservationModel'
+
+    ReservationModel:
+      type: object
+      required:
+        - reservationId
+        - username
+        - endTime
+        - remainingCredits
+      properties:
+        reservationId:
+          type: string
+          description: Unique reservation system identifier
+          example: R-101
+        username:
+          type: string
+          description: Registered player account credential
+          example: amir
+        endTime:
+          type: string
+          format: date-time
+          description: Expiry limit schedule for the active reservation
+        remainingCredits:
+          type: number
+          description: Calculated monetary credit balance in Persian rials
+          example: 30000
+
+    ClientResponse:
+      type: object
+      required:
+        - pcId
+        - siteId
+        - macAddress
+        - hostname
+        - ip
+        - status
+        - lastSeen
+      properties:
+        pcId:
+          type: string
+          description: Static workstation terminal identifier
+          example: SAYRA-WORKSTATION-01
+        siteId:
+          type: string
+          description: Virtual network site identifier
+          example: TEHRAN-HQ
+        macAddress:
+          type: string
+          description: Static hardware network adapter MAC address
+          example: 00:1A:2B:3C:4D:5E
+        hostname:
+          type: string
+          description: Registered Operating System Hostname
+          example: GAMING-PC-01
+        ip:
+          type: string
+          format: ipv4
+          description: Active IPv4 network configuration address
+          example: 192.168.1.105
+        status:
+          type: string
+          enum: [Offline, Online, Locked, InUse, Maintenance]
+          description: Primary client workstation state designation
+          example: Online
+        lastSeen:
+          type: string
+          format: date-time
+          description: Last dynamic heartbeat event recorded from the client
+
+    ClientStateDto:
+      type: object
+      required:
+        - coreState
+        - sessionStatus
+        - remainingTime
+        - isKioskLocked
+      properties:
+        coreState:
+          type: string
+          enum: [STARTING, DISCOVERING, CONNECTING, AUTHENTICATING, READY, IN_SESSION, DISCONNECTED, RECOVERING]
+          description: Workstation core state machine status indicator
+          example: READY
+        sessionStatus:
+          type: string
+          enum: [IDLE, ACTIVE, PAUSED, ENDED]
+          description: Active session lifecycle state
+          example: IDLE
+        remainingTime:
+          type: string
+          description: Serialized countdown duration representation (e.g. 02:00:00)
+          example: "01:15:30"
+        startTime:
+          type: string
+          format: date-time
+          nullable: true
+          description: Date time representation of session initialization
+        elapsedSeconds:
+          type: number
+          description: Monotonically increasing session timer metrics
+          example: 3600
+        totalDurationMinutes:
+          type: number
+          description: Maximum total duration allocated for active timer
+          example: 120
+        ratePerHour:
+          type: number
+          description: Billing hourly pricing rate formulated in Persian Rials
+          example: 15000
+        currentCost:
+          type: number
+          description: Dynamic session cost calculated since session initiation
+          example: 7500
+        userName:
+          type: string
+          nullable: true
+          description: Authenticated player profile assigned to workstation session
+          example: amir
+        isKioskLocked:
+          type: boolean
+          description: Indicates whether Windows user registry constraints are active
+          example: true
+
+    RegisterClientRequest:
+      type: object
+      required:
+        - macAddress
+        - hostname
+      properties:
+        macAddress:
+          type: string
+          description: MAC address to identify the workstation
+          example: "00:1A:2B:3C:4D:5E"
+        hostname:
+          type: string
+          description: Workstation computer name
+          example: "GAMING-PC-01"
+        siteId:
+          type: string
+          description: Assigned location identifier
+          example: "TEHRAN-HQ"
+
+    SessionResponse:
+      $ref: '#/components/schemas/SessionModel'
+
+    SessionModel:
+      type: object
+      required:
+        - sessionId
+        - pcId
+        - siteId
+        - duration
+        - ratePerHour
+        - startTime
+      properties:
+        sessionId:
+          type: string
+          description: Active session context tracking identifier
+          example: SESS-4001
+        pcId:
+          type: string
+          description: Bound workstation identity string
+          example: SAYRA-WORKSTATION-01
+        siteId:
+          type: string
+          description: Assigned network hub site identifier
+          example: TEHRAN-HQ
+        startTime:
+          type: string
+          format: date-time
+          description: Starting timestamp metric
+        endTime:
+          type: string
+          format: date-time
+          nullable: true
+          description: Terminating timestamp metric
+        status:
+          type: string
+          enum: [IDLE, ACTIVE, PAUSED, ENDED]
+          description: Runtime session timer category
+          example: ACTIVE
+        duration:
+          type: number
+          description: Session duration allocation limit (expressed in minutes)
+          example: 120
+        currentCost:
+          type: number
+          description: Accumulated billing charges calculated in Persian Rials
+          example: 30000
+        ratePerHour:
+          type: number
+          description: Cost fee tier structured per hour of game activity
+          example: 15000
+
+    StartSessionRequest:
+      type: object
+      required:
+        - pcId
+      properties:
+        pcId:
+          type: string
+          description: Workstation destination identifier
+          example: SAYRA-WORKSTATION-01
+        pricePlanId:
+          type: string
+          description: Optional pricing table parameters identification code
+          example: PLAN-WEEKEND
+        userId:
+          type: string
+          description: Optional user account identifier mapping constraints
+          example: USER-921
+
+    SendCommandRequest:
+      type: object
+      required:
+        - pcId
+        - action
+      properties:
+        pcId:
+          type: string
+          description: Bound workstation destination address identifier
+          example: SAYRA-WORKSTATION-01
+        action:
+          type: string
+          enum: [LOCK_PC, UNLOCK_PC, PING, GET_DIAGNOSTICS, RUN_APP, KILL_APP, LIST_PROCESSES, START_SESSION, STOP_SESSION, PAUSE_SESSION, RESUME_SESSION]
+          description: Administrative command action type mapping target handlers
+          example: LOCK_PC
+        payload:
+          oneOf:
+            - $ref: '#/components/schemas/RunAppPayload'
+            - $ref: '#/components/schemas/KillAppPayload'
+            - $ref: '#/components/schemas/SessionModel'
+          nullable: true
+
+    RunAppPayload:
+      type: object
+      required:
+        - gameId
+      properties:
+        gameId:
+          type: string
+          description: Unique identifier of the game to launch
+          example: GAME-GTA5
+
+    KillAppPayload:
+      type: object
+      properties:
+        pid:
+          type: integer
+          description: Process Identifier handle targeting task execution
+          example: 4102
+        name:
+          type: string
+          description: Process string name mapping targeting shutdown execution
+          example: "gta5.exe"
+
+    CommandResponse:
+      $ref: '#/components/schemas/ExecutionResult'
+
+    ExecutionResult:
+      type: object
+      required:
+        - commandId
+        - pcId
+        - action
+        - status
+        - result
+        - timestamp
+      properties:
+        commandId:
+          type: string
+          description: Unique execution logging transaction tracking ID
+          example: CMD-5012
+        pcId:
+          type: string
+          description: Destination workstation identification code
+          example: SAYRA-WORKSTATION-01
+        action:
+          type: string
+          description: Commanded action type
+          example: LOCK_PC
+        status:
+          type: string
+          enum: [Pending, Sent, Executed, Failed]
+          description: Remote command completion status indicators
+          example: Executed
+        result:
+          oneOf:
+            - type: string
+            - $ref: '#/components/schemas/TelemetryModel'
+            - type: array
+              items:
+                $ref: '#/components/schemas/ProcessInfo'
+          description: Dynamic payload content describing outcome metrics or diagnostic responses
+        timestamp:
+          type: string
+          format: date-time
+          description: Execution timestamp response generated by the workstation
+
+    ProcessInfo:
+      type: object
+      required:
+        - pid
+        - name
+      properties:
+        pid:
+          type: integer
+          description: Native Operating System process tracking handle ID
+          example: 1024
+        name:
+          type: string
+          description: Registered process name
+          example: steam.exe
+        gameId:
+          type: string
+          description: Associated system game database registration identifier
+          example: GAME-STEAM
+
+    BillingSummaryResponse:
+      type: object
+      required:
+        - pcId
+        - unpaidSessionsCount
+        - totalUnpaidAmount
+      properties:
+        pcId:
+          type: string
+          description: Workstation client identifier
+          example: SAYRA-WORKSTATION-01
+        activeSession:
+          $ref: '#/components/schemas/SessionResponse'
+        unpaidSessionsCount:
+          type: integer
+          description: Number of completed sessions awaiting payment clearance
+          example: 1
+        totalUnpaidAmount:
+          type: number
+          description: Accumulated financial total due for clearance
+          example: 45000
+
+    InvoiceResponse:
+      type: object
+      required:
+        - invoiceId
+        - sessionId
+        - amount
+        - tax
+        - total
+        - issuedAt
+      properties:
+        invoiceId:
+          type: string
+          description: Generated unique financial invoice catalog record identifier
+          example: INV-90021
+        sessionId:
+          type: string
+          description: Associated terminal player session identifier reference
+          example: SESS-4001
+        amount:
+          type: number
+          description: Direct calculated game time fee in Persian Rials
+          example: 30000
+        tax:
+          type: number
+          description: Secondary taxes and administrative surcharge percentages
+          example: 2700
+        total:
+          type: number
+          description: Consolidated aggregate pricing summary payable by client
+          example: 32700
+        issuedAt:
+          type: string
+          format: date-time
+          description: Invoice generation execution date timestamp record
+
+    BillingReportMetadata:
+      type: object
+      required:
+        - reportId
+        - generatedAt
+        - totalRevenue
+        - sessionCount
+      properties:
+        reportId:
+          type: string
+          description: Unique reporting document file reference code
+          example: REP-WEEK-42
+        generatedAt:
+          type: string
+          format: date-time
+          description: Database aggregation processing timestamp
+        totalRevenue:
+          type: number
+          description: Cumulative monetary sum of all sessions processed within bounds
+          example: 1250000
+        sessionCount:
+          type: integer
+          description: Number of active or historic logs matched
+          example: 42
+
+    TelemetryResponse:
+      $ref: '#/components/schemas/TelemetryModel'
+
+    TelemetryModel:
+      type: object
+      required:
+        - cpu
+        - ram
+        - uptime
+        - timestamp
+      properties:
+        cpu:
+          type: number
+          description: Active average processor utilization percentage load (0.0 to 100.0)
+          example: 45.2
+        ram:
+          type: number
+          description: System memory utilization allocation calculated in Megabytes (MB)
+          example: 8192
+        uptime:
+          type: integer
+          description: Computer operating system execution duration measured in seconds
+          example: 14400
+        timestamp:
+          type: string
+          format: date-time
+          description: Sensor capture timestamp
+        runningGameName:
+          type: string
+          nullable: true
+          description: Active foreground launcher game name
+          example: "Grand Theft Auto V"
+        runningGamePid:
+          type: integer
+          nullable: true
+          description: Active foreground game process PID
+          example: 5120
+        runningGameCpu:
+          type: number
+          nullable: true
+          description: Process CPU load percentage
+          example: 32.5
+        runningGameRam:
+          type: number
+          nullable: true
+          description: Process RAM utilization in MB
+          example: 4096
+        runningGameDurationSeconds:
+          type: number
+          nullable: true
+          description: Continuous play duration timer of the active game
+          example: 1800
+        totalLaunches:
+          type: integer
+          description: Diagnostic game session launches counter since startup
+          example: 3
+        totalCrashes:
+          type: integer
+          description: Process crash count threshold tracked by the launcher
+          example: 0
+        totalRestarts:
+          type: integer
+          description: Automatic launcher recovery attempt trigger counts
+          example: 0
+
+    SystemHealthResponse:
+      type: object
+      required:
+        - status
+        - version
+        - uptime
+        - dbConnected
+        - redisConnected
+      properties:
+        status:
+          type: string
+          description: Global health validation string indicator
+          example: Healthy
+        version:
+          type: string
+          description: Core server assembly software revision designation
+          example: "1.1.0-prod"
+        uptime:
+          type: integer
+          description: Running server process lifespan tracking timer in seconds
+          example: 604800
+        dbConnected:
+          type: boolean
+          description: Relational database connection status flag
+          example: true
+        redisConnected:
+          type: boolean
+          description: Redis in-memory cache clustering validation status flag
+          example: true
+
+    StatusSnapshotResponse:
+      type: object
+      required:
+        - timestamp
+        - clients
+        - activeSessions
+      properties:
+        timestamp:
+          type: string
+          format: date-time
+          description: Dynamic update compilation timestamp
+        clients:
+          type: array
+          items:
+            $ref: '#/components/schemas/ClientResponse'
+        activeSessions:
+          type: array
+          items:
+            $ref: '#/components/schemas/SessionResponse'
+
+    UpdateManifest:
+      type: object
+      required:
+        - version
+        - releaseNotes
+        - packageUrl
+        - checksum
+        - signature
+        - isCritical
+        - releaseDate
+      properties:
+        version:
+          type: string
+          description: Dynamic semantic versioning identifier
+          example: "1.2.5"
+        releaseNotes:
+          type: string
+          description: Text summaries listing changes and updates included
+          example: "Fixed Kiosk bypass bugs and upgraded Diagnostic specs validation structures."
+        packageUrl:
+          type: string
+          format: uri
+          description: Direct secure LAN package download pathway URI
+          example: "http://api.sayra-gamenet.lan/cdn/updates/sayra-client-1.2.5.zip"
+        checksum:
+          type: string
+          description: Strong cryptographic hash calculation of the zip package
+          example: "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        signature:
+          type: string
+          description: Digital package RSA-254 signature confirming secure origin source
+          example: "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA..."
+        isCritical:
+          type: boolean
+          description: Forces immediate workstation application exit and update sequence execution
+          example: true
+        releaseDate:
+          type: string
+          format: date-time
+          description: Publication date timestamp of release
+
+    SayraConfigResponse:
+      type: object
+      required:
+        - heartbeat
+        - session
+        - security
+        - scaling
+        - backup
+      properties:
+        heartbeat:
+          $ref: '#/components/schemas/HeartbeatConfig'
+        session:
+          $ref: '#/components/schemas/SessionConfig'
+        security:
+          $ref: '#/components/schemas/SecurityConfig'
+        scaling:
+          $ref: '#/components/schemas/ScalingConfig'
+        backup:
+          $ref: '#/components/schemas/BackupConfig'
+
+    UpdateSayraConfigRequest:
+      $ref: '#/components/schemas/SayraConfigResponse'
+
+    HeartbeatConfig:
+      type: object
+      required:
+        - intervalSeconds
+        - timeoutSeconds
+      properties:
+        intervalSeconds:
+          type: integer
+          description: Rate at which client heartbeats must be submitted
+          example: 10
+        timeoutSeconds:
+          type: integer
+          description: Limit threshold after which terminal is marked Offline
+          example: 30
+
+    SessionConfig:
+      type: object
+      required:
+        - maxConcurrentSessionsPerUser
+        - defaultSessionDurationMinutes
+      properties:
+        maxConcurrentSessionsPerUser:
+          type: integer
+          description: Player multi-terminal locking ceiling threshold
+          example: 1
+        defaultSessionDurationMinutes:
+          type: integer
+          description: Initial duration allocation for regular starts
+          example: 60
+
+    SecurityConfig:
+      type: object
+      required:
+        - maxAuthAttempts
+        - lockoutDurationMinutes
+        - enforceSignedUpdates
+      properties:
+        maxAuthAttempts:
+          type: integer
+          description: Maximum bad password attempts before IP block
+          example: 5
+        lockoutDurationMinutes:
+          type: integer
+          description: Locking cooling-off timing
+          example: 15
+        enforceSignedUpdates:
+          type: boolean
+          description: Enforces RSA checks on downloaded update binary headers
+          example: true
+
+    ScalingConfig:
+      type: object
+      required:
+        - enableRedis
+        - redisConnectionString
+      properties:
+        enableRedis:
+          type: boolean
+          description: Enables cluster-aware in-memory synchronization
+          example: true
+        redisConnectionString:
+          type: string
+          description: Connection configuration mapping
+          example: "localhost:6379,abortConnect=false"
+
+    BackupConfig:
+      type: object
+      required:
+        - backupIntervalHours
+        - backupPath
+        - retentionDays
+      properties:
+        backupIntervalHours:
+          type: integer
+          description: Rates of dynamic data folder snapshots
+          example: 24
+        backupPath:
+          type: string
+          description: Target archive storage directory
+          example: "/var/backups/sayra"
+        retentionDays:
+          type: integer
+          description: Days to persist database backup archives
+          example: 30
+
+    ValidateLicenseRequest:
+      type: object
+      required:
+        - licenseKey
+      properties:
+        licenseKey:
+          type: string
+          description: Encrypted license registration string token
+          example: "SAYRA-PRO-9812-4102-3921-9921"
+
+    LicenseStatusResponse:
+      type: object
+      required:
+        - isValid
+        - tier
+        - expiryDate
+        - hardwareId
+        - siteName
+        - issuedTo
+      properties:
+        isValid:
+          type: boolean
+          description: Validity evaluation of the server license file
+          example: true
+        tier:
+          type: string
+          enum: [Trial, Standard, Pro, Enterprise]
+          description: Licensed features tier category
+          example: Pro
+        expiryDate:
+          type: string
+          format: date-time
+          description: Expiry schedule threshold
+        hardwareId:
+          type: string
+          description: Unique machine identifier associated with the server license
+          example: "BIOS-9021-3912-3021"
+        siteName:
+          type: string
+          description: Gamestop/Net cafe business description name
+          example: "Sayra Gaming Club Hub"
+        issuedTo:
+          type: string
+          description: Customer registration identity
+          example: "Amir Mohammadi"
+
+    AdvertisementItem:
+      type: object
+      required:
+        - id
+        - title
+        - imageUrl
+        - clickUrl
+        - priority
+        - durationSeconds
+      properties:
+        id:
+          type: string
+          description: Advertisement tracking database key
+          example: "AD-101"
+        title:
+          type: string
+          description: Administrative identifier text
+          example: "Monster Energy Summer Deal"
+        imageUrl:
+          type: string
+          format: uri
+          description: Asset URL path
+          example: "http://api.sayra-gamenet.lan/cdn/ads/monster.jpg"
+        clickUrl:
+          type: string
+          format: uri
+          description: Redirect target URL on interactive cards
+          example: "http://api.sayra-gamenet.lan/promo/monster"
+        priority:
+          type: integer
+          description: Higher values take precedence in the active carousel loop
+          example: 10
+        durationSeconds:
+          type: integer
+          description: Standard slideshow display persistence timing
+          example: 15
+
+    ErrorResponse:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: string
+          description: Standardized system-wide short error code string
+          example: "INVALID_CREDENTIALS"
+        message:
+          type: string
+          description: High-level descriptive error summary
+          example: "The password submitted is incorrect."
+        details:
+          type: string
+          description: Detailed exception stack traces or field level validation descriptions
+          example: "Field 'password' did not match the PBKDF2 hash stored locally."

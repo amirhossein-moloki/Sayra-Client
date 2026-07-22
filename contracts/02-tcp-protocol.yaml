@@ -1,0 +1,462 @@
+version: "1.1.0"
+protocol_type: "Newline-Delimited JSON (Text) with Encrypted Envelope"
+transport: "Persistent Secure TCP Socket"
+default_port: 5000
+
+description: >
+  This document outlines the detailed TCP frame layouts, challenge-response handshake sequence,
+  state transitions, and encryption schemes used between the SAYRA Client (workstation agent) and SAYRA Server.
+  All post-handshake packets MUST be wrapped in the SecureMessageEnvelope schema.
+
+encryption_specification:
+  handshake: "Asymmetric RSA-2048 key authentication and AES Session Key establishment."
+  payload_encryption: "Symmetric AES-256-CBC with PKCS7 Padding using the established Session Key."
+  integrity_verification: "HMAC-SHA256 of (Encrypted Payload + Timestamp) using the Session Key."
+  replay_protection: "UTC ISO-8601 Timestamp validation with a maximum allowed drift of 10 seconds."
+
+state_transitions:
+  - from: "STARTING"
+    to: "DISCOVERING"
+    trigger: "Workstation initialization completes."
+  - from: "DISCOVERING"
+    to: "CONNECTING"
+    trigger: "Valid signed server beacon is received on UDP Port 37020."
+  - from: "CONNECTING"
+    to: "AUTHENTICATING"
+    trigger: "TCP Socket connection successfully established."
+  - from: "AUTHENTICATING"
+    to: "READY"
+    trigger: "Challenge-Response verification passes. Session Key stored in memory."
+  - from: "AUTHENTICATING"
+    to: "DISCONNECTED"
+    trigger: "Handshake signature verification or timestamp validation fails."
+  - from: "READY"
+    to: "IN_SESSION"
+    trigger: "Player log-in succeeds or remote START_SESSION command is parsed."
+  - from: "IN_SESSION"
+    to: "READY"
+    trigger: "Active player log-out or remote STOP_SESSION command is parsed."
+  - from: "READY"
+    to: "DISCONNECTED"
+    trigger: "Heartbeat execution timeout or connection lost."
+  - from: "DISCONNECTED"
+    to: "RECOVERING"
+    trigger: "Initiates automatic reconnection logic sequence."
+
+packets:
+  # --- HANDSHAKE PHASE (Unencrypted Envelope / Clear JSON) ---
+  - command_name: "AUTH_CHALLENGE"
+    direction: "Server -> Client"
+    purpose: "Initiates the secure cryptographic authentication handshake."
+    serialization: "JSON"
+    format: "Text"
+    required_fields:
+      type: "string (Value MUST be 'AUTH_CHALLENGE')"
+      challenge: "string (Cryptographic random nonce in Base64 or Hex)"
+    optional_fields: {}
+    validation: "Challenge string must be non-empty and securely random."
+    response_packet: "AUTH_RESPONSE"
+    timeout: "10 seconds"
+    retry_policy: "Disconnect on timeout."
+    priority: "Critical"
+    encryption: "None (Plaintext JSON)"
+    compression: "None"
+    expected_result: "Client immediately calculates HMAC-SHA256 signature and returns AUTH_RESPONSE."
+    failure_responses:
+      - description: "Handshake timed out"
+        action: "Client terminates socket connection and falls back to offline configuration."
+    packet_examples:
+      - payload: >
+          {
+            "type": "AUTH_CHALLENGE",
+            "challenge": "A7df9K3mPqW8zXcV1bNy"
+          }
+
+  - command_name: "AUTH_RESPONSE"
+    direction: "Client -> Server"
+    purpose: "Authenticates client identity and transmits the session key encrypted with the server master key."
+    serialization: "JSON"
+    format: "Text"
+    required_fields:
+      type: "string (Value MUST be 'AUTH_RESPONSE')"
+      response: "string (HMAC-SHA256 of challenge + local workstation credentials, Base64)"
+      session_key: "string (Random 256-bit AES session key, encrypted with server public master key, Base64)"
+    optional_fields: {}
+    validation: "Response and session_key must be valid non-empty Base64 strings."
+    response_packet: "AUTH_STATUS"
+    timeout: "10 seconds"
+    retry_policy: "Disconnect on timeout."
+    priority: "Critical"
+    encryption: "None (Outer envelope is plaintext, internal session_key field is encrypted via RSA/MasterKey)"
+    compression: "None"
+    expected_result: "Server decrypts key, verifies response signature, and emits AUTH_STATUS."
+    packet_examples:
+      - payload: >
+          {
+            "type": "AUTH_RESPONSE",
+            "response": "dGhpcyBpcyBhIHNhbXBsZSBzaWduYXR1cmUgZm9yIGNoYWxsZW5nZQ==",
+            "session_key": "ZW5jcnlwdGVkX3Nlc3Npb25fa2V5X2hlcmVfdXNpbmdfcnNh"
+          }
+
+  - command_name: "AUTH_STATUS"
+    direction: "Server -> Client"
+    purpose: "Informs the client whether the handshake succeeded or failed."
+    serialization: "JSON"
+    format: "Text"
+    required_fields:
+      type: "string (Value MUST be 'AUTH_STATUS')"
+      status: "string (Value MUST be 'SUCCESS' or 'FAILED')"
+    optional_fields:
+      message: "string (Error detail description on failure)"
+    validation: "Status must match SUCCESS or FAILED."
+    response_packet: "None"
+    timeout: "None"
+    retry_policy: "Disconnect on failure status."
+    priority: "Critical"
+    encryption: "None (Plaintext JSON)"
+    compression: "None"
+    expected_result: "On SUCCESS, Client transitions to READY state. On FAILED, Client drops connection."
+    packet_examples:
+      - success_payload: >
+          {
+            "type": "AUTH_STATUS",
+            "status": "SUCCESS"
+          }
+      - failure_payload: >
+          {
+            "type": "AUTH_STATUS",
+            "status": "FAILED",
+            "message": "Signature verification failed."
+          }
+
+  # --- POST-HANDSHAKE SECURE ENVELOPE (Mandatory AES-256 and HMAC) ---
+  - envelope_definition: "SecureMessageEnvelope"
+    description: "Every packet defined below must be serialized as JSON, AES-256-CBC encrypted, HMAC-SHA256 signed, and wrapped inside this envelope."
+    required_fields:
+      payload: "string (AES-256-CBC encrypted payload JSON string, Base64)"
+      signature: "string (HMAC-SHA256 hex/Base64 of the ciphertext + timestamp payload)"
+      timestamp: "string (ISO 8601 UTC timestamp format)"
+    envelope_example: >
+      {
+        "payload": "WjEybWNDZ3pMV2xuL3N6T2szUjU5Zz09...",
+        "signature": "8f3c7e4a1b0d2c9e...",
+        "timestamp": "2026-10-18T12:00:05Z"
+      }
+
+  # --- SECURE ENVELOPED CLIENT PACKETS (Client -> Server) ---
+  - command_name: "HEARTBEAT"
+    direction: "Client -> Server"
+    purpose: "Maintains active connection and reports terminal liveness."
+    serialization: "JSON"
+    format: "Text (Enveloped)"
+    required_fields:
+      type: "string (Value MUST be 'HEARTBEAT')"
+      timestamp: "string (ISO 8601 UTC)"
+    optional_fields: {}
+    validation: "Timestamp validation window (drift max 10 seconds)."
+    response_packet: "None (Server updates connection table)"
+    timeout: "10 seconds (Client expects server not to close socket)"
+    retry_policy: "Resubmit every 10 seconds."
+    priority: "Medium"
+    encryption: "AES-256-CBC"
+    compression: "None"
+    expected_result: "Server logs terminal Online and resets liveness timeouts."
+    packet_examples:
+      - decrypted_payload: >
+          {
+            "type": "HEARTBEAT",
+            "timestamp": "2026-10-18T12:00:10Z"
+          }
+
+  - command_name: "CLIENT_CONNECTED"
+    direction: "Client -> Server"
+    purpose: "Reports state synchronization immediately upon connection establishment."
+    serialization: "JSON"
+    format: "Text (Enveloped)"
+    required_fields:
+      type: "string (Value MUST be 'CLIENT_CONNECTED')"
+      pcId: "string"
+      status: "string"
+    optional_fields: {}
+    validation: "pcId must match static workstation profile."
+    response_packet: "None"
+    timeout: "None"
+    priority: "High"
+    encryption: "AES-256-CBC"
+    compression: "None"
+    expected_result: "Server updates workstation connection state mapping."
+    packet_examples:
+      - decrypted_payload: >
+          {
+            "type": "CLIENT_CONNECTED",
+            "pcId": "SAYRA-WORKSTATION-01",
+            "status": "Online"
+          }
+
+  - command_name: "TELEMETRY_REPORT"
+    direction: "Client -> Server"
+    purpose: "Transmits real-time performance diagnostics and CPU/RAM load statistics."
+    serialization: "JSON"
+    format: "Text (Enveloped)"
+    required_fields:
+      type: "string (Value MUST be 'TELEMETRY_REPORT')"
+      cpu: "number (0.0 to 100.0)"
+      ram: "number (Memory utilization in MB)"
+      uptime: "integer (Uptime in seconds)"
+      timestamp: "string (ISO 8601 UTC)"
+    optional_fields:
+      runningGameName: "string"
+      runningGamePid: "integer"
+      runningGameCpu: "number"
+      runningGameRam: "number"
+      runningGameDurationSeconds: "number"
+      totalLaunches: "integer"
+      totalCrashes: "integer"
+      totalRestarts: "integer"
+    validation: "Numerical metrics must be non-negative."
+    response_packet: "None"
+    timeout: "None"
+    priority: "Low"
+    encryption: "AES-256-CBC"
+    compression: "None"
+    expected_result: "Server stores metrics for administrator dashboard analytics."
+    packet_examples:
+      - decrypted_payload: >
+          {
+            "type": "TELEMETRY_REPORT",
+            "cpu": 35.8,
+            "ram": 5824,
+            "uptime": 7200,
+            "timestamp": "2026-10-18T12:00:30Z",
+            "runningGameName": "Grand Theft Auto V",
+            "runningGamePid": 4120,
+            "runningGameCpu": 18.5,
+            "runningGameRam": 3072,
+            "runningGameDurationSeconds": 600,
+            "totalLaunches": 1,
+            "totalCrashes": 0,
+            "totalRestarts": 0
+          }
+
+  - command_name: "PROCESS_LAUNCHED"
+    direction: "Client -> Server"
+    purpose: "Audits the successful launch of a game application."
+    serialization: "JSON"
+    format: "Text (Enveloped)"
+    required_fields:
+      type: "string (Value MUST be 'PROCESS_LAUNCHED')"
+      gameId: "string"
+      pid: "integer"
+      timestamp: "string (ISO 8601 UTC)"
+    optional_fields: {}
+    validation: "PID must be positive."
+    response_packet: "None"
+    timeout: "None"
+    priority: "High"
+    encryption: "AES-256-CBC"
+    compression: "None"
+    expected_result: "Server logs game launching transaction."
+    packet_examples:
+      - decrypted_payload: >
+          {
+            "type": "PROCESS_LAUNCHED",
+            "gameId": "GAME-GTA5",
+            "pid": 5120,
+            "timestamp": "2026-10-18T12:01:00Z"
+          }
+
+  - command_name: "PROCESS_EXITED"
+    direction: "Client -> Server"
+    purpose: "Audits normal process exit parameters."
+    serialization: "JSON"
+    format: "Text (Enveloped)"
+    required_fields:
+      type: "string (Value MUST be 'PROCESS_EXITED')"
+      gameId: "string"
+      exitCode: "integer"
+      durationSeconds: "number"
+    optional_fields: {}
+    validation: "durationSeconds must be non-negative."
+    response_packet: "None"
+    priority: "High"
+    encryption: "AES-256-CBC"
+    compression: "None"
+    packet_examples:
+      - decrypted_payload: >
+          {
+            "type": "PROCESS_EXITED",
+            "gameId": "GAME-GTA5",
+            "exitCode": 0,
+            "durationSeconds": 3600
+          }
+
+  - command_name: "EXECUTION_RESULT"
+    direction: "Client -> Server"
+    purpose: "Confirms remote command outcome to the administrative console."
+    serialization: "JSON"
+    format: "Text (Enveloped)"
+    required_fields:
+      commandId: "string"
+      pcId: "string"
+      action: "string"
+      status: "string (Value MUST be 'Executed' or 'Failed')"
+      result: "string"
+      timestamp: "string (ISO 8601 UTC)"
+    optional_fields: {}
+    validation: "Status must be Executed or Failed."
+    response_packet: "None"
+    priority: "Critical"
+    encryption: "AES-256-CBC"
+    packet_examples:
+      - decrypted_payload: >
+          {
+            "commandId": "CMD-9021",
+            "pcId": "SAYRA-WORKSTATION-01",
+            "action": "LOCK_PC",
+            "status": "Executed",
+            "result": "Kiosk policies successfully updated and shell locked.",
+            "timestamp": "2026-10-18T12:02:00Z"
+          }
+
+  # --- SECURE ENVELOPED SERVER COMMAND PACKETS (Server -> Client) ---
+  - command_name: "START_SESSION"
+    direction: "Server -> Client"
+    purpose: "Initiates workstation unlock, resets elapsed timer, and starts billing."
+    serialization: "JSON"
+    format: "Text (Enveloped)"
+    required_fields:
+      type: "string (Value MUST be 'COMMAND')"
+      action: "string (Value MUST be 'START_SESSION')"
+      payload: "object (SessionModel details)"
+    payload_schema:
+      sessionId: "string (Required)"
+      pcId: "string (Required)"
+      siteId: "string (Required)"
+      duration: "number (Required, duration limits in minutes)"
+      ratePerHour: "number (Required, billing rate in Persian Rials)"
+      startTime: "string (Required, ISO 8601 UTC)"
+    optional_fields: {}
+    validation: "Duration and ratePerHour must be positive."
+    response_packet: "EXECUTION_RESULT"
+    timeout: "10 seconds"
+    priority: "Critical"
+    encryption: "AES-256-CBC"
+    packet_examples:
+      - decrypted_payload: >
+          {
+            "type": "COMMAND",
+            "action": "START_SESSION",
+            "payload": {
+              "sessionId": "SESS-4001",
+              "pcId": "SAYRA-WORKSTATION-01",
+              "siteId": "TEHRAN-HQ",
+              "duration": 120,
+              "ratePerHour": 15000,
+              "startTime": "2026-10-18T12:00:00Z"
+            }
+          }
+
+  - command_name: "STOP_SESSION"
+    direction: "Server -> Client"
+    purpose: "Forces workstation lockdown and terminates timer activity."
+    serialization: "JSON"
+    format: "Text (Enveloped)"
+    required_fields:
+      type: "string (Value MUST be 'COMMAND')"
+      action: "string (Value MUST be 'STOP_SESSION')"
+    optional_fields: {}
+    validation: "None"
+    response_packet: "EXECUTION_RESULT"
+    timeout: "5 seconds"
+    priority: "Critical"
+    encryption: "AES-256-CBC"
+    packet_examples:
+      - decrypted_payload: >
+          {
+            "type": "COMMAND",
+            "action": "STOP_SESSION"
+          }
+
+  - command_name: "PAUSE_SESSION"
+    direction: "Server -> Client"
+    purpose: "Suspends the active session countdown timer."
+    serialization: "JSON"
+    format: "Text (Enveloped)"
+    required_fields:
+      type: "string (Value MUST be 'COMMAND')"
+      action: "string (Value MUST be 'PAUSE_SESSION')"
+    optional_fields: {}
+    validation: "None"
+    response_packet: "EXECUTION_RESULT"
+    timeout: "5 seconds"
+    priority: "High"
+    encryption: "AES-256-CBC"
+    packet_examples:
+      - decrypted_payload: >
+          {
+            "type": "COMMAND",
+            "action": "PAUSE_SESSION"
+          }
+
+  - command_name: "RESUME_SESSION"
+    direction: "Server -> Client"
+    purpose: "Resumes a suspended session countdown timer."
+    serialization: "JSON"
+    format: "Text (Enveloped)"
+    required_fields:
+      type: "string (Value MUST be 'COMMAND')"
+      action: "string (Value MUST be 'RESUME_SESSION')"
+    optional_fields: {}
+    validation: "None"
+    response_packet: "EXECUTION_RESULT"
+    timeout: "5 seconds"
+    priority: "High"
+    encryption: "AES-256-CBC"
+    packet_examples:
+      - decrypted_payload: >
+          {
+            "type": "COMMAND",
+            "action": "RESUME_SESSION"
+          }
+
+  - command_name: "SHUTDOWN_PC"
+    direction: "Server -> Client"
+    purpose: "Remotely shutdowns the client operating system."
+    serialization: "JSON"
+    format: "Text (Enveloped)"
+    required_fields:
+      type: "string (Value MUST be 'COMMAND')"
+      action: "string (Value MUST be 'SHUTDOWN_PC')"
+    optional_fields: {}
+    validation: "None"
+    response_packet: "EXECUTION_RESULT"
+    timeout: "5 seconds"
+    priority: "High"
+    encryption: "AES-256-CBC"
+    packet_examples:
+      - decrypted_payload: >
+          {
+            "type": "COMMAND",
+            "action": "SHUTDOWN_PC"
+          }
+
+  - command_name: "RESTART_PC"
+    direction: "Server -> Client"
+    purpose: "Remotely restarts the client operating system."
+    serialization: "JSON"
+    format: "Text (Enveloped)"
+    required_fields:
+      type: "string (Value MUST be 'COMMAND')"
+      action: "string (Value MUST be 'RESTART_PC')"
+    optional_fields: {}
+    validation: "None"
+    response_packet: "EXECUTION_RESULT"
+    timeout: "5 seconds"
+    priority: "High"
+    encryption: "AES-256-CBC"
+    packet_examples:
+      - decrypted_payload: >
+          {
+            "type": "COMMAND",
+            "action": "RESTART_PC"
+          }
