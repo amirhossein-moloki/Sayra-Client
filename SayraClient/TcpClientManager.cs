@@ -251,9 +251,9 @@ public class TcpClientManager
         }
     }
 
-    public bool IsConnected => _client is { Connected: true } && _stream != null;
+    public virtual bool IsConnected => _client is { Connected: true } && _stream != null;
 
-    public async Task<bool> SendMessageAsync(object message, CancellationToken cancellationToken)
+    public virtual async Task<bool> SendMessageAsync(object message, CancellationToken cancellationToken)
     {
         try
         {
