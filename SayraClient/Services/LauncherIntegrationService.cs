@@ -8,6 +8,8 @@ using Sayra.Client.Launcher.Events;
 using Sayra.Client.Launcher.Services;
 using Sayra.Client.Shared.Ipc;
 using Sayra.Client.Shared.Models;
+using Sayra.Client.OfflineQueue;
+using Sayra.Client.OfflineQueue.Models;
 
 namespace SayraClient.Services;
 
@@ -18,6 +20,7 @@ public class LauncherIntegrationService : IModule
     private readonly SessionManager _sessionManager;
     private readonly IpcServer _ipcServer;
     private readonly TcpClientManager _tcpClientManager;
+    private readonly IOfflineQueueManager _queueManager;
     private readonly ILogger<LauncherIntegrationService> _logger;
 
     public string Name => "LauncherIntegrationModule";
@@ -29,6 +32,7 @@ public class LauncherIntegrationService : IModule
         SessionManager sessionManager,
         IpcServer ipcServer,
         TcpClientManager tcpClientManager,
+        IOfflineQueueManager queueManager,
         ILogger<LauncherIntegrationService> logger)
     {
         _launcherService = launcherService;
@@ -36,6 +40,7 @@ public class LauncherIntegrationService : IModule
         _sessionManager = sessionManager;
         _ipcServer = ipcServer;
         _tcpClientManager = tcpClientManager;
+        _queueManager = queueManager ?? throw new ArgumentNullException(nameof(queueManager));
         _logger = logger;
     }
 
@@ -160,7 +165,7 @@ public class LauncherIntegrationService : IModule
         try
         {
             var session = _sessionManager.GetCurrentSession();
-            var serverEvent = new
+            var payload = new
             {
                 type = "EVENT",
                 @event = eventType,
@@ -171,11 +176,21 @@ public class LauncherIntegrationService : IModule
                 details = details
             };
 
-            await _tcpClientManager.SendMessageAsync(serverEvent, CancellationToken.None);
+            var clientEvent = new ClientEvent
+            {
+                EventType = eventType,
+                Priority = eventType == "GAME_CRASHED" ? QueuePriority.HIGH : QueuePriority.NORMAL,
+                ClientId = session?.PcId ?? "UnknownPC",
+                SessionId = session?.SessionId ?? string.Empty,
+                Payload = System.Text.Json.JsonSerializer.Serialize(payload)
+            };
+
+            _logger.LogInformation("Enqueuing game event {Type} to offline queue.", eventType);
+            await _queueManager.AddEventAsync(clientEvent);
         }
         catch (Exception ex)
         {
-            _logger.LogWarning(ex, "Failed to send event {Type} to server.", eventType);
+            _logger.LogWarning(ex, "Failed to enqueue event {Type} to offline queue.", eventType);
         }
     }
 }

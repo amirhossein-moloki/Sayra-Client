@@ -251,7 +251,9 @@ public class TcpClientManager
         }
     }
 
-    public async Task SendMessageAsync(object message, CancellationToken cancellationToken)
+    public bool IsConnected => _client is { Connected: true } && _stream != null;
+
+    public async Task<bool> SendMessageAsync(object message, CancellationToken cancellationToken)
     {
         try
         {
@@ -261,11 +263,14 @@ public class TcpClientManager
                 byte[] data = Encoding.UTF8.GetBytes(wrappedJson);
                 await _stream.WriteAsync(data, 0, data.Length, cancellationToken);
                 await _stream.FlushAsync(cancellationToken);
+                return true;
             }
+            return false;
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Failed to send message.");
+            return false;
         }
     }
 }

@@ -5,6 +5,8 @@ using System.Text.Json;
 using System.Timers;
 using Timer = System.Timers.Timer;
 using Sayra.Client.Launcher.Services;
+using Sayra.Client.OfflineQueue;
+using Sayra.Client.OfflineQueue.Models;
 
 namespace SayraClient.Services;
 
@@ -13,6 +15,7 @@ public class SessionManager : ISessionStateProvider, IDisposable
     private readonly ILogger<SessionManager> _logger;
     private readonly IServiceProvider _serviceProvider;
     private readonly KioskManager _kioskManager;
+    private readonly IOfflineQueueManager _queueManager;
     private SessionModel? _currentSession;
     private readonly Timer _sessionTimer;
     private readonly string _sessionFilePath = Path.Combine(AppContext.BaseDirectory, "session_state.json");
@@ -35,11 +38,16 @@ public class SessionManager : ISessionStateProvider, IDisposable
         return name == "notepad.exe" || name == "calc.exe" || name == "sayra.client.guardian.exe" || name == "sayraupdater.exe" || name == "cmd.exe" || name == "sayra.client.guardian" || name == "sayraupdater";
     }
 
-    public SessionManager(ILogger<SessionManager> logger, IServiceProvider serviceProvider, KioskManager kioskManager)
+    public SessionManager(
+        ILogger<SessionManager> logger,
+        IServiceProvider serviceProvider,
+        KioskManager kioskManager,
+        IOfflineQueueManager queueManager)
     {
         _logger = logger;
         _serviceProvider = serviceProvider;
         _kioskManager = kioskManager;
+        _queueManager = queueManager ?? throw new ArgumentNullException(nameof(queueManager));
         _sessionTimer = new Timer(1000); // 1 second interval
         _sessionTimer.Elapsed += OnTimerElapsed;
 
@@ -185,7 +193,7 @@ public class SessionManager : ISessionStateProvider, IDisposable
         _logger.LogInformation("Session timeout reached.");
         StopSession(_currentSession?.PcId ?? "Unknown");
 
-        var timeoutEvent = new
+        var timeoutPayload = new
         {
             type = "EVENT",
             @event = "SESSION_ENDED",
@@ -193,9 +201,17 @@ public class SessionManager : ISessionStateProvider, IDisposable
             pcId = _currentSession?.PcId
         };
 
-        using var scope = _serviceProvider.CreateScope();
-        var networkManager = scope.ServiceProvider.GetRequiredService<TcpClientManager>();
-        await networkManager.SendMessageAsync(timeoutEvent, CancellationToken.None);
+        var clientEvent = new ClientEvent
+        {
+            EventType = "SESSION_ENDED",
+            Priority = QueuePriority.HIGH,
+            ClientId = _currentSession?.PcId ?? "Unknown",
+            SessionId = _currentSession?.SessionId ?? string.Empty,
+            Payload = JsonSerializer.Serialize(timeoutPayload)
+        };
+
+        _logger.LogInformation("Enqueuing session timeout event to offline queue.");
+        await _queueManager.AddEventAsync(clientEvent);
     }
 
     private void SaveSessionState()
