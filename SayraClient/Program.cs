@@ -2,26 +2,31 @@ using SayraClient;
 using SayraClient.Commands;
 using SayraClient.Services;
 using SayraClient.Services.OfflineQueue;
+using Sayra.Client.OfflineQueue;
 using Sayra.Client.OfflineQueue.Extensions;
 using Sayra.Client.Discovery.Services;
 using Sayra.Client.GameLibrary;
 using Sayra.Client.LocalAdmin;
 using Sayra.Client.Launcher;
 using Sayra.Client.Diagnostics.Extensions;
+using Sayra.Client.Diagnostics.Services;
+using Sayra.Client.Shared.Interfaces;
+using Sayra.Client.Shared.Services;
 using Microsoft.Extensions.Hosting.WindowsServices;
 using Serilog;
 
 var builder = Host.CreateApplicationBuilder(args);
 
-// Configure Serilog
+// Configure Serilog with structured JSON rotation pipelines, restricting storage to 10MB x 5 files
 Log.Logger = new LoggerConfiguration()
     .ReadFrom.Configuration(builder.Configuration)
     .Enrich.FromLogContext()
     .WriteTo.Console()
-    .WriteTo.File(Path.Combine(AppContext.BaseDirectory, "logs", "client-.log"),
-        rollingInterval: RollingInterval.Day,
-        retainedFileCountLimit: 7,
-        outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] {Message:lj}{NewLine}{Exception}")
+    .WriteTo.File(new Serilog.Formatting.Json.JsonFormatter(),
+        Path.Combine(AppContext.BaseDirectory, "logs", "client.log"),
+        fileSizeLimitBytes: 10 * 1024 * 1024,
+        rollOnFileSizeLimit: true,
+        retainedFileCountLimit: 5)
     .CreateLogger();
 
 builder.Logging.ClearProviders();
@@ -112,6 +117,13 @@ builder.Services.AddSingleton<IStartupPipeline, StartupPipeline>();
 builder.Services.AddSingleton<IShutdownCoordinator, ShutdownCoordinator>();
 builder.Services.AddSingleton<IDependencyValidator, DependencyValidator>();
 
+// Register Logging and Audit Context Providers and Services
+builder.Services.AddSingleton<ISessionContextProvider, SessionContextProvider>();
+builder.Services.AddSingleton<IEventDispatcher, EventDispatcher>();
+builder.Services.AddSingleton<IAuditLogRepository, AuditLogRepository>();
+builder.Services.AddSingleton<IAuditLogger, AuditLogger>();
+builder.Services.AddSingleton<LogBatchingManager>();
+
 // Register All Supervised Workers and Modules as Singletons
 builder.Services.AddSingleton<IpcServer>();
 builder.Services.AddSingleton<Worker>();
@@ -123,6 +135,8 @@ builder.Services.AddSingleton<UpdateManager>();
 builder.Services.AddSingleton<LauncherIntegrationService>();
 builder.Services.AddSingleton<QueueProcessorWorker>();
 builder.Services.AddSingleton<QueueHealthWorker>();
+builder.Services.AddSingleton<EventQueueBatchingWorker>();
+builder.Services.AddSingleton<LogCompressionWorker>();
 
 // Register Lifetime Orchestrator Hosted Service
 builder.Services.AddHostedService<ClientAppLifetimeWorker>();
