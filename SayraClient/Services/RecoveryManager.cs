@@ -1,5 +1,6 @@
 using Microsoft.Extensions.Logging;
 using SayraClient.Models;
+using Sayra.Client.Shared.Interfaces.Security;
 
 namespace SayraClient.Services;
 
@@ -7,9 +8,9 @@ public class RecoveryManager
 {
     private readonly ILogger<RecoveryManager> _logger;
     private readonly SessionManager _sessionManager;
-    private readonly KioskManager _kioskManager;
+    private readonly IKioskSecurityService _kioskManager;
 
-    public RecoveryManager(ILogger<RecoveryManager> logger, SessionManager sessionManager, KioskManager kioskManager)
+    public RecoveryManager(ILogger<RecoveryManager> logger, SessionManager sessionManager, IKioskSecurityService kioskManager)
     {
         _logger = logger;
         _sessionManager = sessionManager;

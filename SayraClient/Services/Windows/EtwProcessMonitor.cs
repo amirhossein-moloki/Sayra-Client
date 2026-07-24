@@ -11,13 +11,14 @@ using Microsoft.Diagnostics.Tracing.Parsers.Kernel;
 using Microsoft.Diagnostics.Tracing.Session;
 using Microsoft.Extensions.Logging;
 using Sayra.Client.Shared.Interfaces;
+using Sayra.Client.Shared.Interfaces.Security;
 
 namespace SayraClient.Services.Windows;
 
 public class EtwProcessMonitor : SupervisedBackgroundService
 {
     private readonly IAuditLogger _auditLogger;
-    private readonly KioskManager _kioskManager;
+    private readonly IKioskSecurityService _kioskManager;
     private TraceEventSession? _etwSession;
     private ManagementEventWatcher? _wmiWatcher;
     private readonly HashSet<string> _blacklistedProcesses = new(StringComparer.OrdinalIgnoreCase)
@@ -29,7 +30,7 @@ public class EtwProcessMonitor : SupervisedBackgroundService
         ILogger<EtwProcessMonitor> logger,
         IServiceHealthMonitor healthMonitor,
         IAuditLogger auditLogger,
-        KioskManager kioskManager)
+        IKioskSecurityService kioskManager)
         : base(logger, healthMonitor, "EtwProcessMonitor")
     {
         _auditLogger = auditLogger;

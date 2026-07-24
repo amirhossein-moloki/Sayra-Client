@@ -17,6 +17,8 @@ using Sayra.Client.LocalAdmin.Storage;
 using Sayra.Client.OfflineQueue;
 using Sayra.Client.OfflineQueue.Security;
 using Sayra.Client.Shared.Models;
+using Sayra.Client.Shared.Interfaces.Security;
+using Microsoft.Extensions.DependencyInjection;
 using SayraClient.Services;
 using Xunit;
 
@@ -362,8 +364,8 @@ public class SecurityTests
     public void Adversarial_Kiosk_Lockdown_Hotkeys_Blocked_When_Locked()
     {
         // Arrange
-        var loggerMock = new Mock<ILogger<KioskManager>>();
-        var kioskManager = new KioskManager(loggerMock.Object);
+        var loggerMock = new Mock<ILogger<KioskSecurityService>>();
+        var kioskManager = new KioskSecurityService(loggerMock.Object);
 
         // Act
         kioskManager.Lockdown();
@@ -393,5 +395,63 @@ public class SecurityTests
 
         // Assert: Fake, unauthorized SID connection is rejected cleanly
         Assert.False(isVerified);
+    }
+
+    [Fact]
+    public void Verify_SecurityServices_Implement_Required_Interfaces()
+    {
+        // Arrange & Act & Assert
+        Assert.True(typeof(ICryptographyService).IsAssignableFrom(typeof(CryptographyService)));
+        Assert.True(typeof(IKioskSecurityService).IsAssignableFrom(typeof(KioskSecurityService)));
+        Assert.True(typeof(IIntegrityValidator).IsAssignableFrom(typeof(IntegrityValidator)));
+        Assert.True(typeof(ISecureIpcPolicyManager).IsAssignableFrom(typeof(SecureIpcPolicyManager)));
+    }
+
+    [Fact]
+    public void Verify_DependencyInjection_Resolves_Security_Interfaces()
+    {
+        // Arrange
+        var services = new Microsoft.Extensions.DependencyInjection.ServiceCollection();
+        services.AddLogging();
+        services.AddSingleton<SessionKeyManager>();
+
+        // Register using interfaces
+        services.AddSingleton<ICryptographyService, CryptographyService>();
+        services.AddSingleton<IKioskSecurityService, KioskSecurityService>();
+        services.AddSingleton<IIntegrityValidator, IntegrityValidator>();
+        services.AddSingleton<ISecureIpcPolicyManager, SecureIpcPolicyManager>();
+
+        var provider = services.BuildServiceProvider();
+
+        // Act
+        var crypto = provider.GetService<ICryptographyService>();
+        var kiosk = provider.GetService<IKioskSecurityService>();
+        var integrity = provider.GetService<IIntegrityValidator>();
+        var ipcPolicy = provider.GetService<ISecureIpcPolicyManager>();
+
+        // Assert
+        Assert.NotNull(crypto);
+        Assert.NotNull(kiosk);
+        Assert.NotNull(integrity);
+        Assert.NotNull(ipcPolicy);
+    }
+
+    [Fact]
+    public void Verify_SecurityServices_Are_Fully_Mockable()
+    {
+        // Arrange
+        var mockCrypto = new Mock<ICryptographyService>();
+        var mockIntegrity = new Mock<IIntegrityValidator>();
+
+        mockCrypto.Setup(c => c.Encrypt("hello")).Returns("encrypted-hello");
+        mockIntegrity.Setup(i => i.ValidateFile("path", "hash")).Returns(true);
+
+        // Act
+        var encrypted = mockCrypto.Object.Encrypt("hello");
+        var isValid = mockIntegrity.Object.ValidateFile("path", "hash");
+
+        // Assert
+        Assert.Equal("encrypted-hello", encrypted);
+        Assert.True(isValid);
     }
 }

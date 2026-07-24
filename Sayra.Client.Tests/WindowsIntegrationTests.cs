@@ -9,6 +9,7 @@ using Microsoft.Win32;
 using Moq;
 using Sayra.Client.GameLibrary.Services;
 using Sayra.Client.Shared.Interfaces;
+using Sayra.Client.Shared.Interfaces.Security;
 using Sayra.Client.Shared.Models;
 using SayraClient;
 using SayraClient.Services;
@@ -33,10 +34,11 @@ public class WindowsIntegrationTests
             new Mock<IAuditLogger>().Object
         );
         var stateManagerMock = new Mock<ClientStateManager>(new Mock<ILogger<ClientStateManager>>().Object);
-        var kioskManagerMock = new Mock<KioskManager>(new Mock<ILogger<KioskManager>>().Object);
+        var kioskManagerMock = new Mock<IKioskSecurityService>();
         var gameLauncherMock = new Mock<Sayra.Client.Launcher.Services.IGameLauncherService>();
         var processMonitorMock = new Mock<Sayra.Client.Launcher.Services.IProcessMonitorService>();
         var gameLibraryMock = new Mock<IGameLibraryService>();
+        var ipcPolicyMock = new Mock<ISecureIpcPolicyManager>();
 
         _ipcServerMock = new Mock<IpcServer>(
             new Mock<ILogger<IpcServer>>().Object,
@@ -46,6 +48,7 @@ public class WindowsIntegrationTests
             gameLauncherMock.Object,
             processMonitorMock.Object,
             gameLibraryMock.Object,
+            ipcPolicyMock.Object,
             _healthMonitorMock.Object
         );
     }
@@ -122,7 +125,7 @@ public class WindowsIntegrationTests
             new Mock<MessageHandler>(
                 new Mock<ILogger<MessageHandler>>().Object,
                 new Mock<SayraClient.Commands.CommandRouter>(new Mock<ILogger<SayraClient.Commands.CommandRouter>>().Object, Array.Empty<SayraClient.Commands.ICommandHandler>()).Object,
-                new Mock<SayraClient.Services.SecurityManager>(new Mock<ILogger<SayraClient.Services.SecurityManager>>().Object, new Mock<SayraClient.Services.EncryptionManager>(new Mock<ILogger<SayraClient.Services.EncryptionManager>>().Object).Object).Object
+                new Mock<SayraClient.Services.SecurityManager>(new Mock<ILogger<SayraClient.Services.SecurityManager>>().Object).Object
             ).Object,
             new Mock<IServiceProvider>().Object,
             new Mock<SecureTransportLayer>(
@@ -133,7 +136,7 @@ public class WindowsIntegrationTests
             new Mock<SessionKeyManager>(new Mock<ILogger<SessionKeyManager>>().Object).Object,
             new Mock<AuthManager>(
                 new Mock<ILogger<AuthManager>>().Object,
-                new Mock<SayraClient.Services.SecurityManager>(new Mock<ILogger<SayraClient.Services.SecurityManager>>().Object, new Mock<SayraClient.Services.EncryptionManager>(new Mock<ILogger<SayraClient.Services.EncryptionManager>>().Object).Object).Object,
+                new Mock<SayraClient.Services.SecurityManager>(new Mock<ILogger<SayraClient.Services.SecurityManager>>().Object).Object,
                 new Mock<SecureTransportLayer>(
                     new Mock<ILogger<SecureTransportLayer>>().Object,
                     new Mock<SessionKeyManager>(new Mock<ILogger<SessionKeyManager>>().Object).Object,
@@ -174,7 +177,7 @@ public class WindowsIntegrationTests
             new Mock<MessageHandler>(
                 new Mock<ILogger<MessageHandler>>().Object,
                 new Mock<SayraClient.Commands.CommandRouter>(new Mock<ILogger<SayraClient.Commands.CommandRouter>>().Object, Array.Empty<SayraClient.Commands.ICommandHandler>()).Object,
-                new Mock<SayraClient.Services.SecurityManager>(new Mock<ILogger<SayraClient.Services.SecurityManager>>().Object, new Mock<SayraClient.Services.EncryptionManager>(new Mock<ILogger<SayraClient.Services.EncryptionManager>>().Object).Object).Object
+                new Mock<SayraClient.Services.SecurityManager>(new Mock<ILogger<SayraClient.Services.SecurityManager>>().Object).Object
             ).Object,
             new Mock<IServiceProvider>().Object,
             new Mock<SecureTransportLayer>(
@@ -185,7 +188,7 @@ public class WindowsIntegrationTests
             new Mock<SessionKeyManager>(new Mock<ILogger<SessionKeyManager>>().Object).Object,
             new Mock<AuthManager>(
                 new Mock<ILogger<AuthManager>>().Object,
-                new Mock<SayraClient.Services.SecurityManager>(new Mock<ILogger<SayraClient.Services.SecurityManager>>().Object, new Mock<SayraClient.Services.EncryptionManager>(new Mock<ILogger<SayraClient.Services.EncryptionManager>>().Object).Object).Object,
+                new Mock<SayraClient.Services.SecurityManager>(new Mock<ILogger<SayraClient.Services.SecurityManager>>().Object).Object,
                 new Mock<SecureTransportLayer>(
                     new Mock<ILogger<SecureTransportLayer>>().Object,
                     new Mock<SessionKeyManager>(new Mock<ILogger<SessionKeyManager>>().Object).Object,
@@ -219,7 +222,7 @@ public class WindowsIntegrationTests
     {
         // Arrange
         var etwLogger = new Mock<ILogger<EtwProcessMonitor>>();
-        var kioskManagerMock = new Mock<KioskManager>(new Mock<ILogger<KioskManager>>().Object);
+        var kioskManagerMock = new Mock<IKioskSecurityService>();
         kioskManagerMock.Setup(k => k.IsLocked()).Returns(true);
 
         var monitor = new EtwProcessMonitor(

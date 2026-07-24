@@ -6,12 +6,13 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Microsoft.Win32;
 using Sayra.Client.Shared.Interfaces;
+using Sayra.Client.Shared.Interfaces.Security;
 
 namespace SayraClient.Services.Windows;
 
 public class RegistryWatcher : SupervisedBackgroundService
 {
-    private readonly KioskManager _kioskManager;
+    private readonly IKioskSecurityService _kioskManager;
     private readonly IPowerManagementService _powerManagementService;
     private readonly IAuditLogger _auditLogger;
     private readonly IWindowsEventLogService _eventLogService;
@@ -21,7 +22,7 @@ public class RegistryWatcher : SupervisedBackgroundService
     public RegistryWatcher(
         ILogger<RegistryWatcher> logger,
         IServiceHealthMonitor healthMonitor,
-        KioskManager kioskManager,
+        IKioskSecurityService kioskManager,
         IPowerManagementService powerManagementService,
         IAuditLogger auditLogger,
         IWindowsEventLogService eventLogService)

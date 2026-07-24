@@ -1,20 +1,21 @@
 using System.Text.Json;
 using Microsoft.Extensions.Logging;
 using SayraClient.Models;
+using Sayra.Client.Shared.Interfaces.Security;
 
 namespace SayraClient.Services;
 
 public class SecureTransportLayer
 {
     private readonly ILogger<SecureTransportLayer> _logger;
-    private readonly EncryptionManager _encryptionManager;
-    private readonly IntegrityValidator _integrityValidator;
+    private readonly ICryptographyService _encryptionManager;
+    private readonly IIntegrityValidator _integrityValidator;
     private readonly SessionKeyManager _sessionKeyManager;
 
     public SecureTransportLayer(
         ILogger<SecureTransportLayer> logger,
-        EncryptionManager encryptionManager,
-        IntegrityValidator integrityValidator,
+        ICryptographyService encryptionManager,
+        IIntegrityValidator integrityValidator,
         SessionKeyManager sessionKeyManager)
     {
         _logger = logger;

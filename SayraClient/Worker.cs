@@ -3,18 +3,19 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using SayraClient.Services;
+using Sayra.Client.Shared.Interfaces.Security;
 
 namespace SayraClient;
 
 public class Worker : SupervisedBackgroundService
 {
     private readonly TcpClientManager _networkManager;
-    private readonly SayraClient.Services.KioskManager _kioskManager;
+    private readonly IKioskSecurityService _kioskManager;
 
     public Worker(
         ILogger<Worker> logger,
         TcpClientManager networkManager,
-        SayraClient.Services.KioskManager kioskManager,
+        IKioskSecurityService kioskManager,
         IServiceHealthMonitor healthMonitor)
         : base(logger, healthMonitor, "NetworkWorker")
     {
