@@ -1,0 +1,143 @@
+<UserControl x:Class="Sayra.UI.Notifications.Controls.NotificationCard"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vms="clr-namespace:Sayra.UI.Notifications.ViewModels"
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance Type=vms:NotificationCardViewModel}"
+             Width="400" MinHeight="90" FlowDirection="{DynamicResource NotificationFlowDirection}">
+
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+
+        <!-- Card fade-in and slide-up entrance animation -->
+        <Storyboard x:Key="LoadStoryboard">
+            <DoubleAnimation Storyboard.TargetName="CardBorder"
+                             Storyboard.TargetProperty="Opacity"
+                             From="0" To="1" Duration="0:0:0.3"/>
+            <DoubleAnimation Storyboard.TargetName="Translation"
+                             Storyboard.TargetProperty="Y"
+                             From="30" To="0" Duration="0:0:0.3">
+                <DoubleAnimation.EasingFunction>
+                    <PowerEase Power="3" EasingMode="EaseOut"/>
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+        </Storyboard>
+    </UserControl.Resources>
+
+    <UserControl.Triggers>
+        <EventTrigger RoutedEvent="UserControl.Loaded">
+            <BeginStoryboard Storyboard="{StaticResource LoadStoryboard}"/>
+        </EventTrigger>
+    </UserControl.Triggers>
+
+    <Border x:Name="CardBorder" CornerRadius="12" BorderThickness="1.5" Padding="16,12" Margin="4">
+        <!-- Visual States styling via DataTriggers -->
+        <Border.Style>
+            <Style TargetType="Border">
+                <Setter Property="Background" Value="#1E1E24"/>
+                <Setter Property="BorderBrush" Value="#2F2F36"/>
+                <Style.Triggers>
+                    <!-- Critical State -->
+                    <DataTrigger Binding="{Binding PriorityText}" Value="CRITICAL">
+                        <Setter Property="Background" Value="#2E1B1B"/>
+                        <Setter Property="BorderBrush" Value="#EF4444"/>
+                    </DataTrigger>
+                    <!-- High State -->
+                    <DataTrigger Binding="{Binding PriorityText}" Value="HIGH">
+                        <Setter Property="Background" Value="#2D2318"/>
+                        <Setter Property="BorderBrush" Value="#E5A000"/>
+                    </DataTrigger>
+                    <!-- Success/Normal category logic styling if needed -->
+                    <DataTrigger Binding="{Binding CategoryText}" Value="BILLING">
+                        <Setter Property="BorderBrush" Value="#F5FF00"/>
+                    </DataTrigger>
+                </Style.Triggers>
+            </Style>
+        </Border.Style>
+
+        <Border.RenderTransform>
+            <TranslateTransform x:Name="Translation" Y="30"/>
+        </Border.RenderTransform>
+
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <!-- Header Row: Title, Priority Dot, Timestamp and Dismiss Button -->
+            <Grid Grid.Row="0" Margin="0,0,0,6">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Priority Dot -->
+                <Ellipse Grid.Column="0" Width="8" Height="8" Margin="0,0,8,0" VerticalAlignment="Center">
+                    <Ellipse.Style>
+                        <Style TargetType="Ellipse">
+                            <Setter Property="Fill" Value="#14BE78"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding PriorityText}" Value="CRITICAL">
+                                    <Setter Property="Fill" Value="#EF4444"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding PriorityText}" Value="HIGH">
+                                    <Setter Property="Fill" Value="#E5A000"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Ellipse.Style>
+                </Ellipse>
+
+                <!-- Title -->
+                <TextBlock Grid.Column="1" Text="{Binding Title}" Foreground="White" FontWeight="Bold" FontSize="14" VerticalAlignment="Center"/>
+
+                <!-- Timestamp -->
+                <TextBlock Grid.Column="2" Text="{Binding TimestampText}" Foreground="#9A9A9A" FontSize="11" Margin="8,0" VerticalAlignment="Center"/>
+
+                <!-- Dismiss Button -->
+                <Button Grid.Column="3" Command="{Binding DismissCommand}" Background="Transparent" BorderBrush="Transparent" Foreground="#9A9A9A" Width="20" Height="20" Margin="4,0,0,0" Padding="0" VerticalAlignment="Center" Cursor="Hand">
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+                            <Grid Background="Transparent">
+                                <TextBlock Text="✕" FontSize="12" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="{TemplateBinding Foreground}"/>
+                            </Grid>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
+            </Grid>
+
+            <!-- Body Row: Message Text -->
+            <TextBlock Grid.Row="1" Text="{Binding Body}" Foreground="White" FontSize="13" TextWrapping="Wrap" LineHeight="18" Margin="0,0,0,8"/>
+
+            <!-- Action Row: Action Button -->
+            <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Left" Visibility="{Binding HasAction, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <Button Command="{Binding ExecuteActionCommand}" Content="{Binding ActionText}" Height="28" Padding="16,0" Background="#F5FF00" Foreground="Black" FontWeight="Bold" FontSize="12" BorderThickness="0" Cursor="Hand">
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="Button">
+                                        <Border Background="{TemplateBinding Background}" CornerRadius="6">
+                                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        </Border>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                            <Style.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Background" Value="#ffff3d"/>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
+            </StackPanel>
+        </Grid>
+    </Border>
+</UserControl>

@@ -53,7 +53,11 @@ namespace Sayra.Client.Shared.Ipc
         RESTART_GAME,
         GET_RUNNING_STATISTICS,
         VALIDATE_EXECUTABLE,
-        LAUNCHER_STATUS
+        LAUNCHER_STATUS,
+
+        // Notification Events
+        NOTIFICATION_RECEIVED,
+        NOTIFICATION_ACK
     }
 
     public class IpcMessage

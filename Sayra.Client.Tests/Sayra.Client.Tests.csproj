@@ -1,10 +1,12 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net8.0-windows</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <IsPackable>false</IsPackable>
+    <UseWPF>true</UseWPF>
+    <EnableWindowsTargeting>true</EnableWindowsTargeting>
   </PropertyGroup>
 
   <ItemGroup>
@@ -34,6 +36,7 @@
     <ProjectReference Include="..\Sayra.Client.Authentication\Sayra.Client.Authentication.csproj" />
     <ProjectReference Include="..\Sayra.Client.OfflineQueue\Sayra.Client.OfflineQueue.csproj" />
     <ProjectReference Include="..\SayraClient\SayraClient.csproj" />
+    <ProjectReference Include="..\Sayra.UI\Sayra.UI.csproj" />
   </ItemGroup>
 
 </Project>

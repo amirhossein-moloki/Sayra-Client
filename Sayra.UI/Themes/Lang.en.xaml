@@ -1,6 +1,14 @@
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:sys="clr-namespace:System;assembly=mscorlib">
+    <FlowDirection x:Key="NotificationFlowDirection">LeftToRight</FlowDirection>
+    <sys:String x:Key="Action.EXTEND_SESSION_1H">EXTEND SESSION</sys:String>
+    <sys:String x:Key="Action.EXTEND_SESSION">EXTEND SESSION</sys:String>
+    <sys:String x:Key="Action.CONFIRM_SHUTDOWN">CONFIRM SHUTDOWN</sys:String>
+    <sys:String x:Key="Action.OPEN_ADMIN_MESSAGE">OPEN MESSAGE</sys:String>
+    <sys:String x:Key="Action.ACCEPT_UPDATE">ACCEPT UPDATE</sys:String>
+    <sys:String x:Key="Action.CONFIRM">CONFIRM</sys:String>
+
     <sys:String x:Key="TerminalAccessHeader">SYSTEM TERMINAL ACCESS</sys:String>
     <sys:String x:Key="TerminalAccessSubtitle">Enter credentials to activate station</sys:String>
     <sys:String x:Key="Username">USERNAME</sys:String>

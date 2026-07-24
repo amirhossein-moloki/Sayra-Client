@@ -1,0 +1,37 @@
+<Window x:Class="Sayra.UI.Notifications.Views.NotificationOverlayWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:controls="clr-namespace:Sayra.UI.Notifications.Controls"
+        xmlns:vms="clr-namespace:Sayra.UI.Notifications.ViewModels"
+        mc:Ignorable="d"
+        Title="Sayra Notification Overlay"
+        Height="800" Width="450"
+        WindowStyle="None"
+        Background="Transparent"
+        AllowsTransparency="True"
+        Topmost="True"
+        ShowInTaskbar="False"
+        ShowActivated="False"
+        Focusable="False"
+        HorizontalAlignment="Right"
+        VerticalAlignment="Bottom">
+
+    <Grid Background="Transparent">
+        <!-- ScrollViewer/ItemsControl containing active visible notifications stacked vertically from bottom to top -->
+        <ItemsControl ItemsSource="{Binding ActiveNotifications}">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <StackPanel Orientation="Vertical" VerticalAlignment="Bottom" />
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
+                <DataTemplate DataType="{x:Type vms:NotificationCardViewModel}">
+                    <!-- Reusable premium NotificationCard component -->
+                    <controls:NotificationCard Margin="12,6,12,12" />
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+    </Grid>
+</Window>
