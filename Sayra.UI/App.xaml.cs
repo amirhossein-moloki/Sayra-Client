@@ -162,6 +162,23 @@ namespace Sayra.UI
                 SetLanguage("fa-IR");
             }
 
+            // Initialize Notifications Repository and Overlay Window
+            try
+            {
+                var notificationRepo = ServiceProvider.GetRequiredService<Sayra.UI.Notifications.Services.INotificationRepository>();
+                Task.Run(async () => await notificationRepo.InitializeAsync()).GetAwaiter().GetResult();
+
+                // Show Notifications Overlay Window
+                var overlayVm = ServiceProvider.GetRequiredService<Sayra.UI.Notifications.ViewModels.NotificationOverlayViewModel>();
+                var overlayWindow = new Sayra.UI.Notifications.Views.NotificationOverlayWindow(overlayVm);
+                overlayWindow.Show();
+                Log.Information("Notification Overlay Window successfully initialized and displayed.");
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Failed to initialize notifications presentation system during startup.");
+            }
+
             // Use OnExplicitShutdown to prevent automatic application exit during the Login to Dashboard transition.
             this.ShutdownMode = ShutdownMode.OnExplicitShutdown;
         }
@@ -250,6 +267,24 @@ namespace Sayra.UI
             services.AddDiagnosticsServices(config);
             services.AddLauncherServices();
             services.AddApplicationScanner();
+
+            // Add Notifications Presentation Module Services
+            services.AddSingleton<Sayra.UI.Notifications.Services.NotificationIpcClient>();
+            services.AddSingleton<Sayra.UI.Notifications.Services.INotificationRepository, Sayra.UI.Notifications.Services.NotificationRepository>();
+            services.AddSingleton<Sayra.UI.Notifications.Services.NotificationAcknowledgementService>();
+            services.AddSingleton<Sayra.UI.Notifications.Services.INotificationActionHandler, Sayra.UI.Notifications.Services.NotificationActionHandler>();
+            services.AddSingleton<Sayra.UI.Notifications.Services.NotificationDispatcher>();
+            services.AddSingleton<Sayra.UI.Notifications.Services.INotificationDispatcher>(sp => sp.GetRequiredService<Sayra.UI.Notifications.Services.NotificationDispatcher>());
+            services.AddSingleton<Sayra.UI.Notifications.ViewModels.NotificationOverlayViewModel>(sp =>
+            {
+                return new Sayra.UI.Notifications.ViewModels.NotificationOverlayViewModel(
+                    sp.GetRequiredService<Sayra.UI.Notifications.Services.NotificationDispatcher>(),
+                    sp.GetRequiredService<Sayra.UI.Notifications.Services.NotificationAcknowledgementService>(),
+                    sp.GetRequiredService<Sayra.UI.Notifications.Services.INotificationActionHandler>(),
+                    System.Windows.Application.Current.Dispatcher
+                );
+            });
+            services.AddSingleton<Sayra.UI.Notifications.ViewModels.NotificationHistoryViewModel>();
 
             // Register ViewModels
             services.AddTransient<Sayra.UI.ViewModels.LoginViewModel>();

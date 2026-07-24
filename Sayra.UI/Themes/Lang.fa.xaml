@@ -1,6 +1,14 @@
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:sys="clr-namespace:System;assembly=mscorlib">
+    <FlowDirection x:Key="NotificationFlowDirection">RightToLeft</FlowDirection>
+    <sys:String x:Key="Action.EXTEND_SESSION_1H">تمدید نشست</sys:String>
+    <sys:String x:Key="Action.EXTEND_SESSION">تمدید نشست</sys:String>
+    <sys:String x:Key="Action.CONFIRM_SHUTDOWN">تایید خاموشی</sys:String>
+    <sys:String x:Key="Action.OPEN_ADMIN_MESSAGE">نمایش پیام</sys:String>
+    <sys:String x:Key="Action.ACCEPT_UPDATE">قبول بروزرسانی</sys:String>
+    <sys:String x:Key="Action.CONFIRM">تایید</sys:String>
+
     <sys:String x:Key="TerminalAccessHeader">دسترسی به ترمینال سیستم</sys:String>
     <sys:String x:Key="TerminalAccessSubtitle">جهت فعال‌سازی ایستگاه، مشخصات خود را وارد کنید</sys:String>
     <sys:String x:Key="Username">نام کاربری</sys:String>
