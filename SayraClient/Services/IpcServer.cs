@@ -63,12 +63,7 @@ public class IpcServer : SupervisedBackgroundService
         {
             try
             {
-                var serverStream = new NamedPipeServerStream(
-                    PipeName,
-                    PipeDirection.InOut,
-                    NamedPipeServerStream.MaxAllowedServerInstances,
-                    PipeTransmissionMode.Byte,
-                    PipeOptions.Asynchronous);
+                var serverStream = CreateNamedPipeServerStream();
 
                 await serverStream.WaitForConnectionAsync(stoppingToken);
                 _logger.LogInformation("UI Client connected to IPC.");
@@ -88,8 +83,92 @@ public class IpcServer : SupervisedBackgroundService
         }
     }
 
+    private NamedPipeServerStream CreateNamedPipeServerStream()
+    {
+        if (OperatingSystem.IsWindows())
+        {
+            var pipeSecurity = new System.IO.Pipes.PipeSecurity();
+
+            // 1. Allow SYSTEM full control
+            pipeSecurity.AddAccessRule(new System.IO.Pipes.PipeAccessRule(
+                new System.Security.Principal.SecurityIdentifier(System.Security.Principal.WellKnownSidType.LocalSystemSid, null),
+                System.IO.Pipes.PipeAccessRights.FullControl,
+                System.Security.AccessControl.AccessControlType.Allow));
+
+            // 2. Allow Admins full control
+            pipeSecurity.AddAccessRule(new System.IO.Pipes.PipeAccessRule(
+                new System.Security.Principal.SecurityIdentifier(System.Security.Principal.WellKnownSidType.BuiltinAdministratorsSid, null),
+                System.IO.Pipes.PipeAccessRights.FullControl,
+                System.Security.AccessControl.AccessControlType.Allow));
+
+            // 3. Allow Authenticated Users read/write access (for the active desktop user in Session 1+)
+            pipeSecurity.AddAccessRule(new System.IO.Pipes.PipeAccessRule(
+                new System.Security.Principal.SecurityIdentifier(System.Security.Principal.WellKnownSidType.AuthenticatedUserSid, null),
+                System.IO.Pipes.PipeAccessRights.ReadWrite,
+                System.Security.AccessControl.AccessControlType.Allow));
+
+            return System.IO.Pipes.NamedPipeServerStreamAcl.Create(
+                PipeName,
+                PipeDirection.InOut,
+                NamedPipeServerStream.MaxAllowedServerInstances,
+                PipeTransmissionMode.Byte,
+                PipeOptions.Asynchronous,
+                0, // inBufferSize
+                0, // outBufferSize
+                pipeSecurity);
+        }
+        else
+        {
+            return new NamedPipeServerStream(
+                PipeName,
+                PipeDirection.InOut,
+                NamedPipeServerStream.MaxAllowedServerInstances,
+                PipeTransmissionMode.Byte,
+                PipeOptions.Asynchronous);
+        }
+    }
+
     private async Task HandleClientAsync(NamedPipeServerStream stream, CancellationToken ct)
     {
+        if (OperatingSystem.IsWindows())
+        {
+            bool isClientAuthorized = false;
+            string clientSid = "";
+            string clientName = "";
+
+            try
+            {
+                stream.RunAsClient(() =>
+                {
+                    using (var identity = System.Security.Principal.WindowsIdentity.GetCurrent())
+                    {
+                        clientSid = identity.User?.Value ?? "";
+                        clientName = identity.Name;
+
+                        // Check if the client is SYSTEM or in the Administrators group
+                        var principal = new System.Security.Principal.WindowsPrincipal(identity);
+                        if (identity.IsSystem || principal.IsInRole(System.Security.Principal.WindowsBuiltInRole.Administrator))
+                        {
+                            isClientAuthorized = true;
+                        }
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Failed to verify client identity over Named Pipe IPC.");
+            }
+
+            if (!isClientAuthorized)
+            {
+                _logger.LogWarning("REJECTED IPC Named Pipe connection. Unauthorized connecting client Windows Identity. Name: {Name}, SID: {Sid}", clientName, clientSid);
+                stream.Dispose();
+                return;
+            }
+
+            _logger.LogInformation("AUTHORIZED IPC Named Pipe connection from client: {Name} (SID: {Sid})", clientName, clientSid);
+        }
+
         using var reader = new StreamReader(stream);
         using var writer = new StreamWriter(stream) { AutoFlush = true };
 

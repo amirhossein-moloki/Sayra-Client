@@ -93,6 +93,18 @@ namespace SayraClient.Services
         private Task ExecutePreStartupAsync(CancellationToken ct)
         {
             _logger.LogInformation("[Stage 1/10] [Pre Startup] Initiating runtime environment validation and preparing host parameters...");
+
+            // Register with Windows Restart Manager
+            try
+            {
+                var restartHelper = _serviceProvider.GetRequiredService<SayraClient.Services.Windows.IRestartManagerHelper>();
+                restartHelper.RegisterForRestart("");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning(ex, "Failed to resolve or trigger Windows Restart Manager helper.");
+            }
+
             _healthMonitor.ReportState("StartupPipeline", ServiceHealthState.Starting, "Executing Pre Startup...");
             _stateManager.TransitionTo(ClientState.STARTING);
             _completedStages = 1;
@@ -168,6 +180,14 @@ namespace SayraClient.Services
             var compressionWorker = _serviceProvider.GetRequiredService<LogCompressionWorker>();
             var syncScheduler = _serviceProvider.GetRequiredService<ConfigurationSyncScheduler>();
 
+            // Resolve new native Windows integration services
+            var registryWatcher = _serviceProvider.GetRequiredService<SayraClient.Services.Windows.RegistryWatcher>();
+            var fsTamperWatcher = _serviceProvider.GetRequiredService<SayraClient.Services.Windows.FileSystemTamperWatcher>();
+            var sessionMonitor = _serviceProvider.GetRequiredService<SayraClient.Services.Windows.WtsSessionChangeMonitor>();
+            var etwProcessMonitor = _serviceProvider.GetRequiredService<SayraClient.Services.Windows.EtwProcessMonitor>();
+            var powerHandler = _serviceProvider.GetRequiredService<SayraClient.Services.Windows.PowerStatusChangeHandler>();
+            var taskScheduler = _serviceProvider.GetRequiredService<SayraClient.Services.Windows.TaskSchedulerFallbackService>();
+
             // Register workers with proper dependency hierarchy in WorkerSupervisor
             _workerSupervisor.RegisterWorker("IpcServer", token => ipcServer.RunSupervisedAsync(token));
 
@@ -213,6 +233,31 @@ namespace SayraClient.Services
 
             _workerSupervisor.RegisterWorker("ConfigurationSyncScheduler",
                 token => syncScheduler.RunSupervisedAsync(token),
+                new[] { "IpcServer" });
+
+            // Register new native Windows integration services under supervision
+            _workerSupervisor.RegisterWorker("RegistryWatcher",
+                token => registryWatcher.RunSupervisedAsync(token),
+                new[] { "IpcServer" });
+
+            _workerSupervisor.RegisterWorker("FileSystemTamperWatcher",
+                token => fsTamperWatcher.RunSupervisedAsync(token),
+                new[] { "IpcServer" });
+
+            _workerSupervisor.RegisterWorker("WtsSessionChangeMonitor",
+                token => sessionMonitor.RunSupervisedAsync(token),
+                new[] { "IpcServer" });
+
+            _workerSupervisor.RegisterWorker("EtwProcessMonitor",
+                token => etwProcessMonitor.RunSupervisedAsync(token),
+                new[] { "IpcServer" });
+
+            _workerSupervisor.RegisterWorker("PowerStatusChangeHandler",
+                token => powerHandler.RunSupervisedAsync(token),
+                new[] { "IpcServer" });
+
+            _workerSupervisor.RegisterWorker("TaskSchedulerFallbackService",
+                token => taskScheduler.RunSupervisedAsync(token),
                 new[] { "IpcServer" });
 
             // Start all supervised background workers

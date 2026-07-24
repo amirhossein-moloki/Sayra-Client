@@ -44,6 +44,20 @@ namespace Sayra.UI.Notifications.ViewModels
                 ActiveNotifications.Add(cardVm);
                 await _ackService.ReportDisplayedAsync(payload.Id);
 
+                // If on Windows, also dispatch to native Action Center notifications via WindowsNotificationChannel
+                if (OperatingSystem.IsWindows())
+                {
+                    try
+                    {
+                        var nativeChannel = new WindowsNotificationChannel();
+                        nativeChannel.ShowNotification(payload.Title, payload.Body);
+                    }
+                    catch
+                    {
+                        // Fallback gracefully on native notification fail
+                    }
+                }
+
                 // Auto-dismiss after TTL if set, otherwise default to 6 seconds
                 int durationSec = payload.TtlSeconds > 0 ? payload.TtlSeconds : 6;
                 var timer = new DispatcherTimer
