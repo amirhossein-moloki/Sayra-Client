@@ -1,10 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Management;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Diagnostics.Tracing.Parsers;
+using Microsoft.Diagnostics.Tracing.Parsers.Kernel;
+using Microsoft.Diagnostics.Tracing.Session;
 using Microsoft.Extensions.Logging;
 using Sayra.Client.Shared.Interfaces;
 
@@ -14,6 +18,7 @@ public class EtwProcessMonitor : SupervisedBackgroundService
 {
     private readonly IAuditLogger _auditLogger;
     private readonly KioskManager _kioskManager;
+    private TraceEventSession? _etwSession;
     private ManagementEventWatcher? _wmiWatcher;
     private readonly HashSet<string> _blacklistedProcesses = new(StringComparer.OrdinalIgnoreCase)
     {
@@ -37,25 +42,13 @@ public class EtwProcessMonitor : SupervisedBackgroundService
 
         if (OperatingSystem.IsWindows())
         {
-            try
-            {
-                // Create a WMI event watcher to monitor Win32_Process creations instantly
-                string query = "SELECT * FROM __InstanceCreationEvent WITHIN 1 WHERE TargetInstance ISA 'Win32_Process'";
-                _wmiWatcher = new ManagementEventWatcher(new EventQuery(query));
-                _wmiWatcher.EventArrived += OnProcessCreated;
-                _wmiWatcher.Start();
-
-                _logger.LogInformation("Successfully started Win32_Process creation WMI event watcher.");
-            }
-            catch (Exception ex)
-            {
-                _logger.LogWarning(ex, "Failed to initialize WMI process watcher. Falling back to polling process monitor.");
-                StartPollingProcessMonitor(stoppingToken);
-            }
+            // Attempt real Windows ETW Kernel Session first, as requested for maximum secure isolation
+            StartEtwKernelSession(stoppingToken);
         }
         else
         {
             _logger.LogWarning("EtwProcessMonitor native Windows event watching is not supported on this platform. Running cross-platform simulated mode.");
+            StartPollingProcessMonitor(stoppingToken);
         }
 
         while (!stoppingToken.IsCancellationRequested)
@@ -65,11 +58,80 @@ public class EtwProcessMonitor : SupervisedBackgroundService
         }
     }
 
+    private void StartEtwKernelSession(CancellationToken ct)
+    {
+        _ = Task.Run(() =>
+        {
+            try
+            {
+                _logger.LogInformation("Starting real Event Tracing for Windows (ETW) Kernel Session...");
+
+                var sessionName = "SAYRA_Kernel_Process_Trace_Session";
+
+                // Ensure any leftover active sessions of the same name are cleared first
+                try
+                {
+                    var existingSession = TraceEventSession.GetActiveSessionNames();
+                    if (existingSession != null)
+                    {
+                        foreach (var name in existingSession)
+                        {
+                            if (name == sessionName)
+                            {
+                                var oldSession = new TraceEventSession(sessionName);
+                                oldSession.Dispose();
+                            }
+                        }
+                    }
+                }
+                catch { /* Ignore cleanup issues */ }
+
+                _etwSession = new TraceEventSession(sessionName);
+                _etwSession.EnableKernelProvider(KernelTraceEventParser.Keywords.Process);
+
+                _etwSession.Source.Kernel.ProcessStart += (ProcessTraceData data) =>
+                {
+                    EvaluateProcess(data.ProcessName, data.ProcessID);
+                };
+
+                _logger.LogInformation("Real Windows ETW Session started. Process start callback registered.");
+
+                // Start processing trace events on a background thread
+                Task.Run(() => _etwSession.Source.Process(), ct);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning(ex, "Failed to start real Windows ETW session (requires elevated SYSTEM/Admin privileges). Falling back to WMI Event Watcher.");
+                StartWmiWatcher();
+            }
+        }, ct);
+    }
+
+    private void StartWmiWatcher()
+    {
+        try
+        {
+            string query = "SELECT * FROM __InstanceCreationEvent WITHIN 1 WHERE TargetInstance ISA 'Win32_Process'";
+            _wmiWatcher = new ManagementEventWatcher(new EventQuery(query));
+            _wmiWatcher.EventArrived += OnProcessCreated;
+            _wmiWatcher.Start();
+
+            _logger.LogInformation("Successfully started Win32_Process creation WMI event watcher fallback.");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(ex, "Failed to initialize WMI process watcher. Falling back to polling process monitor.");
+            // Create a fake/mock cancellation token source for background polling fallback if needed
+            var cts = new CancellationTokenSource();
+            StartPollingProcessMonitor(cts.Token);
+        }
+    }
+
     private void StartPollingProcessMonitor(CancellationToken ct)
     {
+        var activeProcesses = new HashSet<int>();
         _ = Task.Run(async () =>
         {
-            var activeProcesses = new HashSet<int>();
             while (!ct.IsCancellationRequested)
             {
                 try
@@ -79,11 +141,9 @@ public class EtwProcessMonitor : SupervisedBackgroundService
                     {
                         if (activeProcesses.Add(proc.Id))
                         {
-                            // New process detected
                             EvaluateProcess(proc.ProcessName, proc.Id);
                         }
                     }
-                    // Clean up terminated processes
                     var currentIds = new HashSet<int>();
                     foreach (var p in current) currentIds.Add(p.Id);
                     activeProcesses.RemoveWhere(id => !currentIds.Contains(id));
@@ -152,6 +212,16 @@ public class EtwProcessMonitor : SupervisedBackgroundService
 
     public override void Dispose()
     {
+        if (_etwSession != null)
+        {
+            try
+            {
+                _etwSession.Stop();
+                _etwSession.Dispose();
+            }
+            catch { /* Suppress stop errors */ }
+        }
+
         if (_wmiWatcher != null)
         {
             try
@@ -159,10 +229,7 @@ public class EtwProcessMonitor : SupervisedBackgroundService
                 _wmiWatcher.Stop();
                 _wmiWatcher.Dispose();
             }
-            catch
-            {
-                // Suppress WMI watcher stop exceptions
-            }
+            catch { /* Suppress WMI watcher stop exceptions */ }
         }
         base.Dispose();
     }

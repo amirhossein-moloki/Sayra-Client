@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
@@ -20,6 +21,8 @@ namespace Sayra.Client.LocalAdmin.Storage
             PropertyNameCaseInsensitive = true
         };
 
+        private static readonly byte[] EntropySalt = System.Text.Encoding.UTF8.GetBytes("SAYRA_Enterprise_Hardened_Salt_Vector_38294=");
+
         public ClientConfigurationRepository(string? basePath = null, ILogger<ClientConfigurationRepository>? logger = null)
         {
             _basePath = basePath != null
@@ -30,6 +33,70 @@ namespace Sayra.Client.LocalAdmin.Storage
             _logger = logger;
         }
 
+        private byte[] Encrypt(byte[] plaintextBytes)
+        {
+            if (OperatingSystem.IsWindows())
+            {
+                try
+                {
+                    var asm = System.Reflection.Assembly.Load("System.Security.Cryptography.ProtectedData");
+                    var type = asm.GetType("System.Security.Cryptography.ProtectedData");
+                    var scopeType = asm.GetType("System.Security.Cryptography.DataProtectionScope");
+                    var localMachineScope = Enum.Parse(scopeType!, "LocalMachine");
+
+                    var protectMethod = type!.GetMethod("Protect", new[] { typeof(byte[]), typeof(byte[]), scopeType! });
+                    return (byte[])protectMethod!.Invoke(null, new object[] { plaintextBytes, EntropySalt, localMachineScope })!;
+                }
+                catch (Exception ex)
+                {
+                    _logger?.LogWarning(ex, "DPAPI Protect via reflection failed under Windows. Using soft protection fallback.");
+                }
+            }
+
+            // Fallback for non-Windows and test environments
+            var result = new byte[plaintextBytes.Length];
+            var machineHash = System.Security.Cryptography.SHA256.HashData(System.Text.Encoding.UTF8.GetBytes(Environment.MachineName));
+            for (int i = 0; i < plaintextBytes.Length; i++)
+            {
+                byte entropyByte = EntropySalt[i % EntropySalt.Length];
+                byte machineByte = machineHash[i % machineHash.Length];
+                result[i] = (byte)(plaintextBytes[i] ^ entropyByte ^ machineByte);
+            }
+            return result;
+        }
+
+        private byte[] Decrypt(byte[] ciphertextBytes)
+        {
+            if (OperatingSystem.IsWindows())
+            {
+                try
+                {
+                    var asm = System.Reflection.Assembly.Load("System.Security.Cryptography.ProtectedData");
+                    var type = asm.GetType("System.Security.Cryptography.ProtectedData");
+                    var scopeType = asm.GetType("System.Security.Cryptography.DataProtectionScope");
+                    var localMachineScope = Enum.Parse(scopeType!, "LocalMachine");
+
+                    var unprotectMethod = type!.GetMethod("Unprotect", new[] { typeof(byte[]), typeof(byte[]), scopeType! });
+                    return (byte[])unprotectMethod!.Invoke(null, new object[] { ciphertextBytes, EntropySalt, localMachineScope })!;
+                }
+                catch (Exception ex)
+                {
+                    _logger?.LogWarning(ex, "DPAPI Unprotect via reflection failed. Attempting soft unprotection fallback.");
+                }
+            }
+
+            // Fallback for non-Windows and test environments (XOR is symmetric)
+            var result = new byte[ciphertextBytes.Length];
+            var machineHash = System.Security.Cryptography.SHA256.HashData(System.Text.Encoding.UTF8.GetBytes(Environment.MachineName));
+            for (int i = 0; i < ciphertextBytes.Length; i++)
+            {
+                byte entropyByte = EntropySalt[i % EntropySalt.Length];
+                byte machineByte = machineHash[i % machineHash.Length];
+                result[i] = (byte)(ciphertextBytes[i] ^ entropyByte ^ machineByte);
+            }
+            return result;
+        }
+
         public async Task<ClientConfiguration> LoadConfigurationAsync()
         {
             EnsureDirectoryExists();
@@ -38,9 +105,11 @@ namespace Sayra.Client.LocalAdmin.Storage
             {
                 try
                 {
-                    using (var stream = new FileStream(_filePath, FileMode.Open, FileAccess.Read, FileShare.Read, 4096, useAsync: true))
+                    var encryptedBytes = await File.ReadAllBytesAsync(_filePath);
+                    var decryptedBytes = Decrypt(encryptedBytes);
+                    using (var ms = new MemoryStream(decryptedBytes))
                     {
-                        var result = await JsonSerializer.DeserializeAsync<ClientConfiguration>(stream, JsonOptions);
+                        var result = await JsonSerializer.DeserializeAsync<ClientConfiguration>(ms, JsonOptions);
                         if (result != null)
                         {
                             return result;
@@ -57,9 +126,11 @@ namespace Sayra.Client.LocalAdmin.Storage
             {
                 try
                 {
-                    using (var stream = new FileStream(_backupPath, FileMode.Open, FileAccess.Read, FileShare.Read, 4096, useAsync: true))
+                    var encryptedBytes = await File.ReadAllBytesAsync(_backupPath);
+                    var decryptedBytes = Decrypt(encryptedBytes);
+                    using (var ms = new MemoryStream(decryptedBytes))
                     {
-                        var result = await JsonSerializer.DeserializeAsync<ClientConfiguration>(stream, JsonOptions);
+                        var result = await JsonSerializer.DeserializeAsync<ClientConfiguration>(ms, JsonOptions);
                         if (result != null)
                         {
                             _logger?.LogInformation("Successfully recovered configuration from backup {BackupPath}", _backupPath);
@@ -90,12 +161,16 @@ namespace Sayra.Client.LocalAdmin.Storage
 
             string tempPath = _filePath + ".tmp";
 
-            // 1. Write to temp file asynchronously
-            using (var stream = new FileStream(tempPath, FileMode.Create, FileAccess.Write, FileShare.None, 4096, useAsync: true))
+            // 1. Write to temp file asynchronously with DPAPI encryption
+            byte[] plaintextBytes;
+            using (var ms = new MemoryStream())
             {
-                await JsonSerializer.SerializeAsync(stream, configuration, JsonOptions);
-                await stream.FlushAsync();
+                await JsonSerializer.SerializeAsync(ms, configuration, JsonOptions);
+                plaintextBytes = ms.ToArray();
             }
+
+            byte[] encryptedBytes = Encrypt(plaintextBytes);
+            await File.WriteAllBytesAsync(tempPath, encryptedBytes);
 
             // 2. Backup existing file before replacement
             if (File.Exists(_filePath))
