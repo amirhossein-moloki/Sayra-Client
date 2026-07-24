@@ -10,6 +10,7 @@ using Sayra.Client.Configuration.Synchronization;
 using Sayra.Client.Configuration.Validation;
 using Sayra.Client.Configuration.Versioning;
 using SayraClient.Services.Configuration;
+using SayraClient.Services.Windows;
 using Sayra.Client.OfflineQueue.Extensions;
 using Sayra.Client.Discovery.Services;
 using Sayra.Client.GameLibrary;
@@ -106,6 +107,16 @@ builder.Services.AddSingleton<IConfigurationSynchronizationService, Configuratio
 builder.Services.AddSingleton<IPowerManagementService, PowerManagementService>();
 builder.Services.AddSingleton<IWorkstationBackupService, WorkstationBackupService>();
 builder.Services.AddSingleton<IWorkstationSyncService, WorkstationSyncService>();
+
+// Register Windows Native Enterprise Services
+builder.Services.AddSingleton<IWindowsEventLogService, WindowsEventLogService>();
+builder.Services.AddSingleton<IRestartManagerHelper, RestartManagerHelper>();
+builder.Services.AddSingleton<RegistryWatcher>();
+builder.Services.AddSingleton<FileSystemTamperWatcher>();
+builder.Services.AddSingleton<WtsSessionChangeMonitor>();
+builder.Services.AddSingleton<EtwProcessMonitor>();
+builder.Services.AddSingleton<PowerStatusChangeHandler>();
+builder.Services.AddSingleton<TaskSchedulerFallbackService>();
 
 // Register Offline Queue Services
 builder.Services.AddOfflineQueue();
