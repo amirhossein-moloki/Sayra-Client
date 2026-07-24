@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using SayraClient.Services.OfflineQueue;
+using SayraClient.Services.Configuration;
 
 namespace SayraClient.Services
 {
@@ -165,6 +166,7 @@ namespace SayraClient.Services
             var queueHealth = _serviceProvider.GetRequiredService<QueueHealthWorker>();
             var batchingWorker = _serviceProvider.GetRequiredService<EventQueueBatchingWorker>();
             var compressionWorker = _serviceProvider.GetRequiredService<LogCompressionWorker>();
+            var syncScheduler = _serviceProvider.GetRequiredService<ConfigurationSyncScheduler>();
 
             // Register workers with proper dependency hierarchy in WorkerSupervisor
             _workerSupervisor.RegisterWorker("IpcServer", token => ipcServer.RunSupervisedAsync(token));
@@ -207,6 +209,10 @@ namespace SayraClient.Services
 
             _workerSupervisor.RegisterWorker("LogCompressionWorker",
                 token => compressionWorker.RunSupervisedAsync(token),
+                new[] { "IpcServer" });
+
+            _workerSupervisor.RegisterWorker("ConfigurationSyncScheduler",
+                token => syncScheduler.RunSupervisedAsync(token),
                 new[] { "IpcServer" });
 
             // Start all supervised background workers

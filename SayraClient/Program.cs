@@ -3,6 +3,13 @@ using SayraClient.Commands;
 using SayraClient.Services;
 using SayraClient.Services.OfflineQueue;
 using Sayra.Client.OfflineQueue;
+using Sayra.Client.Configuration.Conflict;
+using Sayra.Client.Configuration.Rollback;
+using Sayra.Client.Configuration.Storage;
+using Sayra.Client.Configuration.Synchronization;
+using Sayra.Client.Configuration.Validation;
+using Sayra.Client.Configuration.Versioning;
+using SayraClient.Services.Configuration;
 using Sayra.Client.OfflineQueue.Extensions;
 using Sayra.Client.Discovery.Services;
 using Sayra.Client.GameLibrary;
@@ -84,6 +91,17 @@ builder.Services.AddSingleton<IntegrityValidator>();
 builder.Services.AddSingleton<AuthManager>();
 builder.Services.AddSingleton<SecureTransportLayer>();
 
+// Register Configuration Sync Engine Components
+builder.Services.AddSingleton<ConfigurationValidator>();
+builder.Services.AddSingleton<ConfigurationSignatureValidator>();
+builder.Services.AddSingleton<ConfigurationVersionManager>();
+builder.Services.AddSingleton<ConfigurationDeltaEngine>();
+builder.Services.AddSingleton<ConfigurationConflictResolver>();
+builder.Services.AddSingleton<ConfigurationRollbackManager>();
+builder.Services.AddSingleton<ConfigurationApplyService>();
+builder.Services.AddSingleton<IConfigurationApiClient, MockConfigurationApiClient>();
+builder.Services.AddSingleton<IConfigurationSynchronizationService, ConfigurationSynchronizationService>();
+
 // Register Power, Backup, and Sync Services
 builder.Services.AddSingleton<IPowerManagementService, PowerManagementService>();
 builder.Services.AddSingleton<IWorkstationBackupService, WorkstationBackupService>();
@@ -137,6 +155,7 @@ builder.Services.AddSingleton<QueueProcessorWorker>();
 builder.Services.AddSingleton<QueueHealthWorker>();
 builder.Services.AddSingleton<EventQueueBatchingWorker>();
 builder.Services.AddSingleton<LogCompressionWorker>();
+builder.Services.AddSingleton<ConfigurationSyncScheduler>();
 
 // Register Lifetime Orchestrator Hosted Service
 builder.Services.AddHostedService<ClientAppLifetimeWorker>();
