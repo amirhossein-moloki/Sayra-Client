@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Sayra.Client.Configuration.Rollback;
 
 namespace SayraClient.Services;
 
@@ -14,15 +15,18 @@ public class DependencyValidator : IDependencyValidator
     private readonly ILogger<DependencyValidator> _logger;
     private readonly IConfiguration _configuration;
     private readonly IServiceProvider _serviceProvider;
+    private readonly ConfigurationRollbackManager _rollbackManager;
 
     public DependencyValidator(
         ILogger<DependencyValidator> logger,
         IConfiguration configuration,
-        IServiceProvider serviceProvider)
+        IServiceProvider serviceProvider,
+        ConfigurationRollbackManager rollbackManager)
     {
         _logger = logger;
         _configuration = configuration;
         _serviceProvider = serviceProvider;
+        _rollbackManager = rollbackManager;
     }
 
     public Task ValidateDependenciesAsync(CancellationToken cancellationToken)
@@ -111,6 +115,25 @@ public class DependencyValidator : IDependencyValidator
     public Task ValidateConfigurationAsync(CancellationToken cancellationToken)
     {
         _logger.LogInformation("Beginning application configuration schema validation...");
+
+        // Startup recovery check for corrupted/missing configuration
+        try
+        {
+            string baseDir = Path.Combine(AppContext.BaseDirectory, "Data", "Configuration");
+            string activePath = Path.Combine(baseDir, "client_config.json");
+            string backupPath = Path.Combine(baseDir, "client_config.json.bak");
+
+            if (_rollbackManager.IsCorrupted(activePath))
+            {
+                _logger.LogWarning("Active configuration file is corrupted or missing at startup. Triggering startup recovery...");
+                _rollbackManager.ValidateAndRecover(activePath, backupPath, out var recoveryMessage);
+                _logger.LogInformation($"Startup recovery result: {recoveryMessage}");
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to perform startup recovery check.");
+        }
 
         // 1. Verify Server Discovery Configuration
         var udpPortStr = _configuration["ServerDiscovery:UdpPort"];

@@ -1,12 +1,10 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net8.0-windows</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <IsPackable>false</IsPackable>
-    <UseWPF>true</UseWPF>
-    <EnableWindowsTargeting>true</EnableWindowsTargeting>
   </PropertyGroup>
 
   <ItemGroup>
@@ -22,22 +20,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Remove="UpdateVerificationTests.cs" />
-    <Compile Remove="LauncherTests.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
+    <ProjectReference Include="..\Sayra.Client.Configuration\Sayra.Client.Configuration.csproj" />
     <ProjectReference Include="..\Sayra.Client.Shared\Sayra.Client.Shared.csproj" />
-    <ProjectReference Include="..\Sayra.Client.Discovery\Sayra.Client.Discovery.csproj" />
-    <ProjectReference Include="..\Sayra.Client.GameLibrary\Sayra.Client.GameLibrary.csproj" />
     <ProjectReference Include="..\Sayra.Client.LocalAdmin\Sayra.Client.LocalAdmin.csproj" />
-    <ProjectReference Include="..\Sayra.Client.Scanner\Sayra.Client.Scanner.csproj" />
-    <ProjectReference Include="..\Sayra.Client.Diagnostics\Sayra.Client.Diagnostics.csproj" />
-    <ProjectReference Include="..\Sayra.Client.Authentication\Sayra.Client.Authentication.csproj" />
     <ProjectReference Include="..\Sayra.Client.OfflineQueue\Sayra.Client.OfflineQueue.csproj" />
     <ProjectReference Include="..\SayraClient\SayraClient.csproj" />
-    <ProjectReference Include="..\Sayra.UI\Sayra.UI.csproj" />
-    <ProjectReference Include="..\Sayra.Client.Configuration\Sayra.Client.Configuration.csproj" />
   </ItemGroup>
 
 </Project>

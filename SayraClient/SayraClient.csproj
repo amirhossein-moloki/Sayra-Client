@@ -27,6 +27,7 @@
     <ProjectReference Include="..\Sayra.Client.Diagnostics\Sayra.Client.Diagnostics.csproj" />
     <ProjectReference Include="..\Sayra.Client.Launcher\Sayra.Client.Launcher.csproj" />
     <ProjectReference Include="..\Sayra.Client.OfflineQueue\Sayra.Client.OfflineQueue.csproj" />
+    <ProjectReference Include="..\Sayra.Client.Configuration\Sayra.Client.Configuration.csproj" />
   </ItemGroup>
 
   <ItemGroup>
