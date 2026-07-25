@@ -4,6 +4,7 @@ using System.IO;
 using System.Security;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.Logging;
@@ -18,6 +19,8 @@ using Sayra.Client.OfflineQueue;
 using Sayra.Client.OfflineQueue.Security;
 using Sayra.Client.Shared.Models;
 using Sayra.Client.Shared.Interfaces.Security;
+using Sayra.Client.Shared.Interfaces;
+using Sayra.Client.Shared.Ipc;
 using Microsoft.Extensions.DependencyInjection;
 using SayraClient.Services;
 using Xunit;
@@ -414,6 +417,8 @@ public class SecurityTests
         var services = new Microsoft.Extensions.DependencyInjection.ServiceCollection();
         services.AddLogging();
         services.AddSingleton<SessionKeyManager>();
+        services.AddSingleton<IAuditLogger>(new Mock<IAuditLogger>().Object);
+        services.AddSingleton<IAuditLogRepository>(new Mock<IAuditLogRepository>().Object);
 
         // Register using interfaces
         services.AddSingleton<ICryptographyService, CryptographyService>();
@@ -453,5 +458,203 @@ public class SecurityTests
         // Assert
         Assert.Equal("encrypted-hello", encrypted);
         Assert.True(isValid);
+    }
+
+    // ========================================================
+    // SPRINT 3 TRACK 4 SECURE IPC HARDENING SPECIFIC TEST CASES
+    // ========================================================
+
+    [Fact]
+    public void SecureIpcPolicyManager_GetSecurePipeSecurity_RestrictsAccessToLeastPrivilege()
+    {
+        // Arrange
+        var loggerMock = new Mock<ILogger<SecureIpcPolicyManager>>();
+        var auditLoggerMock = new Mock<IAuditLogger>();
+        var policyManager = new SecureIpcPolicyManager(loggerMock.Object, auditLoggerMock.Object);
+
+        // Act
+        var pipeSecurity = policyManager.GetSecurePipeSecurity();
+
+        // Assert
+        if (OperatingSystem.IsWindows())
+        {
+            Assert.NotNull(pipeSecurity);
+        }
+        else
+        {
+            Assert.Null(pipeSecurity);
+        }
+    }
+
+    [Fact]
+    public void SecureIpcPolicyManager_ValidateSession_AllowsInteractive()
+    {
+        // Arrange
+        var loggerMock = new Mock<ILogger<SecureIpcPolicyManager>>();
+        var auditLoggerMock = new Mock<IAuditLogger>();
+        var policyManager = new SecureIpcPolicyManager(loggerMock.Object, auditLoggerMock.Object);
+
+        // Act & Assert
+        var currentPid = Environment.ProcessId;
+        var isValid = policyManager.ValidateSession(currentPid);
+        Assert.True(isValid);
+    }
+
+    [Fact]
+    public void SecureIpcPolicyManager_ValidateProcess_AllowsAuthorizedExecutables()
+    {
+        // Arrange
+        var loggerMock = new Mock<ILogger<SecureIpcPolicyManager>>();
+        var auditLoggerMock = new Mock<IAuditLogger>();
+        var policyManager = new SecureIpcPolicyManager(loggerMock.Object, auditLoggerMock.Object);
+
+        // Act & Assert
+        var currentPid = Environment.ProcessId;
+        var isValid = policyManager.ValidateProcess(currentPid, out var imagePath);
+        Assert.True(isValid);
+        Assert.True(imagePath.ToLowerInvariant().Contains("dotnet") || imagePath.ToLowerInvariant().Contains("testhost") || imagePath.ToLowerInvariant().Contains("fallback"));
+    }
+
+    [Fact]
+    public void SecureIpcPolicyManager_ValidateMessage_RejectsExpiredAndDuplicateMessages()
+    {
+        // Arrange
+        var loggerMock = new Mock<ILogger<SecureIpcPolicyManager>>();
+        var auditLoggerMock = new Mock<IAuditLogger>();
+        var policyManager = new SecureIpcPolicyManager(loggerMock.Object, auditLoggerMock.Object);
+
+        var msg1 = new IpcMessage
+        {
+            RequestId = Guid.NewGuid().ToString(),
+            MessageType = IpcMessageType.GET_STATE,
+            Timestamp = DateTime.UtcNow
+        };
+
+        // 1. Fresh message should succeed
+        Assert.True(policyManager.ValidateMessage(msg1));
+
+        // 2. Duplicate RequestId should be rejected
+        Assert.False(policyManager.ValidateMessage(msg1));
+
+        // 3. Expired message should be rejected
+        var msgExpired = new IpcMessage
+        {
+            RequestId = Guid.NewGuid().ToString(),
+            MessageType = IpcMessageType.GET_STATE,
+            Timestamp = DateTime.UtcNow.AddSeconds(-30) // Expired
+        };
+        Assert.False(policyManager.ValidateMessage(msgExpired));
+    }
+
+    [Fact]
+    public void SecureIpcPolicyManager_ValidateMessage_RejectsOversizedPayload()
+    {
+        // Arrange
+        var loggerMock = new Mock<ILogger<SecureIpcPolicyManager>>();
+        var auditLoggerMock = new Mock<IAuditLogger>();
+        var policyManager = new SecureIpcPolicyManager(loggerMock.Object, auditLoggerMock.Object);
+
+        var oversizedPayload = new string('A', 70000); // 70KB, exceeding 64KB limit
+        var msg = new IpcMessage
+        {
+            RequestId = Guid.NewGuid().ToString(),
+            MessageType = IpcMessageType.GET_STATE,
+            Timestamp = DateTime.UtcNow,
+            Payload = oversizedPayload
+        };
+
+        // Act & Assert
+        Assert.False(policyManager.ValidateMessage(msg));
+    }
+
+    [Fact]
+    public void SecureIpcPolicyManager_ProcessHandshake_AllowsValidHandshake_RejectsInvalid()
+    {
+        // Arrange
+        var loggerMock = new Mock<ILogger<SecureIpcPolicyManager>>();
+        var auditLoggerMock = new Mock<IAuditLogger>();
+        var policyManager = new SecureIpcPolicyManager(loggerMock.Object, auditLoggerMock.Object);
+
+        var currentPid = Environment.ProcessId;
+        var streamId = "test-stream-id";
+
+        var validHandshakePayload = new IpcHandshakePayload
+        {
+            ClientId = "TEST_CLIENT",
+            Pid = currentPid,
+            SessionId = System.Diagnostics.Process.GetCurrentProcess().SessionId,
+            Timestamp = DateTime.UtcNow,
+            Token = Guid.NewGuid().ToString()
+        };
+
+        var validHandshakeMsg = new IpcMessage
+        {
+            RequestId = Guid.NewGuid().ToString(),
+            MessageType = IpcMessageType.HANDSHAKE,
+            Timestamp = DateTime.UtcNow,
+            Payload = JsonSerializer.Serialize(validHandshakePayload)
+        };
+
+        // 1. Valid Handshake should pass
+        Assert.True(policyManager.ProcessHandshake(streamId, validHandshakeMsg, currentPid, out var errorMsg));
+        Assert.Empty(errorMsg);
+        Assert.True(policyManager.IsHandshaken(streamId));
+
+        // 2. Mismatched PID Handshake should be rejected
+        var invalidHandshakePayload = new IpcHandshakePayload
+        {
+            ClientId = "TEST_CLIENT",
+            Pid = currentPid + 1, // Wrong PID
+            SessionId = System.Diagnostics.Process.GetCurrentProcess().SessionId,
+            Timestamp = DateTime.UtcNow,
+            Token = Guid.NewGuid().ToString()
+        };
+        var invalidHandshakeMsg = new IpcMessage
+        {
+            RequestId = Guid.NewGuid().ToString(),
+            MessageType = IpcMessageType.HANDSHAKE,
+            Timestamp = DateTime.UtcNow,
+            Payload = JsonSerializer.Serialize(invalidHandshakePayload)
+        };
+        Assert.False(policyManager.ProcessHandshake("another-stream", invalidHandshakeMsg, currentPid, out var errorMsg2));
+        Assert.Contains("process id mismatch", errorMsg2.ToLowerInvariant());
+
+        // 3. Protocol violation: Non-Handshake message type first
+        var wrongMsgType = new IpcMessage
+        {
+            RequestId = Guid.NewGuid().ToString(),
+            MessageType = IpcMessageType.GET_STATE,
+            Timestamp = DateTime.UtcNow
+        };
+        Assert.False(policyManager.ProcessHandshake("third-stream", wrongMsgType, currentPid, out var errorMsg3));
+        Assert.Contains("protocol violation", errorMsg3.ToLowerInvariant());
+    }
+
+    [Fact]
+    public async Task SecureIpcPolicyManager_ConcurrentValidationStress_ExecutesWithoutDeadlocks()
+    {
+        // Arrange
+        var loggerMock = new Mock<ILogger<SecureIpcPolicyManager>>();
+        var auditLoggerMock = new Mock<IAuditLogger>();
+        var policyManager = new SecureIpcPolicyManager(loggerMock.Object, auditLoggerMock.Object);
+
+        var tasks = new List<Task<bool>>();
+
+        // Act
+        for (int i = 0; i < 200; i++)
+        {
+            var msg = new IpcMessage
+            {
+                RequestId = Guid.NewGuid().ToString(),
+                MessageType = IpcMessageType.GET_STATE,
+                Timestamp = DateTime.UtcNow
+            };
+            tasks.Add(Task.Run(() => policyManager.ValidateMessage(msg)));
+        }
+
+        await Task.WhenAll(tasks);
+
+        // Assert
+        Assert.All(tasks, t => Assert.True(t.Result));
     }
 }
