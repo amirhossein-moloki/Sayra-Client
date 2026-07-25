@@ -23,6 +23,7 @@ using Sayra.Client.Diagnostics.Services;
 using Sayra.Client.Shared.Interfaces;
 using Sayra.Client.Shared.Services;
 using Sayra.Client.Shared.Interfaces.Security;
+using Sayra.Client.Shared.Security.GameProtection.DependencyInjection;
 using Microsoft.Extensions.Hosting.WindowsServices;
 using Serilog;
 
@@ -99,6 +100,7 @@ builder.Services.AddSingleton<ISecureIpcPolicyManager, SecureIpcPolicyManager>()
 builder.Services.AddSingleton<AuthManager>();
 builder.Services.AddSingleton<SecureTransportLayer>();
 builder.Services.AddSingleton<RuntimeIntegrityMonitor>();
+builder.Services.AddGameProtectionServices(); // Register Game Protection and Runtime Monitoring Subsystem (Track 4.6)
 
 // Register Configuration Sync Engine Components
 builder.Services.AddSingleton<ConfigurationValidator>();
