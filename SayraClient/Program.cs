@@ -1,6 +1,7 @@
 using SayraClient;
 using SayraClient.Commands;
 using SayraClient.Services;
+using SayraClient.Security.Transport;
 using SayraClient.Services.OfflineQueue;
 using Sayra.Client.OfflineQueue;
 using Sayra.Client.Configuration.Conflict;
@@ -48,6 +49,8 @@ builder.Services.AddWindowsService(options =>
 
 // Register Core Services
 builder.Services.AddSingleton<ReconnectManager>();
+builder.Services.AddSingleton<TransportPolicy>();
+builder.Services.AddSingleton<TlsConnectionManager>();
 builder.Services.AddSingleton<TcpClientManager>();
 builder.Services.AddSingleton<ClientStateManager>();
 

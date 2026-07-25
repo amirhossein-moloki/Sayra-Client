@@ -1,9 +1,11 @@
+using System;
 using System.Text.Json;
 using Microsoft.Extensions.Logging;
 using SayraClient.Models;
+using SayraClient.Services;
 using Sayra.Client.Shared.Interfaces.Security;
 
-namespace SayraClient.Services;
+namespace SayraClient.Security.Transport;
 
 public class SecureTransportLayer
 {
@@ -26,13 +28,6 @@ public class SecureTransportLayer
 
     public string Wrap(object message)
     {
-        // For handshake messages that are not yet authenticated, we don't wrap them.
-        // Wait, the prompt said ALL messages must follow the structure: { payload, signature, timestamp }
-        // If we want to be strict, even AUTH_RESPONSE should be signed (though not necessarily encrypted if MasterKey isn't for that).
-        // But the prompt says "Encrypt JSON payload before sending" and "zero plaintext commands over network".
-        // Let's stick to the design where if authenticated, we wrap.
-        // If not authenticated, we check if it is a handshake message.
-
         if (!_sessionKeyManager.IsAuthenticated)
         {
              return JsonSerializer.Serialize(message);
@@ -70,7 +65,6 @@ public class SecureTransportLayer
                 return _encryptionManager.Decrypt(secureMessage.Payload);
             }
 
-            // If it's not a SecureMessageModel, we only allow it if NOT authenticated (handshake phase)
             if (_sessionKeyManager.IsAuthenticated)
             {
                 _logger.LogWarning("Received plaintext message while authenticated. Rejecting for security.");

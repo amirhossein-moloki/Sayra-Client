@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using SayraClient.Services;
+using SayraClient.Security.Transport;
 using Sayra.Client.Discovery.Services;
 using Sayra.Client.Discovery.Models;
 
@@ -22,8 +23,8 @@ public class TcpClientManager
     private readonly AuthManager _authManager;
     private readonly ClientStateManager _stateManager;
     private readonly IDiscoveryService _discoveryService;
-    private TcpClient? _client;
-    private NetworkStream? _stream;
+    private readonly TlsConnectionManager _tlsConnectionManager;
+    private Stream? _stream;
     private string? _resolvedIp;
     private int? _resolvedPort;
 
@@ -37,7 +38,8 @@ public class TcpClientManager
         SessionKeyManager sessionKeyManager,
         AuthManager authManager,
         ClientStateManager stateManager,
-        IDiscoveryService discoveryService)
+        IDiscoveryService discoveryService,
+        TlsConnectionManager tlsConnectionManager)
     {
         _logger = logger;
         _configuration = configuration;
@@ -49,6 +51,24 @@ public class TcpClientManager
         _authManager = authManager;
         _stateManager = stateManager;
         _discoveryService = discoveryService;
+        _tlsConnectionManager = tlsConnectionManager;
+    }
+
+    // Backwards compatible constructor for test execution
+    public TcpClientManager(
+        ILogger<TcpClientManager> logger,
+        IConfiguration configuration,
+        ReconnectManager reconnectManager,
+        MessageHandler messageHandler,
+        IServiceProvider serviceProvider,
+        SecureTransportLayer transportLayer,
+        SessionKeyManager sessionKeyManager,
+        AuthManager authManager,
+        ClientStateManager stateManager,
+        IDiscoveryService discoveryService)
+        : this(logger, configuration, reconnectManager, messageHandler, serviceProvider, transportLayer, sessionKeyManager, authManager, stateManager, discoveryService,
+               new TlsConnectionManager(new Microsoft.Extensions.Logging.Abstractions.NullLogger<TlsConnectionManager>(), new TransportPolicy(configuration)))
+    {
     }
 
     public async Task StartAsync(CancellationToken cancellationToken)
@@ -59,7 +79,7 @@ public class TcpClientManager
         {
             try
             {
-                if (_client == null || !_client.Connected)
+                if (!IsConnected)
                 {
                     await ResolveAndConnectAsync(cancellationToken);
                 }
@@ -150,16 +170,11 @@ public class TcpClientManager
         try
         {
             _stateManager.TransitionTo(ClientState.CONNECTING);
-            _logger.LogInformation("Attempting to connect to {ip}:{port}...", ip, port);
-            _client = new TcpClient();
+            _logger.LogInformation("Attempting to connect to {ip}:{port} via TLS 1.3...", ip, port);
 
-            using var timeoutCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
-            timeoutCts.CancelAfter(TimeSpan.FromSeconds(5));
-
-            await _client.ConnectAsync(ip, port, timeoutCts.Token);
-            _stream = _client.GetStream();
+            _stream = await _tlsConnectionManager.ConnectAsync(ip, port, cancellationToken);
             _reconnectManager.Reset();
-            _logger.LogInformation("Connected to server.");
+            _logger.LogInformation("Connected and authenticated via TLS 1.3.");
 
             if (!_sessionKeyManager.IsAuthenticated)
             {
@@ -192,8 +207,7 @@ public class TcpClientManager
     {
         _stream?.Dispose();
         _stream = null;
-        _client?.Dispose();
-        _client = null;
+        _tlsConnectionManager.CleanupSession();
     }
 
     private async Task ReceiveMessagesLoopAsync(CancellationToken cancellationToken)
@@ -214,6 +228,7 @@ public class TcpClientManager
 
                 _logger.LogDebug("Received raw message.");
                 if (string.IsNullOrWhiteSpace(line)) continue;
+                _tlsConnectionManager.RenewSession(TimeSpan.FromHours(1));
                 await _messageHandler.HandleMessageAsync(line, this, cancellationToken);
             }
             catch (Exception ex) when (ex is not OperationCanceledException)
@@ -251,18 +266,19 @@ public class TcpClientManager
         }
     }
 
-    public virtual bool IsConnected => _client is { Connected: true } && _stream != null;
+    public virtual bool IsConnected => _stream != null && _stream.CanWrite && _tlsConnectionManager.IsSessionActive;
 
     public virtual async Task<bool> SendMessageAsync(object message, CancellationToken cancellationToken)
     {
         try
         {
-            if (_client is { Connected: true } && _stream != null)
+            if (IsConnected && _stream != null)
             {
                 string wrappedJson = _transportLayer.Wrap(message) + "\n";
                 byte[] data = Encoding.UTF8.GetBytes(wrappedJson);
                 await _stream.WriteAsync(data, 0, data.Length, cancellationToken);
                 await _stream.FlushAsync(cancellationToken);
+                _tlsConnectionManager.RenewSession(TimeSpan.FromHours(1));
                 return true;
             }
             return false;

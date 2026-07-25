@@ -2,6 +2,7 @@ using Microsoft.Extensions.Logging;
 using SayraClient.Commands;
 using SayraClient.Models;
 using SayraClient.Services;
+using SayraClient.Security.Transport;
 using System.Text.Json;
 
 namespace SayraClient;

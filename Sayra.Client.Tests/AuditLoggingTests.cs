@@ -21,6 +21,7 @@ using Sayra.Client.Shared.Interfaces.Security;
 using SayraClient;
 using SayraClient.Commands;
 using SayraClient.Services;
+using SayraClient.Security.Transport;
 using SayraClient.Services.OfflineQueue;
 using Xunit;
 
