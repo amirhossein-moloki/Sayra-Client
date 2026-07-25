@@ -22,6 +22,7 @@ using Sayra.Client.Shared.Interfaces.Security;
 using Sayra.Client.Shared.Security.Memory;
 using System.Runtime.InteropServices;
 using SayraClient.Security.Integrity;
+using SayraClient.Security.Windows;
 using Sayra.Client.Shared.Security.Crypto.KeyManagement;
 using Microsoft.Extensions.DependencyInjection;
 using SayraClient.Services;
@@ -770,5 +771,71 @@ public class SecurityTests
         // It should have either thrown or completed.
         // Let's verify that audit logger was invoked to record the security event.
         auditMock.Verify(a => a.LogSecurity(It.IsAny<string>(), It.IsAny<Dictionary<string, object>>()), Times.AtLeastOnce());
+    }
+
+    [Fact]
+    public void Verify_SecureDesktopManager_Simulates_Desktop_Operations_Successfully()
+    {
+        // Arrange
+        var loggerMock = new Mock<ILogger<SecureDesktopManager>>();
+        using var manager = new SecureDesktopManager(loggerMock.Object);
+
+        // Act
+        bool created = manager.CreateSecureDesktop();
+        bool switched = manager.SwitchToSecureDesktop();
+        bool defaultSwitched = manager.SwitchToDefaultDesktop();
+
+        // Assert
+        Assert.True(created);
+        Assert.True(switched);
+        Assert.True(defaultSwitched);
+    }
+
+    [Fact]
+    public void Verify_DesktopSessionManager_Runs_Session_Successfully()
+    {
+        // Arrange
+        var dmLogger = new Mock<ILogger<SecureDesktopManager>>();
+        var dsmLogger = new Mock<ILogger<DesktopSessionManager>>();
+        var policy = new DesktopSecurityPolicy();
+        var integrityMock = new Mock<IIntegrityValidator>();
+        using var dm = new SecureDesktopManager(dmLogger.Object);
+        using var sessionManager = new DesktopSessionManager(dsmLogger.Object, dm, policy, integrityMock.Object);
+
+        // Act
+        bool success = sessionManager.StartSession("FakeShell.exe", "--kiosk", IntPtr.Zero, () => {});
+
+        // Assert
+        Assert.True(success);
+        Assert.True(sessionManager.IsRunning);
+
+        sessionManager.StopSession();
+        Assert.False(sessionManager.IsRunning);
+    }
+
+    [Fact]
+    public void Verify_KioskSecurityService_Keyboard_Blocking_According_To_Policy()
+    {
+        // Arrange
+        var loggerMock = new Mock<ILogger<KioskSecurityService>>();
+        var kiosk = new KioskSecurityService(loggerMock.Object);
+
+        // Act
+        kiosk.Lockdown();
+
+        // Assert:
+        // Alt=1, Ctrl=2, Shift=4
+        // Alt + F4 (115, alt modifier=1) -> Blocked
+        Assert.True(kiosk.IsKeyboardShortcutBlocked(115, 1));
+
+        // Tab = 9, Alt = 1 -> Blocked
+        Assert.True(kiosk.IsKeyboardShortcutBlocked(9, 1));
+
+        // Just regular key when locked (e.g. 'A' key = 65, mods = 0) -> Allowed
+        Assert.False(kiosk.IsKeyboardShortcutBlocked(65, 0));
+
+        kiosk.Unlock();
+        // Disarmed hook -> Allowed
+        Assert.False(kiosk.IsKeyboardShortcutBlocked(115, 1));
     }
 }
