@@ -26,6 +26,7 @@ namespace Sayra.Client.Configuration.Tests
         private readonly Mock<ILaunchProfileProvider> _profileProviderMock = new();
         private readonly Mock<IUserSessionProvider> _sessionProviderMock = new();
         private readonly Mock<IProcessCreator> _processCreatorMock = new();
+        private readonly Mock<Sayra.Client.Shared.Runtime.ProcessSupervisor.Application.Interfaces.IProcessSupervisor> _processSupervisorMock = new();
 
         [Fact]
         public async Task LaunchAsync_ValidExecutable_ShouldSucceed()
@@ -65,7 +66,8 @@ namespace Sayra.Client.Configuration.Tests
                 _profileProviderMock.Object,
                 validator,
                 _sessionProviderMock.Object,
-                _processCreatorMock.Object
+                _processCreatorMock.Object,
+                _processSupervisorMock.Object
             );
 
             // Act
@@ -108,7 +110,8 @@ namespace Sayra.Client.Configuration.Tests
                 _profileProviderMock.Object,
                 validator,
                 _sessionProviderMock.Object,
-                _processCreatorMock.Object
+                _processCreatorMock.Object,
+                _processSupervisorMock.Object
             );
 
             // Act
@@ -157,7 +160,8 @@ namespace Sayra.Client.Configuration.Tests
                 _profileProviderMock.Object,
                 validator,
                 _sessionProviderMock.Object,
-                _processCreatorMock.Object
+                _processCreatorMock.Object,
+                _processSupervisorMock.Object
             );
 
             // Act
@@ -199,7 +203,8 @@ namespace Sayra.Client.Configuration.Tests
                 _profileProviderMock.Object,
                 validator,
                 _sessionProviderMock.Object,
-                _processCreatorMock.Object
+                _processCreatorMock.Object,
+                _processSupervisorMock.Object
             );
 
             // Act
@@ -248,7 +253,8 @@ namespace Sayra.Client.Configuration.Tests
                 _profileProviderMock.Object,
                 validator,
                 _sessionProviderMock.Object,
-                _processCreatorMock.Object
+                _processCreatorMock.Object,
+                _processSupervisorMock.Object
             );
 
             // Act
