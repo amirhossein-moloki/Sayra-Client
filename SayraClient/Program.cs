@@ -26,6 +26,7 @@ using Sayra.Client.Shared.Interfaces.Security;
 using Sayra.Client.Shared.Runtime.Infrastructure.DependencyInjection;
 using Sayra.Client.Shared.Security.GameProtection.DependencyInjection;
 using Sayra.Client.Shared.Runtime.Launch.DependencyInjection;
+using Sayra.Client.Shared.Runtime.ProcessSupervisor.DependencyInjection;
 using Microsoft.Extensions.Hosting.WindowsServices;
 using Serilog;
 using SayraClient.Kiosk.Infrastructure;
@@ -55,6 +56,7 @@ builder.Services.AddWindowsService(options =>
 // Register Runtime Services
 builder.Services.AddRuntimeServices();
 builder.Services.AddSecureLaunchServices();
+builder.Services.AddProcessSupervisorServices();
 
 // Register Core Services
 builder.Services.AddSingleton<ReconnectManager>();

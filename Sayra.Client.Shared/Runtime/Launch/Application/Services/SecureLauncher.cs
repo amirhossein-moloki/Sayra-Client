@@ -20,6 +20,7 @@ namespace Sayra.Client.Shared.Runtime.Launch.Application.Services
         private readonly ILaunchValidator _validator;
         private readonly IUserSessionProvider _sessionProvider;
         private readonly IProcessCreator _processCreator;
+        private readonly Sayra.Client.Shared.Runtime.ProcessSupervisor.Application.Interfaces.IProcessSupervisor _processSupervisor;
 
         public SecureLauncher(
             ILogger<SecureLauncher> logger,
@@ -29,7 +30,8 @@ namespace Sayra.Client.Shared.Runtime.Launch.Application.Services
             ILaunchProfileProvider profileProvider,
             ILaunchValidator validator,
             IUserSessionProvider sessionProvider,
-            IProcessCreator processCreator)
+            IProcessCreator processCreator,
+            Sayra.Client.Shared.Runtime.ProcessSupervisor.Application.Interfaces.IProcessSupervisor processSupervisor)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _eventPublisher = eventPublisher ?? throw new ArgumentNullException(nameof(eventPublisher));
@@ -39,6 +41,7 @@ namespace Sayra.Client.Shared.Runtime.Launch.Application.Services
             _validator = validator ?? throw new ArgumentNullException(nameof(validator));
             _sessionProvider = sessionProvider ?? throw new ArgumentNullException(nameof(sessionProvider));
             _processCreator = processCreator ?? throw new ArgumentNullException(nameof(processCreator));
+            _processSupervisor = processSupervisor ?? throw new ArgumentNullException(nameof(processSupervisor));
         }
 
         public async Task<LaunchResult> LaunchAsync(LaunchRequest request)
@@ -84,6 +87,16 @@ namespace Sayra.Client.Shared.Runtime.Launch.Application.Services
 
                 // 8. Launch succeeded
                 _logger.LogInformation("Game launch successful. Game: '{GameId}' PID: {Pid}", request.GameId, pid);
+
+                // Register with Process Supervisor
+                var supervisorProcInfo = new Sayra.Client.Shared.Runtime.ProcessSupervisor.Domain.Models.ProcessInfo
+                {
+                    RuntimeId = request.RuntimeSessionId,
+                    ProcessId = pid,
+                    ProcessName = request.GameId,
+                    ExecutablePath = profile.ExecutablePath
+                };
+                await _processSupervisor.RegisterAsync(supervisorProcInfo);
 
                 // Transition state to Running
                 _stateManager.TransitionTo(RuntimeState.Running, $"Successfully launched process {pid}");
