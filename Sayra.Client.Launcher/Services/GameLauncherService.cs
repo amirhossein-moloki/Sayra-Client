@@ -9,6 +9,9 @@ using Sayra.Client.GameLibrary.Services;
 using Sayra.Client.Launcher.Events;
 using Sayra.Client.Launcher.Models;
 using Sayra.Client.Launcher.Validation;
+using Sayra.Client.Shared.Runtime.Application.Interfaces;
+using Sayra.Client.Shared.Runtime.Launch.Application.Interfaces;
+using Sayra.Client.Shared.Runtime.Launch.Domain.Models;
 
 namespace Sayra.Client.Launcher.Services
 {
@@ -19,6 +22,8 @@ namespace Sayra.Client.Launcher.Services
         private readonly ILauncherRecoveryService _recoveryService;
         private readonly ISessionStateProvider _sessionState;
         private readonly ILicenseValidator _licenseValidator;
+        private readonly ISecureLauncher _secureLauncher;
+        private readonly IRuntimeSessionManager _runtimeSessionManager;
         private readonly ILogger<GameLauncherService> _logger;
 
         public event EventHandler<GameLaunchingEventArgs>? GameLaunching;
@@ -35,6 +40,8 @@ namespace Sayra.Client.Launcher.Services
             ILauncherRecoveryService recoveryService,
             ISessionStateProvider sessionState,
             ILicenseValidator licenseValidator,
+            ISecureLauncher secureLauncher,
+            IRuntimeSessionManager runtimeSessionManager,
             ILogger<GameLauncherService> logger)
         {
             _gameLibrary = gameLibrary;
@@ -42,6 +49,8 @@ namespace Sayra.Client.Launcher.Services
             _recoveryService = recoveryService;
             _sessionState = sessionState;
             _licenseValidator = licenseValidator;
+            _secureLauncher = secureLauncher;
+            _runtimeSessionManager = runtimeSessionManager;
             _logger = logger;
         }
 
@@ -101,22 +110,31 @@ namespace Sayra.Client.Launcher.Services
                 // Raise GameLaunching event
                 GameLaunching?.Invoke(this, new GameLaunchingEventArgs { GameId = gameId, Name = game.Name });
 
-                // Launch process
-                var psi = new ProcessStartInfo
+                // Create a secure runtime session for tracking
+                var runtimeSession = await _runtimeSessionManager.CreateAsync("RestrictedUser", gameId);
+
+                // Create launch request
+                var launchRequest = new LaunchRequest
                 {
-                    FileName = game.ExecutablePath,
+                    GameId = gameId,
+                    ExecutablePath = game.ExecutablePath,
                     Arguments = game.Arguments,
-                    WorkingDirectory = string.IsNullOrWhiteSpace(game.WorkingDirectory) ? System.IO.Path.GetDirectoryName(game.ExecutablePath) : game.WorkingDirectory,
-                    UseShellExecute = false
+                    WorkingDirectory = string.IsNullOrWhiteSpace(game.WorkingDirectory) ? System.IO.Path.GetDirectoryName(game.ExecutablePath) ?? string.Empty : game.WorkingDirectory,
+                    UserId = "RestrictedUser",
+                    RuntimeSessionId = runtimeSession.SessionId
                 };
 
-                _logger.LogInformation("Starting process: '{Path}' with args: '{Args}'", psi.FileName, psi.Arguments);
-                var process = Process.Start(psi);
-                if (process == null)
+                // Launch via secure pipeline
+                var launchResult = await _secureLauncher.LaunchAsync(launchRequest);
+
+                if (!launchResult.Success || !launchResult.ProcessId.HasValue)
                 {
-                    RaiseLaunchFailed(gameId, game.Name, "Failed to start process.");
+                    RaiseLaunchFailed(gameId, game.Name, launchResult.ErrorMessage ?? "Failed to start process via secure launcher.");
                     return false;
                 }
+
+                // Retrieve process object for process monitor registration
+                var process = Process.GetProcessById(launchResult.ProcessId.Value);
 
                 // Register with process monitor
                 var options = new LaunchOptions
