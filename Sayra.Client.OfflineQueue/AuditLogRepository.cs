@@ -16,7 +16,7 @@ namespace Sayra.Client.OfflineQueue
         private readonly string _connectionString;
         private readonly SemaphoreSlim _dbLock = new(1, 1);
 
-        public AuditLogRepository(string dbName = "offline_queue.db")
+        public AuditLogRepository(string dbName = "offline_queue.db", Sayra.Client.Shared.Interfaces.Security.ICryptographyService? cryptographyService = null)
         {
             var dataDir = Path.Combine(AppContext.BaseDirectory, "Data");
             if (!Directory.Exists(dataDir))
@@ -25,7 +25,13 @@ namespace Sayra.Client.OfflineQueue
             }
 
             _dbPath = Path.Combine(dataDir, dbName);
-            _connectionString = $"Data Source={_dbPath};Cache=Shared";
+            var connBuilder = new SqliteConnectionStringBuilder
+            {
+                DataSource = _dbPath,
+                Cache = SqliteCacheMode.Shared,
+                Password = Sayra.Client.Shared.Security.Crypto.DatabaseKeyManager.GetOrInitializeKey(cryptographyService)
+            };
+            _connectionString = connBuilder.ConnectionString;
 
             InitializeDatabase();
         }

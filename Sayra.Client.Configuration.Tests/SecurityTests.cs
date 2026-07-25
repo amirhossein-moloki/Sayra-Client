@@ -562,4 +562,66 @@ public class SecurityTests
         // Latency for generating 1000 keys should be extremely fast
         Assert.True(stopwatch.ElapsedMilliseconds < 1000);
     }
+
+    [Fact]
+    public async Task SqlCipher_EncryptionAtRest_VerifyTamperingAndLockdown()
+    {
+        var testDbName = $"test_sqlcipher_{Guid.NewGuid():N}.db";
+        var repository = new AuditLogRepository(testDbName);
+
+        // 1. Write some log data to the database
+        var entry = new EventLogEntry
+        {
+            EventId = Guid.NewGuid(),
+            CorrelationId = "TestCorr",
+            SessionId = "TestSession",
+            TraceId = "TestTrace",
+            Category = "Security",
+            Severity = "Critical",
+            MessageTemplate = "Test SQLCipher message template",
+            PayloadFields = new Dictionary<string, object> { { "Key", "Val" } },
+            Timestamp = DateTime.UtcNow
+        };
+
+        await repository.AddLogAsync(entry);
+
+        // Get the path to the database file on disk
+        var dataDir = Path.Combine(AppContext.BaseDirectory, "Data");
+        var dbPath = Path.Combine(dataDir, testDbName);
+
+        Assert.True(File.Exists(dbPath));
+
+        // 2. Attempt to open and read from this file WITHOUT SQLCipher Password (unencrypted connection)
+        var unencryptedConnStr = $"Data Source={dbPath}";
+        using var unencryptedConnection = new SqliteConnection(unencryptedConnStr);
+        await unencryptedConnection.OpenAsync();
+
+        using var command = unencryptedConnection.CreateCommand();
+        command.CommandText = "SELECT name FROM sqlite_master WHERE type='table';";
+
+        // Since the database is encrypted via SQLCipher, attempting to query it
+        // without a password must throw a SqliteException (usually "file is not a database").
+        var exception = await Assert.ThrowsAsync<SqliteException>(async () =>
+        {
+            using var reader = await command.ExecuteReaderAsync();
+            while (await reader.ReadAsync())
+            {
+                var tableName = reader.GetString(0);
+            }
+        });
+
+        Assert.Contains("not a database", exception.Message, StringComparison.OrdinalIgnoreCase);
+
+        // Clean up test database file
+        SqliteConnection.ClearAllPools();
+        try
+        {
+            if (File.Exists(dbPath)) File.Delete(dbPath);
+            var walPath = dbPath + "-wal";
+            if (File.Exists(walPath)) File.Delete(walPath);
+            var shmPath = dbPath + "-shm";
+            if (File.Exists(shmPath)) File.Delete(shmPath);
+        }
+        catch { }
+    }
 }

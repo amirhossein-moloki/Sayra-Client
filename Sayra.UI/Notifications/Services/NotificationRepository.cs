@@ -14,7 +14,7 @@ namespace Sayra.UI.Notifications.Services
         private readonly string _connectionString;
         private readonly SemaphoreSlim _dbLock = new(1, 1);
 
-        public NotificationRepository(string dbName = "notifications_history.db")
+        public NotificationRepository(string dbName = "notifications_history.db", Sayra.Client.Shared.Interfaces.Security.ICryptographyService? cryptographyService = null)
         {
             var dataDir = Path.Combine(AppContext.BaseDirectory, "Data");
             if (!Directory.Exists(dataDir))
@@ -23,7 +23,13 @@ namespace Sayra.UI.Notifications.Services
             }
 
             string dbPath = Path.Combine(dataDir, dbName);
-            _connectionString = $"Data Source={dbPath};Cache=Shared";
+            var connBuilder = new SqliteConnectionStringBuilder
+            {
+                DataSource = dbPath,
+                Cache = SqliteCacheMode.Shared,
+                Password = Sayra.Client.Shared.Security.Crypto.DatabaseKeyManager.GetOrInitializeKey(cryptographyService)
+            };
+            _connectionString = connBuilder.ConnectionString;
         }
 
         public async Task InitializeAsync()
