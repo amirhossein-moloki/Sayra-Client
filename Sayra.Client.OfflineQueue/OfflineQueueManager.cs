@@ -26,7 +26,8 @@ public class OfflineQueueManager : IOfflineQueueManager, IDisposable
         ILogger<OfflineQueueManager> logger,
         IEventSerializer serializer,
         IQueueSecurityManager securityManager,
-        IConfiguration configuration)
+        IConfiguration configuration,
+        Sayra.Client.Shared.Interfaces.Security.ICryptographyService? cryptographyService = null)
     {
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _serializer = serializer ?? throw new ArgumentNullException(nameof(serializer));
@@ -39,7 +40,13 @@ public class OfflineQueueManager : IOfflineQueueManager, IDisposable
         }
 
         _dbPath = Path.Combine(dataDir, "offline_queue.db");
-        _connectionString = $"Data Source={_dbPath};Cache=Shared";
+        var connBuilder = new SqliteConnectionStringBuilder
+        {
+            DataSource = _dbPath,
+            Cache = SqliteCacheMode.Shared,
+            Password = Sayra.Client.Shared.Security.Crypto.DatabaseKeyManager.GetOrInitializeKey(cryptographyService)
+        };
+        _connectionString = connBuilder.ConnectionString;
 
         InitializeDatabase();
     }
