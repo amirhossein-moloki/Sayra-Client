@@ -23,7 +23,7 @@ using Sayra.Client.Diagnostics.Services;
 using Sayra.Client.Shared.Interfaces;
 using Sayra.Client.Shared.Services;
 using Sayra.Client.Shared.Interfaces.Security;
-using Sayra.Client.Shared.Security.GameProtection.DependencyInjection;
+using Sayra.Client.Shared.Runtime.Infrastructure.DependencyInjection;
 using Microsoft.Extensions.Hosting.WindowsServices;
 using Serilog;
 
@@ -48,6 +48,9 @@ builder.Services.AddWindowsService(options =>
 {
     options.ServiceName = "Sayra Client";
 });
+
+// Register Runtime Services
+builder.Services.AddRuntimeServices();
 
 // Register Core Services
 builder.Services.AddSingleton<ReconnectManager>();
