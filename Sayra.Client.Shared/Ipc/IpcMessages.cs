@@ -4,6 +4,9 @@ namespace Sayra.Client.Shared.Ipc
 {
     public enum IpcMessageType
     {
+        // Connection Handshake
+        HANDSHAKE,
+
         // UI -> Core (Requests)
         GET_STATE,
         START_SESSION,

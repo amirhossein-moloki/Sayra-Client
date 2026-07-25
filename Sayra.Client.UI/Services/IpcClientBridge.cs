@@ -8,7 +8,10 @@ using System.IO.Pipes;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
+using System.Security.Principal;
 using System.Text.Json;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Sayra.Client.UI.Services;
 
@@ -41,14 +44,57 @@ public class IpcClientBridge : IClientBridge, IDisposable
             try
             {
                 UpdateStatus(ClientStatus.Connecting);
-                _clientStream = new NamedPipeClientStream(".", PipeName, PipeDirection.InOut, PipeOptions.Asynchronous);
+                _clientStream = new NamedPipeClientStream(
+                    ".",
+                    PipeName,
+                    PipeDirection.InOut,
+                    PipeOptions.Asynchronous,
+                    TokenImpersonationLevel.Identification);
                 await _clientStream.ConnectAsync(5000, ct);
 
                 _writer = new StreamWriter(_clientStream) { AutoFlush = true };
                 var reader = new StreamReader(_clientStream);
 
+                // Perform Handshake immediately on connection
+                var handshakePayload = new
+                {
+                    ClientId = "SAYRA_UI_CLIENT_BRIDGE",
+                    Pid = Environment.ProcessId,
+                    SessionId = System.Diagnostics.Process.GetCurrentProcess().SessionId,
+                    Timestamp = DateTime.UtcNow,
+                    Token = Guid.NewGuid().ToString()
+                };
+
+                var handshakeMessage = new IpcMessage
+                {
+                    MessageType = IpcMessageType.HANDSHAKE,
+                    Payload = JsonSerializer.Serialize(handshakePayload)
+                };
+
+                await _writer.WriteLineAsync(JsonSerializer.Serialize(handshakeMessage));
+                await _writer.FlushAsync();
+
+                // Read handshake response
+                var handshakeResponseLine = await reader.ReadLineAsync(ct);
+                if (handshakeResponseLine == null)
+                {
+                    throw new InvalidOperationException("Handshake response not received.");
+                }
+
+                var handshakeResponse = JsonSerializer.Deserialize<IpcMessage>(handshakeResponseLine);
+                if (handshakeResponse == null)
+                {
+                    throw new InvalidOperationException("Malformed handshake response.");
+                }
+
+                var cmdResponse = JsonSerializer.Deserialize<IpcCommandResponse>(handshakeResponse.Payload ?? "{}");
+                if (cmdResponse == null || !cmdResponse.Success)
+                {
+                    throw new InvalidOperationException("Handshake rejected by server: " + (cmdResponse?.ErrorMessage ?? "Unknown error"));
+                }
+
                 UpdateStatus(ClientStatus.Connected);
-                _logger_info("Connected to Core IPC.");
+                _logger_info("Handshake authorized. Connected to Core IPC.");
 
                 // Immediately sync state upon connection
                 NotifyStateChanged();

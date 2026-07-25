@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Pipes;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Sayra.Client.GameLibrary.Services;
 using Sayra.Client.Launcher.Services;
+using Sayra.Client.Shared.Interfaces;
 using Sayra.Client.Shared.Interfaces.Security;
 using Sayra.Client.Shared.Ipc;
 using Sayra.Client.Shared.Models;
@@ -25,8 +27,12 @@ public class IpcServer : SupervisedBackgroundService
     private readonly IProcessMonitorService _processMonitor;
     private readonly IGameLibraryService _gameLibrary;
     private readonly ISecureIpcPolicyManager _ipcPolicyManager;
+    private readonly IAuditLogger _auditLogger;
     private readonly List<NamedPipeServerStream> _activeConnections = new();
     private readonly object _connectionsLock = new();
+
+    [DllImport("kernel32.dll", SetLastError = true)]
+    private static extern bool GetNamedPipeClientProcessId(IntPtr hPipe, out int ClientProcessId);
 
     public IpcServer(
         ILogger<IpcServer> logger,
@@ -37,7 +43,8 @@ public class IpcServer : SupervisedBackgroundService
         IProcessMonitorService processMonitor,
         IGameLibraryService gameLibrary,
         ISecureIpcPolicyManager ipcPolicyManager,
-        IServiceHealthMonitor healthMonitor)
+        IServiceHealthMonitor healthMonitor,
+        IAuditLogger auditLogger)
         : base(logger, healthMonitor, "IpcServer")
     {
         _sessionManager = sessionManager;
@@ -47,6 +54,7 @@ public class IpcServer : SupervisedBackgroundService
         _processMonitor = processMonitor;
         _gameLibrary = gameLibrary;
         _ipcPolicyManager = ipcPolicyManager;
+        _auditLogger = auditLogger;
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -91,10 +99,7 @@ public class IpcServer : SupervisedBackgroundService
     {
         if (OperatingSystem.IsWindows())
         {
-            var securePolicyManager = _ipcPolicyManager as SecureIpcPolicyManager;
-            var pipeSecurity = securePolicyManager != null
-                ? securePolicyManager.GetSecurePipeSecurity()
-                : new System.IO.Pipes.PipeSecurity();
+            var pipeSecurity = _ipcPolicyManager.GetSecurePipeSecurity();
 
             return System.IO.Pipes.NamedPipeServerStreamAcl.Create(
                 PipeName,
@@ -119,32 +124,44 @@ public class IpcServer : SupervisedBackgroundService
 
     private async Task HandleClientAsync(NamedPipeServerStream stream, CancellationToken ct)
     {
+        var streamId = Guid.NewGuid().ToString();
+        int callerPid = 0;
+
         if (OperatingSystem.IsWindows())
         {
-            bool isClientAuthorized = false;
+            // 1. Validate Caller Windows Identity (DACL-level alternative identity verification)
             string clientSid = "";
             string clientName = "";
-
-            var securePolicyManager = _ipcPolicyManager as SecureIpcPolicyManager;
-            if (securePolicyManager != null)
-            {
-                isClientAuthorized = securePolicyManager.ValidateIdentity(stream, out clientName, out clientSid);
-            }
-            else
-            {
-                isClientAuthorized = _ipcPolicyManager.ValidateCallerIdentity(0);
-                clientName = "FakeUser";
-                clientSid = "S-1-5-Fake";
-            }
+            bool isClientAuthorized = _ipcPolicyManager.ValidateIdentity(stream, out clientName, out clientSid);
 
             if (!isClientAuthorized)
             {
-                _logger.LogWarning("REJECTED IPC Named Pipe connection. Unauthorized connecting client Windows Identity. Name: {Name}, SID: {Sid}", clientName, clientSid);
+                _logger.LogWarning("REJECTED IPC Named Pipe connection. Unauthorized Windows Identity. Name: {Name}, SID: {Sid}", clientName, clientSid);
+                _ipcPolicyManager.RemoveStream(streamId);
                 stream.Dispose();
                 return;
             }
 
-            _logger.LogInformation("AUTHORIZED IPC Named Pipe connection from client: {Name} (SID: {Sid})", clientName, clientSid);
+            // 2. Retrieve Client Process ID
+            if (GetNamedPipeClientProcessId(stream.SafePipeHandle.DangerousGetHandle(), out int pid))
+            {
+                callerPid = pid;
+            }
+
+            // 3. Validate Session, SID, and Process Identity by PID
+            if (!_ipcPolicyManager.ValidateClient(callerPid))
+            {
+                _logger.LogWarning("REJECTED IPC Named Pipe connection. PID {Pid} failed process/session/SID verification.", callerPid);
+                _ipcPolicyManager.RemoveStream(streamId);
+                stream.Dispose();
+                return;
+            }
+
+            _logger.LogInformation("AUTHORIZED IPC connection from client: {Name} (SID: {Sid}), PID {Pid}", clientName, clientSid, callerPid);
+        }
+        else
+        {
+            _logger.LogInformation("Authorized non-Windows connection with Stream ID {Id}", streamId);
         }
 
         using var reader = new StreamReader(stream);
@@ -157,33 +174,120 @@ public class IpcServer : SupervisedBackgroundService
                 var line = await reader.ReadLineAsync(ct);
                 if (line == null) break;
 
-                var message = JsonSerializer.Deserialize<IpcMessage>(line);
+                // Protect against DoS with oversized messages
+                if (line.Length > 65536)
+                {
+                    _logger.LogWarning("Dropped incoming line due to oversized length: {Length} characters.", line.Length);
+                    _auditLogger.LogSecurity("IPC message rejected. Input line length exceeded safe limit of 64KB.", new Dictionary<string, object> { { "Length", line.Length } });
+                    break;
+                }
+
+                IpcMessage? message = null;
+                try
+                {
+                    message = JsonSerializer.Deserialize<IpcMessage>(line);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogWarning(ex, "Malformed JSON received over IPC.");
+                    var response = new IpcMessage
+                    {
+                        MessageType = IpcMessageType.COMMAND_RESPONSE,
+                        Payload = JsonSerializer.Serialize(new IpcCommandResponse
+                        {
+                            Success = false,
+                            ErrorMessage = "Malformed IPC request structure."
+                        })
+                    };
+                    await writer.WriteLineAsync(JsonSerializer.Serialize(response));
+                    await writer.FlushAsync();
+                    continue;
+                }
+
                 if (message != null)
                 {
+                    // Secure Connection Handshake: The client MUST successfully complete HANDSHAKE first
+                    if (!_ipcPolicyManager.IsHandshaken(streamId))
+                    {
+                        bool handshakeSuccess = _ipcPolicyManager.ProcessHandshake(streamId, message, callerPid, out string handshakeError);
+                        if (!handshakeSuccess)
+                        {
+                            // Return generic error to prevent leaking security policy internals
+                            var response = new IpcMessage
+                            {
+                                RequestId = message.RequestId,
+                                MessageType = IpcMessageType.COMMAND_RESPONSE,
+                                Payload = JsonSerializer.Serialize(new IpcCommandResponse
+                                {
+                                    Success = false,
+                                    ErrorMessage = "Access denied. Handshake validation failed."
+                                })
+                            };
+                            await writer.WriteLineAsync(JsonSerializer.Serialize(response));
+                            await writer.FlushAsync();
+                            break; // Immediately terminate connection on failed handshake!
+                        }
+                        else
+                        {
+                            var response = new IpcMessage
+                            {
+                                RequestId = message.RequestId,
+                                MessageType = IpcMessageType.COMMAND_RESPONSE,
+                                Payload = JsonSerializer.Serialize(new IpcCommandResponse
+                                {
+                                    Success = true,
+                                    Result = "Handshake authorized."
+                                })
+                            };
+                            await writer.WriteLineAsync(JsonSerializer.Serialize(response));
+                            await writer.FlushAsync();
+                            continue;
+                        }
+                    }
+
+                    // For all subsequent messages, enforce message-by-message security validation (Replay/Skew/Size)
+                    if (!_ipcPolicyManager.ValidateMessage(message))
+                    {
+                        var response = new IpcMessage
+                        {
+                            RequestId = message.RequestId,
+                            MessageType = IpcMessageType.COMMAND_RESPONSE,
+                            Payload = JsonSerializer.Serialize(new IpcCommandResponse
+                            {
+                                Success = false,
+                                ErrorMessage = "Request validation failed. Message rejected."
+                            })
+                        };
+                        await writer.WriteLineAsync(JsonSerializer.Serialize(response));
+                        await writer.FlushAsync();
+                        continue;
+                    }
+
                     var responsePayload = await ProcessMessageAsync(message);
-                    var response = new IpcMessage
+                    var responseMsg = new IpcMessage
                     {
                         RequestId = message.RequestId,
                         MessageType = IpcMessageType.COMMAND_RESPONSE,
                         Payload = JsonSerializer.Serialize(responsePayload)
                     };
-                    await writer.WriteLineAsync(JsonSerializer.Serialize(response));
+                    await writer.WriteLineAsync(JsonSerializer.Serialize(responseMsg));
                     await writer.FlushAsync();
                 }
             }
         }
         catch (Exception ex) when (ex is not OperationCanceledException)
         {
-            _logger.LogError(ex, "Error handling IPC client.");
+            _logger.LogError(ex, "Error handling IPC client stream.");
         }
         finally
         {
+            _ipcPolicyManager.RemoveStream(streamId);
             lock (_connectionsLock)
             {
                 _activeConnections.Remove(stream);
             }
             stream.Dispose();
-            _logger.LogInformation("UI Client disconnected from IPC.");
+            _logger.LogInformation("UI Client disconnected from IPC. Stream ID {Id} cleaned up.", streamId);
         }
     }
 
@@ -316,12 +420,14 @@ public class IpcServer : SupervisedBackgroundService
                     return new IpcCommandResponse { Success = true, Result = JsonSerializer.Serialize(statusObj) };
 
                 default:
-                    return new IpcCommandResponse { Success = false, ErrorMessage = $"Unknown message type: {message.MessageType}" };
+                    return new IpcCommandResponse { Success = false, ErrorMessage = "Unknown request type." };
             }
         }
         catch (Exception ex)
         {
-            return new IpcCommandResponse { Success = false, ErrorMessage = ex.Message };
+            // Never expose internal system details
+            _logger.LogError(ex, "Internal error processing IPC message.");
+            return new IpcCommandResponse { Success = false, ErrorMessage = "An internal server error occurred." };
         }
     }
 
