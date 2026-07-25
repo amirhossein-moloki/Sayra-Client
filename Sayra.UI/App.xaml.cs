@@ -11,6 +11,7 @@ using Sayra.Client.LocalAdmin.Authentication;
 using Sayra.Client.LocalAdmin.Security;
 using Sayra.Client.Shared.Interfaces.Security;
 using SayraClient.Services;
+using SayraClient.Security.Transport;
 using SayraClient;
 using SayraClient.Commands;
 using System.IO;
@@ -239,6 +240,8 @@ namespace Sayra.UI
             services.AddSingleton<IIntegrityValidator, IntegrityValidator>();
             services.AddSingleton<ISecureIpcPolicyManager, SecureIpcPolicyManager>();
             services.AddSingleton<AuthManager>();
+            services.AddSingleton<TransportPolicy>();
+            services.AddSingleton<TlsConnectionManager>();
             services.AddSingleton<SecureTransportLayer>();
 
             // Add Discovery Service Stub

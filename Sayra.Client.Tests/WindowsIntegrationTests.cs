@@ -13,6 +13,7 @@ using Sayra.Client.Shared.Interfaces.Security;
 using Sayra.Client.Shared.Models;
 using SayraClient;
 using SayraClient.Services;
+using SayraClient.Security.Transport;
 using SayraClient.Services.Windows;
 using Xunit;
 
