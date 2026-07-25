@@ -179,6 +179,7 @@ namespace SayraClient.Services
             var batchingWorker = _serviceProvider.GetRequiredService<EventQueueBatchingWorker>();
             var compressionWorker = _serviceProvider.GetRequiredService<LogCompressionWorker>();
             var syncScheduler = _serviceProvider.GetRequiredService<ConfigurationSyncScheduler>();
+            var runtimeIntegrityMonitor = _serviceProvider.GetRequiredService<SayraClient.Security.Integrity.RuntimeIntegrityMonitor>();
 
             // Resolve new native Windows integration services
             var registryWatcher = _serviceProvider.GetRequiredService<SayraClient.Services.Windows.RegistryWatcher>();
@@ -205,6 +206,10 @@ namespace SayraClient.Services
 
             _workerSupervisor.RegisterWorker("AntiTamperService",
                 token => antiTamperService.RunSupervisedAsync(token),
+                new[] { "IpcServer" });
+
+            _workerSupervisor.RegisterWorker("RuntimeIntegrityMonitor",
+                token => runtimeIntegrityMonitor.RunSupervisedAsync(token),
                 new[] { "IpcServer" });
 
             _workerSupervisor.RegisterWorker("WhitelistingService",

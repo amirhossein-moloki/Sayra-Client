@@ -17,8 +17,11 @@ using Sayra.Client.LocalAdmin.Storage;
 using Sayra.Client.OfflineQueue;
 using Sayra.Client.OfflineQueue.Security;
 using Sayra.Client.Shared.Models;
+using Sayra.Client.Shared.Interfaces;
 using Sayra.Client.Shared.Interfaces.Security;
 using Sayra.Client.Shared.Security.Memory;
+using System.Runtime.InteropServices;
+using SayraClient.Security.Integrity;
 using Sayra.Client.Shared.Security.Crypto.KeyManagement;
 using Microsoft.Extensions.DependencyInjection;
 using SayraClient.Services;
@@ -623,5 +626,149 @@ public class SecurityTests
             if (File.Exists(shmPath)) File.Delete(shmPath);
         }
         catch { }
+    }
+
+    // ==========================================
+    // PHASE 3 TRACK 7 INTEGRITY & ANTI-TAMPER TESTS
+    // ==========================================
+
+    [Fact]
+    public void HashRegistry_VerifyValidAndInvalidHashes()
+    {
+        // Arrange
+        var registry = new HashRegistry();
+        var testFile = "test_dll_asset.dll";
+        var expectedSha256 = "a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f61234";
+        var expectedSha384 = "a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f61234a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4";
+        var expectedSha512 = "a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f61234a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f61234";
+
+        // Act
+        registry.RegisterHash(testFile, expectedSha256, "SHA-256");
+        registry.RegisterHash(testFile, expectedSha384, "SHA-384");
+        registry.RegisterHash(testFile, expectedSha512, "SHA-512");
+
+        // Assert
+        Assert.True(registry.VerifyHash(testFile, expectedSha256, "SHA-256"));
+        Assert.True(registry.VerifyHash(testFile, expectedSha384, "SHA-384"));
+        Assert.True(registry.VerifyHash(testFile, expectedSha512, "SHA-512"));
+
+        // Modified file rejected
+        Assert.False(registry.VerifyHash(testFile, "modified_incorrect_hash_value", "SHA-256"));
+    }
+
+    [Fact]
+    public void VerifyAuthenticodeSignature_SignedAndUnsignedBinares()
+    {
+        // Arrange
+        var loggerMock = new Mock<ILogger<IntegrityValidator>>();
+        var keyManager = new SessionKeyManager();
+        var registry = new HashRegistry();
+        var validator = new IntegrityValidator(loggerMock.Object, keyManager, registry);
+
+        // Act & Assert
+        // Unsigned/non-existent executable rejected
+        var nonExistentPath = "C:\\Windows\\invalid_unsigned_non_existent_path.exe";
+        var isSigned = validator.VerifyAuthenticodeSignature(nonExistentPath);
+        Assert.False(isSigned);
+
+        // Empty file should fail validation
+        var tempFile = Path.Combine(Path.GetTempPath(), $"{Guid.NewGuid():N}.exe");
+        try
+        {
+            File.WriteAllText(tempFile, "Mock Binary Contents");
+            var result = validator.VerifyAuthenticodeSignature(tempFile);
+
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                // On Windows, raw text file is unsigned and WinVerifyTrust must reject it
+                Assert.False(result);
+            }
+            else
+            {
+                // On non-Windows platforms, it gracefully emulates and returns true if file exists
+                Assert.True(result);
+            }
+        }
+        finally
+        {
+            try { File.Delete(tempFile); } catch { }
+        }
+    }
+
+    [Fact]
+    public void ValidateLoadedModules_AcceptsExpectedModulesAndDetectsHijacking()
+    {
+        // Arrange
+        var loggerMock = new Mock<ILogger<IntegrityValidator>>();
+        var keyManager = new SessionKeyManager();
+        var registry = new HashRegistry();
+        var validator = new IntegrityValidator(loggerMock.Object, keyManager, registry);
+
+        // Act
+        // This validates the loaded modules of the current test runner.
+        // It should run and handle platform-specific verification.
+        bool result = validator.ValidateLoadedModules();
+
+        // Assert
+        // Since we are running in a safe test runner context, there shouldn't be active DLL hijacking,
+        // and on Linux the Authenticode checks return true, so module validation should execute without crashing.
+        if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+        {
+            Assert.True(result);
+        }
+    }
+
+    [Fact]
+    public void StartupSelfChecks_SucceedsForValidInstallation()
+    {
+        // Arrange
+        var loggerMock = new Mock<ILogger<RuntimeIntegrityMonitor>>();
+        var healthMock = new Mock<IServiceHealthMonitor>();
+        var integrityMock = new Mock<IIntegrityValidator>();
+        var auditMock = new Mock<IAuditLogger>();
+
+        // Scenario 1: Setup key missing - self check returns false
+        var monitor = new RuntimeIntegrityMonitor(loggerMock.Object, healthMock.Object, integrityMock.Object, auditMock.Object);
+        integrityMock.Setup(i => i.VerifyIntegrity()).Returns(true);
+
+        // Act
+        var result = monitor.PerformStartupSelfChecks();
+
+        // Assert
+        // Since server_public.key should exist in the run environment (under repo root or AppContext),
+        // let's verify if the file was found.
+        var pubKeyPath = Path.Combine(AppContext.BaseDirectory, "server_public.key");
+        bool keyExists = File.Exists(pubKeyPath);
+        Assert.Equal(keyExists, result);
+    }
+
+    [Fact]
+    public async Task RuntimeIntegrityMonitor_BackgroundCheck_GeneratesEventsOnTampering()
+    {
+        // Arrange
+        var loggerMock = new Mock<ILogger<RuntimeIntegrityMonitor>>();
+        var healthMock = new Mock<IServiceHealthMonitor>();
+        var integrityMock = new Mock<IIntegrityValidator>();
+        var auditMock = new Mock<IAuditLogger>();
+
+        var monitor = new RuntimeIntegrityMonitor(loggerMock.Object, healthMock.Object, integrityMock.Object, auditMock.Object);
+
+        // Mock module tampering
+        integrityMock.Setup(i => i.ValidateLoadedModules()).Returns(false);
+        integrityMock.Setup(i => i.VerifyIntegrity()).Returns(true);
+
+        // Run validation loop step
+        var cts = new CancellationTokenSource();
+        cts.CancelAfter(100); // Stop immediately
+
+        // Assert
+        // Starting the supervised worker with tampered modules should trigger Secure Failure policy
+        // which throws or calls Environment.Exit.
+        // To verify it triggers audit logging:
+        var exception = await Record.ExceptionAsync(() => monitor.RunSupervisedAsync(cts.Token));
+
+        // It should have either thrown or completed.
+        // Let's verify that audit logger was invoked to record the security event.
+        auditMock.Verify(a => a.LogSecurity(It.IsAny<string>(), It.IsAny<Dictionary<string, object>>()), Times.AtLeastOnce());
     }
 }

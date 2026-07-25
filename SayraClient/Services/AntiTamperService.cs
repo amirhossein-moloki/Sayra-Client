@@ -42,15 +42,18 @@ public class AntiTamperService : SupervisedBackgroundService
 
                 _logger.LogDebug("Anti-Tamper check performing...");
 
-                // Ensure critical security settings are still in place
-                if (!_securityManager.IsSystemSecure())
+                // Ensure critical security settings are still in place, delegating checks to the centralized integrity validator
+                bool systemSecure = _securityManager.IsSystemSecure();
+                bool integrityValid = _integrityValidator.VerifyIntegrity() && _integrityValidator.ValidateLoadedModules();
+
+                if (!systemSecure || !integrityValid)
                 {
-                    _logger.LogWarning("System tampering detected!");
+                    _logger.LogWarning("System tampering or integrity violation detected in Anti-Tamper check!");
                     await _ipcServer.BroadcastEventAsync(Sayra.Client.Shared.Ipc.IpcMessageType.SECURITY_BREACH_DETECTED, new Sayra.Client.Shared.Models.SecurityEventPayload
                     {
                         EventType = "TAMPER_DETECTED",
                         Severity = "High",
-                        Description = "Process security check failed (Debugger or suspicious modules detected)."
+                        Description = "Process security or runtime integrity check failed (Debugger, suspicious modules, or tampered binaries detected)."
                     });
                 }
 

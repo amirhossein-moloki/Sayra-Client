@@ -18,4 +18,5 @@ public interface IIntegrityValidator
     bool VerifyAuthenticodeSignature(string filePath);
     string ComputeSha256Hash(string filePath);
     bool ValidateDllIntegrity(string dllName);
+    bool ValidateLoadedModules();
 }
