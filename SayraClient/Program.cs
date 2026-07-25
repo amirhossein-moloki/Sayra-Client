@@ -13,6 +13,7 @@ using Sayra.Client.Configuration.Versioning;
 using SayraClient.Services.Configuration;
 using SayraClient.Services.Windows;
 using Sayra.Client.OfflineQueue.Extensions;
+using SayraClient.Security.Integrity;
 using Sayra.Client.Discovery.Services;
 using Sayra.Client.GameLibrary;
 using Sayra.Client.LocalAdmin;
@@ -91,11 +92,13 @@ builder.Services.AddSingleton<IDiscoveryService, DiscoveryManager>();
 
 // Register Security Services
 builder.Services.AddSingleton<SessionKeyManager>();
+builder.Services.AddSingleton<HashRegistry>();
 builder.Services.AddSingleton<ICryptographyService, CryptographyService>();
 builder.Services.AddSingleton<IIntegrityValidator, IntegrityValidator>();
 builder.Services.AddSingleton<ISecureIpcPolicyManager, SecureIpcPolicyManager>();
 builder.Services.AddSingleton<AuthManager>();
 builder.Services.AddSingleton<SecureTransportLayer>();
+builder.Services.AddSingleton<RuntimeIntegrityMonitor>();
 
 // Register Configuration Sync Engine Components
 builder.Services.AddSingleton<ConfigurationValidator>();
