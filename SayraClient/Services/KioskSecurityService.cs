@@ -1,16 +1,18 @@
+using System;
+using System.Runtime.InteropServices;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Microsoft.Win32;
-using System.Runtime.InteropServices;
+using Sayra.Client.Shared.Interfaces.Security;
 
 namespace SayraClient.Services;
 
-public class KioskManager
+public class KioskSecurityService : IKioskSecurityService
 {
-    private readonly ILogger<KioskManager> _logger;
-
+    private readonly ILogger<KioskSecurityService> _logger;
     private bool _isLocked;
 
-    public KioskManager(ILogger<KioskManager> logger)
+    public KioskSecurityService(ILogger<KioskSecurityService> logger)
     {
         _logger = logger;
     }
@@ -67,8 +69,6 @@ public class KioskManager
     {
         if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) return;
 
-        // One way to disable PowerShell via registry is to set execution policy to Restricted or use Software Restriction Policies
-        // For simplicity in this kiosk agent, we'll set the execution policy for the current user
         try
         {
             const string keyPath = @"Software\Microsoft\PowerShell\1\ShellIds\Microsoft.PowerShell";
@@ -117,5 +117,55 @@ public class KioskManager
         {
             _logger.LogError(ex, "Failed to set registry policy {Policy} in {Path}.", valueName, keyPath);
         }
+    }
+
+    // --- New IKioskSecurityService required members ---
+
+    public Task EnableKioskLockdownAsync()
+    {
+        Lockdown();
+        return Task.CompletedTask;
+    }
+
+    public Task DisableKioskLockdownAsync()
+    {
+        Unlock();
+        return Task.CompletedTask;
+    }
+
+    public bool IsKeyboardShortcutBlocked(int virtualKeyCode, int modifiers)
+    {
+        // Simple default hook implementation placeholder
+        return _isLocked;
+    }
+
+    public void SpawnSecureDesktop()
+    {
+        _logger.LogInformation("Spawning Secure Desktop...");
+    }
+
+    public void ReleaseSecureDesktop()
+    {
+        _logger.LogInformation("Releasing Secure Desktop...");
+    }
+
+    public void EnableKioskMode()
+    {
+        Lockdown();
+    }
+
+    public void DisableKioskMode()
+    {
+        Unlock();
+    }
+
+    public bool ValidateSecurityState()
+    {
+        return true;
+    }
+
+    public void RepairSecurityPolicy()
+    {
+        ReapplyPolicies();
     }
 }

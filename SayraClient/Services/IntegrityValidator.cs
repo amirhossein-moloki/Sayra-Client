@@ -1,10 +1,13 @@
+using System;
+using System.IO;
 using System.Security.Cryptography;
 using System.Text;
 using Microsoft.Extensions.Logging;
+using Sayra.Client.Shared.Interfaces.Security;
 
 namespace SayraClient.Services;
 
-public class IntegrityValidator
+public class IntegrityValidator : IIntegrityValidator
 {
     private readonly ILogger<IntegrityValidator> _logger;
     private readonly SessionKeyManager _sessionKeyManager;
@@ -85,5 +88,43 @@ public class IntegrityValidator
             _logger.LogError(ex, "Error verifying integrity of {File}", filepath);
             return false;
         }
+    }
+
+    // --- New IIntegrityValidator members ---
+
+    public bool ValidateFile(string filePath, string expectedHash)
+    {
+        return VerifyFileIntegrity(filePath, expectedHash);
+    }
+
+    public bool ValidateProcess(int processId)
+    {
+        // Simple process verification check placeholder
+        return true;
+    }
+
+    public bool VerifyIntegrity()
+    {
+        return true;
+    }
+
+    public bool VerifyAuthenticodeSignature(string filePath)
+    {
+        // Stand-in authenticode signature verification
+        return File.Exists(filePath);
+    }
+
+    public string ComputeSha256Hash(string filePath)
+    {
+        if (!File.Exists(filePath)) return string.Empty;
+        using var sha = SHA256.Create();
+        using var stream = File.OpenRead(filePath);
+        return BitConverter.ToString(sha.ComputeHash(stream)).Replace("-", "").ToLowerInvariant();
+    }
+
+    public bool ValidateDllIntegrity(string dllName)
+    {
+        // Stand-in DLL check
+        return true;
     }
 }

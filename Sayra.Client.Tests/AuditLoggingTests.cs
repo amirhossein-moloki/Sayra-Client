@@ -17,6 +17,7 @@ using Sayra.Client.Shared.Interfaces;
 using Sayra.Client.Shared.Logging;
 using Sayra.Client.Shared.Models;
 using Sayra.Client.Shared.Services;
+using Sayra.Client.Shared.Interfaces.Security;
 using SayraClient;
 using SayraClient.Commands;
 using SayraClient.Services;
@@ -245,8 +246,8 @@ namespace Sayra.Client.Tests
 
             var mockSP = new Mock<IServiceProvider>();
             var mockKey = new Mock<SessionKeyManager>();
-            var mockEncrypt = new Mock<EncryptionManager>(NullLogger<EncryptionManager>.Instance, mockKey.Object);
-            var mockIntegrity = new Mock<IntegrityValidator>(NullLogger<IntegrityValidator>.Instance, mockKey.Object);
+            var mockEncrypt = new Mock<ICryptographyService>();
+            var mockIntegrity = new Mock<IIntegrityValidator>();
             var mockTransport = new Mock<SecureTransportLayer>(NullLogger<SecureTransportLayer>.Instance, mockEncrypt.Object, mockIntegrity.Object, mockKey.Object);
 
             var mockVal = new Mock<SecureMessageValidator>(NullLogger<SecureMessageValidator>.Instance);

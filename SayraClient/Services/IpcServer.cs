@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Sayra.Client.GameLibrary.Services;
 using Sayra.Client.Launcher.Services;
+using Sayra.Client.Shared.Interfaces.Security;
 using Sayra.Client.Shared.Ipc;
 using Sayra.Client.Shared.Models;
 
@@ -19,10 +20,11 @@ public class IpcServer : SupervisedBackgroundService
     private const string PipeName = "SayraClientIpcPipe";
     private readonly SessionManager _sessionManager;
     private readonly ClientStateManager _stateManager;
-    private readonly KioskManager _kioskManager;
+    private readonly IKioskSecurityService _kioskManager;
     private readonly IGameLauncherService _gameLauncher;
     private readonly IProcessMonitorService _processMonitor;
     private readonly IGameLibraryService _gameLibrary;
+    private readonly ISecureIpcPolicyManager _ipcPolicyManager;
     private readonly List<NamedPipeServerStream> _activeConnections = new();
     private readonly object _connectionsLock = new();
 
@@ -30,10 +32,11 @@ public class IpcServer : SupervisedBackgroundService
         ILogger<IpcServer> logger,
         SessionManager sessionManager,
         ClientStateManager stateManager,
-        KioskManager kioskManager,
+        IKioskSecurityService kioskManager,
         IGameLauncherService gameLauncher,
         IProcessMonitorService processMonitor,
         IGameLibraryService gameLibrary,
+        ISecureIpcPolicyManager ipcPolicyManager,
         IServiceHealthMonitor healthMonitor)
         : base(logger, healthMonitor, "IpcServer")
     {
@@ -43,6 +46,7 @@ public class IpcServer : SupervisedBackgroundService
         _gameLauncher = gameLauncher;
         _processMonitor = processMonitor;
         _gameLibrary = gameLibrary;
+        _ipcPolicyManager = ipcPolicyManager;
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -87,25 +91,10 @@ public class IpcServer : SupervisedBackgroundService
     {
         if (OperatingSystem.IsWindows())
         {
-            var pipeSecurity = new System.IO.Pipes.PipeSecurity();
-
-            // 1. Allow SYSTEM full control
-            pipeSecurity.AddAccessRule(new System.IO.Pipes.PipeAccessRule(
-                new System.Security.Principal.SecurityIdentifier(System.Security.Principal.WellKnownSidType.LocalSystemSid, null),
-                System.IO.Pipes.PipeAccessRights.FullControl,
-                System.Security.AccessControl.AccessControlType.Allow));
-
-            // 2. Allow Admins full control
-            pipeSecurity.AddAccessRule(new System.IO.Pipes.PipeAccessRule(
-                new System.Security.Principal.SecurityIdentifier(System.Security.Principal.WellKnownSidType.BuiltinAdministratorsSid, null),
-                System.IO.Pipes.PipeAccessRights.FullControl,
-                System.Security.AccessControl.AccessControlType.Allow));
-
-            // 3. Allow Authenticated Users read/write access (for the active desktop user in Session 1+)
-            pipeSecurity.AddAccessRule(new System.IO.Pipes.PipeAccessRule(
-                new System.Security.Principal.SecurityIdentifier(System.Security.Principal.WellKnownSidType.AuthenticatedUserSid, null),
-                System.IO.Pipes.PipeAccessRights.ReadWrite,
-                System.Security.AccessControl.AccessControlType.Allow));
+            var securePolicyManager = _ipcPolicyManager as SecureIpcPolicyManager;
+            var pipeSecurity = securePolicyManager != null
+                ? securePolicyManager.GetSecurePipeSecurity()
+                : new System.IO.Pipes.PipeSecurity();
 
             return System.IO.Pipes.NamedPipeServerStreamAcl.Create(
                 PipeName,
@@ -136,27 +125,16 @@ public class IpcServer : SupervisedBackgroundService
             string clientSid = "";
             string clientName = "";
 
-            try
+            var securePolicyManager = _ipcPolicyManager as SecureIpcPolicyManager;
+            if (securePolicyManager != null)
             {
-                stream.RunAsClient(() =>
-                {
-                    using (var identity = System.Security.Principal.WindowsIdentity.GetCurrent())
-                    {
-                        clientSid = identity.User?.Value ?? "";
-                        clientName = identity.Name;
-
-                        // Check if the client is SYSTEM or in the Administrators group
-                        var principal = new System.Security.Principal.WindowsPrincipal(identity);
-                        if (identity.IsSystem || principal.IsInRole(System.Security.Principal.WindowsBuiltInRole.Administrator))
-                        {
-                            isClientAuthorized = true;
-                        }
-                    }
-                });
+                isClientAuthorized = securePolicyManager.ValidateIdentity(stream, out clientName, out clientSid);
             }
-            catch (Exception ex)
+            else
             {
-                _logger.LogError(ex, "Failed to verify client identity over Named Pipe IPC.");
+                isClientAuthorized = _ipcPolicyManager.ValidateCallerIdentity(0);
+                clientName = "FakeUser";
+                clientSid = "S-1-5-Fake";
             }
 
             if (!isClientAuthorized)

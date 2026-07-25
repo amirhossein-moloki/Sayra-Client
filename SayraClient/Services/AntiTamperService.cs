@@ -2,21 +2,22 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using Sayra.Client.Shared.Interfaces.Security;
 
 namespace SayraClient.Services;
 
 public class AntiTamperService : SupervisedBackgroundService
 {
-    private readonly KioskManager _kioskManager;
+    private readonly IKioskSecurityService _kioskManager;
     private readonly SecurityManager _securityManager;
-    private readonly IntegrityValidator _integrityValidator;
+    private readonly IIntegrityValidator _integrityValidator;
     private readonly IpcServer _ipcServer;
 
     public AntiTamperService(
         ILogger<AntiTamperService> logger,
-        KioskManager kioskManager,
+        IKioskSecurityService kioskManager,
         SecurityManager securityManager,
-        IntegrityValidator integrityValidator,
+        IIntegrityValidator integrityValidator,
         IpcServer ipcServer,
         IServiceHealthMonitor healthMonitor)
         : base(logger, healthMonitor, "AntiTamperService")

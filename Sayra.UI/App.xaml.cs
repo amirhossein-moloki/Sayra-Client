@@ -9,6 +9,7 @@ using Sayra.Client.LocalAdmin.Services;
 using Sayra.Client.LocalAdmin.Storage;
 using Sayra.Client.LocalAdmin.Authentication;
 using Sayra.Client.LocalAdmin.Security;
+using Sayra.Client.Shared.Interfaces.Security;
 using SayraClient.Services;
 using SayraClient;
 using SayraClient.Commands;
@@ -147,7 +148,7 @@ namespace Sayra.UI
 
                 if (configModel.LocalPreferences.IsKioskMode)
                 {
-                    var kioskManager = ServiceProvider.GetRequiredService<KioskManager>();
+                    var kioskManager = ServiceProvider.GetRequiredService<IKioskSecurityService>();
                     kioskManager.Lockdown();
                 }
 
@@ -234,8 +235,9 @@ namespace Sayra.UI
 
             // Add Security Services
             services.AddSingleton<SessionKeyManager>();
-            services.AddSingleton<EncryptionManager>();
-            services.AddSingleton<IntegrityValidator>();
+            services.AddSingleton<ICryptographyService, CryptographyService>();
+            services.AddSingleton<IIntegrityValidator, IntegrityValidator>();
+            services.AddSingleton<ISecureIpcPolicyManager, SecureIpcPolicyManager>();
             services.AddSingleton<AuthManager>();
             services.AddSingleton<SecureTransportLayer>();
 
@@ -253,7 +255,7 @@ namespace Sayra.UI
             services.AddSayraAuthentication();
 
             // Add Kiosk Manager
-            services.AddSingleton<KioskManager>();
+            services.AddSingleton<IKioskSecurityService, KioskSecurityService>();
 
             // Add Session Manager
             services.AddSingleton<SessionManager>();

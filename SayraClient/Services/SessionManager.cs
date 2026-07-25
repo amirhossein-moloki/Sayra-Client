@@ -7,6 +7,7 @@ using Timer = System.Timers.Timer;
 using Sayra.Client.Launcher.Services;
 using Sayra.Client.OfflineQueue;
 using Sayra.Client.OfflineQueue.Models;
+using Sayra.Client.Shared.Interfaces.Security;
 
 namespace SayraClient.Services;
 
@@ -14,7 +15,7 @@ public class SessionManager : ISessionStateProvider, IDisposable
 {
     private readonly ILogger<SessionManager> _logger;
     private readonly IServiceProvider _serviceProvider;
-    private readonly KioskManager _kioskManager;
+    private readonly IKioskSecurityService _kioskManager;
     private readonly IOfflineQueueManager _queueManager;
     private SessionModel? _currentSession;
     private readonly Timer _sessionTimer;
@@ -41,7 +42,7 @@ public class SessionManager : ISessionStateProvider, IDisposable
     public SessionManager(
         ILogger<SessionManager> logger,
         IServiceProvider serviceProvider,
-        KioskManager kioskManager,
+        IKioskSecurityService kioskManager,
         IOfflineQueueManager queueManager)
     {
         _logger = logger;

@@ -20,6 +20,7 @@ using Sayra.Client.Diagnostics.Extensions;
 using Sayra.Client.Diagnostics.Services;
 using Sayra.Client.Shared.Interfaces;
 using Sayra.Client.Shared.Services;
+using Sayra.Client.Shared.Interfaces.Security;
 using Microsoft.Extensions.Hosting.WindowsServices;
 using Serilog;
 
@@ -64,7 +65,7 @@ builder.Services.AddDiagnosticsServices(builder.Configuration);
 
 // Register Application Services
 builder.Services.AddSingleton<SessionManager>();
-builder.Services.AddSingleton<KioskManager>();
+builder.Services.AddSingleton<IKioskSecurityService, KioskSecurityService>();
 builder.Services.AddSingleton<RecoveryManager>();
 builder.Services.AddSingleton<SecurityManager>();
 builder.Services.AddSingleton<SecureMessageValidator>();
@@ -87,8 +88,9 @@ builder.Services.AddSingleton<IDiscoveryService, DiscoveryManager>();
 
 // Register Security Services
 builder.Services.AddSingleton<SessionKeyManager>();
-builder.Services.AddSingleton<EncryptionManager>();
-builder.Services.AddSingleton<IntegrityValidator>();
+builder.Services.AddSingleton<ICryptographyService, CryptographyService>();
+builder.Services.AddSingleton<IIntegrityValidator, IntegrityValidator>();
+builder.Services.AddSingleton<ISecureIpcPolicyManager, SecureIpcPolicyManager>();
 builder.Services.AddSingleton<AuthManager>();
 builder.Services.AddSingleton<SecureTransportLayer>();
 

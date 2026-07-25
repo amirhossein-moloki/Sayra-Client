@@ -95,7 +95,7 @@ public class DependencyValidator : IDependencyValidator
             typeof(IConfiguration),
             typeof(ClientStateManager),
             typeof(SessionManager),
-            typeof(KioskManager)
+            typeof(Sayra.Client.Shared.Interfaces.Security.IKioskSecurityService)
         };
 
         foreach (var svcType in criticalCoreServices)
