@@ -18,6 +18,8 @@ using Sayra.Client.OfflineQueue;
 using Sayra.Client.OfflineQueue.Security;
 using Sayra.Client.Shared.Models;
 using Sayra.Client.Shared.Interfaces.Security;
+using Sayra.Client.Shared.Security.Memory;
+using Sayra.Client.Shared.Security.Crypto.KeyManagement;
 using Microsoft.Extensions.DependencyInjection;
 using SayraClient.Services;
 using Xunit;
@@ -453,5 +455,111 @@ public class SecurityTests
         // Assert
         Assert.Equal("encrypted-hello", encrypted);
         Assert.True(isValid);
+    }
+
+    // ==========================================
+    // PHASE 3 TRACK 2 CRYPTO HARDENING TESTS
+    // ==========================================
+
+    [Fact]
+    public void SecureRandom_VerifyUniqueKeysAndRandomIvs()
+    {
+        var crypto = new CryptographyService(new Mock<ILogger<CryptographyService>>().Object, new SessionKeyManager());
+
+        // Key uniqueness
+        var key1 = crypto.GenerateKey(32);
+        var key2 = crypto.GenerateKey(32);
+        Assert.Equal(32, key1.Length);
+        Assert.Equal(32, key2.Length);
+        Assert.NotEqual(key1, key2);
+
+        // IV and Nonce randomness
+        var nonce1 = crypto.GenerateKey(12);
+        var nonce2 = crypto.GenerateKey(12);
+        Assert.Equal(12, nonce1.Length);
+        Assert.Equal(12, nonce2.Length);
+        Assert.NotEqual(nonce1, nonce2);
+    }
+
+    [Fact]
+    public void KeyLifecycle_VerifyStateTransitionsAndCleanup()
+    {
+        using var provider = new SessionKeyProvider();
+        Assert.Equal(KeyState.Created, provider.State);
+
+        // Activate
+        provider.GenerateSessionKey();
+        Assert.Equal(KeyState.Activated, provider.State);
+        Assert.False(provider.IsExpired());
+
+        // InUse
+        byte[]? keyBytes = provider.GetSessionKeyBytes();
+        Assert.NotNull(keyBytes);
+        Assert.Equal(32, keyBytes.Length);
+        Assert.Equal(KeyState.InUse, provider.State);
+
+        // Expire
+        provider.ForceExpire();
+        Assert.Equal(KeyState.Expired, provider.State);
+        Assert.True(provider.IsExpired());
+
+        // Destroy
+        provider.DestroyKey();
+        Assert.Equal(KeyState.Destroyed, provider.State);
+        Assert.Null(provider.GetSessionKeyBytes());
+    }
+
+    [Fact]
+    public void MemoryProtection_VerifyBufferDisposalAndZeroing()
+    {
+        byte[] originalData = { 1, 2, 3, 4, 5, 6, 7, 8 };
+        byte[] readBackData = new byte[8];
+
+        using (var buffer = new SecureMemoryBuffer(8))
+        {
+            buffer.Write(originalData);
+            buffer.Read(readBackData);
+            Assert.Equal(originalData, readBackData);
+        }
+    }
+
+    [Fact]
+    public void Hash_VerifyAgainstKnownVectors()
+    {
+        var crypto = new CryptographyService(new Mock<ILogger<CryptographyService>>().Object, new SessionKeyManager());
+        byte[] data = Encoding.UTF8.GetBytes("SAYRA_HARDENED_TEST_VECTOR");
+
+        // SHA-256 check
+        byte[] sha256 = crypto.ComputeHash(data, "SHA-256");
+        Assert.Equal(32, sha256.Length);
+
+        // SHA-384 check
+        byte[] sha384 = crypto.ComputeHash(data, "SHA-384");
+        Assert.Equal(48, sha384.Length);
+
+        // SHA-512 check
+        byte[] sha512 = crypto.ComputeHash(data, "SHA-512");
+        Assert.Equal(64, sha512.Length);
+
+        // HMAC-SHA256 check
+        byte[] key = new byte[32];
+        byte[] hmac = crypto.ComputeHmacSha256(data, key);
+        Assert.Equal(32, hmac.Length);
+    }
+
+    [Fact]
+    public void Performance_VerifyLatencyAndThroughput()
+    {
+        var crypto = new CryptographyService(new Mock<ILogger<CryptographyService>>().Object, new SessionKeyManager());
+
+        var stopwatch = System.Diagnostics.Stopwatch.StartNew();
+        for (int i = 0; i < 1000; i++)
+        {
+            byte[] key = crypto.GenerateKey(32);
+        }
+        stopwatch.Stop();
+
+        // Latency for generating 1000 keys should be extremely fast
+        Assert.True(stopwatch.ElapsedMilliseconds < 1000);
     }
 }

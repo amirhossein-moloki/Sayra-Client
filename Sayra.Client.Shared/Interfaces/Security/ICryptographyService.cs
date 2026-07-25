@@ -20,4 +20,9 @@ public interface ICryptographyService
     byte[] EncryptAesGcm(byte[] plaintext, byte[] key, byte[] nonce, byte[] associatedData);
     byte[] DecryptAesGcm(byte[] ciphertext, byte[] key, byte[] nonce, byte[] associatedData);
     bool VerifySignature(byte[] data, byte[] signature, byte[] publicKey);
+
+    // Centralized Hashing & Signature additions
+    byte[] ComputeHash(byte[] data, string algorithmName);
+    byte[] ComputeHmacSha256(byte[] data, byte[] key);
+    byte[] CreateSignature(byte[] data, byte[] privateKey);
 }

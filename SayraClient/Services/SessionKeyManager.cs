@@ -1,15 +1,29 @@
+using System;
+using Microsoft.Extensions.Logging;
+using Sayra.Client.Shared.Security.Crypto.KeyManagement;
+
 namespace SayraClient.Services;
 
-public class SessionKeyManager
+public class SessionKeyManager : IDisposable
 {
-    private byte[]? _sessionKey;
+    private readonly SecureKeyManager _secureKeyManager;
     private readonly object _lock = new();
+
+    public SessionKeyManager()
+    {
+        _secureKeyManager = new SecureKeyManager();
+    }
+
+    public SessionKeyManager(ILogger<SessionKeyManager> logger)
+    {
+        _secureKeyManager = new SecureKeyManager();
+    }
 
     public void SetSessionKey(byte[] key)
     {
         lock (_lock)
         {
-            _sessionKey = (byte[])key.Clone();
+            _secureKeyManager.SetManualSessionKey(key);
         }
     }
 
@@ -17,7 +31,7 @@ public class SessionKeyManager
     {
         lock (_lock)
         {
-            return _sessionKey != null ? (byte[])_sessionKey.Clone() : null;
+            return _secureKeyManager.GetCurrentSessionKey();
         }
     }
 
@@ -25,13 +39,30 @@ public class SessionKeyManager
     {
         lock (_lock)
         {
-            if (_sessionKey != null)
+            _secureKeyManager.TriggerEmergencyRotation();
+        }
+    }
+
+    public bool IsAuthenticated
+    {
+        get
+        {
+            lock (_lock)
             {
-                Array.Clear(_sessionKey, 0, _sessionKey.Length);
-                _sessionKey = null;
+                byte[]? key = _secureKeyManager.GetCurrentSessionKey();
+                if (key != null)
+                {
+                    // Zero the temporary copy immediately
+                    Array.Clear(key, 0, key.Length);
+                    return true;
+                }
+                return false;
             }
         }
     }
 
-    public bool IsAuthenticated => _sessionKey != null;
+    public void Dispose()
+    {
+        _secureKeyManager.Dispose();
+    }
 }
