@@ -25,6 +25,7 @@ using Sayra.Client.Shared.Services;
 using Sayra.Client.Shared.Interfaces.Security;
 using Microsoft.Extensions.Hosting.WindowsServices;
 using Serilog;
+using SayraClient.Kiosk.Infrastructure;
 
 var builder = Host.CreateApplicationBuilder(args);
 
@@ -70,6 +71,7 @@ builder.Services.AddDiagnosticsServices(builder.Configuration);
 // Register Application Services
 builder.Services.AddSingleton<SessionManager>();
 builder.Services.AddSingleton<IKioskSecurityService, KioskSecurityService>();
+builder.Services.AddKioskSecurityServices();
 builder.Services.AddSingleton<RecoveryManager>();
 builder.Services.AddSingleton<SecurityManager>();
 builder.Services.AddSingleton<SecureMessageValidator>();
