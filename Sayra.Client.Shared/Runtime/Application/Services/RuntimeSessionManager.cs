@@ -8,6 +8,7 @@ using Sayra.Client.Shared.Runtime.Domain.States;
 using Sayra.Client.Shared.Runtime.Domain.Exceptions;
 using Sayra.Client.Shared.Runtime.Application.Interfaces;
 using Sayra.Client.Shared.Runtime.Infrastructure.Persistence;
+using Sayra.Client.Shared.Runtime.Launch.Application.Interfaces;
 
 namespace Sayra.Client.Shared.Runtime.Application.Services
 {
@@ -17,6 +18,9 @@ namespace Sayra.Client.Shared.Runtime.Application.Services
         private readonly IRuntimeEventPublisher _eventPublisher;
         private readonly IRuntimeStateManager _stateManager;
         private readonly ISessionRepository _sessionRepository;
+        private readonly ISandboxManager? _sandboxManager;
+        private readonly IRegistryVirtualizationManager? _registryManager;
+        private readonly ILaunchProfileProvider? _profileProvider;
         private readonly ConcurrentDictionary<Guid, RuntimeSession> _sessions = new();
 
         public RuntimeSessionManager(
@@ -24,11 +28,26 @@ namespace Sayra.Client.Shared.Runtime.Application.Services
             IRuntimeEventPublisher eventPublisher,
             IRuntimeStateManager stateManager,
             ISessionRepository sessionRepository)
+            : this(logger, eventPublisher, stateManager, sessionRepository, null, null, null)
+        {
+        }
+
+        public RuntimeSessionManager(
+            ILogger<RuntimeSessionManager> logger,
+            IRuntimeEventPublisher eventPublisher,
+            IRuntimeStateManager stateManager,
+            ISessionRepository sessionRepository,
+            ISandboxManager? sandboxManager,
+            IRegistryVirtualizationManager? registryManager,
+            ILaunchProfileProvider? profileProvider)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _eventPublisher = eventPublisher ?? throw new ArgumentNullException(nameof(eventPublisher));
             _stateManager = stateManager ?? throw new ArgumentNullException(nameof(stateManager));
             _sessionRepository = sessionRepository ?? throw new ArgumentNullException(nameof(sessionRepository));
+            _sandboxManager = sandboxManager;
+            _registryManager = registryManager;
+            _profileProvider = profileProvider;
         }
 
         // Backward compatible constructor for tests
@@ -36,7 +55,7 @@ namespace Sayra.Client.Shared.Runtime.Application.Services
             ILogger<RuntimeSessionManager> logger,
             IRuntimeEventPublisher eventPublisher,
             IRuntimeStateManager stateManager)
-            : this(logger, eventPublisher, stateManager, new InMemorySessionRepository())
+            : this(logger, eventPublisher, stateManager, new InMemorySessionRepository(), null, null, null)
         {
         }
 
@@ -126,6 +145,37 @@ namespace Sayra.Client.Shared.Runtime.Application.Services
             _logger.LogInformation("Runtime session resumed. SessionId: {SessionId}", sessionId);
         }
 
+        private async Task CleanupSessionResourcesAsync(RuntimeSession session)
+        {
+            if (session == null || string.IsNullOrEmpty(session.GameId)) return;
+
+            if (_profileProvider != null)
+            {
+                try
+                {
+                    var profile = await _profileProvider.GetProfileAsync(session.GameId);
+                    if (profile != null)
+                    {
+                        if (_sandboxManager != null && !string.IsNullOrWhiteSpace(profile.SandboxPath))
+                        {
+                            _logger.LogInformation("Guaranteed resource cleanup: Cleaning up sandbox path '{SandboxPath}'", profile.SandboxPath);
+                            await _sandboxManager.CleanupSandboxAsync(session.GameId, profile.SandboxPath);
+                        }
+
+                        if (_registryManager != null && profile.VirtualRegistryKeys != null && profile.VirtualRegistryKeys.Count > 0)
+                        {
+                            _logger.LogInformation("Guaranteed resource cleanup: Cleaning up virtualized registry keys.");
+                            await _registryManager.CleanupRegistryAsync(session.SessionId, session.GameId, profile.VirtualRegistryKeys);
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Failed to cleanly dispose resources for Game {GameId} on Session {SessionId}", session.GameId, session.SessionId);
+                }
+            }
+        }
+
         public async Task CompleteAsync(Guid sessionId)
         {
             if (!_sessions.TryGetValue(sessionId, out var session))
@@ -138,6 +188,8 @@ namespace Sayra.Client.Shared.Runtime.Application.Services
             session.EndTime = DateTime.UtcNow;
             session.Status = RuntimeState.Completed;
             session.RuntimeState = RuntimeState.Completed;
+
+            await CleanupSessionResourcesAsync(session);
 
             await _sessionRepository.SaveAsync(session);
 
@@ -156,6 +208,8 @@ namespace Sayra.Client.Shared.Runtime.Application.Services
             session.EndTime = DateTime.UtcNow;
             session.Status = RuntimeState.Failed;
             session.RuntimeState = RuntimeState.Failed;
+
+            await CleanupSessionResourcesAsync(session);
 
             await _sessionRepository.SaveAsync(session);
 
@@ -178,6 +232,8 @@ namespace Sayra.Client.Shared.Runtime.Application.Services
             session.EndTime = DateTime.UtcNow;
             session.Status = RuntimeState.Completed;
             session.RuntimeState = RuntimeState.Completed;
+
+            await CleanupSessionResourcesAsync(session);
 
             _stateManager.TransitionTo(RuntimeState.Completed, $"Session {sessionId} completed successfully.");
             await _sessionRepository.SaveAsync(session);

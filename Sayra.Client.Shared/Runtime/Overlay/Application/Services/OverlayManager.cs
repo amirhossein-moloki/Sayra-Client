@@ -16,6 +16,7 @@ namespace Sayra.Client.Shared.Runtime.Overlay.Application.Services
         private readonly IOverlayDataProvider _dataProvider;
         private readonly IOverlayWindowService _windowService;
         private readonly OverlayStateMachine _stateMachine;
+        private readonly IOverlayRenderer _activeRenderer;
         private readonly object _lock = new();
 
         public OverlayStateMachine StateMachine => _stateMachine;
@@ -24,11 +25,39 @@ namespace Sayra.Client.Shared.Runtime.Overlay.Application.Services
             ILogger<OverlayManager> logger,
             IOverlayDataProvider dataProvider,
             IOverlayWindowService windowService)
+            : this(logger, dataProvider, windowService, null)
+        {
+        }
+
+        public OverlayManager(
+            ILogger<OverlayManager> logger,
+            IOverlayDataProvider dataProvider,
+            IOverlayWindowService windowService,
+            System.Collections.Generic.IEnumerable<IOverlayRenderer>? renderers)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _dataProvider = dataProvider ?? throw new ArgumentNullException(nameof(dataProvider));
             _windowService = windowService ?? throw new ArgumentNullException(nameof(windowService));
             _stateMachine = new OverlayStateMachine(logger);
+
+            // Select active supported renderer or fallback to WpfOverlayRenderer
+            IOverlayRenderer? selected = null;
+            if (renderers != null)
+            {
+                foreach (var renderer in renderers)
+                {
+                    if (renderer.IsSupported)
+                    {
+                        selected = renderer;
+                        break;
+                    }
+                }
+            }
+
+            _activeRenderer = selected ?? new WpfOverlayRenderer(
+                new Microsoft.Extensions.Logging.Abstractions.NullLogger<WpfOverlayRenderer>(),
+                _windowService
+            );
 
             _stateMachine.TransitionTo(OverlayState.Initializing);
             _dataProvider.DataUpdated += OnDataProviderUpdated;
@@ -90,8 +119,8 @@ namespace Sayra.Client.Shared.Runtime.Overlay.Application.Services
                 _stateMachine.TransitionTo(OverlayState.Closing);
             }
 
-            _logger.LogInformation("OverlayManager: Invoking window service to hide/close overlay...");
-            await _windowService.HideWindowAsync();
+            _logger.LogInformation("OverlayManager: Invoking active renderer to clear overlay...");
+            await _activeRenderer.ClearAsync();
 
             lock (_lock)
             {
@@ -112,8 +141,8 @@ namespace Sayra.Client.Shared.Runtime.Overlay.Application.Services
                 _stateMachine.TransitionTo(OverlayState.Updating);
             }
 
-            _logger.LogInformation("OverlayManager: Updating window content with new remaining duration: {Remaining}", data.RemainingTime);
-            await _windowService.UpdateContentAsync(data);
+            _logger.LogInformation("OverlayManager: Updating active renderer content with new data.");
+            await _activeRenderer.RenderAsync(data);
 
             lock (_lock)
             {

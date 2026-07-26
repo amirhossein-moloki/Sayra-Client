@@ -11,6 +11,8 @@ namespace Sayra.Client.Shared.Runtime.Overlay.Application.Services
         public static IServiceCollection AddOverlayServices(this IServiceCollection services)
         {
             services.AddSingleton<IOverlayDataProvider, OverlayDataProvider>();
+            services.AddSingleton<IOverlayRenderer, WpfOverlayRenderer>();
+            services.AddSingleton<IOverlayRenderer, DxgiOverlayRenderer>();
             services.AddSingleton<IOverlayManager, OverlayManager>();
             return services;
         }

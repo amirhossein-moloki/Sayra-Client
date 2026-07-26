@@ -15,20 +15,40 @@ namespace Sayra.Client.Shared.Runtime.Application.Services
         private readonly ConcurrentDictionary<Guid, TimerState> _trackedSessions = new();
         private readonly Timer _globalTimer;
 
+        private readonly Microsoft.Extensions.Options.IOptions<Sayra.Client.Shared.Runtime.Domain.Models.RuntimePolicyOptions> _options;
+
         public event Action<SessionWarningEvent>? WarningTriggered;
         public event Action<Guid>? ExpirationTriggered;
 
         public SessionTimerService(ILogger<SessionTimerService> logger)
+            : this(logger, null)
+        {
+        }
+
+        public SessionTimerService(
+            ILogger<SessionTimerService> logger,
+            Microsoft.Extensions.Options.IOptions<Sayra.Client.Shared.Runtime.Domain.Models.RuntimePolicyOptions>? options)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _options = options ?? Microsoft.Extensions.Options.Options.Create(new Sayra.Client.Shared.Runtime.Domain.Models.RuntimePolicyOptions());
             _globalTimer = new Timer(OnTimerTick, null, TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(1));
+        }
+
+        public void StartTracking(Guid sessionId, TimeSpan totalTime)
+        {
+            var opts = _options.Value;
+            var warning1 = TimeSpan.FromSeconds(opts.WarningThreshold1Seconds);
+            var warning2 = TimeSpan.FromSeconds(opts.WarningThreshold2Seconds);
+
+            StartTracking(sessionId, totalTime, warning1, warning2);
         }
 
         public void StartTracking(Guid sessionId, TimeSpan totalTime, TimeSpan warningThreshold1, TimeSpan warningThreshold2)
         {
             var state = new TimerState(sessionId, totalTime, warningThreshold1, warningThreshold2);
             _trackedSessions[sessionId] = state;
-            _logger.LogInformation("Started timer tracking for session {SessionId}. Total Time: {TotalTime}", sessionId, totalTime);
+            _logger.LogInformation("Started timer tracking for session {SessionId}. Total Time: {TotalTime}, Warnings: {W1}, {W2}",
+                sessionId, totalTime, warningThreshold1, warningThreshold2);
         }
 
         public void StopTracking(Guid sessionId)

@@ -11,6 +11,7 @@ public class DeviceControlService : IDeviceControlService
 {
     private readonly IAuditLogger _auditLogger;
     private readonly IKioskPolicyService _policyService;
+    private readonly IUsbProtectionService _usbProtection;
     private bool _isMonitoring;
 
     public event Action<DeviceConnectedEvent>? DeviceConnected;
@@ -30,9 +31,18 @@ public class DeviceControlService : IDeviceControlService
     }
 
     public DeviceControlService(IAuditLogger auditLogger, IKioskPolicyService policyService)
+        : this(auditLogger, policyService, new WindowsUsbProtectionService(
+            new Microsoft.Extensions.Logging.Abstractions.NullLogger<WindowsUsbProtectionService>(),
+            auditLogger,
+            policyService))
     {
-        _auditLogger = auditLogger;
-        _policyService = policyService;
+    }
+
+    public DeviceControlService(IAuditLogger auditLogger, IKioskPolicyService policyService, IUsbProtectionService usbProtection)
+    {
+        _auditLogger = auditLogger ?? throw new ArgumentNullException(nameof(auditLogger));
+        _policyService = policyService ?? throw new ArgumentNullException(nameof(policyService));
+        _usbProtection = usbProtection ?? throw new ArgumentNullException(nameof(usbProtection));
     }
 
     public void StartMonitoring()
@@ -69,6 +79,8 @@ public class DeviceControlService : IDeviceControlService
                 };
                 DeviceConnected?.Invoke(connectedEvent);
 
+                _usbProtection.HandleDeviceArrival(connectedEvent.DeviceId, connectedEvent.DeviceName);
+
                 if (_policyService.IsRestrictionEnabled(RestrictionType.Usb))
                 {
                     var unauthorizedEvent = new UnauthorizedDeviceDetectedEvent
@@ -91,6 +103,8 @@ public class DeviceControlService : IDeviceControlService
                     Timestamp = DateTime.UtcNow
                 };
                 DeviceRemoved?.Invoke(removedEvent);
+
+                _usbProtection.HandleDeviceRemoval(removedEvent.DeviceId, removedEvent.DeviceName);
 
                 _auditLogger.LogOperational("USB device removal detected via notification.");
             }

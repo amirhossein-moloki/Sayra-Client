@@ -21,6 +21,8 @@ namespace Sayra.Client.Shared.Runtime.Launch.Application.Services
         private readonly IUserSessionProvider _sessionProvider;
         private readonly IProcessCreator _processCreator;
         private readonly Sayra.Client.Shared.Runtime.ProcessSupervisor.Application.Interfaces.IProcessSupervisor _processSupervisor;
+        private readonly ISandboxManager? _sandboxManager;
+        private readonly IRegistryVirtualizationManager? _registryManager;
 
         public SecureLauncher(
             ILogger<SecureLauncher> logger,
@@ -32,6 +34,37 @@ namespace Sayra.Client.Shared.Runtime.Launch.Application.Services
             IUserSessionProvider sessionProvider,
             IProcessCreator processCreator,
             Sayra.Client.Shared.Runtime.ProcessSupervisor.Application.Interfaces.IProcessSupervisor processSupervisor)
+            : this(logger, eventPublisher, sessionManager, stateManager, profileProvider, validator, sessionProvider, processCreator, processSupervisor, null, null)
+        {
+        }
+
+        public SecureLauncher(
+            ILogger<SecureLauncher> logger,
+            IRuntimeEventPublisher eventPublisher,
+            IRuntimeSessionManager sessionManager,
+            IRuntimeStateManager stateManager,
+            ILaunchProfileProvider profileProvider,
+            ILaunchValidator validator,
+            IUserSessionProvider sessionProvider,
+            IProcessCreator processCreator,
+            Sayra.Client.Shared.Runtime.ProcessSupervisor.Application.Interfaces.IProcessSupervisor processSupervisor,
+            ISandboxManager? sandboxManager)
+            : this(logger, eventPublisher, sessionManager, stateManager, profileProvider, validator, sessionProvider, processCreator, processSupervisor, sandboxManager, null)
+        {
+        }
+
+        public SecureLauncher(
+            ILogger<SecureLauncher> logger,
+            IRuntimeEventPublisher eventPublisher,
+            IRuntimeSessionManager sessionManager,
+            IRuntimeStateManager stateManager,
+            ILaunchProfileProvider profileProvider,
+            ILaunchValidator validator,
+            IUserSessionProvider sessionProvider,
+            IProcessCreator processCreator,
+            Sayra.Client.Shared.Runtime.ProcessSupervisor.Application.Interfaces.IProcessSupervisor processSupervisor,
+            ISandboxManager? sandboxManager,
+            IRegistryVirtualizationManager? registryManager)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _eventPublisher = eventPublisher ?? throw new ArgumentNullException(nameof(eventPublisher));
@@ -42,6 +75,8 @@ namespace Sayra.Client.Shared.Runtime.Launch.Application.Services
             _sessionProvider = sessionProvider ?? throw new ArgumentNullException(nameof(sessionProvider));
             _processCreator = processCreator ?? throw new ArgumentNullException(nameof(processCreator));
             _processSupervisor = processSupervisor ?? throw new ArgumentNullException(nameof(processSupervisor));
+            _sandboxManager = sandboxManager;
+            _registryManager = registryManager;
         }
 
         public async Task<LaunchResult> LaunchAsync(LaunchRequest request)
@@ -53,6 +88,9 @@ namespace Sayra.Client.Shared.Runtime.Launch.Application.Services
             // 1. Publish Launch Requested Event
             _eventPublisher.Publish(new LaunchRequestedEvent(request));
 
+            string? resolvedSandboxPath = null;
+            System.Collections.Generic.Dictionary<string, string>? resolvedRegistryKeys = null;
+
             try
             {
                 // 2. Transition state to Preparing
@@ -60,9 +98,25 @@ namespace Sayra.Client.Shared.Runtime.Launch.Application.Services
 
                 // 3. Resolve launch profile
                 var profile = await _profileProvider.GetProfileAsync(request.GameId);
+                resolvedSandboxPath = profile.SandboxPath;
+                resolvedRegistryKeys = profile.VirtualRegistryKeys;
 
                 // 4. Validate before launch (integrating with integrity & security policies)
                 await _validator.ValidateAsync(request, profile);
+
+                // Prepare Sandbox before launching
+                if (_sandboxManager != null && !string.IsNullOrWhiteSpace(resolvedSandboxPath))
+                {
+                    _logger.LogInformation("Preparing sandbox directory at: '{SandboxPath}'", resolvedSandboxPath);
+                    await _sandboxManager.PrepareSandboxAsync(request.GameId, resolvedSandboxPath);
+                }
+
+                // Prepare Registry Virtualization before launching
+                if (_registryManager != null && resolvedRegistryKeys != null && resolvedRegistryKeys.Count > 0)
+                {
+                    _logger.LogInformation("Preparing registry virtualization for game '{GameId}'", request.GameId);
+                    await _registryManager.PrepareRegistryAsync(request.RuntimeSessionId, request.GameId, resolvedRegistryKeys);
+                }
 
                 // 5. Discover active user session details
                 var sessionInfo = await _sessionProvider.GetActiveSessionAsync();
@@ -77,6 +131,21 @@ namespace Sayra.Client.Shared.Runtime.Launch.Application.Services
                 {
                     string error = launchResult.ErrorMessage ?? "Process creation failed without a specific error.";
                     _logger.LogError("Game launch failed. Reason: {Reason}", error);
+
+                    // Rollback sandbox on failure
+                    if (_sandboxManager != null && !string.IsNullOrWhiteSpace(resolvedSandboxPath))
+                    {
+                        _logger.LogInformation("Rolling back sandbox path due to launch failure.");
+                        await _sandboxManager.CleanupSandboxAsync(request.GameId, resolvedSandboxPath);
+                    }
+
+                    // Rollback registry on failure
+                    if (_registryManager != null && resolvedRegistryKeys != null && resolvedRegistryKeys.Count > 0)
+                    {
+                        _logger.LogInformation("Rolling back virtualized registry keys due to launch failure.");
+                        await _registryManager.CleanupRegistryAsync(request.RuntimeSessionId, request.GameId, resolvedRegistryKeys);
+                    }
+
                     _eventPublisher.Publish(new LaunchFailedEvent(request.GameId, request.RuntimeSessionId, error));
                     _stateManager.TransitionTo(RuntimeState.Failed, $"Launch failed: {error}");
                     _sessionManager.UpdateSessionState(request.RuntimeSessionId, RuntimeState.Failed);
@@ -112,6 +181,20 @@ namespace Sayra.Client.Shared.Runtime.Launch.Application.Services
             {
                 string errorMessage = ex.Message;
                 _logger.LogError(ex, "Game launch failed. Reason: {Reason}", errorMessage);
+
+                // Rollback sandbox on failure/exception
+                if (_sandboxManager != null && !string.IsNullOrWhiteSpace(resolvedSandboxPath))
+                {
+                    _logger.LogInformation("Rolling back sandbox path due to launch exception.");
+                    _sandboxManager.CleanupSandboxAsync(request.GameId, resolvedSandboxPath).GetAwaiter().GetResult();
+                }
+
+                // Rollback registry on failure/exception
+                if (_registryManager != null && resolvedRegistryKeys != null && resolvedRegistryKeys.Count > 0)
+                {
+                    _logger.LogInformation("Rolling back virtualized registry keys due to launch exception.");
+                    _registryManager.CleanupRegistryAsync(request.RuntimeSessionId, request.GameId, resolvedRegistryKeys).GetAwaiter().GetResult();
+                }
 
                 _eventPublisher.Publish(new LaunchFailedEvent(request.GameId, request.RuntimeSessionId, errorMessage));
 

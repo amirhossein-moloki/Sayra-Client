@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Sayra.Client.Shared.Runtime.Application.Interfaces;
 using Sayra.Client.Shared.Runtime.ProcessSupervisor.Application.Interfaces;
 using Sayra.Client.Shared.Runtime.ProcessSupervisor.Domain.Events;
@@ -19,6 +20,7 @@ namespace Sayra.Client.Shared.Runtime.ProcessSupervisor.Application.Services
         private readonly IJobObjectManager _jobManager;
         private readonly IProcessTreeMonitor _treeMonitor;
         private readonly IProcessResourceMonitor _resourceMonitor;
+        private readonly IOptions<ProcessSupervisorOptions> _options;
 
         private readonly ConcurrentDictionary<Guid, ProcessStatus> _statuses = new();
         private readonly ConcurrentDictionary<Guid, ProcessInfo> _processes = new();
@@ -31,12 +33,24 @@ namespace Sayra.Client.Shared.Runtime.ProcessSupervisor.Application.Services
             IJobObjectManager jobManager,
             IProcessTreeMonitor treeMonitor,
             IProcessResourceMonitor resourceMonitor)
+            : this(logger, eventPublisher, jobManager, treeMonitor, resourceMonitor, null)
+        {
+        }
+
+        public ProcessSupervisor(
+            ILogger<ProcessSupervisor> logger,
+            IRuntimeEventPublisher eventPublisher,
+            IJobObjectManager jobManager,
+            IProcessTreeMonitor treeMonitor,
+            IProcessResourceMonitor resourceMonitor,
+            IOptions<ProcessSupervisorOptions>? options)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _eventPublisher = eventPublisher ?? throw new ArgumentNullException(nameof(eventPublisher));
             _jobManager = jobManager ?? throw new ArgumentNullException(nameof(jobManager));
             _treeMonitor = treeMonitor ?? throw new ArgumentNullException(nameof(treeMonitor));
             _resourceMonitor = resourceMonitor ?? throw new ArgumentNullException(nameof(resourceMonitor));
+            _options = options ?? Microsoft.Extensions.Options.Options.Create(new ProcessSupervisorOptions());
 
             // Start a low-overhead background monitor thread to track process lifetimes
             Task.Run(MonitorLifetimesAsync, _cts.Token);
@@ -78,6 +92,15 @@ namespace Sayra.Client.Shared.Runtime.ProcessSupervisor.Application.Services
                 // 1. Create Job Object
                 _jobManager.CreateJob(process.RuntimeId);
 
+                // Configure Limits
+                var opts = _options.Value;
+                _logger.LogInformation("Configuring Job Object limits for RuntimeId: '{RuntimeId}'. MaxMemoryBytes: {MaxMemory}, CpuAffinityMask: {Affinity}",
+                    process.RuntimeId, opts.MaxMemoryBytes, opts.CpuAffinityMask);
+                _jobManager.ConfigureLimits(process.RuntimeId, opts.MaxMemoryBytes, opts.CpuAffinityMask);
+
+                // Apply priority rules
+                ApplyPriority(process.ProcessId, opts.PriorityClass);
+
                 // 2. Assign process to Job Object
                 _jobManager.AssignProcess(process.RuntimeId, process.ProcessId);
 
@@ -90,6 +113,34 @@ namespace Sayra.Client.Shared.Runtime.ProcessSupervisor.Application.Services
                 TransitionState(status, ProcessState.Crashed, $"Failed to bind to Job Object: {ex.Message}");
                 _eventPublisher.Publish(new ProcessCrashedEvent(process.RuntimeId, process.ProcessId, -1, $"Failed to bind: {ex.Message}"));
                 throw;
+            }
+        }
+
+        private void ApplyPriority(int processId, string priorityStr)
+        {
+            if (!System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.Windows))
+            {
+                return;
+            }
+
+            try
+            {
+                using (var proc = Process.GetProcessById(processId))
+                {
+                    if (Enum.TryParse<ProcessPriorityClass>(priorityStr, true, out var priorityClass))
+                    {
+                        proc.PriorityClass = priorityClass;
+                        _logger.LogInformation("Successfully configured process priority to: '{Priority}' for PID: {PID}", priorityClass, processId);
+                    }
+                    else
+                    {
+                        _logger.LogWarning("Invalid priority class name configured: '{Priority}'", priorityStr);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning(ex, "Failed to apply priority '{Priority}' to process {PID}.", priorityStr, processId);
             }
         }
 
