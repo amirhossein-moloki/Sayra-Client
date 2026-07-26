@@ -1,0 +1,159 @@
+using System;
+using System.Data.Common;
+using System.Threading;
+using System.Threading.Tasks;
+using Microsoft.Data.Sqlite;
+using Microsoft.Extensions.Logging;
+using Sayra.Client.Shared.Interfaces;
+
+namespace SayraClient.RemoteOperations.Services
+{
+    public class DatabaseMigrationService : IDatabaseMigrationService
+    {
+        private readonly ILogger<DatabaseMigrationService> _logger;
+
+        public DatabaseMigrationService(ILogger<DatabaseMigrationService> logger)
+        {
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        }
+
+        public async Task ApplyMigrationsAsync(DbConnection connection, CancellationToken cancellationToken = default)
+        {
+            if (connection == null) throw new ArgumentNullException(nameof(connection));
+
+            _logger.LogInformation("Checking and applying database migrations...");
+
+            // Create migration version table if it doesn't exist
+            using (var cmd = connection.CreateCommand())
+            {
+                cmd.CommandText = @"
+                    CREATE TABLE IF NOT EXISTS SchemaVersion (
+                        Version INTEGER PRIMARY KEY,
+                        AppliedAt TEXT NOT NULL
+                    );";
+                await cmd.ExecuteNonQueryAsync(cancellationToken);
+            }
+
+            int currentVersion = 0;
+            using (var cmd = connection.CreateCommand())
+            {
+                cmd.CommandText = "SELECT MAX(Version) FROM SchemaVersion;";
+                var result = await cmd.ExecuteScalarAsync(cancellationToken);
+                if (result != null && result != DBNull.Value)
+                {
+                    currentVersion = Convert.ToInt32(result);
+                }
+            }
+
+            _logger.LogInformation("Current database schema version: {CurrentVersion}", currentVersion);
+
+            // Migration 1: Initial schema creation
+            if (currentVersion < 1)
+            {
+                // SqliteConnection or any DbConnection that supports transactions
+                using var transaction = await connection.BeginTransactionAsync(cancellationToken);
+                try
+                {
+                    _logger.LogInformation("Applying migration version 1: Initial database schema.");
+
+                    using (var cmd = connection.CreateCommand())
+                    {
+                        cmd.Transaction = transaction;
+                        cmd.CommandText = @"
+                            CREATE TABLE IF NOT EXISTS RemoteCommandHistory (
+                                CommandId TEXT PRIMARY KEY NOT NULL,
+                                Action TEXT NOT NULL,
+                                TargetPcId TEXT NOT NULL,
+                                SenderAdminId TEXT NOT NULL,
+                                PayloadJson TEXT,
+                                Status TEXT NOT NULL,
+                                ErrorMessage TEXT,
+                                ReceivedAt TEXT NOT NULL,
+                                StartedAt TEXT,
+                                CompletedAt TEXT,
+                                ExecutionDurationMs INTEGER,
+                                Signature TEXT NOT NULL,
+                                RetryCount INTEGER NOT NULL DEFAULT 0
+                            );";
+                        await cmd.ExecuteNonQueryAsync(cancellationToken);
+                    }
+
+                    using (var cmd = connection.CreateCommand())
+                    {
+                        cmd.Transaction = transaction;
+                        cmd.CommandText = "CREATE INDEX IF NOT EXISTS IDX_RemoteCommandHistory_Status_ReceivedAt ON RemoteCommandHistory (Status, ReceivedAt);";
+                        await cmd.ExecuteNonQueryAsync(cancellationToken);
+                    }
+
+                    using (var cmd = connection.CreateCommand())
+                    {
+                        cmd.Transaction = transaction;
+                        cmd.CommandText = "CREATE INDEX IF NOT EXISTS IDX_RemoteCommandHistory_TargetPcId ON RemoteCommandHistory (TargetPcId);";
+                        await cmd.ExecuteNonQueryAsync(cancellationToken);
+                    }
+
+                    using (var cmd = connection.CreateCommand())
+                    {
+                        cmd.Transaction = transaction;
+                        cmd.CommandText = "CREATE INDEX IF NOT EXISTS IDX_RemoteCommandHistory_SenderAdminId ON RemoteCommandHistory (SenderAdminId);";
+                        await cmd.ExecuteNonQueryAsync(cancellationToken);
+                    }
+
+                    using (var cmd = connection.CreateCommand())
+                    {
+                        cmd.Transaction = transaction;
+                        cmd.CommandText = @"
+                            CREATE TABLE IF NOT EXISTS DeadLetterCommand (
+                                CommandId TEXT PRIMARY KEY NOT NULL,
+                                OriginalAction TEXT NOT NULL,
+                                FailureReason TEXT NOT NULL,
+                                RetryCount INTEGER NOT NULL,
+                                CreatedAt TEXT NOT NULL,
+                                MovedAt TEXT NOT NULL
+                            );";
+                        await cmd.ExecuteNonQueryAsync(cancellationToken);
+                    }
+
+                    using (var cmd = connection.CreateCommand())
+                    {
+                        cmd.Transaction = transaction;
+                        cmd.CommandText = @"
+                            CREATE TABLE IF NOT EXISTS AuditEntry (
+                                AuditId TEXT PRIMARY KEY NOT NULL,
+                                CorrelationId TEXT NOT NULL,
+                                EventType TEXT NOT NULL,
+                                CommandId TEXT NOT NULL,
+                                Timestamp TEXT NOT NULL,
+                                Details TEXT NOT NULL,
+                                PreviousHash TEXT NOT NULL,
+                                CurrentHash TEXT NOT NULL
+                            );";
+                        await cmd.ExecuteNonQueryAsync(cancellationToken);
+                    }
+
+                    using (var cmd = connection.CreateCommand())
+                    {
+                        cmd.Transaction = transaction;
+                        cmd.CommandText = "INSERT INTO SchemaVersion (Version, AppliedAt) VALUES (1, $appliedAt);";
+                        var parameter = cmd.CreateParameter();
+                        parameter.ParameterName = "$appliedAt";
+                        parameter.Value = DateTime.UtcNow.ToString("O");
+                        cmd.Parameters.Add(parameter);
+                        await cmd.ExecuteNonQueryAsync(cancellationToken);
+                    }
+
+                    await transaction.CommitAsync(cancellationToken);
+                    _logger.LogInformation("Migration version 1 applied successfully.");
+                }
+                catch (Exception ex)
+                {
+                    await transaction.RollbackAsync(cancellationToken);
+                    _logger.LogError(ex, "Failed to apply migration version 1. Transaction rolled back.");
+                    throw;
+                }
+            }
+
+            _logger.LogInformation("Database migrations completed successfully.");
+        }
+    }
+}

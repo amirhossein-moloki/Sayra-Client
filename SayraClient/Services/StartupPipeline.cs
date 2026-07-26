@@ -181,6 +181,7 @@ namespace SayraClient.Services
             var syncScheduler = _serviceProvider.GetRequiredService<ConfigurationSyncScheduler>();
             var runtimeIntegrityMonitor = _serviceProvider.GetRequiredService<SayraClient.Security.Integrity.RuntimeIntegrityMonitor>();
             var remoteCommandEngine = _serviceProvider.GetRequiredService<SayraClient.RemoteOperations.Services.RemoteCommandEngine>();
+            var commandRetryWorker = _serviceProvider.GetRequiredService<SayraClient.RemoteOperations.Services.CommandRetryWorker>();
 
             // Resolve new native Windows integration services
             var registryWatcher = _serviceProvider.GetRequiredService<SayraClient.Services.Windows.RegistryWatcher>();
@@ -243,6 +244,10 @@ namespace SayraClient.Services
 
             _workerSupervisor.RegisterWorker("RemoteCommandEngine",
                 token => remoteCommandEngine.RunSupervisedAsync(token),
+                new[] { "IpcServer" });
+
+            _workerSupervisor.RegisterWorker("CommandRetryWorker",
+                token => commandRetryWorker.RunSupervisedAsync(token),
                 new[] { "IpcServer" });
 
             // Register new native Windows integration services under supervision

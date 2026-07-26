@@ -160,6 +160,15 @@ builder.Services.AddSingleton<Sayra.Client.Shared.Interfaces.Security.IMessageAu
 builder.Services.AddSingleton<Sayra.Client.Shared.Interfaces.ICommandResultReporter, SayraClient.RemoteOperations.Services.CommandResultReporter>();
 builder.Services.AddSingleton<Sayra.Client.Shared.Interfaces.IRemoteCommandDispatcher, SayraClient.RemoteOperations.Services.RemoteCommandDispatcher>();
 
+// Register Stage 2 Secure Local Database, Repository, Queue, Retry, and Audit Services
+builder.Services.AddSingleton<Sayra.Client.Shared.Interfaces.IDatabaseMigrationService, SayraClient.RemoteOperations.Services.DatabaseMigrationService>();
+builder.Services.AddSingleton<Sayra.Client.Shared.Interfaces.ILocalDatabaseService, SayraClient.RemoteOperations.Services.LocalDatabaseService>();
+builder.Services.AddSingleton<Sayra.Client.Shared.Interfaces.IRemoteCommandRepository, SayraClient.RemoteOperations.Services.RemoteCommandRepository>();
+builder.Services.AddSingleton<Sayra.Client.Shared.Interfaces.IDeadLetterQueue, SayraClient.RemoteOperations.Services.DeadLetterQueue>();
+builder.Services.AddSingleton<Sayra.Client.Shared.Interfaces.IOfflineCommandQueue, SayraClient.RemoteOperations.Services.OfflineCommandQueue>();
+builder.Services.AddSingleton<Sayra.Client.Shared.Interfaces.IAuditService, SayraClient.RemoteOperations.Services.AuditService>();
+builder.Services.AddSingleton<SayraClient.RemoteOperations.Services.CommandRetryWorker>();
+
 builder.Services.AddSingleton<SayraClient.RemoteOperations.Services.RemoteCommandEngine>();
 builder.Services.AddSingleton<Sayra.Client.Shared.Interfaces.IRemoteCommandEngine>(sp => sp.GetRequiredService<SayraClient.RemoteOperations.Services.RemoteCommandEngine>());
 

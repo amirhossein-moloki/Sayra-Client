@@ -322,11 +322,33 @@ namespace Sayra.Client.Configuration.Tests
                 })
                 .ReturnsAsync((RemoteCommand cmd, CancellationToken token) => CommandResult.Successful(cmd.CommandId));
 
+            var dbMock = new Mock<ILocalDatabaseService>();
+            var repoMock = new Mock<IRemoteCommandRepository>();
+            var auditMock = new Mock<IAuditService>();
+            var spMock = new Mock<IServiceProvider>();
+
+            repoMock.Setup(r => r.SaveCommandAsync(It.IsAny<RemoteCommandHistory>(), It.IsAny<CancellationToken>()))
+                .Returns(Task.CompletedTask);
+            repoMock.Setup(r => r.UpdateStatusAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
+                .Returns(Task.CompletedTask);
+            auditMock.Setup(a => a.RecordCommandReceivedAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
+                .Returns(Task.CompletedTask);
+            auditMock.Setup(a => a.RecordExecutionStartedAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
+                .Returns(Task.CompletedTask);
+            auditMock.Setup(a => a.RecordExecutionCompletedAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
+                .Returns(Task.CompletedTask);
+            auditMock.Setup(a => a.RecordExecutionFailedAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
+                .Returns(Task.CompletedTask);
+
             var engine = new RemoteCommandEngine(
                 _engineLoggerMock.Object,
                 _healthMonitorMock.Object,
                 dispatcherMock.Object,
-                reporter
+                reporter,
+                dbMock.Object,
+                repoMock.Object,
+                auditMock.Object,
+                spMock.Object
             );
 
             var cmdLow = new RemoteCommand { CommandId = Guid.NewGuid(), Action = "LOW_PRIORITY", Priority = "Low" };
@@ -365,11 +387,33 @@ namespace Sayra.Client.Configuration.Tests
             dispatcherMock.Setup(d => d.DispatchAsync(It.IsAny<RemoteCommand>(), It.IsAny<CancellationToken>()))
                 .ThrowsAsync(new Exception("Crashed on purpose"));
 
+            var dbMock = new Mock<ILocalDatabaseService>();
+            var repoMock = new Mock<IRemoteCommandRepository>();
+            var auditMock = new Mock<IAuditService>();
+            var spMock = new Mock<IServiceProvider>();
+
+            repoMock.Setup(r => r.SaveCommandAsync(It.IsAny<RemoteCommandHistory>(), It.IsAny<CancellationToken>()))
+                .Returns(Task.CompletedTask);
+            repoMock.Setup(r => r.UpdateStatusAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
+                .Returns(Task.CompletedTask);
+            auditMock.Setup(a => a.RecordCommandReceivedAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
+                .Returns(Task.CompletedTask);
+            auditMock.Setup(a => a.RecordExecutionStartedAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
+                .Returns(Task.CompletedTask);
+            auditMock.Setup(a => a.RecordExecutionCompletedAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
+                .Returns(Task.CompletedTask);
+            auditMock.Setup(a => a.RecordExecutionFailedAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
+                .Returns(Task.CompletedTask);
+
             var engine = new RemoteCommandEngine(
                 _engineLoggerMock.Object,
                 _healthMonitorMock.Object,
                 dispatcherMock.Object,
-                reporter
+                reporter,
+                dbMock.Object,
+                repoMock.Object,
+                auditMock.Object,
+                spMock.Object
             );
 
             var cmd = new RemoteCommand { CommandId = Guid.NewGuid(), Action = "LOCK_PC", Priority = "High" };

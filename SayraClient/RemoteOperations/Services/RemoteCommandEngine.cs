@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Sayra.Client.Shared.Interfaces;
 using Sayra.Client.Shared.Models;
@@ -58,17 +59,29 @@ namespace SayraClient.RemoteOperations.Services
         private readonly PriorityCommandQueue _queue = new();
         private readonly IRemoteCommandDispatcher _dispatcher;
         private readonly ICommandResultReporter _resultReporter;
+        private readonly ILocalDatabaseService _databaseService;
+        private readonly IRemoteCommandRepository _repository;
+        private readonly IAuditService _auditService;
+        private readonly IServiceProvider _serviceProvider;
         private readonly CancellationTokenSource _cts = new();
 
         public RemoteCommandEngine(
             ILogger<RemoteCommandEngine> logger,
             IServiceHealthMonitor healthMonitor,
             IRemoteCommandDispatcher dispatcher,
-            ICommandResultReporter resultReporter)
+            ICommandResultReporter resultReporter,
+            ILocalDatabaseService databaseService,
+            IRemoteCommandRepository repository,
+            IAuditService auditService,
+            IServiceProvider serviceProvider)
             : base(logger, healthMonitor, "RemoteCommandEngine")
         {
             _dispatcher = dispatcher;
             _resultReporter = resultReporter;
+            _databaseService = databaseService ?? throw new ArgumentNullException(nameof(databaseService));
+            _repository = repository ?? throw new ArgumentNullException(nameof(repository));
+            _auditService = auditService ?? throw new ArgumentNullException(nameof(auditService));
+            _serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
         }
 
         public Task StartEngineAsync(CancellationToken cancellationToken)
@@ -77,16 +90,44 @@ namespace SayraClient.RemoteOperations.Services
             return Task.CompletedTask;
         }
 
-        public Task QueueCommandAsync(RemoteCommand command)
+        public async Task QueueCommandAsync(RemoteCommand command)
         {
             if (command == null) throw new ArgumentNullException(nameof(command));
             _logger.LogInformation("Queueing remote command {CommandId} ({Action}) with priority {Priority}.",
                 command.CommandId, command.Action, command.Priority);
 
             command.Status = CommandStatus.Pending;
+
+            // Ensure database is initialized before saving
+            try
+            {
+                await _databaseService.InitializeDatabaseAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Failed to ensure database initialization on manual queue command.");
+            }
+
+            // Persist the transition to PENDING in the local database
+            var history = new RemoteCommandHistory
+            {
+                CommandId = command.CommandId.ToString(),
+                Action = command.Action,
+                TargetPcId = command.TargetClientId,
+                SenderAdminId = command.SenderAdminId,
+                PayloadJson = command.Payload,
+                Status = "PENDING",
+                ReceivedAt = command.Timestamp.ToString("O"),
+                Signature = command.Signature,
+                RetryCount = 0
+            };
+            await _repository.SaveCommandAsync(history);
+
+            // Record audit log
+            await _auditService.RecordCommandReceivedAsync(command.CommandId.ToString(), command.Action, command.CommandId.ToString());
+
             _queue.Enqueue(command);
-            _resultReporter.SendStatusUpdateAsync(command.CommandId, CommandStatus.Pending);
-            return Task.CompletedTask;
+            await _resultReporter.SendStatusUpdateAsync(command.CommandId, CommandStatus.Pending);
         }
 
         public Task<CommandStatus> GetCommandStatusAsync(Guid commandId)
@@ -102,6 +143,30 @@ namespace SayraClient.RemoteOperations.Services
         {
             _logger.LogInformation("Remote Command Engine execution loop starting...");
 
+            // Initialize local secure database
+            try
+            {
+                await _databaseService.InitializeDatabaseAsync(stoppingToken);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Failed to initialize local secure database upon startup.");
+            }
+
+            // Load offline queue on startup
+            try
+            {
+                var offlineQueue = _serviceProvider.GetService<IOfflineCommandQueue>();
+                if (offlineQueue != null)
+                {
+                    await offlineQueue.RestoreAndResumeQueueAsync(stoppingToken);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error restoring offline queue during engine startup.");
+            }
+
             using var linkedCts = CancellationTokenSource.CreateLinkedTokenSource(stoppingToken, _cts.Token);
 
             while (!linkedCts.Token.IsCancellationRequested)
@@ -111,9 +176,15 @@ namespace SayraClient.RemoteOperations.Services
                 {
                     command = await _queue.DequeueAsync(linkedCts.Token);
 
-                    // Step A: Update Status to Validating / Executing
+                    // Step A: Update Status to EXECUTING in memory
                     command.Status = CommandStatus.Executing;
                     await _resultReporter.SendStatusUpdateAsync(command.CommandId, CommandStatus.Executing);
+
+                    // Persist the transition to EXECUTING in the database
+                    await _repository.UpdateStatusAsync(command.CommandId.ToString(), "EXECUTING", cancellationToken: linkedCts.Token);
+
+                    // Record audit log
+                    await _auditService.RecordExecutionStartedAsync(command.CommandId.ToString(), command.Action, command.CommandId.ToString(), linkedCts.Token);
 
                     _logger.LogInformation("Remote Command Engine processing command {CommandId} ({Action}).",
                         command.CommandId, command.Action);
@@ -139,6 +210,20 @@ namespace SayraClient.RemoteOperations.Services
                     command.Status = result.Success ? CommandStatus.Completed : CommandStatus.Failed;
                     await _resultReporter.ReportResultAsync(result);
                     await _resultReporter.SendStatusUpdateAsync(command.CommandId, command.Status);
+
+                    // Persist the final transition (COMPLETED / FAILED) in the database
+                    string finalStatusStr = result.Success ? "COMPLETED" : "FAILED";
+                    await _repository.UpdateStatusAsync(command.CommandId.ToString(), finalStatusStr, result.Success ? null : result.ErrorMessage, linkedCts.Token);
+
+                    // Record final audit log
+                    if (result.Success)
+                    {
+                        await _auditService.RecordExecutionCompletedAsync(command.CommandId.ToString(), command.Action, command.CommandId.ToString(), linkedCts.Token);
+                    }
+                    else
+                    {
+                        await _auditService.RecordExecutionFailedAsync(command.CommandId.ToString(), command.Action, result.ErrorMessage, command.CommandId.ToString(), linkedCts.Token);
+                    }
                 }
                 catch (OperationCanceledException) when (linkedCts.Token.IsCancellationRequested)
                 {
@@ -152,6 +237,15 @@ namespace SayraClient.RemoteOperations.Services
                     {
                         command.Status = CommandStatus.Failed;
                         await _resultReporter.SendStatusUpdateAsync(command.CommandId, CommandStatus.Failed);
+                        try
+                        {
+                            await _repository.UpdateStatusAsync(command.CommandId.ToString(), "FAILED", ex.Message, linkedCts.Token);
+                            await _auditService.RecordExecutionFailedAsync(command.CommandId.ToString(), command.Action, ex.Message, command.CommandId.ToString(), linkedCts.Token);
+                        }
+                        catch (Exception dbEx)
+                        {
+                            _logger.LogError(dbEx, "Failed to persist fallback failure for command {CommandId}.", command.CommandId);
+                        }
                     }
                 }
             }
