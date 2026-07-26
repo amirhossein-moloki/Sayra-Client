@@ -23,6 +23,9 @@ using Sayra.Client.Diagnostics.Extensions;
 using Sayra.Client.Launcher;
 using Sayra.Client.Launcher.Services;
 using Sayra.Client.Scanner;
+using Sayra.Client.Shared.Runtime.Overlay.Application.Interfaces;
+using Sayra.Client.Shared.Runtime.Overlay.Application.Services;
+using Sayra.UI.Overlay.Infrastructure.Windows.OverlayWindow;
 
 namespace Sayra.UI
 {
@@ -181,6 +184,17 @@ namespace Sayra.UI
                 Log.Error(ex, "Failed to initialize notifications presentation system during startup.");
             }
 
+            // Initialize and start the Overlay Engine
+            try
+            {
+                var overlayManager = ServiceProvider.GetRequiredService<IOverlayManager>();
+                Log.Information("Overlay Engine successfully initialized and listening for events.");
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Failed to initialize Overlay Engine during startup.");
+            }
+
             // Use OnExplicitShutdown to prevent automatic application exit during the Login to Dashboard transition.
             this.ShutdownMode = ShutdownMode.OnExplicitShutdown;
         }
@@ -272,6 +286,10 @@ namespace Sayra.UI
             services.AddDiagnosticsServices(config);
             services.AddLauncherServices();
             services.AddApplicationScanner();
+
+            // Add Overlay Engine and Runtime UI Services
+            services.AddOverlayServices();
+            services.AddSingleton<IOverlayWindowService, OverlayWindowService>();
 
             // Add Notifications Presentation Module Services
             services.AddSingleton<Sayra.UI.Notifications.Services.NotificationIpcClient>();
