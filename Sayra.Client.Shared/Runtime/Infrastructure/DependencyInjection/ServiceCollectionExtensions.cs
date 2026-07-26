@@ -9,6 +9,8 @@ namespace Sayra.Client.Shared.Runtime.Infrastructure.DependencyInjection
     {
         public static IServiceCollection AddRuntimeServices(this IServiceCollection services)
         {
+            services.AddOptions<Sayra.Client.Shared.Runtime.Domain.Models.RuntimePolicyOptions>();
+            services.AddOptions<Sayra.Client.Shared.Runtime.ProcessSupervisor.Domain.Models.ProcessSupervisorOptions>();
             services.AddSingleton<IRuntimeEventPublisher, RuntimeEventPublisher>();
             services.AddSingleton<IRuntimeStateManager, RuntimeStateManager>();
             services.AddSingleton<IRuntimeContextProvider, RuntimeContextProvider>();

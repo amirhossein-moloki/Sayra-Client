@@ -16,6 +16,7 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<IMouseRestrictionService, MouseRestrictionService>();
         services.AddSingleton<IShellProtectionService, ShellProtectionService>();
         services.AddSingleton<ISystemRestrictionService, SystemRestrictionService>();
+        services.AddSingleton<IUsbProtectionService, WindowsUsbProtectionService>();
         services.AddSingleton<IDeviceControlService, DeviceControlService>();
         services.AddSingleton<IMaintenanceModeService, MaintenanceModeService>();
 
