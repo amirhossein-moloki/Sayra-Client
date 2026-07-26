@@ -7,6 +7,7 @@ using Sayra.Client.Shared.Runtime.Domain.Events;
 using Sayra.Client.Shared.Runtime.Domain.States;
 using Sayra.Client.Shared.Runtime.Domain.Exceptions;
 using Sayra.Client.Shared.Runtime.Application.Interfaces;
+using Sayra.Client.Shared.Runtime.Infrastructure.Persistence;
 
 namespace Sayra.Client.Shared.Runtime.Application.Services
 {
@@ -15,16 +16,28 @@ namespace Sayra.Client.Shared.Runtime.Application.Services
         private readonly ILogger<RuntimeSessionManager> _logger;
         private readonly IRuntimeEventPublisher _eventPublisher;
         private readonly IRuntimeStateManager _stateManager;
+        private readonly ISessionRepository _sessionRepository;
         private readonly ConcurrentDictionary<Guid, RuntimeSession> _sessions = new();
 
         public RuntimeSessionManager(
             ILogger<RuntimeSessionManager> logger,
             IRuntimeEventPublisher eventPublisher,
-            IRuntimeStateManager stateManager)
+            IRuntimeStateManager stateManager,
+            ISessionRepository sessionRepository)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _eventPublisher = eventPublisher ?? throw new ArgumentNullException(nameof(eventPublisher));
             _stateManager = stateManager ?? throw new ArgumentNullException(nameof(stateManager));
+            _sessionRepository = sessionRepository ?? throw new ArgumentNullException(nameof(sessionRepository));
+        }
+
+        // Backward compatible constructor for tests
+        public RuntimeSessionManager(
+            ILogger<RuntimeSessionManager> logger,
+            IRuntimeEventPublisher eventPublisher,
+            IRuntimeStateManager stateManager)
+            : this(logger, eventPublisher, stateManager, new InMemorySessionRepository())
+        {
         }
 
         public Task<RuntimeSession> CreateAsync()
@@ -32,7 +45,7 @@ namespace Sayra.Client.Shared.Runtime.Application.Services
             return CreateAsync("DefaultUser", "DefaultGame");
         }
 
-        public Task<RuntimeSession> CreateAsync(string userId, string gameId)
+        public async Task<RuntimeSession> CreateAsync(string userId, string gameId)
         {
             var session = new RuntimeSession
             {
@@ -49,15 +62,108 @@ namespace Sayra.Client.Shared.Runtime.Application.Services
                 throw new RuntimeException("Failed to register runtime session.");
             }
 
+            // Persist
+            await _sessionRepository.SaveAsync(session);
+
             _logger.LogInformation("Runtime session created. SessionId: {SessionId}, UserId: {UserId}, GameId: {GameId}", session.SessionId, userId, gameId);
+
+            // Publish legacy event
             _eventPublisher.Publish(new RuntimeSessionCreatedEvent(session));
 
-            _stateManager.TransitionTo(RuntimeState.Preparing, $"Session created for user {userId}");
+            // Publish new SessionCreatedEvent
+            _eventPublisher.Publish(new SessionCreatedEvent(session.SessionId, userId, RuntimeState.Created, $"Session created for game {gameId}"));
 
-            return Task.FromResult(session);
+            _stateManager.TransitionTo(RuntimeState.Preparing, $"Session created for user {userId}");
+            await _sessionRepository.SaveAsync(session);
+
+            return session;
         }
 
-        public Task StopAsync(Guid sessionId)
+        public async Task StartAsync(Guid sessionId)
+        {
+            if (!_sessions.TryGetValue(sessionId, out var session))
+            {
+                throw new RuntimeException($"Session {sessionId} not found.");
+            }
+
+            _stateManager.TransitionTo(RuntimeState.Running, $"Starting session {sessionId}");
+            session.Status = RuntimeState.Running;
+            session.RuntimeState = RuntimeState.Running;
+
+            await _sessionRepository.SaveAsync(session);
+
+            _eventPublisher.Publish(new SessionStartedEvent(sessionId, session.UserId, RuntimeState.Running, "Session started."));
+            _logger.LogInformation("Runtime session started. SessionId: {SessionId}", sessionId);
+        }
+
+        public async Task PauseAsync(Guid sessionId)
+        {
+            if (!_sessions.TryGetValue(sessionId, out var session))
+            {
+                throw new RuntimeException($"Session {sessionId} not found.");
+            }
+
+            _stateManager.TransitionTo(RuntimeState.Paused, $"Pausing session {sessionId}");
+            session.Status = RuntimeState.Paused;
+            session.RuntimeState = RuntimeState.Paused;
+
+            await _sessionRepository.SaveAsync(session);
+            _logger.LogInformation("Runtime session paused. SessionId: {SessionId}", sessionId);
+        }
+
+        public async Task ResumeAsync(Guid sessionId)
+        {
+            if (!_sessions.TryGetValue(sessionId, out var session))
+            {
+                throw new RuntimeException($"Session {sessionId} not found.");
+            }
+
+            _stateManager.TransitionTo(RuntimeState.Running, $"Resuming session {sessionId}");
+            session.Status = RuntimeState.Running;
+            session.RuntimeState = RuntimeState.Running;
+
+            await _sessionRepository.SaveAsync(session);
+            _logger.LogInformation("Runtime session resumed. SessionId: {SessionId}", sessionId);
+        }
+
+        public async Task CompleteAsync(Guid sessionId)
+        {
+            if (!_sessions.TryGetValue(sessionId, out var session))
+            {
+                throw new RuntimeException($"Session {sessionId} not found.");
+            }
+
+            _stateManager.TransitionTo(RuntimeState.Stopping, $"Stopping session {sessionId} for completion");
+            _stateManager.TransitionTo(RuntimeState.Completed, $"Completing session {sessionId}");
+            session.EndTime = DateTime.UtcNow;
+            session.Status = RuntimeState.Completed;
+            session.RuntimeState = RuntimeState.Completed;
+
+            await _sessionRepository.SaveAsync(session);
+
+            _eventPublisher.Publish(new SessionCompletedEvent(sessionId, session.UserId, RuntimeState.Completed, "Session completed successfully."));
+            _logger.LogInformation("Runtime session completed. SessionId: {SessionId}", sessionId);
+        }
+
+        public async Task CancelAsync(Guid sessionId)
+        {
+            if (!_sessions.TryGetValue(sessionId, out var session))
+            {
+                throw new RuntimeException($"Session {sessionId} not found.");
+            }
+
+            _stateManager.TransitionTo(RuntimeState.Failed, $"Cancelling session {sessionId}");
+            session.EndTime = DateTime.UtcNow;
+            session.Status = RuntimeState.Failed;
+            session.RuntimeState = RuntimeState.Failed;
+
+            await _sessionRepository.SaveAsync(session);
+
+            _eventPublisher.Publish(new SessionFailedEvent(sessionId, session.UserId, RuntimeState.Failed, "Session was cancelled."));
+            _logger.LogInformation("Runtime session cancelled. SessionId: {SessionId}", sessionId);
+        }
+
+        public async Task StopAsync(Guid sessionId)
         {
             if (!_sessions.TryGetValue(sessionId, out var session))
             {
@@ -65,15 +171,19 @@ namespace Sayra.Client.Shared.Runtime.Application.Services
                 throw new RuntimeException($"Session {sessionId} not found.");
             }
 
-            _stateManager.TransitionTo(RuntimeState.Stopping, $"Request to stop session {sessionId}");
+            if (_stateManager.CurrentState != RuntimeState.Stopping)
+            {
+                _stateManager.TransitionTo(RuntimeState.Stopping, $"Request to stop session {sessionId}");
+            }
             session.EndTime = DateTime.UtcNow;
             session.Status = RuntimeState.Completed;
             session.RuntimeState = RuntimeState.Completed;
 
             _stateManager.TransitionTo(RuntimeState.Completed, $"Session {sessionId} completed successfully.");
-            _logger.LogInformation("Runtime session stopped. SessionId: {SessionId}", sessionId);
+            await _sessionRepository.SaveAsync(session);
 
-            return Task.CompletedTask;
+            _eventPublisher.Publish(new SessionCompletedEvent(sessionId, session.UserId, RuntimeState.Completed, "Session stopped and completed."));
+            _logger.LogInformation("Runtime session stopped. SessionId: {SessionId}", sessionId);
         }
 
         public RuntimeSession? GetSession(Guid sessionId)
@@ -92,6 +202,13 @@ namespace Sayra.Client.Shared.Runtime.Application.Services
             _stateManager.TransitionTo(state, $"Session state update to {state}");
             session.Status = state;
             session.RuntimeState = state;
+
+            _sessionRepository.SaveAsync(session).GetAwaiter().GetResult();
+
+            if (state == RuntimeState.Failed)
+            {
+                _eventPublisher.Publish(new SessionFailedEvent(sessionId, session.UserId, state, "Session encountered a failure state."));
+            }
         }
     }
 }

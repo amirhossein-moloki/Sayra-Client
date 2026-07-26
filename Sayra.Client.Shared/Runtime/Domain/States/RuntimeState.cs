@@ -14,6 +14,8 @@ namespace Sayra.Client.Shared.Runtime.Domain.States
         Paused,
         Stopping,
         Completed,
-        Failed
+        Failed,
+        Warning,
+        Expired
     }
 }
