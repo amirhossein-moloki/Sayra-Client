@@ -21,8 +21,10 @@ namespace Sayra.Client.Shared.Runtime.Application.Services
             { RuntimeState.Created, new HashSet<RuntimeState> { RuntimeState.Preparing, RuntimeState.Failed } },
             { RuntimeState.Preparing, new HashSet<RuntimeState> { RuntimeState.Starting, RuntimeState.Failed } },
             { RuntimeState.Starting, new HashSet<RuntimeState> { RuntimeState.Running, RuntimeState.Failed } },
-            { RuntimeState.Running, new HashSet<RuntimeState> { RuntimeState.Paused, RuntimeState.Stopping, RuntimeState.Failed } },
+            { RuntimeState.Running, new HashSet<RuntimeState> { RuntimeState.Paused, RuntimeState.Stopping, RuntimeState.Warning, RuntimeState.Expired, RuntimeState.Failed } },
             { RuntimeState.Paused, new HashSet<RuntimeState> { RuntimeState.Running, RuntimeState.Stopping, RuntimeState.Failed } },
+            { RuntimeState.Warning, new HashSet<RuntimeState> { RuntimeState.Running, RuntimeState.Expired, RuntimeState.Stopping, RuntimeState.Failed } },
+            { RuntimeState.Expired, new HashSet<RuntimeState> { RuntimeState.Stopping, RuntimeState.Failed } },
             { RuntimeState.Stopping, new HashSet<RuntimeState> { RuntimeState.Completed, RuntimeState.Failed } },
             { RuntimeState.Completed, new HashSet<RuntimeState>() },
             { RuntimeState.Failed, new HashSet<RuntimeState>() }
@@ -41,7 +43,7 @@ namespace Sayra.Client.Shared.Runtime.Application.Services
                 var oldState = CurrentState;
                 if (oldState == newState) return;
 
-                if (!AllowedTransitions[oldState].Contains(newState))
+                if (!AllowedTransitions.ContainsKey(oldState) || !AllowedTransitions[oldState].Contains(newState))
                 {
                     _logger.LogWarning("Invalid state transition attempted: {OldState} -> {NewState}. Reason: {Reason}", oldState, newState, reason);
                     throw new RuntimeTransitionException($"Invalid state transition: {oldState} to {newState}");
