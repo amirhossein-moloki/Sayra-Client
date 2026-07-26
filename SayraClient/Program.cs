@@ -152,6 +152,30 @@ builder.Services.AddSingleton<ICommandHandler, SystemCommandHandler>();
 builder.Services.AddSingleton<ICommandHandler, AppCommandHandler>();
 builder.Services.AddSingleton<ICommandHandler, SessionCommandHandler>();
 
+// Register Remote Command Foundation & Security Stage 1 Services
+builder.Services.AddSingleton<Sayra.Client.Shared.Interfaces.Security.ICryptoService, SayraClient.RemoteOperations.Security.CryptoService>();
+builder.Services.AddSingleton<Sayra.Client.Shared.Interfaces.Security.ISignatureVerifier, SayraClient.RemoteOperations.Security.SignatureVerifier>();
+builder.Services.AddSingleton<Sayra.Client.Shared.Interfaces.Security.IMessageAuthenticator, SayraClient.RemoteOperations.Security.MessageAuthenticator>();
+
+builder.Services.AddSingleton<Sayra.Client.Shared.Interfaces.ICommandResultReporter, SayraClient.RemoteOperations.Services.CommandResultReporter>();
+builder.Services.AddSingleton<Sayra.Client.Shared.Interfaces.IRemoteCommandDispatcher, SayraClient.RemoteOperations.Services.RemoteCommandDispatcher>();
+
+builder.Services.AddSingleton<SayraClient.RemoteOperations.Services.RemoteCommandEngine>();
+builder.Services.AddSingleton<Sayra.Client.Shared.Interfaces.IRemoteCommandEngine>(sp => sp.GetRequiredService<SayraClient.RemoteOperations.Services.RemoteCommandEngine>());
+
+// Register Remote Command Handlers
+builder.Services.AddSingleton<Sayra.Client.Shared.Interfaces.IRemoteCommandHandler, SayraClient.RemoteOperations.Handlers.LockPcCommandHandler>();
+builder.Services.AddSingleton<Sayra.Client.Shared.Interfaces.IRemoteCommandHandler, SayraClient.RemoteOperations.Handlers.UnlockPcCommandHandler>();
+builder.Services.AddSingleton<Sayra.Client.Shared.Interfaces.IRemoteCommandHandler, SayraClient.RemoteOperations.Handlers.ShutdownCommandHandler>();
+builder.Services.AddSingleton<Sayra.Client.Shared.Interfaces.IRemoteCommandHandler, SayraClient.RemoteOperations.Handlers.RestartCommandHandler>();
+builder.Services.AddSingleton<Sayra.Client.Shared.Interfaces.IRemoteCommandHandler, SayraClient.RemoteOperations.Handlers.LaunchGameCommandHandler>();
+builder.Services.AddSingleton<Sayra.Client.Shared.Interfaces.IRemoteCommandHandler, SayraClient.RemoteOperations.Handlers.CloseGameCommandHandler>();
+builder.Services.AddSingleton<Sayra.Client.Shared.Interfaces.IRemoteCommandHandler, SayraClient.RemoteOperations.Handlers.KillProcessCommandHandler>();
+builder.Services.AddSingleton<Sayra.Client.Shared.Interfaces.IRemoteCommandHandler, SayraClient.RemoteOperations.Handlers.WakeOnLanCommandHandler>();
+builder.Services.AddSingleton<Sayra.Client.Shared.Interfaces.IRemoteCommandHandler, SayraClient.RemoteOperations.Handlers.MaintenanceModeCommandHandler>();
+builder.Services.AddSingleton<Sayra.Client.Shared.Interfaces.IRemoteCommandHandler, SayraClient.RemoteOperations.Handlers.RestartApplicationCommandHandler>();
+builder.Services.AddSingleton<Sayra.Client.Shared.Interfaces.IRemoteCommandHandler, SayraClient.RemoteOperations.Handlers.RestartServiceCommandHandler>();
+
 // Register MessageHandler (depends on Command System)
 builder.Services.AddSingleton<MessageHandler>();
 
