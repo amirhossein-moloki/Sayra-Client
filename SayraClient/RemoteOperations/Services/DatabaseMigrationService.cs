@@ -198,6 +198,197 @@ namespace SayraClient.RemoteOperations.Services
                 }
             }
 
+            // Migration 3: Fleet Management & Administrative Operations schema
+            if (currentVersion < 3)
+            {
+                using var transaction = await connection.BeginTransactionAsync(cancellationToken);
+                try
+                {
+                    _logger.LogInformation("Applying migration version 3: Fleet Management schema.");
+
+                    // Workstations table
+                    using (var cmd = connection.CreateCommand())
+                    {
+                        cmd.Transaction = transaction;
+                        cmd.CommandText = @"
+                            CREATE TABLE IF NOT EXISTS Workstations (
+                                WorkstationId TEXT PRIMARY KEY NOT NULL,
+                                Name TEXT NOT NULL,
+                                IpAddress TEXT NOT NULL,
+                                MacAddress TEXT NOT NULL,
+                                Status TEXT NOT NULL,
+                                LastSeen TEXT NOT NULL,
+                                Version TEXT NOT NULL,
+                                Gpu TEXT NOT NULL,
+                                RamGb INTEGER NOT NULL,
+                                WindowsVersion TEXT NOT NULL,
+                                PolicyVersion TEXT NOT NULL,
+                                HealthState TEXT NOT NULL
+                            );";
+                        await cmd.ExecuteNonQueryAsync(cancellationToken);
+                    }
+
+                    // MachineGroups table
+                    using (var cmd = connection.CreateCommand())
+                    {
+                        cmd.Transaction = transaction;
+                        cmd.CommandText = @"
+                            CREATE TABLE IF NOT EXISTS MachineGroups (
+                                GroupId TEXT PRIMARY KEY NOT NULL,
+                                Name TEXT NOT NULL,
+                                Description TEXT NOT NULL,
+                                GroupType TEXT NOT NULL
+                            );";
+                        await cmd.ExecuteNonQueryAsync(cancellationToken);
+                    }
+
+                    // MachineAssignments table
+                    using (var cmd = connection.CreateCommand())
+                    {
+                        cmd.Transaction = transaction;
+                        cmd.CommandText = @"
+                            CREATE TABLE IF NOT EXISTS MachineAssignments (
+                                WorkstationId TEXT NOT NULL,
+                                GroupId TEXT NOT NULL,
+                                PRIMARY KEY (WorkstationId, GroupId)
+                            );";
+                        await cmd.ExecuteNonQueryAsync(cancellationToken);
+                    }
+
+                    using (var cmd = connection.CreateCommand())
+                    {
+                        cmd.Transaction = transaction;
+                        cmd.CommandText = "CREATE INDEX IF NOT EXISTS IDX_MachineAssignments_GroupId ON MachineAssignments (GroupId);";
+                        await cmd.ExecuteNonQueryAsync(cancellationToken);
+                    }
+
+                    // BulkOperations table
+                    using (var cmd = connection.CreateCommand())
+                    {
+                        cmd.Transaction = transaction;
+                        cmd.CommandText = @"
+                            CREATE TABLE IF NOT EXISTS BulkOperations (
+                                OperationId TEXT PRIMARY KEY NOT NULL,
+                                Action TEXT NOT NULL,
+                                StartedAt TEXT NOT NULL,
+                                CompletedAt TEXT NOT NULL,
+                                Status TEXT NOT NULL,
+                                SucceededCount INTEGER NOT NULL,
+                                FailedCount INTEGER NOT NULL,
+                                PendingCount INTEGER NOT NULL,
+                                CancelledCount INTEGER NOT NULL,
+                                RetryCount INTEGER NOT NULL
+                            );";
+                        await cmd.ExecuteNonQueryAsync(cancellationToken);
+                    }
+
+                    // BulkOperationResults table
+                    using (var cmd = connection.CreateCommand())
+                    {
+                        cmd.Transaction = transaction;
+                        cmd.CommandText = @"
+                            CREATE TABLE IF NOT EXISTS BulkOperationResults (
+                                ResultId TEXT PRIMARY KEY NOT NULL,
+                                OperationId TEXT NOT NULL,
+                                WorkstationId TEXT NOT NULL,
+                                Succeeded INTEGER NOT NULL,
+                                ErrorMessage TEXT NOT NULL,
+                                CompletedAt TEXT NOT NULL
+                            );";
+                        await cmd.ExecuteNonQueryAsync(cancellationToken);
+                    }
+
+                    using (var cmd = connection.CreateCommand())
+                    {
+                        cmd.Transaction = transaction;
+                        cmd.CommandText = "CREATE INDEX IF NOT EXISTS IDX_BulkOperationResults_OperationId ON BulkOperationResults (OperationId);";
+                        await cmd.ExecuteNonQueryAsync(cancellationToken);
+                    }
+
+                    // FleetAlerts table
+                    using (var cmd = connection.CreateCommand())
+                    {
+                        cmd.Transaction = transaction;
+                        cmd.CommandText = @"
+                            CREATE TABLE IF NOT EXISTS FleetAlerts (
+                                AlertId TEXT PRIMARY KEY NOT NULL,
+                                WorkstationId TEXT NOT NULL,
+                                AlertType TEXT NOT NULL,
+                                Severity TEXT NOT NULL,
+                                Message TEXT NOT NULL,
+                                CreatedAt TEXT NOT NULL,
+                                ResolvedAt TEXT NOT NULL,
+                                CooldownExpiresAt TEXT NOT NULL,
+                                Escalated INTEGER NOT NULL,
+                                IsActive INTEGER NOT NULL
+                            );";
+                        await cmd.ExecuteNonQueryAsync(cancellationToken);
+                    }
+
+                    using (var cmd = connection.CreateCommand())
+                    {
+                        cmd.Transaction = transaction;
+                        cmd.CommandText = "CREATE INDEX IF NOT EXISTS IDX_FleetAlerts_WorkstationId ON FleetAlerts (WorkstationId);";
+                        await cmd.ExecuteNonQueryAsync(cancellationToken);
+                    }
+
+                    // DynamicCollections table
+                    using (var cmd = connection.CreateCommand())
+                    {
+                        cmd.Transaction = transaction;
+                        cmd.CommandText = @"
+                            CREATE TABLE IF NOT EXISTS DynamicCollections (
+                                CollectionId TEXT PRIMARY KEY NOT NULL,
+                                Name TEXT NOT NULL,
+                                RuleExpression TEXT NOT NULL,
+                                LastUpdatedAt TEXT NOT NULL
+                            );";
+                        await cmd.ExecuteNonQueryAsync(cancellationToken);
+                    }
+
+                    // CollectionMembership table
+                    using (var cmd = connection.CreateCommand())
+                    {
+                        cmd.Transaction = transaction;
+                        cmd.CommandText = @"
+                            CREATE TABLE IF NOT EXISTS CollectionMembership (
+                                CollectionId TEXT NOT NULL,
+                                WorkstationId TEXT NOT NULL,
+                                PRIMARY KEY (CollectionId, WorkstationId)
+                            );";
+                        await cmd.ExecuteNonQueryAsync(cancellationToken);
+                    }
+
+                    using (var cmd = connection.CreateCommand())
+                    {
+                        cmd.Transaction = transaction;
+                        cmd.CommandText = "CREATE INDEX IF NOT EXISTS IDX_CollectionMembership_CollectionId ON CollectionMembership (CollectionId);";
+                        await cmd.ExecuteNonQueryAsync(cancellationToken);
+                    }
+
+                    // Insert schema version 3
+                    using (var cmd = connection.CreateCommand())
+                    {
+                        cmd.Transaction = transaction;
+                        cmd.CommandText = "INSERT INTO SchemaVersion (Version, AppliedAt) VALUES (3, $appliedAt);";
+                        var parameter = cmd.CreateParameter();
+                        parameter.ParameterName = "$appliedAt";
+                        parameter.Value = DateTime.UtcNow.ToString("O");
+                        cmd.Parameters.Add(parameter);
+                        await cmd.ExecuteNonQueryAsync(cancellationToken);
+                    }
+
+                    await transaction.CommitAsync(cancellationToken);
+                    _logger.LogInformation("Migration version 3 applied successfully.");
+                }
+                catch (Exception ex)
+                {
+                    await transaction.RollbackAsync(cancellationToken);
+                    _logger.LogError(ex, "Failed to apply migration version 3. Transaction rolled back.");
+                    throw;
+                }
+            }
+
             _logger.LogInformation("Database migrations completed successfully.");
         }
     }

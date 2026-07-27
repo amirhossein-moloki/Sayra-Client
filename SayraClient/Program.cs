@@ -196,6 +196,14 @@ builder.Services.AddSingleton<Sayra.Client.Shared.Interfaces.IPolicyRepository, 
 builder.Services.AddSingleton<Sayra.Client.Shared.Interfaces.IPolicyEngine, SayraClient.RemoteOperations.Services.PolicyEngine>();
 builder.Services.AddSingleton<SayraClient.RemoteOperations.Services.PolicySynchronizationService>();
 
+// Register Stage 5 Fleet Management & Operations Services
+builder.Services.AddSingleton<Sayra.Client.Shared.Interfaces.IGroupRepository, SayraClient.RemoteOperations.Services.GroupRepository>();
+builder.Services.AddSingleton<Sayra.Client.Shared.Interfaces.IFleetManager, SayraClient.RemoteOperations.Services.FleetManager>();
+builder.Services.AddSingleton<Sayra.Client.Shared.Interfaces.IBulkOperationService, SayraClient.RemoteOperations.Services.BulkOperationService>();
+builder.Services.AddSingleton<Sayra.Client.Shared.Interfaces.IAlertManager, SayraClient.RemoteOperations.Services.AlertEngine>();
+builder.Services.AddSingleton<Sayra.Client.Shared.Interfaces.IEnterpriseOperationService, SayraClient.RemoteOperations.Services.EnterpriseOperationService>();
+builder.Services.AddSingleton<SayraClient.RemoteOperations.Services.OperationCoordinator>();
+
 // Register MessageHandler (depends on Command System)
 builder.Services.AddSingleton<MessageHandler>();
 
