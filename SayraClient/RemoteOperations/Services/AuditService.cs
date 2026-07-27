@@ -52,6 +52,11 @@ namespace SayraClient.RemoteOperations.Services
             return SaveAuditEntryAsync(commandId, "EXECUTION_FAILED", $"Execution of command '{action}' failed. Error: {error}", correlationId, cancellationToken);
         }
 
+        public Task RecordPolicyEventAsync(string policyId, string eventType, string details, string correlationId, CancellationToken cancellationToken = default)
+        {
+            return SaveAuditEntryAsync(policyId, eventType, details, correlationId, cancellationToken);
+        }
+
         public async Task<List<AuditEntry>> GetAuditTrailAsync(CancellationToken cancellationToken = default)
         {
             using var connection = _databaseService.CreateConnection();

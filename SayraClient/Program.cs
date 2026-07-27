@@ -185,6 +185,17 @@ builder.Services.AddSingleton<Sayra.Client.Shared.Interfaces.IRemoteCommandHandl
 builder.Services.AddSingleton<Sayra.Client.Shared.Interfaces.IRemoteCommandHandler, SayraClient.RemoteOperations.Handlers.RestartApplicationCommandHandler>();
 builder.Services.AddSingleton<Sayra.Client.Shared.Interfaces.IRemoteCommandHandler, SayraClient.RemoteOperations.Handlers.RestartServiceCommandHandler>();
 
+// Register Policy Engine & System Controllers
+builder.Services.AddSingleton<SayraClient.RemoteOperations.Services.RegistryPolicyManager>();
+builder.Services.AddSingleton<SayraClient.RemoteOperations.Services.UsbPolicyManager>();
+builder.Services.AddSingleton<SayraClient.RemoteOperations.Services.NetworkPolicyManager>();
+builder.Services.AddSingleton<SayraClient.RemoteOperations.Services.SessionPolicyManager>();
+builder.Services.AddSingleton<SayraClient.RemoteOperations.Services.PolicyValidator>();
+builder.Services.AddSingleton<SayraClient.RemoteOperations.Services.PolicyRollbackService>();
+builder.Services.AddSingleton<Sayra.Client.Shared.Interfaces.IPolicyRepository, SayraClient.RemoteOperations.Services.PolicyRepository>();
+builder.Services.AddSingleton<Sayra.Client.Shared.Interfaces.IPolicyEngine, SayraClient.RemoteOperations.Services.PolicyEngine>();
+builder.Services.AddSingleton<SayraClient.RemoteOperations.Services.PolicySynchronizationService>();
+
 // Register MessageHandler (depends on Command System)
 builder.Services.AddSingleton<MessageHandler>();
 
