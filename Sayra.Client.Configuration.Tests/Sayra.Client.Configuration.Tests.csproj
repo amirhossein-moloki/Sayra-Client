@@ -22,6 +22,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Sayra.Client.Configuration\Sayra.Client.Configuration.csproj" />
     <ProjectReference Include="..\Sayra.Client.Shared\Sayra.Client.Shared.csproj" />
+    <ProjectReference Include="..\Sayra.Client.Diagnostics\Sayra.Client.Diagnostics.csproj" />
     <ProjectReference Include="..\Sayra.Client.LocalAdmin\Sayra.Client.LocalAdmin.csproj" />
     <ProjectReference Include="..\Sayra.Client.OfflineQueue\Sayra.Client.OfflineQueue.csproj" />
     <ProjectReference Include="..\SayraClient\SayraClient.csproj" />
