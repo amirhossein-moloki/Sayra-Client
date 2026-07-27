@@ -12,6 +12,7 @@ namespace Sayra.Client.Shared.Interfaces
         Task RecordExecutionStartedAsync(string commandId, string action, string correlationId, CancellationToken cancellationToken = default);
         Task RecordExecutionCompletedAsync(string commandId, string action, string correlationId, CancellationToken cancellationToken = default);
         Task RecordExecutionFailedAsync(string commandId, string action, string error, string correlationId, CancellationToken cancellationToken = default);
+        Task RecordPolicyEventAsync(string policyId, string eventType, string details, string correlationId, CancellationToken cancellationToken = default);
 
         Task<List<AuditEntry>> GetAuditTrailAsync(CancellationToken cancellationToken = default);
         Task<bool> VerifyAuditChainIntegrityAsync(CancellationToken cancellationToken = default);

@@ -221,7 +221,8 @@ public class SecurityTests
 
             // Act: Simulate hacker tampering with audit row manually via direct SQL update to break the hash chain
             var dbPath = Path.Combine(AppContext.BaseDirectory, "Data", testDbName);
-            var connStr = $"Data Source={dbPath};Cache=Shared";
+            var password = Sayra.Client.Shared.Security.Crypto.DatabaseKeyManager.GetOrInitializeKey(null);
+            var connStr = $"Data Source={dbPath};Cache=Shared;Password={password}";
             using (var connection = new SqliteConnection(connStr))
             {
                 await connection.OpenAsync();
@@ -270,7 +271,8 @@ public class SecurityTests
 
             // Act: Simulate hacker setting RowHash to NULL to attempt bypass
             var dbPath = Path.Combine(AppContext.BaseDirectory, "Data", testDbName);
-            var connStr = $"Data Source={dbPath};Cache=Shared";
+            var password = Sayra.Client.Shared.Security.Crypto.DatabaseKeyManager.GetOrInitializeKey(null);
+            var connStr = $"Data Source={dbPath};Cache=Shared;Password={password}";
             using (var connection = new SqliteConnection(connStr))
             {
                 await connection.OpenAsync();

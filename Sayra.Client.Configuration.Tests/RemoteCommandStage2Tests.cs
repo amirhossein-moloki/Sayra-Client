@@ -118,7 +118,7 @@ namespace Sayra.Client.Configuration.Tests
             using var cmd = connection.CreateCommand();
             cmd.CommandText = "SELECT COUNT(*) FROM SchemaVersion;";
             var versionCount = Convert.ToInt32(await cmd.ExecuteScalarAsync());
-            Assert.Equal(1, versionCount);
+            Assert.True(versionCount >= 1);
         }
 
         [Fact]

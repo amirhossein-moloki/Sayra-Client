@@ -50,7 +50,6 @@ namespace SayraClient.RemoteOperations.Services
             // Migration 1: Initial schema creation
             if (currentVersion < 1)
             {
-                // SqliteConnection or any DbConnection that supports transactions
                 using var transaction = await connection.BeginTransactionAsync(cancellationToken);
                 try
                 {
@@ -149,6 +148,291 @@ namespace SayraClient.RemoteOperations.Services
                 {
                     await transaction.RollbackAsync(cancellationToken);
                     _logger.LogError(ex, "Failed to apply migration version 1. Transaction rolled back.");
+                    throw;
+                }
+            }
+
+            // Migration 2: AppliedPolicies table creation
+            if (currentVersion < 2)
+            {
+                using var transaction = await connection.BeginTransactionAsync(cancellationToken);
+                try
+                {
+                    _logger.LogInformation("Applying migration version 2: AppliedPolicies table schema.");
+
+                    using (var cmd = connection.CreateCommand())
+                    {
+                        cmd.Transaction = transaction;
+                        cmd.CommandText = @"
+                            CREATE TABLE IF NOT EXISTS AppliedPolicies (
+                                PolicyId TEXT PRIMARY KEY NOT NULL,
+                                Category TEXT NOT NULL,
+                                RulesJson TEXT NOT NULL,
+                                VersionCode INTEGER NOT NULL,
+                                LastUpdatedAt TEXT NOT NULL,
+                                IsActive INTEGER DEFAULT 1,
+                                Signature TEXT NOT NULL
+                            );";
+                        await cmd.ExecuteNonQueryAsync(cancellationToken);
+                    }
+
+                    using (var cmd = connection.CreateCommand())
+                    {
+                        cmd.Transaction = transaction;
+                        cmd.CommandText = "INSERT INTO SchemaVersion (Version, AppliedAt) VALUES (2, $appliedAt);";
+                        var parameter = cmd.CreateParameter();
+                        parameter.ParameterName = "$appliedAt";
+                        parameter.Value = DateTime.UtcNow.ToString("O");
+                        cmd.Parameters.Add(parameter);
+                        await cmd.ExecuteNonQueryAsync(cancellationToken);
+                    }
+
+                    await transaction.CommitAsync(cancellationToken);
+                    _logger.LogInformation("Migration version 2 applied successfully.");
+                }
+                catch (Exception ex)
+                {
+                    await transaction.RollbackAsync(cancellationToken);
+                    _logger.LogError(ex, "Failed to apply migration version 2. Transaction rolled back.");
+                    throw;
+                }
+            }
+
+            // Migration 3: Fleet Management, Machine Groups, Bulk Operations, Alerts, Dynamic Collections
+            if (currentVersion < 3)
+            {
+                using var transaction = await connection.BeginTransactionAsync(cancellationToken);
+                try
+                {
+                    _logger.LogInformation("Applying migration version 3: Enterprise Fleet Management schema.");
+
+                    // 1. Workstations
+                    using (var cmd = connection.CreateCommand())
+                    {
+                        cmd.Transaction = transaction;
+                        cmd.CommandText = @"
+                            CREATE TABLE IF NOT EXISTS Workstations (
+                                MachineId TEXT PRIMARY KEY NOT NULL,
+                                Status TEXT NOT NULL,
+                                MetadataJson TEXT NOT NULL,
+                                RegisteredAt TEXT NOT NULL,
+                                LastSeenAt TEXT NOT NULL
+                            );";
+                        await cmd.ExecuteNonQueryAsync(cancellationToken);
+                    }
+
+                    // 2. MachineGroups
+                    using (var cmd = connection.CreateCommand())
+                    {
+                        cmd.Transaction = transaction;
+                        cmd.CommandText = @"
+                            CREATE TABLE IF NOT EXISTS MachineGroups (
+                                GroupId TEXT PRIMARY KEY NOT NULL,
+                                Name TEXT NOT NULL,
+                                Description TEXT NOT NULL,
+                                IsDynamic INTEGER NOT NULL,
+                                CreatedAt TEXT NOT NULL,
+                                ParentGroupId TEXT
+                            );";
+                        await cmd.ExecuteNonQueryAsync(cancellationToken);
+                    }
+
+                    // 3. MachineAssignments
+                    using (var cmd = connection.CreateCommand())
+                    {
+                        cmd.Transaction = transaction;
+                        cmd.CommandText = @"
+                            CREATE TABLE IF NOT EXISTS MachineAssignments (
+                                AssignmentId TEXT PRIMARY KEY NOT NULL,
+                                MachineId TEXT NOT NULL,
+                                GroupId TEXT NOT NULL,
+                                AssignedAt TEXT NOT NULL
+                            );";
+                        await cmd.ExecuteNonQueryAsync(cancellationToken);
+                    }
+
+                    using (var cmd = connection.CreateCommand())
+                    {
+                        cmd.Transaction = transaction;
+                        cmd.CommandText = "CREATE INDEX IF NOT EXISTS IDX_MachineAssignments_MachineId ON MachineAssignments (MachineId);";
+                        await cmd.ExecuteNonQueryAsync(cancellationToken);
+                    }
+
+                    using (var cmd = connection.CreateCommand())
+                    {
+                        cmd.Transaction = transaction;
+                        cmd.CommandText = "CREATE INDEX IF NOT EXISTS IDX_MachineAssignments_GroupId ON MachineAssignments (GroupId);";
+                        await cmd.ExecuteNonQueryAsync(cancellationToken);
+                    }
+
+                    // 4. BulkOperations
+                    using (var cmd = connection.CreateCommand())
+                    {
+                        cmd.Transaction = transaction;
+                        cmd.CommandText = @"
+                            CREATE TABLE IF NOT EXISTS BulkOperations (
+                                OperationId TEXT PRIMARY KEY NOT NULL,
+                                Action TEXT NOT NULL,
+                                TargetType TEXT NOT NULL,
+                                TargetValue TEXT NOT NULL,
+                                Payload TEXT NOT NULL,
+                                Status TEXT NOT NULL,
+                                RetryCount INTEGER NOT NULL,
+                                MaxRetries INTEGER NOT NULL,
+                                StartedAt TEXT NOT NULL,
+                                CompletedAt TEXT
+                            );";
+                        await cmd.ExecuteNonQueryAsync(cancellationToken);
+                    }
+
+                    // 5. BulkOperationResults
+                    using (var cmd = connection.CreateCommand())
+                    {
+                        cmd.Transaction = transaction;
+                        cmd.CommandText = @"
+                            CREATE TABLE IF NOT EXISTS BulkOperationResults (
+                                ResultId TEXT PRIMARY KEY NOT NULL,
+                                OperationId TEXT NOT NULL,
+                                MachineId TEXT NOT NULL,
+                                Success INTEGER NOT NULL,
+                                ErrorMessage TEXT NOT NULL,
+                                RetryCount INTEGER NOT NULL,
+                                Status TEXT NOT NULL,
+                                CompletedAt TEXT
+                            );";
+                        await cmd.ExecuteNonQueryAsync(cancellationToken);
+                    }
+
+                    using (var cmd = connection.CreateCommand())
+                    {
+                        cmd.Transaction = transaction;
+                        cmd.CommandText = "CREATE INDEX IF NOT EXISTS IDX_BulkOpResults_OperationId ON BulkOperationResults (OperationId);";
+                        await cmd.ExecuteNonQueryAsync(cancellationToken);
+                    }
+
+                    using (var cmd = connection.CreateCommand())
+                    {
+                        cmd.Transaction = transaction;
+                        cmd.CommandText = "CREATE INDEX IF NOT EXISTS IDX_BulkOpResults_MachineId ON BulkOperationResults (MachineId);";
+                        await cmd.ExecuteNonQueryAsync(cancellationToken);
+                    }
+
+                    // 6. FleetAlerts
+                    using (var cmd = connection.CreateCommand())
+                    {
+                        cmd.Transaction = transaction;
+                        cmd.CommandText = @"
+                            CREATE TABLE IF NOT EXISTS FleetAlerts (
+                                AlertId TEXT PRIMARY KEY NOT NULL,
+                                MachineId TEXT NOT NULL,
+                                RuleId TEXT NOT NULL,
+                                MetricName TEXT NOT NULL,
+                                Value TEXT NOT NULL,
+                                Threshold TEXT NOT NULL,
+                                Severity TEXT NOT NULL,
+                                CooldownSeconds INTEGER NOT NULL,
+                                TriggeredAt TEXT NOT NULL,
+                                Status TEXT NOT NULL,
+                                ResolvedAt TEXT,
+                                EscalationLevel INTEGER NOT NULL
+                            );";
+                        await cmd.ExecuteNonQueryAsync(cancellationToken);
+                    }
+
+                    using (var cmd = connection.CreateCommand())
+                    {
+                        cmd.Transaction = transaction;
+                        cmd.CommandText = "CREATE INDEX IF NOT EXISTS IDX_FleetAlerts_MachineId ON FleetAlerts (MachineId);";
+                        await cmd.ExecuteNonQueryAsync(cancellationToken);
+                    }
+
+                    using (var cmd = connection.CreateCommand())
+                    {
+                        cmd.Transaction = transaction;
+                        cmd.CommandText = "CREATE INDEX IF NOT EXISTS IDX_FleetAlerts_Status ON FleetAlerts (Status);";
+                        await cmd.ExecuteNonQueryAsync(cancellationToken);
+                    }
+
+                    // 7. DynamicCollections
+                    using (var cmd = connection.CreateCommand())
+                    {
+                        cmd.Transaction = transaction;
+                        cmd.CommandText = @"
+                            CREATE TABLE IF NOT EXISTS DynamicCollections (
+                                CollectionId TEXT PRIMARY KEY NOT NULL,
+                                Name TEXT NOT NULL,
+                                RuleJson TEXT NOT NULL,
+                                CreatedAt TEXT NOT NULL
+                            );";
+                        await cmd.ExecuteNonQueryAsync(cancellationToken);
+                    }
+
+                    // 8. CollectionMembership
+                    using (var cmd = connection.CreateCommand())
+                    {
+                        cmd.Transaction = transaction;
+                        cmd.CommandText = @"
+                            CREATE TABLE IF NOT EXISTS CollectionMembership (
+                                MembershipId TEXT PRIMARY KEY NOT NULL,
+                                MachineId TEXT NOT NULL,
+                                CollectionId TEXT NOT NULL,
+                                JoinedAt TEXT NOT NULL
+                            );";
+                        await cmd.ExecuteNonQueryAsync(cancellationToken);
+                    }
+
+                    using (var cmd = connection.CreateCommand())
+                    {
+                        cmd.Transaction = transaction;
+                        cmd.CommandText = "CREATE INDEX IF NOT EXISTS IDX_CollMembership_MachineId ON CollectionMembership (MachineId);";
+                        await cmd.ExecuteNonQueryAsync(cancellationToken);
+                    }
+
+                    using (var cmd = connection.CreateCommand())
+                    {
+                        cmd.Transaction = transaction;
+                        cmd.CommandText = "CREATE INDEX IF NOT EXISTS IDX_CollMembership_CollectionId ON CollectionMembership (CollectionId);";
+                        await cmd.ExecuteNonQueryAsync(cancellationToken);
+                    }
+
+                    // 9. AlertRules (to persist custom Rules!)
+                    using (var cmd = connection.CreateCommand())
+                    {
+                        cmd.Transaction = transaction;
+                        cmd.CommandText = @"
+                            CREATE TABLE IF NOT EXISTS AlertRules (
+                                RuleId TEXT PRIMARY KEY NOT NULL,
+                                MetricName TEXT NOT NULL,
+                                Operator TEXT NOT NULL,
+                                Threshold TEXT NOT NULL,
+                                Severity TEXT NOT NULL,
+                                CooldownSeconds INTEGER NOT NULL,
+                                EscalationTimeoutSeconds INTEGER NOT NULL,
+                                AutoResolve INTEGER NOT NULL,
+                                EscalationPath TEXT NOT NULL
+                            );";
+                        await cmd.ExecuteNonQueryAsync(cancellationToken);
+                    }
+
+                    // Update version code
+                    using (var cmd = connection.CreateCommand())
+                    {
+                        cmd.Transaction = transaction;
+                        cmd.CommandText = "INSERT INTO SchemaVersion (Version, AppliedAt) VALUES (3, $appliedAt);";
+                        var parameter = cmd.CreateParameter();
+                        parameter.ParameterName = "$appliedAt";
+                        parameter.Value = DateTime.UtcNow.ToString("O");
+                        cmd.Parameters.Add(parameter);
+                        await cmd.ExecuteNonQueryAsync(cancellationToken);
+                    }
+
+                    await transaction.CommitAsync(cancellationToken);
+                    _logger.LogInformation("Migration version 3 applied successfully.");
+                }
+                catch (Exception ex)
+                {
+                    await transaction.RollbackAsync(cancellationToken);
+                    _logger.LogError(ex, "Failed to apply migration version 3. Transaction rolled back.");
                     throw;
                 }
             }
