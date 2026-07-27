@@ -50,7 +50,6 @@ namespace SayraClient.RemoteOperations.Services
             // Migration 1: Initial schema creation
             if (currentVersion < 1)
             {
-                // SqliteConnection or any DbConnection that supports transactions
                 using var transaction = await connection.BeginTransactionAsync(cancellationToken);
                 try
                 {
@@ -149,6 +148,52 @@ namespace SayraClient.RemoteOperations.Services
                 {
                     await transaction.RollbackAsync(cancellationToken);
                     _logger.LogError(ex, "Failed to apply migration version 1. Transaction rolled back.");
+                    throw;
+                }
+            }
+
+            // Migration 2: AppliedPolicies table creation
+            if (currentVersion < 2)
+            {
+                using var transaction = await connection.BeginTransactionAsync(cancellationToken);
+                try
+                {
+                    _logger.LogInformation("Applying migration version 2: AppliedPolicies table schema.");
+
+                    using (var cmd = connection.CreateCommand())
+                    {
+                        cmd.Transaction = transaction;
+                        cmd.CommandText = @"
+                            CREATE TABLE IF NOT EXISTS AppliedPolicies (
+                                PolicyId TEXT PRIMARY KEY NOT NULL,
+                                Category TEXT NOT NULL,
+                                RulesJson TEXT NOT NULL,
+                                VersionCode INTEGER NOT NULL,
+                                LastUpdatedAt TEXT NOT NULL,
+                                IsActive INTEGER DEFAULT 1,
+                                Signature TEXT NOT NULL
+                            );";
+                        await cmd.ExecuteNonQueryAsync(cancellationToken);
+                    }
+
+                    using (var cmd = connection.CreateCommand())
+                    {
+                        cmd.Transaction = transaction;
+                        cmd.CommandText = "INSERT INTO SchemaVersion (Version, AppliedAt) VALUES (2, $appliedAt);";
+                        var parameter = cmd.CreateParameter();
+                        parameter.ParameterName = "$appliedAt";
+                        parameter.Value = DateTime.UtcNow.ToString("O");
+                        cmd.Parameters.Add(parameter);
+                        await cmd.ExecuteNonQueryAsync(cancellationToken);
+                    }
+
+                    await transaction.CommitAsync(cancellationToken);
+                    _logger.LogInformation("Migration version 2 applied successfully.");
+                }
+                catch (Exception ex)
+                {
+                    await transaction.RollbackAsync(cancellationToken);
+                    _logger.LogError(ex, "Failed to apply migration version 2. Transaction rolled back.");
                     throw;
                 }
             }
