@@ -204,6 +204,16 @@ builder.Services.AddSingleton<Sayra.Client.Shared.Interfaces.IAlertManager, Sayr
 builder.Services.AddSingleton<Sayra.Client.Shared.Interfaces.IEnterpriseOperationService, SayraClient.RemoteOperations.Services.EnterpriseOperationService>();
 builder.Services.AddSingleton<SayraClient.RemoteOperations.Services.OperationCoordinator>();
 
+// Register Stage 6 Enterprise Advertisement Platform Services
+builder.Services.AddSingleton<HttpClient>();
+builder.Services.AddSingleton<Sayra.Client.Shared.Interfaces.IAdvertisementRepository, SayraClient.RemoteOperations.Services.AdvertisementRepository>();
+builder.Services.AddSingleton<Sayra.Client.Shared.Interfaces.IAdDownloadManager, SayraClient.RemoteOperations.Services.AdDownloadManager>();
+builder.Services.AddSingleton<Sayra.Client.Shared.Interfaces.IAdvertisementCache, SayraClient.RemoteOperations.Services.AdvertisementCache>();
+builder.Services.AddSingleton<Sayra.Client.Shared.Interfaces.ICampaignScheduler, SayraClient.RemoteOperations.Services.CampaignScheduler>();
+builder.Services.AddSingleton<Sayra.Client.Shared.Interfaces.IAdvertisementEngine, SayraClient.RemoteOperations.Services.AdvertisementEngine>();
+builder.Services.AddSingleton<Sayra.Client.Shared.Interfaces.IMediaPlaybackService, SayraClient.RemoteOperations.Services.MediaPlaybackService>();
+builder.Services.AddSingleton<Sayra.Client.Shared.Interfaces.IImpressionTracker, SayraClient.RemoteOperations.Services.ImpressionTracker>();
+
 // Register MessageHandler (depends on Command System)
 builder.Services.AddSingleton<MessageHandler>();
 

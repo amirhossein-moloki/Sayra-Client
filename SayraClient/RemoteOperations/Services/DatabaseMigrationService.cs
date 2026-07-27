@@ -389,6 +389,147 @@ namespace SayraClient.RemoteOperations.Services
                 }
             }
 
+            // Migration 4: Enterprise Advertisement Platform schema
+            if (currentVersion < 4)
+            {
+                using var transaction = await connection.BeginTransactionAsync(cancellationToken);
+                try
+                {
+                    _logger.LogInformation("Applying migration version 4: Enterprise Advertisement Platform schema.");
+
+                    // AdCampaigns table
+                    using (var cmd = connection.CreateCommand())
+                    {
+                        cmd.Transaction = transaction;
+                        cmd.CommandText = @"
+                            CREATE TABLE IF NOT EXISTS AdCampaigns (
+                                CampaignId TEXT PRIMARY KEY NOT NULL,
+                                Name TEXT NOT NULL,
+                                Type TEXT NOT NULL,
+                                MediaUrl TEXT NOT NULL,
+                                MediaLocalPath TEXT NOT NULL,
+                                TargetUrl TEXT NOT NULL,
+                                Priority INTEGER DEFAULT 1,
+                                DisplayDurationSeconds INTEGER DEFAULT 10,
+                                StartTime TEXT NOT NULL,
+                                EndTime TEXT NOT NULL,
+                                DailyActiveHours TEXT NOT NULL,
+                                IsDownloaded INTEGER DEFAULT 0,
+                                Checksum TEXT NOT NULL,
+                                Signature TEXT NOT NULL,
+                                MediaSize INTEGER DEFAULT 0,
+                                VersionCode INTEGER DEFAULT 1
+                            );";
+                        await cmd.ExecuteNonQueryAsync(cancellationToken);
+                    }
+
+                    using (var cmd = connection.CreateCommand())
+                    {
+                        cmd.Transaction = transaction;
+                        cmd.CommandText = "CREATE INDEX IF NOT EXISTS IDX_AdCampaigns_Timeline ON AdCampaigns (StartTime, EndTime, IsDownloaded);";
+                        await cmd.ExecuteNonQueryAsync(cancellationToken);
+                    }
+
+                    using (var cmd = connection.CreateCommand())
+                    {
+                        cmd.Transaction = transaction;
+                        cmd.CommandText = "CREATE INDEX IF NOT EXISTS IDX_AdCampaigns_Priority ON AdCampaigns (Priority);";
+                        await cmd.ExecuteNonQueryAsync(cancellationToken);
+                    }
+
+                    // AdImpressions table
+                    using (var cmd = connection.CreateCommand())
+                    {
+                        cmd.Transaction = transaction;
+                        cmd.CommandText = @"
+                            CREATE TABLE IF NOT EXISTS AdImpressions (
+                                ImpressionId TEXT PRIMARY KEY NOT NULL,
+                                CampaignId TEXT NOT NULL,
+                                SessionId TEXT,
+                                ImpressionType TEXT NOT NULL,
+                                PlaybackDurationSeconds REAL NOT NULL,
+                                CreatedAt TEXT NOT NULL,
+                                IsSynced INTEGER DEFAULT 0
+                            );";
+                        await cmd.ExecuteNonQueryAsync(cancellationToken);
+                    }
+
+                    using (var cmd = connection.CreateCommand())
+                    {
+                        cmd.Transaction = transaction;
+                        cmd.CommandText = "CREATE INDEX IF NOT EXISTS IDX_AdImpressions_CampaignId ON AdImpressions (CampaignId);";
+                        await cmd.ExecuteNonQueryAsync(cancellationToken);
+                    }
+
+                    // DownloadedMedia table
+                    using (var cmd = connection.CreateCommand())
+                    {
+                        cmd.Transaction = transaction;
+                        cmd.CommandText = @"
+                            CREATE TABLE IF NOT EXISTS DownloadedMedia (
+                                MediaPath TEXT PRIMARY KEY NOT NULL,
+                                CampaignId TEXT NOT NULL,
+                                FileSize INTEGER NOT NULL,
+                                LastAccessedAt TEXT NOT NULL,
+                                Checksum TEXT NOT NULL
+                            );";
+                        await cmd.ExecuteNonQueryAsync(cancellationToken);
+                    }
+
+                    using (var cmd = connection.CreateCommand())
+                    {
+                        cmd.Transaction = transaction;
+                        cmd.CommandText = "CREATE INDEX IF NOT EXISTS IDX_DownloadedMedia_CampaignId ON DownloadedMedia (CampaignId);";
+                        await cmd.ExecuteNonQueryAsync(cancellationToken);
+                    }
+
+                    // PlaybackHistory table
+                    using (var cmd = connection.CreateCommand())
+                    {
+                        cmd.Transaction = transaction;
+                        cmd.CommandText = @"
+                            CREATE TABLE IF NOT EXISTS PlaybackHistory (
+                                PlaybackId TEXT PRIMARY KEY NOT NULL,
+                                CampaignId TEXT NOT NULL,
+                                StartedAt TEXT NOT NULL,
+                                CompletedAt TEXT NOT NULL,
+                                DurationSeconds REAL NOT NULL,
+                                Status TEXT NOT NULL,
+                                ErrorMessage TEXT
+                            );";
+                        await cmd.ExecuteNonQueryAsync(cancellationToken);
+                    }
+
+                    using (var cmd = connection.CreateCommand())
+                    {
+                        cmd.Transaction = transaction;
+                        cmd.CommandText = "CREATE INDEX IF NOT EXISTS IDX_PlaybackHistory_CampaignId ON PlaybackHistory (CampaignId);";
+                        await cmd.ExecuteNonQueryAsync(cancellationToken);
+                    }
+
+                    // Insert schema version 4
+                    using (var cmd = connection.CreateCommand())
+                    {
+                        cmd.Transaction = transaction;
+                        cmd.CommandText = "INSERT INTO SchemaVersion (Version, AppliedAt) VALUES (4, $appliedAt);";
+                        var parameter = cmd.CreateParameter();
+                        parameter.ParameterName = "$appliedAt";
+                        parameter.Value = DateTime.UtcNow.ToString("O");
+                        cmd.Parameters.Add(parameter);
+                        await cmd.ExecuteNonQueryAsync(cancellationToken);
+                    }
+
+                    await transaction.CommitAsync(cancellationToken);
+                    _logger.LogInformation("Migration version 4 applied successfully.");
+                }
+                catch (Exception ex)
+                {
+                    await transaction.RollbackAsync(cancellationToken);
+                    _logger.LogError(ex, "Failed to apply migration version 4. Transaction rolled back.");
+                    throw;
+                }
+            }
+
             _logger.LogInformation("Database migrations completed successfully.");
         }
     }
