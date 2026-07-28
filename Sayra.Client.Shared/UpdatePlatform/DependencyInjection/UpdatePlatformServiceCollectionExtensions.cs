@@ -3,6 +3,7 @@ using Sayra.Client.Shared.UpdatePlatform.Application.Interfaces;
 using Sayra.Client.Shared.UpdatePlatform.Application.Services;
 using Sayra.Client.Shared.UpdatePlatform.Application.Validation;
 using Sayra.Client.Shared.UpdatePlatform.Domain.Options;
+using System;
 
 namespace Sayra.Client.Shared.UpdatePlatform.DependencyInjection
 {
@@ -18,10 +19,24 @@ namespace Sayra.Client.Shared.UpdatePlatform.DependencyInjection
         /// <returns>The modified service collection.</returns>
         public static IServiceCollection AddUpdatePlatformFoundation(this IServiceCollection services)
         {
-            // Register Options
+            // Register and validate Options
             services.AddOptions<UpdateOptions>();
             services.AddOptions<RollbackOptions>();
             services.AddOptions<DownloadOptions>();
+
+            services.AddOptions<SchedulerOptions>()
+                .Validate(o => o.CheckIntervalMinutes > 0, "CheckIntervalMinutes must be greater than zero.")
+                .Validate(o => o.JitterSeconds >= 0, "JitterSeconds cannot be negative.");
+
+            services.AddOptions<DeploymentOptions>();
+
+            services.AddOptions<MaintenanceWindowOptions>()
+                .Validate(o => TimeSpan.TryParse(o.StartTimeUtc, out _), "StartTimeUtc must be a valid parsable TimeSpan string.")
+                .Validate(o => TimeSpan.TryParse(o.EndTimeUtc, out _), "EndTimeUtc must be a valid parsable TimeSpan string.")
+                .Validate(o => o.MaxOccupancyPercentage >= 0 && o.MaxOccupancyPercentage <= 100, "MaxOccupancyPercentage must be between 0 and 100.");
+
+            services.AddOptions<RolloutOptions>()
+                .Validate(o => o.RolloutPercentage >= 0 && o.RolloutPercentage <= 100, "RolloutPercentage must be between 0 and 100.");
 
             // Register Validators
             services.AddTransient<IVersionValidator, VersionValidator>();
@@ -43,6 +58,13 @@ namespace Sayra.Client.Shared.UpdatePlatform.DependencyInjection
             services.AddTransient<IProgressReporter, ProgressReporter>();
             services.AddTransient<IChunkDownloader, ChunkDownloader>();
             services.AddSingleton<IDownloadManager, DownloadManager>();
+
+            // Phase 6 Part 4 Scheduling & Deployment Policy Implementations
+            services.AddSingleton<IMaintenanceWindowService, MaintenanceWindowService>();
+            services.AddSingleton<IDeploymentPolicyEvaluator, DeploymentPolicyEvaluator>();
+            services.AddSingleton<IRolloutService, RolloutService>();
+            services.AddTransient<IEligibilityEvaluator, EligibilityEvaluator>();
+            services.AddSingleton<IUpdateScheduler, UpdateScheduler>();
 
             return services;
         }

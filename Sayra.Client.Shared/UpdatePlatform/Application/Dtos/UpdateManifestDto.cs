@@ -67,5 +67,10 @@ namespace Sayra.Client.Shared.UpdatePlatform.Application.Dtos
         /// Gets or sets the cryptographic validation signature.
         /// </summary>
         public string SignatureMetadata { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Gets or sets whether this update is a forced upgrade that overrides standard scheduling and maintenance windows.
+        /// </summary>
+        public bool IsForcedUpgrade { get; set; }
     }
 }
