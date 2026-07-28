@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Concurrent;
 using System.Runtime.InteropServices;
 using System.ServiceProcess;
 using System.Threading;
@@ -13,25 +12,15 @@ namespace Sayra.Client.Shared.UpdatePlatform.Application.Services
 {
     /// <summary>
     /// Coordinates with the Windows Service Control Manager (SCM) using System.ServiceProcess.ServiceController.
-    /// Supports a full cross-platform fallback model for robust Linux CI testing.
+    /// Strictly handles production Windows-only service controller operations.
     /// </summary>
     public class WindowsServiceManager : IWindowsServiceManager
     {
         private readonly ILogger<WindowsServiceManager> _logger;
-        private static readonly ConcurrentDictionary<string, WindowsServiceState> _mockStates = new();
-        private static readonly ConcurrentDictionary<string, bool> _mockDisabled = new();
 
         public WindowsServiceManager(ILogger<WindowsServiceManager> logger)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-        }
-
-        /// <summary>
-        /// Mock helper to simulate a disabled service state for tests.
-        /// </summary>
-        public void SetMockServiceDisabled(string serviceName, bool disabled)
-        {
-            _mockDisabled[serviceName] = disabled;
         }
 
         /// <inheritdoc />
@@ -41,12 +30,6 @@ namespace Sayra.Client.Shared.UpdatePlatform.Application.Services
                 throw new ArgumentException("Service name cannot be empty.", nameof(serviceName));
 
             cancellationToken.ThrowIfCancellationRequested();
-
-            if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-            {
-                _logger.LogInformation("[CI/Linux] Querying emulated service status for '{Service}'.", serviceName);
-                return _mockStates.GetOrAdd(serviceName, WindowsServiceState.Stopped);
-            }
 
             try
             {
@@ -83,25 +66,13 @@ namespace Sayra.Client.Shared.UpdatePlatform.Application.Services
 
             _logger.LogInformation("Attempting to start service '{Service}' with timeout {Timeout}...", serviceName, timeout);
 
-            if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-            {
-                _logger.LogInformation("[CI/Linux] Simulating start for service '{Service}'...", serviceName);
-                if (_mockDisabled.TryGetValue(serviceName, out bool disabled) && disabled)
-                {
-                    throw new WindowsIntegrationException($"Service '{serviceName}' is disabled and cannot be started.");
-                }
-                await Task.Delay(50, cancellationToken).ConfigureAwait(false);
-                _mockStates[serviceName] = WindowsServiceState.Running;
-                return;
-            }
-
             try
             {
                 await Task.Run(() =>
                 {
                     using (var sc = new ServiceController(serviceName))
                     {
-                        // Check if the service is disabled (Disabled service handling)
+                        // Check if the service is disabled
                         if (sc.StartType == ServiceStartMode.Disabled)
                         {
                             throw new WindowsIntegrationException($"Service '{serviceName}' is disabled and cannot be started.");
@@ -144,14 +115,6 @@ namespace Sayra.Client.Shared.UpdatePlatform.Application.Services
             cancellationToken.ThrowIfCancellationRequested();
 
             _logger.LogInformation("Attempting to stop service '{Service}' with timeout {Timeout}...", serviceName, timeout);
-
-            if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-            {
-                _logger.LogInformation("[CI/Linux] Simulating stop for service '{Service}'...", serviceName);
-                await Task.Delay(50, cancellationToken).ConfigureAwait(false);
-                _mockStates[serviceName] = WindowsServiceState.Stopped;
-                return;
-            }
 
             try
             {

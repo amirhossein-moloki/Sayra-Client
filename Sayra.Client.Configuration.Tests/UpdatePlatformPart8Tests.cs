@@ -25,7 +25,9 @@ namespace Sayra.Client.Configuration.Tests
         private readonly NullLogger<CertificatePinningService> _pinLogger = NullLogger<CertificatePinningService>.Instance;
         private readonly NullLogger<WindowsEventLogger> _eventLogger = NullLogger<WindowsEventLogger>.Instance;
         private readonly NullLogger<WindowsServiceManager> _serviceLogger = NullLogger<WindowsServiceManager>.Instance;
+        private readonly NullLogger<MockWindowsServiceManager> _mockServiceLogger = NullLogger<MockWindowsServiceManager>.Instance;
         private readonly NullLogger<PrivilegeManager> _privLogger = NullLogger<PrivilegeManager>.Instance;
+        private readonly NullLogger<MockPrivilegeManager> _mockPrivLogger = NullLogger<MockPrivilegeManager>.Instance;
         private readonly NullLogger<FileSecurityValidator> _fileLogger = NullLogger<FileSecurityValidator>.Instance;
 
         #region Helper: Programmatic Certificate Generation
@@ -271,7 +273,7 @@ namespace Sayra.Client.Configuration.Tests
         [Fact]
         public async Task WindowsServiceManager_QueryStatusAndStartStop_Succeeds()
         {
-            var manager = new WindowsServiceManager(_serviceLogger);
+            var manager = new MockWindowsServiceManager(_mockServiceLogger);
             string serviceName = "SAYRA_MockService_Test_" + Guid.NewGuid().ToString("N");
 
             if (!OperatingSystem.IsWindows())
@@ -303,7 +305,7 @@ namespace Sayra.Client.Configuration.Tests
         [Fact]
         public async Task WindowsServiceManager_WithDisabledService_ThrowsWindowsIntegrationException()
         {
-            var manager = new WindowsServiceManager(_serviceLogger);
+            var manager = new MockWindowsServiceManager(_mockServiceLogger);
             string serviceName = "SAYRA_DisabledService_Test_" + Guid.NewGuid().ToString("N");
 
             if (!OperatingSystem.IsWindows())
@@ -323,7 +325,7 @@ namespace Sayra.Client.Configuration.Tests
         [Fact]
         public void PrivilegeManager_ReturnsStatusSuccessfully()
         {
-            var manager = new PrivilegeManager(_privLogger);
+            var manager = new MockPrivilegeManager(_mockPrivLogger);
             var status = manager.GetCurrentPrivilegeStatus();
 
             Assert.NotNull(status);
@@ -332,7 +334,7 @@ namespace Sayra.Client.Configuration.Tests
         [Fact]
         public void PrivilegeManager_EnsureAdminPrivileges_WithMockAdmin_DoesNotThrow()
         {
-            var manager = new PrivilegeManager(_privLogger);
+            var manager = new MockPrivilegeManager(_mockPrivLogger);
             manager.OverrideAdminStatus(true);
 
             var exception = Record.Exception(() => manager.EnsureAdminPrivileges());
@@ -342,7 +344,7 @@ namespace Sayra.Client.Configuration.Tests
         [Fact]
         public void PrivilegeManager_EnsureAdminPrivileges_WithMockStandardUser_ThrowsPrivilegeException()
         {
-            var manager = new PrivilegeManager(_privLogger);
+            var manager = new MockPrivilegeManager(_mockPrivLogger);
             manager.OverrideAdminStatus(false);
 
             Assert.Throws<PrivilegeException>(() => manager.EnsureAdminPrivileges());

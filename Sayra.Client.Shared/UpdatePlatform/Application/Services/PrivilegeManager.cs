@@ -1,5 +1,4 @@
 using System;
-using System.Runtime.InteropServices;
 using System.Security.Principal;
 using Microsoft.Extensions.Logging;
 using Sayra.Client.Shared.UpdatePlatform.Application.Interfaces;
@@ -10,41 +9,20 @@ namespace Sayra.Client.Shared.UpdatePlatform.Application.Services
 {
     /// <summary>
     /// Performs privilege, administrative rights, and UAC elevation checks.
-    /// Integrates seamlessly with Windows APIs with complete fallbacks for cross-platform execution.
+    /// Strictly handles production Windows-only security operations.
     /// </summary>
     public class PrivilegeManager : IPrivilegeManager
     {
         private readonly ILogger<PrivilegeManager> _logger;
-        private bool? _overrideIsAdmin;
 
         public PrivilegeManager(ILogger<PrivilegeManager> logger)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        /// <summary>
-        /// Allows overriding the admin status for xUnit unit testing purposes.
-        /// </summary>
-        public void OverrideAdminStatus(bool isAdmin)
-        {
-            _overrideIsAdmin = isAdmin;
-        }
-
         /// <inheritdoc />
         public PrivilegeStatus GetCurrentPrivilegeStatus()
         {
-            if (_overrideIsAdmin.HasValue)
-            {
-                _logger.LogInformation("Returning overridden test privilege status (IsAdmin: {IsAdmin}).", _overrideIsAdmin.Value);
-                return new PrivilegeStatus(_overrideIsAdmin.Value, _overrideIsAdmin.Value, _overrideIsAdmin.Value);
-            }
-
-            if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-            {
-                _logger.LogInformation("[CI/Linux] Querying emulated privilege status (Simulating Elevated Administrator).");
-                return new PrivilegeStatus(true, true, true);
-            }
-
             try
             {
                 using (var identity = WindowsIdentity.GetCurrent())
