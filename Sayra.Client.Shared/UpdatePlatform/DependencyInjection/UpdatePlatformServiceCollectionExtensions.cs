@@ -96,6 +96,14 @@ namespace Sayra.Client.Shared.UpdatePlatform.DependencyInjection
             services.AddSingleton<IStorageQuotaManager, StorageQuotaManager>();
             services.AddSingleton<IUpdateRepository, UpdateRepository>();
 
+            // Phase 6 Part 8 Windows Integration & Enterprise Security Implementations
+            services.AddSingleton<IAuthenticodeVerifier, AuthenticodeVerifier>();
+            services.AddSingleton<ICertificatePinningService, CertificatePinningService>();
+            services.AddSingleton<IWindowsEventLogger, WindowsEventLogger>();
+            services.AddSingleton<IWindowsServiceManager, WindowsServiceManager>();
+            services.AddSingleton<IPrivilegeManager, PrivilegeManager>();
+            services.AddSingleton<IFileSecurityValidator, FileSecurityValidator>();
+
             return services;
         }
     }
