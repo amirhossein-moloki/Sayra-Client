@@ -39,6 +39,18 @@ namespace Sayra.Client.Shared.UpdatePlatform.DependencyInjection
             services.AddOptions<RolloutOptions>()
                 .Validate(o => o.RolloutPercentage >= 0 && o.RolloutPercentage <= 100, "RolloutPercentage must be between 0 and 100.");
 
+            services.AddOptions<TelemetryOptions>()
+                .Validate(o => o.QueueLimit > 0, "QueueLimit must be greater than zero.")
+                .Validate(o => o.ReportingIntervalSeconds > 0, "ReportingIntervalSeconds must be greater than zero.");
+
+            services.AddOptions<MonitoringOptions>()
+                .Validate(o => o.MinStorageBytes >= 0, "MinStorageBytes cannot be negative.")
+                .Validate(o => o.CheckIntervalMinutes > 0, "CheckIntervalMinutes must be greater than zero.");
+
+            services.AddOptions<ReportingOptions>()
+                .Validate(o => o.MaxRetryAttempts >= 0, "MaxRetryAttempts cannot be negative.")
+                .Validate(o => o.BaseDelaySeconds > 0, "BaseDelaySeconds must be greater than zero.");
+
             // Register Validators
             services.AddTransient<IVersionValidator, VersionValidator>();
             services.AddTransient<IDependencyValidator, DependencyValidator>();
@@ -103,6 +115,14 @@ namespace Sayra.Client.Shared.UpdatePlatform.DependencyInjection
             services.AddSingleton<IWindowsServiceManager, WindowsServiceManager>();
             services.AddSingleton<IPrivilegeManager, PrivilegeManager>();
             services.AddSingleton<IFileSecurityValidator, FileSecurityValidator>();
+
+            // Phase 6 Part 9 Telemetry, Monitoring & Administrative Integration Implementations
+            services.AddSingleton<IAdminIntegrationClient, AdminIntegrationClient>();
+            services.AddSingleton<AdminIntegrationClient>(sp => (AdminIntegrationClient)sp.GetRequiredService<IAdminIntegrationClient>());
+            services.AddSingleton<ITelemetryOfflineQueue, TelemetryOfflineQueue>();
+            services.AddSingleton<ITelemetryReporter, TelemetryReporter>();
+            services.AddSingleton<IHealthMonitor, HealthMonitor>();
+            services.AddSingleton<IDiagnosticReporter, DiagnosticReporter>();
 
             return services;
         }
