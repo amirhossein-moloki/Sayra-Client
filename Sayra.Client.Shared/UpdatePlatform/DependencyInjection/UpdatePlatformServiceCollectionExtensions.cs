@@ -23,6 +23,7 @@ namespace Sayra.Client.Shared.UpdatePlatform.DependencyInjection
             services.AddOptions<UpdateOptions>();
             services.AddOptions<RollbackOptions>();
             services.AddOptions<DownloadOptions>();
+            services.AddOptions<StorageOptions>();
 
             services.AddOptions<SchedulerOptions>()
                 .Validate(o => o.CheckIntervalMinutes > 0, "CheckIntervalMinutes must be greater than zero.")
@@ -84,6 +85,16 @@ namespace Sayra.Client.Shared.UpdatePlatform.DependencyInjection
             services.AddSingleton<Func<IRecoveryStateMachine>>(sp => () => sp.GetRequiredService<IRecoveryStateMachine>());
             services.AddSingleton<IRollbackEngine, RollbackEngine>();
             services.AddSingleton<IRecoveryEngine, RecoveryEngine>();
+
+            // Phase 6 Part 7 Update Storage, Cache & History Implementations
+            services.AddSingleton<IDatabaseMigrationService, DatabaseMigrationService>();
+            services.AddSingleton<IDatabaseHealthMonitor, DatabaseHealthMonitor>();
+            services.AddSingleton<IDatabaseRecoveryService, DatabaseRecoveryService>();
+            services.AddSingleton<IUpdateHistoryRepository, UpdateHistoryRepository>();
+            services.AddSingleton<IRollbackHistoryRepository, RollbackHistoryRepository>();
+            services.AddSingleton<ICacheManager, CacheManager>();
+            services.AddSingleton<IStorageQuotaManager, StorageQuotaManager>();
+            services.AddSingleton<IUpdateRepository, UpdateRepository>();
 
             return services;
         }
