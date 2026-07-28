@@ -66,6 +66,16 @@ namespace Sayra.Client.Shared.UpdatePlatform.DependencyInjection
             services.AddTransient<IEligibilityEvaluator, EligibilityEvaluator>();
             services.AddSingleton<IUpdateScheduler, UpdateScheduler>();
 
+            // Phase 6 Part 5 Installation Engine Implementations
+            services.AddSingleton<IRestartManagerService, WindowsRestartManager>();
+            services.AddSingleton<IAtomicFileReplacer, AtomicFileReplacer>();
+            services.AddTransient<IInstallationValidator, InstallationValidator>();
+            services.AddTransient<IInstallationStateMachine, InstallationStateMachine>();
+            services.AddSingleton<Func<IInstallationStateMachine>>(sp => () => sp.GetRequiredService<IInstallationStateMachine>());
+            services.AddSingleton<IInstallationCoordinator, InstallationCoordinator>();
+            services.AddSingleton<IInstallerEngine, InstallerEngine>();
+            services.AddSingleton<IUpdateManager, Sayra.Client.Shared.UpdatePlatform.Application.Services.UpdateManager>();
+
             return services;
         }
     }
