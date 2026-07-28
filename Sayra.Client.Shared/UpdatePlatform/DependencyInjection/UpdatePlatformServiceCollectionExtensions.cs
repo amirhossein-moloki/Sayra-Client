@@ -1,4 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
+using Sayra.Client.Shared.UpdatePlatform.Application.Interfaces;
+using Sayra.Client.Shared.UpdatePlatform.Application.Services;
 using Sayra.Client.Shared.UpdatePlatform.Application.Validation;
 using Sayra.Client.Shared.UpdatePlatform.Domain.Options;
 
@@ -26,6 +28,13 @@ namespace Sayra.Client.Shared.UpdatePlatform.DependencyInjection
             services.AddTransient<IDependencyValidator, DependencyValidator>();
             services.AddTransient<IManifestValidator, ManifestValidator>();
             services.AddTransient<IUpdateValidator, UpdateValidator>();
+
+            // Phase 6 Part 2 Core Service Implementations
+            services.AddSingleton<IManifestParser, ManifestParser>();
+            services.AddSingleton<ISignatureVerifier, SignatureVerifier>();
+            services.AddTransient<IPackageValidator, PackageValidator>();
+            services.AddTransient<IPackageReader, PackageReader>();
+            services.AddTransient<IPackageVerifier, PackageVerifier>();
 
             return services;
         }
