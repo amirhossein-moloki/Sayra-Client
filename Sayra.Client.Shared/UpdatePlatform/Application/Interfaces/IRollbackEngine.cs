@@ -17,5 +17,20 @@ namespace Sayra.Client.Shared.UpdatePlatform.Application.Interfaces
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>True if the rollback restoration completed successfully; otherwise, false.</returns>
         Task<bool> RollbackAsync(RollbackRecord record, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Creates a system backup snapshot before installation.
+        /// </summary>
+        Task<bool> CreateSnapshotAsync(string snapshotId, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Executes rollback to a saved snapshot.
+        /// </summary>
+        Task<bool> ExecuteRollbackAsync(string snapshotId, string failureReason, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Validates that rollback to a saved snapshot succeeded.
+        /// </summary>
+        Task<bool> ValidateRollbackSucceededAsync(string snapshotId, CancellationToken cancellationToken = default);
     }
 }
