@@ -93,7 +93,7 @@ namespace Sayra.Client.Configuration.Tests
             // Arrange
             await InitializeDatabaseAsync();
             var queue = new TelemetryOfflineQueue(_storageOptions, _telemetryOptions);
-            var adminClient = new AdminIntegrationClient();
+            var adminClient = new MockAdminIntegrationClient();
             var reporter = new TelemetryReporter(queue, adminClient, NullLogger<TelemetryReporter>.Instance, _telemetryOptions, _reportingOptions);
 
             // Act & Assert
@@ -237,7 +237,7 @@ namespace Sayra.Client.Configuration.Tests
             // Arrange
             await InitializeDatabaseAsync();
             var queue = new TelemetryOfflineQueue(_storageOptions, _telemetryOptions);
-            var adminClient = new AdminIntegrationClient { SimulateNetworkFailure = true };
+            var adminClient = new MockAdminIntegrationClient { SimulateNetworkFailure = true };
             using var reporter = new TelemetryReporter(queue, adminClient, NullLogger<TelemetryReporter>.Instance, _telemetryOptions, _reportingOptions);
 
             // Act
@@ -371,7 +371,7 @@ namespace Sayra.Client.Configuration.Tests
             // Arrange
             await InitializeDatabaseAsync();
             var queue = new TelemetryOfflineQueue(_storageOptions, _telemetryOptions);
-            var adminClient = new AdminIntegrationClient { SimulateNetworkFailure = true }; // Keep in queue to count
+            var adminClient = new MockAdminIntegrationClient { SimulateNetworkFailure = true }; // Keep in queue to count
             using var reporter = new TelemetryReporter(queue, adminClient, NullLogger<TelemetryReporter>.Instance, _telemetryOptions, _reportingOptions);
 
             int writeCount = 50;
@@ -406,7 +406,7 @@ namespace Sayra.Client.Configuration.Tests
             // Arrange
             await InitializeDatabaseAsync();
             var queue = new TelemetryOfflineQueue(_storageOptions, _telemetryOptions);
-            var adminClient = new AdminIntegrationClient();
+            var adminClient = new MockAdminIntegrationClient();
             using var reporter = new TelemetryReporter(queue, adminClient, NullLogger<TelemetryReporter>.Instance, _telemetryOptions, _reportingOptions);
 
             var canceledSource = new CancellationTokenSource();
