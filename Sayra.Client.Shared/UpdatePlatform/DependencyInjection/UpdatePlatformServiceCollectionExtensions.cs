@@ -76,6 +76,15 @@ namespace Sayra.Client.Shared.UpdatePlatform.DependencyInjection
             services.AddSingleton<IInstallerEngine, InstallerEngine>();
             services.AddSingleton<IUpdateManager, Sayra.Client.Shared.UpdatePlatform.Application.Services.UpdateManager>();
 
+            // Phase 6 Part 6 Rollback & Recovery Platform Implementations
+            services.AddSingleton<IBackupManager, BackupManager>();
+            services.AddSingleton<ISnapshotManager, SnapshotManager>();
+            services.AddTransient<IRecoveryValidator, RecoveryValidator>();
+            services.AddSingleton<IRecoveryStateMachine, RecoveryStateMachine>();
+            services.AddSingleton<Func<IRecoveryStateMachine>>(sp => () => sp.GetRequiredService<IRecoveryStateMachine>());
+            services.AddSingleton<IRollbackEngine, RollbackEngine>();
+            services.AddSingleton<IRecoveryEngine, RecoveryEngine>();
+
             return services;
         }
     }
