@@ -36,6 +36,14 @@ namespace Sayra.Client.Shared.UpdatePlatform.DependencyInjection
             services.AddTransient<IPackageReader, PackageReader>();
             services.AddTransient<IPackageVerifier, PackageVerifier>();
 
+            // Phase 6 Part 3 Download Engine Core Implementations
+            services.AddSingleton<IBandwidthLimiter, BandwidthLimiter>();
+            services.AddSingleton<IMirrorSelector, MirrorSelector>();
+            services.AddSingleton<IDownloadStateStore, DownloadStateStore>();
+            services.AddTransient<IProgressReporter, ProgressReporter>();
+            services.AddTransient<IChunkDownloader, ChunkDownloader>();
+            services.AddSingleton<IDownloadManager, DownloadManager>();
+
             return services;
         }
     }
