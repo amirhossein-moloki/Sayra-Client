@@ -11,10 +11,14 @@ namespace Sayra.Client.Shared.Models.Recovery
     public class SubsystemHealthInfo
     {
         private readonly object _lock = new();
+        private string _subsystemId = string.Empty;
         private string _subsystemName = string.Empty;
+        private string _displayName = string.Empty;
         private SubsystemHealthState _state = SubsystemHealthState.Healthy;
         private SubsystemHealthState _previousState = SubsystemHealthState.Healthy;
         private DateTime _lastHeartbeat = DateTime.UtcNow;
+        private DateTime _lastSuccessfulHeartbeat = DateTime.UtcNow;
+        private DateTime _lastUpdated = DateTime.UtcNow;
         private int _failureCount;
         private int _recoveryCount;
         private double _healthScore = 100.0;
@@ -26,12 +30,51 @@ namespace Sayra.Client.Shared.Models.Recovery
         private ConcurrentDictionary<string, string> _metadata = new(StringComparer.OrdinalIgnoreCase);
 
         /// <summary>
+        /// Gets or sets the unique identifier of the subsystem.
+        /// </summary>
+        public string SubsystemId
+        {
+            get { lock (_lock) return string.IsNullOrEmpty(_subsystemId) ? _subsystemName : _subsystemId; }
+            set
+            {
+                lock (_lock)
+                {
+                    _subsystemId = value ?? string.Empty;
+                    _lastUpdated = DateTime.UtcNow;
+                }
+            }
+        }
+
+        /// <summary>
         /// Gets or sets the unique name or identifier of the subsystem.
         /// </summary>
         public string SubsystemName
         {
             get { lock (_lock) return _subsystemName; }
-            set { lock (_lock) _subsystemName = value ?? string.Empty; }
+            set
+            {
+                lock (_lock)
+                {
+                    _subsystemName = value ?? string.Empty;
+                    _lastUpdated = DateTime.UtcNow;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the display name of the subsystem.
+        /// </summary>
+        public string DisplayName
+        {
+            get { lock (_lock) return string.IsNullOrEmpty(_displayName) ? SubsystemId : _displayName; }
+            set
+            {
+                lock (_lock)
+                {
+                    _displayName = value ?? string.Empty;
+                    _lastUpdated = DateTime.UtcNow;
+                }
+            }
         }
 
         /// <summary>
@@ -48,6 +91,7 @@ namespace Sayra.Client.Shared.Models.Recovery
                     {
                         _previousState = _state;
                         _state = value;
+                        _lastUpdated = DateTime.UtcNow;
                     }
                 }
             }
@@ -68,7 +112,39 @@ namespace Sayra.Client.Shared.Models.Recovery
         public DateTime LastHeartbeat
         {
             get { lock (_lock) return _lastHeartbeat; }
-            set { lock (_lock) _lastHeartbeat = value; }
+            set
+            {
+                lock (_lock)
+                {
+                    _lastHeartbeat = value;
+                    _lastUpdated = DateTime.UtcNow;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the timestamp of the last successful heartbeat.
+        /// </summary>
+        public DateTime LastSuccessfulHeartbeat
+        {
+            get { lock (_lock) return _lastSuccessfulHeartbeat; }
+            set
+            {
+                lock (_lock)
+                {
+                    _lastSuccessfulHeartbeat = value;
+                    _lastUpdated = DateTime.UtcNow;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the timestamp of when this subsystem info was last updated.
+        /// </summary>
+        public DateTime LastUpdated
+        {
+            get { lock (_lock) return _lastUpdated; }
+            set { lock (_lock) _lastUpdated = value; }
         }
 
         /// <summary>
@@ -77,7 +153,14 @@ namespace Sayra.Client.Shared.Models.Recovery
         public int FailureCount
         {
             get { lock (_lock) return _failureCount; }
-            set { lock (_lock) _failureCount = value; }
+            set
+            {
+                lock (_lock)
+                {
+                    _failureCount = value;
+                    _lastUpdated = DateTime.UtcNow;
+                }
+            }
         }
 
         /// <summary>
@@ -86,7 +169,14 @@ namespace Sayra.Client.Shared.Models.Recovery
         public int RecoveryCount
         {
             get { lock (_lock) return _recoveryCount; }
-            set { lock (_lock) _recoveryCount = value; }
+            set
+            {
+                lock (_lock)
+                {
+                    _recoveryCount = value;
+                    _lastUpdated = DateTime.UtcNow;
+                }
+            }
         }
 
         /// <summary>
@@ -95,16 +185,31 @@ namespace Sayra.Client.Shared.Models.Recovery
         public List<string> Dependencies
         {
             get { lock (_lock) return _dependencies; }
-            set { lock (_lock) _dependencies = value ?? new List<string>(); }
+            set
+            {
+                lock (_lock)
+                {
+                    _dependencies = value != null ? new List<string>(value) : new List<string>();
+                    _lastUpdated = DateTime.UtcNow;
+                }
+            }
         }
 
         /// <summary>
         /// Gets or sets the transition history log of health state changes.
+        /// Returns a safe cloned copy for thread safety.
         /// </summary>
         public List<string> HealthHistory
         {
-            get { lock (_lock) return _healthHistory; }
-            set { lock (_lock) _healthHistory = value ?? new List<string>(); }
+            get { lock (_lock) return new List<string>(_healthHistory); }
+            set
+            {
+                lock (_lock)
+                {
+                    _healthHistory = value != null ? new List<string>(value) : new List<string>();
+                    _lastUpdated = DateTime.UtcNow;
+                }
+            }
         }
 
         /// <summary>
@@ -113,7 +218,14 @@ namespace Sayra.Client.Shared.Models.Recovery
         public string LastMessage
         {
             get { lock (_lock) return _lastMessage; }
-            set { lock (_lock) _lastMessage = value ?? string.Empty; }
+            set
+            {
+                lock (_lock)
+                {
+                    _lastMessage = value ?? string.Empty;
+                    _lastUpdated = DateTime.UtcNow;
+                }
+            }
         }
 
         /// <summary>
@@ -122,7 +234,14 @@ namespace Sayra.Client.Shared.Models.Recovery
         public string? LastException
         {
             get { lock (_lock) return _lastException; }
-            set { lock (_lock) _lastException = value; }
+            set
+            {
+                lock (_lock)
+                {
+                    _lastException = value;
+                    _lastUpdated = DateTime.UtcNow;
+                }
+            }
         }
 
         /// <summary>
@@ -131,7 +250,14 @@ namespace Sayra.Client.Shared.Models.Recovery
         public double HealthScore
         {
             get { lock (_lock) return _healthScore; }
-            set { lock (_lock) _healthScore = value; }
+            set
+            {
+                lock (_lock)
+                {
+                    _healthScore = value;
+                    _lastUpdated = DateTime.UtcNow;
+                }
+            }
         }
 
         /// <summary>
@@ -140,7 +266,14 @@ namespace Sayra.Client.Shared.Models.Recovery
         public DateTime? LastRecovery
         {
             get { lock (_lock) return _lastRecovery; }
-            set { lock (_lock) _lastRecovery = value; }
+            set
+            {
+                lock (_lock)
+                {
+                    _lastRecovery = value;
+                    _lastUpdated = DateTime.UtcNow;
+                }
+            }
         }
 
         /// <summary>

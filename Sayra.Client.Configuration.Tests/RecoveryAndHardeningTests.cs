@@ -145,7 +145,7 @@ namespace Sayra.Client.Configuration.Tests
                 null!,
                 _launcherMock.Object,
                 _workerHealthMock.Object,
-                _serviceProvider.GetRequiredService<ISelfHealingService>(),
+                new Mock<ISelfHealingService>().Object, // Pass Mock to prevent real SelfHealingService from instantiating and auto-healing asynchronously during assertion
                 subHealth,
                 _serviceProvider.GetRequiredService<ResourceMonitor>(),
                 _serviceProvider.GetRequiredService<SecurityHardeningService>()
