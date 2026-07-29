@@ -2,6 +2,8 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Sayra.Client.Shared.Interfaces.Recovery;
 using Sayra.Client.Shared.Models.Recovery;
@@ -50,6 +52,12 @@ namespace SayraClient.Services.Recovery
                 subsystemName, string.Join(", ", info.Dependencies));
         }
 
+        public Task RegisterSubsystemAsync(string subsystemName, List<string> dependencies, CancellationToken cancellationToken = default)
+        {
+            RegisterSubsystem(subsystemName, dependencies);
+            return Task.CompletedTask;
+        }
+
         public void ReportHeartbeat(string subsystemName)
         {
             if (!_subsystems.TryGetValue(subsystemName, out var info))
@@ -70,6 +78,12 @@ namespace SayraClient.Services.Recovery
             }
         }
 
+        public Task ReportHeartbeatAsync(string subsystemName, CancellationToken cancellationToken = default)
+        {
+            ReportHeartbeat(subsystemName);
+            return Task.CompletedTask;
+        }
+
         public void ReportSubsystemState(string subsystemName, SubsystemHealthState state, string message, string? exceptionDetails = null)
         {
             if (!_subsystems.TryGetValue(subsystemName, out var info))
@@ -86,10 +100,21 @@ namespace SayraClient.Services.Recovery
             }
         }
 
+        public Task ReportSubsystemStateAsync(string subsystemName, SubsystemHealthState state, string message, string? exceptionDetails = null, CancellationToken cancellationToken = default)
+        {
+            ReportSubsystemState(subsystemName, state, message, exceptionDetails);
+            return Task.CompletedTask;
+        }
+
         public SubsystemHealthState GetSubsystemHealth(string subsystemName)
         {
             EvaluateSubsystemState(subsystemName);
             return _subsystems.TryGetValue(subsystemName, out var info) ? info.State : SubsystemHealthState.Offline;
+        }
+
+        public Task<SubsystemHealthState> GetSubsystemHealthAsync(string subsystemName, CancellationToken cancellationToken = default)
+        {
+            return Task.FromResult(GetSubsystemHealth(subsystemName));
         }
 
         public IReadOnlyDictionary<string, SubsystemHealthInfo> GetDetailedHealth()
@@ -99,6 +124,11 @@ namespace SayraClient.Services.Recovery
                 EvaluateSubsystemState(key);
             }
             return _subsystems.ToDictionary(k => k.Key, v => v.Value, StringComparer.OrdinalIgnoreCase);
+        }
+
+        public Task<IReadOnlyDictionary<string, SubsystemHealthInfo>> GetDetailedHealthAsync(CancellationToken cancellationToken = default)
+        {
+            return Task.FromResult(GetDetailedHealth());
         }
 
         public bool RunHealthCheck(string subsystemName)
@@ -129,6 +159,11 @@ namespace SayraClient.Services.Recovery
             }
 
             return true;
+        }
+
+        public Task<bool> RunHealthCheckAsync(string subsystemName, CancellationToken cancellationToken = default)
+        {
+            return Task.FromResult(RunHealthCheck(subsystemName));
         }
 
         private void EvaluateSubsystemState(string subsystemName)
@@ -167,12 +202,7 @@ namespace SayraClient.Services.Recovery
             info.State = newState;
             var historyEntry = $"{DateTime.UtcNow:yyyy-MM-dd HH:mm:ss} - State: {oldState} -> {newState}. Reason: {reason}";
 
-            // Limit history to 50 entries
-            if (info.HealthHistory.Count >= 50)
-            {
-                info.HealthHistory.RemoveAt(0);
-            }
-            info.HealthHistory.Add(historyEntry);
+            info.AddHistoryEntry(historyEntry);
 
             _logger.LogWarning("Subsystem '{SubsystemName}' health state transitioned: {OldState} -> {NewState}. Reason: {Reason}",
                 info.SubsystemName, oldState, newState, reason);

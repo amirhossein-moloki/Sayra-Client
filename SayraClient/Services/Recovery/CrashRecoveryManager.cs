@@ -11,7 +11,7 @@ using Sayra.Client.Shared.Models.Recovery;
 
 namespace SayraClient.Services.Recovery
 {
-    public class CrashRecoveryManager
+    public class CrashRecoveryManager : ICrashRecoveryManager
     {
         private readonly ILogger<CrashRecoveryManager> _logger;
         private readonly IServiceProvider _serviceProvider;
