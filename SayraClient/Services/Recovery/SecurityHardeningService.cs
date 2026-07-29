@@ -8,11 +8,12 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Sayra.Client.Shared.Interfaces;
+using Sayra.Client.Shared.Interfaces.Recovery;
 using Sayra.Client.Shared.Interfaces.Security;
 
 namespace SayraClient.Services.Recovery
 {
-    public class SecurityHardeningService
+    public class SecurityHardeningService : ISecurityHardeningService
     {
         private readonly ILogger<SecurityHardeningService> _logger;
         private readonly IServiceProvider _serviceProvider;

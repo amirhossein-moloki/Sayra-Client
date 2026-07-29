@@ -166,6 +166,11 @@ namespace SayraClient.Services.Recovery
             return _recoveryAttempts.TryGetValue(subsystemName, out var count) ? count : 0;
         }
 
+        public Task<int> GetRecoveryAttemptsCountAsync(string subsystemName, CancellationToken cancellationToken = default)
+        {
+            return Task.FromResult(GetRecoveryAttemptsCount(subsystemName));
+        }
+
         private async Task<bool> ExecuteRecoveryStepsAsync(string subsystem, CancellationToken ct)
         {
             try

@@ -4,10 +4,11 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Sayra.Client.Shared.Interfaces;
+using Sayra.Client.Shared.Interfaces.Recovery;
 
 namespace SayraClient.Services.Recovery
 {
-    public class GracefulShutdownService
+    public class GracefulShutdownService : IGracefulShutdownService
     {
         private readonly ILogger<GracefulShutdownService> _logger;
         private readonly IServiceProvider _serviceProvider;

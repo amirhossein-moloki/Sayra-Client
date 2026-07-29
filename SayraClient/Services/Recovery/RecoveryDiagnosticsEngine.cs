@@ -10,7 +10,7 @@ using Sayra.Client.Shared.Models.Recovery;
 
 namespace SayraClient.Services.Recovery
 {
-    public class RecoveryDiagnosticsEngine
+    public class RecoveryDiagnosticsEngine : IRecoveryDiagnosticsEngine
     {
         private readonly ILogger<RecoveryDiagnosticsEngine> _logger;
         private readonly IServiceProvider _serviceProvider;
@@ -45,7 +45,7 @@ namespace SayraClient.Services.Recovery
             sb.AppendLine("==================================================");
 
             // Fetch Database status
-            var hardening = _serviceProvider.GetService<SecurityHardeningService>();
+            var hardening = _serviceProvider.GetService<ISecurityHardeningService>();
             bool dbOk = false;
             if (hardening != null)
             {

@@ -6,10 +6,12 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Sayra.Client.Shared.Interfaces;
+using Sayra.Client.Shared.Interfaces.Recovery;
+using Sayra.Client.Shared.Models.Recovery;
 
 namespace SayraClient.Services.Recovery
 {
-    public class ResourceMonitor
+    public class ResourceMonitor : IResourceMonitor
     {
         private readonly ILogger<ResourceMonitor> _logger;
         private readonly IServiceProvider _serviceProvider;
@@ -71,6 +73,35 @@ namespace SayraClient.Services.Recovery
             {
                 await TriggerAutomaticDiskCleanupAsync(cancellationToken);
             }
+        }
+
+        public Task<ResourceMetrics> GetResourceMetricsAsync(CancellationToken cancellationToken = default)
+        {
+            var cpu = GetCpuUsage();
+            var ram = GetRamUsage();
+            var threads = GetThreadCount();
+            var handles = GetHandleCount();
+            var freeDisk = GetFreeDiskBytes();
+
+            var metrics = new ResourceMetrics
+            {
+                Timestamp = DateTime.UtcNow,
+                CpuUsagePercentage = cpu,
+                ProcessRamBytes = ram,
+                TotalSystemRamBytes = 8589934592L, // default/fallback value
+                AvailableSystemRamBytes = 4294967296L, // default/fallback value
+                FreeDiskSpaceBytes = freeDisk,
+                HandleCount = handles,
+                ThreadCount = threads,
+                GdiObjectsCount = 120, // default value
+                GpuUsagePercentage = 5.0, // default value
+                DiskIoBytesPerSecond = 1024 * 50, // default value
+                NetworkIoBytesPerSecond = 1024 * 100, // default value
+                PressureLevel = (cpu > _cpuCriticalThreshold || ram > _ramCriticalThreshold || threads > _threadCriticalThreshold || handles > _handleCriticalThreshold)
+                    ? ResourcePressureLevel.Critical
+                    : ResourcePressureLevel.Normal
+            };
+            return Task.FromResult(metrics);
         }
 
         public double GetCpuUsage()
