@@ -14,6 +14,16 @@ namespace Sayra.Client.Shared.Models.Recovery
         public DateTime Timestamp { get; init; } = DateTime.UtcNow;
 
         /// <summary>
+        /// Gets the machine identifier of the workstation.
+        /// </summary>
+        public string MachineIdentifier { get; init; } = "Unknown";
+
+        /// <summary>
+        /// Gets the status of thresholds evaluated on this snapshot (e.g. "Normal", "CPU Warning", etc.).
+        /// </summary>
+        public string ThresholdStatus { get; init; } = "Normal";
+
+        /// <summary>
         /// Gets the total system CPU usage percentage (0.0 to 100.0).
         /// </summary>
         public double CpuUsagePercentage { get; init; }
