@@ -1,5 +1,7 @@
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Sayra.Client.Shared.Models.Recovery;
 
 namespace Sayra.Client.Shared.Interfaces.Recovery
 {
@@ -56,5 +58,61 @@ namespace Sayra.Client.Shared.Interfaces.Recovery
         /// <param name="cancellationToken">Cancellation token.</param>
         /// <returns>A Task returning true if history records are signed and untampered, false otherwise.</returns>
         Task<bool> VerifyCommandHistoryIntegrityAsync(CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Validates application configuration (JSON, sensitive settings, environments).
+        /// </summary>
+        /// <param name="cancellationToken">Cancellation token.</param>
+        /// <returns>A Task containing the configuration validation result.</returns>
+        Task<SecurityValidationResult> ValidateConfigurationAsync(CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Validates policy files, policy signatures, versions, schema, and integrity.
+        /// </summary>
+        /// <param name="cancellationToken">Cancellation token.</param>
+        /// <returns>A Task containing the policy validation result.</returns>
+        Task<SecurityValidationResult> ValidatePolicyAsync(CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Validates SQLite database integrity, schema version, and index consistency.
+        /// </summary>
+        /// <param name="cancellationToken">Cancellation token.</param>
+        /// <returns>A Task containing the database validation result.</returns>
+        Task<SecurityValidationResult> ValidateDatabaseAsync(CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Validates media hashes, metadata, duplicate hashes, and corruption in downloaded media files.
+        /// </summary>
+        /// <param name="cancellationToken">Cancellation token.</param>
+        /// <returns>A Task containing the media validation result.</returns>
+        Task<SecurityValidationResult> ValidateMediaAsync(CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Validates plugins (signatures, manifests, metadata, versions, compatibility, and missing dependencies).
+        /// </summary>
+        /// <param name="cancellationToken">Cancellation token.</param>
+        /// <returns>A Task containing the plugin validation result.</returns>
+        Task<SecurityValidationResult> ValidatePluginsAsync(CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Validates downloaded packages (hashes, signatures, manifests, versions, and trusted publisher).
+        /// </summary>
+        /// <param name="cancellationToken">Cancellation token.</param>
+        /// <returns>A Task containing the package validation result.</returns>
+        Task<SecurityValidationResult> ValidatePackagesAsync(CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Validates executable binary hashes, integrity, trusted signatures, version information, and metadata.
+        /// </summary>
+        /// <param name="cancellationToken">Cancellation token.</param>
+        /// <returns>A Task containing the executable validation result.</returns>
+        Task<SecurityValidationResult> ValidateExecutableAsync(CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Runs a full concurrent system security validation, executing all specific validation checks.
+        /// </summary>
+        /// <param name="cancellationToken">Cancellation token.</param>
+        /// <returns>A Task returning a list of all validation results.</returns>
+        Task<IReadOnlyList<SecurityValidationResult>> RunFullValidationAsync(CancellationToken cancellationToken = default);
     }
 }
