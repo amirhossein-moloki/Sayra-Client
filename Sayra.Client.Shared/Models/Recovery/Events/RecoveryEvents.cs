@@ -49,4 +49,35 @@ namespace Sayra.Client.Shared.Models.Recovery.Events
         string BlockedBySubsystem,
         string CorrelationId,
         DateTime Timestamp);
+
+    // New Crash Recovery Events (Phase 7 Stage 4)
+    public record CrashRecoveryStartedEvent(
+        string CorrelationId,
+        DateTime Timestamp);
+
+    public record CrashRecoveryCompletedEvent(
+        string CorrelationId,
+        TimeSpan Duration,
+        int RecoveredCount,
+        int FailedCount,
+        DateTime Timestamp);
+
+    public record CrashRecoveryFailedEvent(
+        string CorrelationId,
+        TimeSpan Duration,
+        string Error,
+        DateTime Timestamp);
+
+    public record RecoveryItemRestoredEvent(
+        string CorrelationId,
+        string Subsystem,
+        string Operation,
+        DateTime Timestamp);
+
+    public record RecoveryValidationFailedEvent(
+        string CorrelationId,
+        string Subsystem,
+        string Operation,
+        string Error,
+        DateTime Timestamp);
 }
