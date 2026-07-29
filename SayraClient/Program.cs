@@ -2,6 +2,7 @@ using SayraClient;
 using SayraClient.Commands;
 using SayraClient.Services.Recovery;
 using SayraClient.Services.Recovery.Strategies;
+using SayraClient.Services.Recovery.Exporters;
 using SayraClient.Services;
 using SayraClient.Security.Transport;
 using SayraClient.Services.OfflineQueue;
@@ -253,6 +254,31 @@ builder.Services.AddSingleton<IRecoveryActionStrategy, RestartWorkerStrategy>();
 builder.Services.AddSingleton<IRecoveryActionStrategy, EscalateToAdminStrategy>();
 builder.Services.AddSingleton<IRecoveryActionStrategy, RebootWorkstationStrategy>();
 builder.Services.AddSingleton<IRecoveryActionStrategy, ShutdownWorkstationStrategy>();
+
+// ==========================================
+// REGISTER RESILIENCE & DIAGNOSTICS PLATFORM
+// ==========================================
+builder.Services.Configure<Sayra.Client.Shared.Models.Recovery.ResourceMonitorOptions>(builder.Configuration.GetSection("Recovery:ResourceMonitor"));
+builder.Services.Configure<Sayra.Client.Shared.Models.Recovery.RecoveryDiagnosticsOptions>(builder.Configuration.GetSection("Recovery:Diagnostics"));
+
+// Exporters
+builder.Services.AddSingleton<Sayra.Client.Shared.Interfaces.Recovery.IDiagnosticsExporter, PlainTextDiagnosticsExporter>();
+builder.Services.AddSingleton<Sayra.Client.Shared.Interfaces.Recovery.IDiagnosticsExporter, JsonDiagnosticsExporter>();
+
+// Engines
+builder.Services.AddSingleton<ResourceMonitor>();
+builder.Services.AddSingleton<Sayra.Client.Shared.Interfaces.Recovery.IResourceMonitor>(sp => sp.GetRequiredService<ResourceMonitor>());
+
+builder.Services.AddSingleton<SecurityHardeningService>();
+builder.Services.AddSingleton<Sayra.Client.Shared.Interfaces.Recovery.ISecurityHardeningService>(sp => sp.GetRequiredService<SecurityHardeningService>());
+
+builder.Services.AddSingleton<CrashRecoveryManager>();
+builder.Services.AddSingleton<Sayra.Client.Shared.Interfaces.Recovery.ICrashRecoveryManager>(sp => sp.GetRequiredService<CrashRecoveryManager>());
+
+builder.Services.AddSingleton<GracefulShutdownService>();
+builder.Services.AddSingleton<Sayra.Client.Shared.Interfaces.Recovery.IGracefulShutdownService>(sp => sp.GetRequiredService<GracefulShutdownService>());
+
+builder.Services.AddSingleton<Sayra.Client.Shared.Interfaces.Recovery.IRecoveryDiagnosticsEngine, RecoveryDiagnosticsEngine>();
 
 builder.Services.AddSingleton<IServiceHealthMonitor, ServiceHealthMonitor>();
 builder.Services.AddSingleton<IWorkerSupervisor, WorkerSupervisor>();
