@@ -12,6 +12,7 @@ using Moq;
 using SayraClient;
 using SayraClient.Services;
 using SayraClient.Services.Recovery;
+using SayraClient.Services.Recovery.Strategies;
 using Sayra.Client.Shared.Interfaces;
 using Sayra.Client.Shared.Interfaces.Recovery;
 using Sayra.Client.Shared.Interfaces.Security;
@@ -63,6 +64,7 @@ namespace Sayra.Client.Configuration.Tests
                       .ReturnsAsync(true);
 
             _services = new ServiceCollection();
+            _services.AddLogging();
 
             // Register Mocks in ServiceCollection
             _services.AddSingleton(_supervisorMock.Object);
@@ -86,6 +88,36 @@ namespace Sayra.Client.Configuration.Tests
             _services.AddSingleton(_crashLogger.Object);
             _services.AddSingleton(_shutdownLogger.Object);
             _services.AddSingleton(_diagLogger.Object);
+
+            // Register Stage 3 Self-Healing Engine dependencies in test container
+            var mockEventDispatcher = new Mock<IEventDispatcher>();
+            _services.AddSingleton(mockEventDispatcher.Object);
+            _services.AddSingleton<RecoveryQueue>();
+            _services.AddSingleton<LoopDetector>();
+            _services.AddSingleton<RecoveryDependencyResolver>();
+            _services.AddSingleton<RecoveryMetricsCollector>();
+            _services.AddSingleton<BackoffDelayCalculator>();
+
+            // Pluggable strategies
+            _services.AddSingleton<IRecoveryActionStrategy, DatabaseRecoveryStrategy>();
+            _services.AddSingleton<IRecoveryActionStrategy, NetworkRecoveryStrategy>();
+            _services.AddSingleton<IRecoveryActionStrategy, TcpRecoveryStrategy>();
+            _services.AddSingleton<IRecoveryActionStrategy, IpcRecoveryStrategy>();
+            _services.AddSingleton<IRecoveryActionStrategy, ConfigurationReloadRecoveryStrategy>();
+            _services.AddSingleton<IRecoveryActionStrategy, QueueWorkersRecoveryStrategy>();
+            _services.AddSingleton<IRecoveryActionStrategy, BackgroundWorkersRecoveryStrategy>();
+            _services.AddSingleton<IRecoveryActionStrategy, PluginHostRecoveryStrategy>();
+            _services.AddSingleton<IRecoveryActionStrategy, OverlayRecoveryStrategy>();
+            _services.AddSingleton<IRecoveryActionStrategy, DownloadManagerRecoveryStrategy>();
+            _services.AddSingleton<IRecoveryActionStrategy, SynchronizationRecoveryStrategy>();
+            _services.AddSingleton<IRecoveryActionStrategy, NotificationQueueRecoveryStrategy>();
+            _services.AddSingleton<IRecoveryActionStrategy, RemoteCommandsRecoveryStrategy>();
+            _services.AddSingleton<IRecoveryActionStrategy, TelemetryRecoveryStrategy>();
+            _services.AddSingleton<IRecoveryActionStrategy, LoggingRecoveryStrategy>();
+            _services.AddSingleton<IRecoveryActionStrategy, RestartWorkerStrategy>();
+            _services.AddSingleton<IRecoveryActionStrategy, EscalateToAdminStrategy>();
+            _services.AddSingleton<IRecoveryActionStrategy, RebootWorkstationStrategy>();
+            _services.AddSingleton<IRecoveryActionStrategy, ShutdownWorkstationStrategy>();
 
             // Concrete Services
             _services.AddSingleton<IHealthMonitor, HealthMonitor>();

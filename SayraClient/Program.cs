@@ -1,5 +1,7 @@
 using SayraClient;
 using SayraClient.Commands;
+using SayraClient.Services.Recovery;
+using SayraClient.Services.Recovery.Strategies;
 using SayraClient.Services;
 using SayraClient.Security.Transport;
 using SayraClient.Services.OfflineQueue;
@@ -222,6 +224,35 @@ builder.Services.AddSingleton<MessageHandler>();
 // ==========================================
 builder.Services.Configure<Sayra.Client.Shared.Models.Recovery.HealthMonitorOptions>(builder.Configuration.GetSection("HealthMonitor"));
 builder.Services.AddSingleton<Sayra.Client.Shared.Interfaces.Recovery.IHealthMonitor, SayraClient.Services.Recovery.HealthMonitor>();
+
+// Register Stage 3 Self-Healing Engine Services
+builder.Services.AddSingleton<RecoveryQueue>();
+builder.Services.AddSingleton<LoopDetector>();
+builder.Services.AddSingleton<RecoveryDependencyResolver>();
+builder.Services.AddSingleton<RecoveryMetricsCollector>();
+builder.Services.AddSingleton<BackoffDelayCalculator>();
+builder.Services.AddSingleton<Sayra.Client.Shared.Interfaces.Recovery.ISelfHealingService, SayraClient.Services.Recovery.SelfHealingService>();
+
+// Register Stage 3 Pluggable Recovery Strategies
+builder.Services.AddSingleton<IRecoveryActionStrategy, DatabaseRecoveryStrategy>();
+builder.Services.AddSingleton<IRecoveryActionStrategy, NetworkRecoveryStrategy>();
+builder.Services.AddSingleton<IRecoveryActionStrategy, TcpRecoveryStrategy>();
+builder.Services.AddSingleton<IRecoveryActionStrategy, IpcRecoveryStrategy>();
+builder.Services.AddSingleton<IRecoveryActionStrategy, ConfigurationReloadRecoveryStrategy>();
+builder.Services.AddSingleton<IRecoveryActionStrategy, QueueWorkersRecoveryStrategy>();
+builder.Services.AddSingleton<IRecoveryActionStrategy, BackgroundWorkersRecoveryStrategy>();
+builder.Services.AddSingleton<IRecoveryActionStrategy, PluginHostRecoveryStrategy>();
+builder.Services.AddSingleton<IRecoveryActionStrategy, OverlayRecoveryStrategy>();
+builder.Services.AddSingleton<IRecoveryActionStrategy, DownloadManagerRecoveryStrategy>();
+builder.Services.AddSingleton<IRecoveryActionStrategy, SynchronizationRecoveryStrategy>();
+builder.Services.AddSingleton<IRecoveryActionStrategy, NotificationQueueRecoveryStrategy>();
+builder.Services.AddSingleton<IRecoveryActionStrategy, RemoteCommandsRecoveryStrategy>();
+builder.Services.AddSingleton<IRecoveryActionStrategy, TelemetryRecoveryStrategy>();
+builder.Services.AddSingleton<IRecoveryActionStrategy, LoggingRecoveryStrategy>();
+builder.Services.AddSingleton<IRecoveryActionStrategy, RestartWorkerStrategy>();
+builder.Services.AddSingleton<IRecoveryActionStrategy, EscalateToAdminStrategy>();
+builder.Services.AddSingleton<IRecoveryActionStrategy, RebootWorkstationStrategy>();
+builder.Services.AddSingleton<IRecoveryActionStrategy, ShutdownWorkstationStrategy>();
 
 builder.Services.AddSingleton<IServiceHealthMonitor, ServiceHealthMonitor>();
 builder.Services.AddSingleton<IWorkerSupervisor, WorkerSupervisor>();
