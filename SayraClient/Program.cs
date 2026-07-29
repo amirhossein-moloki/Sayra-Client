@@ -220,6 +220,9 @@ builder.Services.AddSingleton<MessageHandler>();
 // ==========================================
 // REGISTER SPRINT 1 FOUNDATION INFRASTRUCTURE
 // ==========================================
+builder.Services.Configure<Sayra.Client.Shared.Models.Recovery.HealthMonitorOptions>(builder.Configuration.GetSection("HealthMonitor"));
+builder.Services.AddSingleton<Sayra.Client.Shared.Interfaces.Recovery.IHealthMonitor, SayraClient.Services.Recovery.HealthMonitor>();
+
 builder.Services.AddSingleton<IServiceHealthMonitor, ServiceHealthMonitor>();
 builder.Services.AddSingleton<IWorkerSupervisor, WorkerSupervisor>();
 builder.Services.AddSingleton<IHeartbeatManager, HeartbeatManager>();
