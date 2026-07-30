@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Sayra.Client.Shared.Interfaces;
 using Sayra.Client.Shared.Interfaces.Recovery;
+using Sayra.Client.Shared.Models.Recovery;
 
 namespace SayraClient.Services.Recovery
 {
@@ -12,13 +13,15 @@ namespace SayraClient.Services.Recovery
     {
         private readonly ILogger<GracefulShutdownService> _logger;
         private readonly IServiceProvider _serviceProvider;
+        private readonly IResilienceConfigurationProvider _resilienceConfigProvider;
         private readonly SemaphoreSlim _shutdownLock = new(1, 1);
         private bool _isShutdownInitiated;
 
-        public GracefulShutdownService(ILogger<GracefulShutdownService> logger, IServiceProvider serviceProvider)
+        public GracefulShutdownService(ILogger<GracefulShutdownService> logger, IServiceProvider serviceProvider, IResilienceConfigurationProvider? resilienceConfigProvider = null)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
+            _resilienceConfigProvider = resilienceConfigProvider ?? new FallbackResilienceConfigurationProvider();
         }
 
         public async Task InitiateShutdownAsync(TimeSpan timeout, CancellationToken cancellationToken = default)
@@ -33,10 +36,15 @@ namespace SayraClient.Services.Recovery
                 }
 
                 _isShutdownInitiated = true;
-                _logger.LogWarning("CRITICAL: Commencing ORDERLY GRACEFUL SHUTDOWN sequence (Timeout: {Timeout}s)...", timeout.TotalSeconds);
+
+                // Capture immutable snapshot at the beginning of the operation
+                var config = _resilienceConfigProvider.CurrentConfiguration?.GracefulShutdown ?? new GracefulShutdownOptions();
+                var actualTimeout = (timeout == TimeSpan.Zero) ? config.OverallTimeout : timeout;
+
+                _logger.LogWarning("CRITICAL: Commencing ORDERLY GRACEFUL SHUTDOWN sequence (Timeout: {Timeout}s)...", actualTimeout.TotalSeconds);
 
                 using var timeoutCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
-                timeoutCts.CancelAfter(timeout);
+                timeoutCts.CancelAfter(actualTimeout);
 
                 var token = timeoutCts.Token;
 
@@ -48,6 +56,7 @@ namespace SayraClient.Services.Recovery
                     if (stateManager != null)
                     {
                         stateManager.TransitionTo(ClientState.DISCONNECTED);
+                        await Task.Delay(config.StopWorkTimeout, token);
                     }
 
                     // 2. Drain queues
@@ -56,7 +65,7 @@ namespace SayraClient.Services.Recovery
                     if (cmdEngine != null)
                     {
                         // Safely allow existing commands to complete or serialize
-                        await Task.Delay(100, token);
+                        await Task.Delay(config.DrainQueuesTimeout, token);
                     }
 
                     // 3. Flush audit trails
@@ -65,6 +74,7 @@ namespace SayraClient.Services.Recovery
                     if (audit != null)
                     {
                         await audit.RecordPolicyEventAsync("SYSTEM_SHUTDOWN", "SHUTDOWN_INITIATED", "Graceful shutdown sequence commenced.", "SHUTDOWN", token);
+                        await Task.Delay(config.FlushLogsTimeout, token);
                     }
 
                     // 4. Persist State
@@ -73,7 +83,7 @@ namespace SayraClient.Services.Recovery
                     if (stateMgr != null)
                     {
                         // Trigger final persist
-                        await Task.Delay(50, token);
+                        await Task.Delay(config.PersistStatesTimeout, token);
                     }
 
                     // 5. Stop Background Workers
@@ -82,6 +92,7 @@ namespace SayraClient.Services.Recovery
                     if (supervisor != null)
                     {
                         await supervisor.StopAllAsync();
+                        await Task.Delay(config.StopWorkersTimeout, token);
                     }
 
                     // 6. Close database
@@ -90,7 +101,7 @@ namespace SayraClient.Services.Recovery
                     if (dbService != null)
                     {
                         // Clean database closing/disposing handles
-                        await Task.Delay(100, token);
+                        await Task.Delay(config.CloseDatabaseTimeout, token);
                     }
 
                     // 7. Release resources
@@ -100,7 +111,7 @@ namespace SayraClient.Services.Recovery
                 }
                 catch (OperationCanceledException)
                 {
-                    _logger.LogError("SHUTDOWN TIMEOUT: Shutdown sequence was forced to abort due to timeout limit of {Timeout}s.", timeout.TotalSeconds);
+                    _logger.LogError("SHUTDOWN TIMEOUT: Shutdown sequence was forced to abort due to timeout limit of {Timeout}s.", actualTimeout.TotalSeconds);
                 }
                 catch (Exception ex)
                 {

@@ -221,9 +221,27 @@ builder.Services.AddSingleton<Sayra.Client.Shared.Interfaces.IImpressionTracker,
 builder.Services.AddSingleton<MessageHandler>();
 
 // ==========================================
+// REGISTER RESILIENCE CONFIGURATION & POLICY FRAMEWORK
+// ==========================================
+builder.Services.AddSingleton<Sayra.Client.Shared.Interfaces.Recovery.IConfigurationValidator, SayraClient.Services.Recovery.ResilienceConfigurationValidator>();
+builder.Services.AddSingleton<ResilienceConfigurationProvider>();
+builder.Services.AddSingleton<Sayra.Client.Shared.Interfaces.Recovery.IResilienceConfigurationProvider>(sp => sp.GetRequiredService<ResilienceConfigurationProvider>());
+builder.Services.AddSingleton<Sayra.Client.Shared.Interfaces.Recovery.IPolicyProvider>(sp => sp.GetRequiredService<ResilienceConfigurationProvider>());
+builder.Services.AddSingleton<Sayra.Client.Shared.Interfaces.Recovery.IConfigurationReloadService>(sp => sp.GetRequiredService<ResilienceConfigurationProvider>());
+
+// Dynamically route IOptions<T> to reloaded central configuration
+builder.Services.AddTransient<Microsoft.Extensions.Options.IOptions<Sayra.Client.Shared.Models.Recovery.HealthMonitorOptions>>(sp =>
+    Microsoft.Extensions.Options.Options.Create(sp.GetRequiredService<Sayra.Client.Shared.Interfaces.Recovery.IResilienceConfigurationProvider>().CurrentConfiguration.HealthMonitor));
+
+builder.Services.AddTransient<Microsoft.Extensions.Options.IOptions<Sayra.Client.Shared.Models.Recovery.ResourceMonitorOptions>>(sp =>
+    Microsoft.Extensions.Options.Options.Create(sp.GetRequiredService<Sayra.Client.Shared.Interfaces.Recovery.IResilienceConfigurationProvider>().CurrentConfiguration.ResourceMonitor));
+
+builder.Services.AddTransient<Microsoft.Extensions.Options.IOptions<Sayra.Client.Shared.Models.Recovery.RecoveryDiagnosticsOptions>>(sp =>
+    Microsoft.Extensions.Options.Options.Create(sp.GetRequiredService<Sayra.Client.Shared.Interfaces.Recovery.IResilienceConfigurationProvider>().CurrentConfiguration.Diagnostics));
+
+// ==========================================
 // REGISTER SPRINT 1 FOUNDATION INFRASTRUCTURE
 // ==========================================
-builder.Services.Configure<Sayra.Client.Shared.Models.Recovery.HealthMonitorOptions>(builder.Configuration.GetSection("HealthMonitor"));
 builder.Services.AddSingleton<Sayra.Client.Shared.Interfaces.Recovery.IHealthMonitor, SayraClient.Services.Recovery.HealthMonitor>();
 
 // Register Stage 3 Self-Healing Engine Services
@@ -258,8 +276,6 @@ builder.Services.AddSingleton<IRecoveryActionStrategy, ShutdownWorkstationStrate
 // ==========================================
 // REGISTER RESILIENCE & DIAGNOSTICS PLATFORM
 // ==========================================
-builder.Services.Configure<Sayra.Client.Shared.Models.Recovery.ResourceMonitorOptions>(builder.Configuration.GetSection("Recovery:ResourceMonitor"));
-builder.Services.Configure<Sayra.Client.Shared.Models.Recovery.RecoveryDiagnosticsOptions>(builder.Configuration.GetSection("Recovery:Diagnostics"));
 
 // Exporters
 builder.Services.AddSingleton<Sayra.Client.Shared.Interfaces.Recovery.IDiagnosticsExporter, PlainTextDiagnosticsExporter>();

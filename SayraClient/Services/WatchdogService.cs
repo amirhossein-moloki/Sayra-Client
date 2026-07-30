@@ -18,6 +18,7 @@ namespace SayraClient.Services
         private readonly IHealthMonitor _subsystemHealthMonitor;
         private readonly ResourceMonitor _resourceMonitor;
         private readonly SecurityHardeningService _securityHardeningService;
+        private readonly IResilienceConfigurationProvider _resilienceConfigProvider;
 
         public WatchdogService(
             ILogger<WatchdogService> logger,
@@ -28,7 +29,8 @@ namespace SayraClient.Services
             ISelfHealingService selfHealingService,
             IHealthMonitor subsystemHealthMonitor,
             ResourceMonitor resourceMonitor,
-            SecurityHardeningService securityHardeningService)
+            SecurityHardeningService securityHardeningService,
+            IResilienceConfigurationProvider? resilienceConfigProvider = null)
             : base(logger, healthMonitor, "WatchdogService")
         {
             _recoveryManager = recoveryManager;
@@ -38,6 +40,7 @@ namespace SayraClient.Services
             _subsystemHealthMonitor = subsystemHealthMonitor;
             _resourceMonitor = resourceMonitor;
             _securityHardeningService = securityHardeningService;
+            _resilienceConfigProvider = resilienceConfigProvider ?? new FallbackResilienceConfigurationProvider();
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -49,6 +52,7 @@ namespace SayraClient.Services
 
             while (!stoppingToken.IsCancellationRequested)
             {
+                var config = _resilienceConfigProvider.CurrentConfiguration?.Watchdog ?? new WatchdogOptions();
                 try
                 {
                     _healthMonitor.ReportHeartbeat("WatchdogService");
@@ -60,13 +64,22 @@ namespace SayraClient.Services
                     EnsureGuardianRunning();
 
                     // 2. Perform Deadlock & Frozen Worker Detection
-                    DetectDeadlocksAndFrozenWorkers();
+                    if (config.EnableDeadlockDetection)
+                    {
+                        DetectDeadlocksAndFrozenWorkers();
+                    }
 
                     // 3. Perform Resource Audit & Backpressure checks
-                    await _resourceMonitor.RunResourceAuditAsync(stoppingToken);
+                    if (config.EnableResourcePressureMitigation)
+                    {
+                        await _resourceMonitor.RunResourceAuditAsync(stoppingToken);
+                    }
 
                     // 4. Perform Security Hardening & Tamper checks
-                    await _securityHardeningService.VerifySystemIntegrityAsync(stoppingToken);
+                    if (config.EnableSecurityViolationAudit)
+                    {
+                        await _securityHardeningService.VerifySystemIntegrityAsync(stoppingToken);
+                    }
 
                     // 5. Run Self-Healing checks
                     await _selfHealingService.MonitorAndHealAsync(stoppingToken);
@@ -76,7 +89,7 @@ namespace SayraClient.Services
                     _logger.LogError(ex, "Error occurred during Watchdog execution cycle.");
                 }
 
-                await Task.Delay(TimeSpan.FromSeconds(30), stoppingToken);
+                await Task.Delay(config.PollingInterval, stoppingToken);
             }
 
             _logger.LogInformation("Watchdog Service stopping.");
@@ -112,6 +125,7 @@ namespace SayraClient.Services
         {
             _logger.LogInformation("Watchdog: Initiating deadlock and frozen worker checks...");
 
+            var config = _resilienceConfigProvider.CurrentConfiguration?.Watchdog ?? new WatchdogOptions();
             var detailedWorkerHealth = _healthMonitor.GetDetailedHealth();
             var now = DateTime.UtcNow;
 
@@ -120,12 +134,12 @@ namespace SayraClient.Services
                 var workerName = kvp.Key;
                 var info = kvp.Value;
 
-                // If a worker is healthy but hasn't updated its heartbeat for over 120 seconds, consider it deadlocked/frozen
+                // If a worker is healthy but hasn't updated its heartbeat for over configured timeout, consider it deadlocked/frozen
                 var idleTime = now - info.LastHeartbeat;
-                if (info.State == ServiceHealthState.Healthy && idleTime > TimeSpan.FromSeconds(120))
+                if (info.State == ServiceHealthState.Healthy && idleTime > config.WorkerHeartbeatTimeout)
                 {
-                    _logger.LogCritical("DEADLOCK/FREEZE DETECTED: Worker '{WorkerName}' has been silent for {IdleTime}s (threshold 120s). Triggering self-healing recovery.",
-                        workerName, idleTime.TotalSeconds);
+                    _logger.LogCritical("DEADLOCK/FREEZE DETECTED: Worker '{WorkerName}' has been silent for {IdleTime}s (threshold {Threshold}s). Triggering self-healing recovery.",
+                        workerName, idleTime.TotalSeconds, config.WorkerHeartbeatTimeout.TotalSeconds);
 
                     _subsystemHealthMonitor.ReportSubsystemState("RemoteCommandEngine", SubsystemHealthState.Critical, $"Worker '{workerName}' is frozen/deadlocked.");
                 }

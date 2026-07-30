@@ -26,6 +26,7 @@ namespace SayraClient.Services.Recovery
         private readonly BackoffDelayCalculator _backoffCalculator;
         private readonly IEnumerable<IRecoveryActionStrategy> _strategies;
 
+        private readonly IResilienceConfigurationProvider _resilienceConfigProvider;
         private readonly ConcurrentDictionary<string, RecoveryPolicy> _policies = new(StringComparer.OrdinalIgnoreCase);
         private readonly ConcurrentDictionary<string, int> _rawAttempts = new(StringComparer.OrdinalIgnoreCase);
         private readonly ConcurrentDictionary<string, DateTime> _lastRecoveryTime = new(StringComparer.OrdinalIgnoreCase);
@@ -44,7 +45,8 @@ namespace SayraClient.Services.Recovery
             RecoveryDependencyResolver dependencyResolver,
             RecoveryMetricsCollector metricsCollector,
             BackoffDelayCalculator backoffCalculator,
-            IEnumerable<IRecoveryActionStrategy> strategies)
+            IEnumerable<IRecoveryActionStrategy> strategies,
+            IResilienceConfigurationProvider? resilienceConfigProvider = null)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _healthMonitor = healthMonitor ?? throw new ArgumentNullException(nameof(healthMonitor));
@@ -55,6 +57,7 @@ namespace SayraClient.Services.Recovery
             _metricsCollector = metricsCollector ?? throw new ArgumentNullException(nameof(metricsCollector));
             _backoffCalculator = backoffCalculator ?? throw new ArgumentNullException(nameof(backoffCalculator));
             _strategies = strategies ?? throw new ArgumentNullException(nameof(strategies));
+            _resilienceConfigProvider = resilienceConfigProvider ?? new FallbackResilienceConfigurationProvider();
 
             // Wire up health change notifications for automatic healing
             _healthMonitor.SubsystemHealthStateChanged += OnSubsystemHealthStateChanged;
@@ -62,57 +65,41 @@ namespace SayraClient.Services.Recovery
             // Start background queue processing loop
             _queueProcessorTask = Task.Run(async () => await ProcessRecoveryQueueAsync(_stoppingTokenSource.Token));
 
-            // Populate default policies for known subsystems
-            InitializeDefaultPolicies();
+            // Register dynamic policy reload events
+            _eventDispatcher.RegisterHandler<ConfigurationLoadedEvent>(OnConfigurationChanged);
+            _eventDispatcher.RegisterHandler<ConfigurationReloadedEvent>(OnConfigurationChanged);
+            _eventDispatcher.RegisterHandler<PolicyUpdatedEvent>(OnPolicyUpdated);
+
+            // Populate policies from configuration dynamically
+            LoadPoliciesFromProvider();
         }
 
-        private void InitializeDefaultPolicies()
+        private void OnConfigurationChanged(ConfigurationLoadedEvent ev)
         {
-            // Database policy
-            RegisterPolicy(new RecoveryPolicy
-            {
-                SubsystemName = "Database",
-                IsEnabled = true,
-                Priority = RecoveryPriority.Critical,
-                DefaultAction = RecoveryActionType.ReconnectDatabase,
-                Retry = new RetryPolicy { MaxRetries = 3, InitialDelay = TimeSpan.FromSeconds(1), BackoffStrategy = BackoffStrategy.ExponentialWithJitter },
-                Cooldown = new CooldownPolicy { CooldownDuration = TimeSpan.FromSeconds(5), EvaluationWindow = TimeSpan.FromSeconds(30), FailureThreshold = 2 }
-            });
+            _logger.LogInformation("Configuration Loaded event received in SelfHealingService. Refreshing policies...");
+            LoadPoliciesFromProvider();
+        }
 
-            // Network policy
-            RegisterPolicy(new RecoveryPolicy
-            {
-                SubsystemName = "Network",
-                IsEnabled = true,
-                Priority = RecoveryPriority.High,
-                DefaultAction = RecoveryActionType.ReconnectTcp,
-                Retry = new RetryPolicy { MaxRetries = 2, InitialDelay = TimeSpan.FromSeconds(2), BackoffStrategy = BackoffStrategy.Linear }
-            });
+        private void OnConfigurationChanged(ConfigurationReloadedEvent ev)
+        {
+            _logger.LogInformation("Configuration Reloaded event received in SelfHealingService. Refreshing policies...");
+            LoadPoliciesFromProvider();
+        }
 
-            // Policy Engine policy (depends on Database)
-            RegisterPolicy(new RecoveryPolicy
-            {
-                SubsystemName = "PolicyEngine",
-                IsEnabled = true,
-                Priority = RecoveryPriority.Normal,
-                DefaultAction = RecoveryActionType.ReloadConfiguration,
-                Dependency = new DependencyPolicy
-                {
-                    PreRecoveryDependencies = new List<string> { "Database" },
-                    FailClosedOnDependencyFailure = true
-                }
-            });
+        private void OnPolicyUpdated(PolicyUpdatedEvent ev)
+        {
+            _logger.LogInformation("Policy Updated event received in SelfHealingService for '{SubsystemName}'.", ev.SubsystemName);
+            RegisterPolicy(ev.NewPolicy);
+        }
 
-            // FleetManager policy
-            RegisterPolicy(new RecoveryPolicy
-            {
-                SubsystemName = "FleetManager",
-                IsEnabled = true,
-                Priority = RecoveryPriority.Normal,
-                DefaultAction = RecoveryActionType.RestartBackgroundServices
-            });
+        private void LoadPoliciesFromProvider()
+        {
+            _logger.LogInformation("Loading recovery policies dynamically from central framework...");
+            var config = _resilienceConfigProvider.CurrentConfiguration;
 
-            // Default policy for others
+            _policies.Clear();
+
+            // Register standard default policies first
             RegisterPolicy(new RecoveryPolicy
             {
                 SubsystemName = "Default",
@@ -120,6 +107,26 @@ namespace SayraClient.Services.Recovery
                 Priority = RecoveryPriority.Normal,
                 DefaultAction = RecoveryActionType.RestartWorker
             });
+
+            // Register policies from SelfHealingOptions
+            if (config?.SelfHealing?.SubsystemPolicies != null)
+            {
+                foreach (var policy in config.SelfHealing.SubsystemPolicies)
+                {
+                    RegisterPolicy(policy);
+                }
+            }
+
+            // Register policies from CustomPolicies
+            if (config?.RecoveryPolicy?.CustomPolicies != null)
+            {
+                foreach (var policy in config.RecoveryPolicy.CustomPolicies)
+                {
+                    RegisterPolicy(policy);
+                }
+            }
+
+            _logger.LogInformation("Dynamic policies registration complete. Registered {Count} policies.", _policies.Count);
         }
 
         public void RegisterPolicy(RecoveryPolicy policy)
@@ -196,19 +203,30 @@ namespace SayraClient.Services.Recovery
                 return;
             }
 
+            var config = _resilienceConfigProvider.CurrentConfiguration;
+
+            // Globally enabled check
+            if (config != null && config.SelfHealing != null && !config.SelfHealing.IsEnabled)
+            {
+                _logger.LogWarning("Self-Healing Engine is globally disabled in configuration. Skipping recovery for '{Subsystem}'.", subsystemName);
+                return;
+            }
+
             // Track raw consecutive attempts for backwards test compatibility
             var now = DateTime.UtcNow;
-            if (_lastRecoveryTime.TryGetValue(subsystemName, out var lastTime) && (now - lastTime) > TimeSpan.FromMinutes(10))
+            var resetDuration = config?.SelfHealing?.AttemptsResetDuration ?? TimeSpan.FromMinutes(10);
+            if (_lastRecoveryTime.TryGetValue(subsystemName, out var lastTime) && (now - lastTime) > resetDuration)
             {
                 _rawAttempts[subsystemName] = 0;
             }
             _lastRecoveryTime[subsystemName] = now;
 
             var rawCount = _rawAttempts.AddOrUpdate(subsystemName, 1, (_, v) => v + 1);
-            if (rawCount > 5)
+            var maxAttempts = config?.SelfHealing?.MaxAttempts ?? 5;
+            if (rawCount > maxAttempts)
             {
                 _logger.LogCritical("Subsystem '{Subsystem}' exceeded max attempts limit. Disabling.", subsystemName);
-                _healthMonitor.ReportSubsystemState(subsystemName, SubsystemHealthState.Offline, "Subsystem disabled. Exceeded max healing attempts of 5.");
+                _healthMonitor.ReportSubsystemState(subsystemName, SubsystemHealthState.Offline, $"Subsystem disabled. Exceeded max healing attempts of {maxAttempts}.");
                 return;
             }
 
