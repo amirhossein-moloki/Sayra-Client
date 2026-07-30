@@ -24,19 +24,24 @@ namespace SayraClient.Services.Recovery
     {
         private readonly ILogger<CrashRecoveryManager> _logger;
         private readonly IServiceProvider _serviceProvider;
+        private readonly IResilienceConfigurationProvider _resilienceConfigProvider;
         private readonly SemaphoreSlim _executionLock = new(1, 1);
         private readonly SemaphoreSlim _stateLock = new(1, 1);
-        private readonly string _stateFilePath = Path.Combine(AppContext.BaseDirectory, "Data", "shutdown_state.json");
+
+        private string StateFilePath => Path.IsPathRooted(_resilienceConfigProvider.CurrentConfiguration?.CrashRecovery?.ShutdownStateFilePath)
+            ? _resilienceConfigProvider.CurrentConfiguration.CrashRecovery.ShutdownStateFilePath
+            : Path.Combine(AppContext.BaseDirectory, _resilienceConfigProvider.CurrentConfiguration?.CrashRecovery?.ShutdownStateFilePath ?? "Data/shutdown_state.json");
 
         // Thread-safe state collection of attempts and results from the current run
         private readonly List<RecoveryAttempt> _attempts = new();
         private readonly List<RecoveryResult> _results = new();
         private bool _isRecoveryExecuted;
 
-        public CrashRecoveryManager(ILogger<CrashRecoveryManager> logger, IServiceProvider serviceProvider)
+        public CrashRecoveryManager(ILogger<CrashRecoveryManager> logger, IServiceProvider serviceProvider, IResilienceConfigurationProvider? resilienceConfigProvider = null)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
+            _resilienceConfigProvider = resilienceConfigProvider ?? new FallbackResilienceConfigurationProvider();
         }
 
         /// <summary>
@@ -64,19 +69,36 @@ namespace SayraClient.Services.Recovery
                 // 1. Check previous shutdown reason
                 var shutdownState = await ValidatePreviousShutdownAsync(cancellationToken);
 
+                // Capture immutable snapshot at the beginning of the operation
+                var config = _resilienceConfigProvider.CurrentConfiguration?.CrashRecovery ?? new CrashRecoveryOptions();
+
                 // 2. Determine recovery requirement
                 if (shutdownState.IsRecoveryRequired)
                 {
                     _logger.LogWarning("Abnormal or first boot detected (Reason: {Reason}). Commencing recovery workflow...", shutdownState.LastShutdownReason);
 
                     // 3. Verify Database Consistency & Optimize
-                    await VerifyAndRepairDatabaseAsync(cancellationToken);
+                    if (config.EnableDatabaseRepair)
+                    {
+                        await VerifyAndRepairDatabaseAsync(cancellationToken);
+                    }
+                    else
+                    {
+                        _logger.LogInformation("Database repair is disabled in options. Skipping.");
+                    }
 
                     // 4. Recover Interrupted Operations
                     await RecoverInterruptedOperationsAsync(cancellationToken);
 
                     // 5. Cleanup Temporary State
-                    await CleanupTemporaryStateAsync(cancellationToken);
+                    if (config.EnableCacheCleanup)
+                    {
+                        await CleanupTemporaryStateAsync(cancellationToken);
+                    }
+                    else
+                    {
+                        _logger.LogInformation("Cache cleanup is disabled in options. Skipping.");
+                    }
                 }
                 else
                 {
@@ -213,14 +235,15 @@ namespace SayraClient.Services.Recovery
             await _stateLock.WaitAsync(cancellationToken);
             try
             {
-                _logger.LogInformation("Shutdown Detection: Checking previous state from {Path}", _stateFilePath);
+                var statePath = StateFilePath;
+                _logger.LogInformation("Shutdown Detection: Checking previous state from {Path}", statePath);
                 PreviousShutdownState state;
 
-                if (File.Exists(_stateFilePath))
+                if (File.Exists(statePath))
                 {
                     try
                     {
-                        string json = await File.ReadAllTextAsync(_stateFilePath, cancellationToken);
+                        string json = await File.ReadAllTextAsync(statePath, cancellationToken);
                         state = System.Text.Json.JsonSerializer.Deserialize<PreviousShutdownState>(json)
                                 ?? new PreviousShutdownState();
 
@@ -260,14 +283,14 @@ namespace SayraClient.Services.Recovery
                     IsRecoveryRequired = true
                 };
 
-                string dir = Path.GetDirectoryName(_stateFilePath);
+                string dir = Path.GetDirectoryName(statePath);
                 if (!string.IsNullOrEmpty(dir) && !Directory.Exists(dir))
                 {
                     Directory.CreateDirectory(dir);
                 }
 
                 string currentJson = System.Text.Json.JsonSerializer.Serialize(currentState, new System.Text.Json.JsonSerializerOptions { WriteIndented = true });
-                await File.WriteAllTextAsync(_stateFilePath, currentJson, cancellationToken);
+                await File.WriteAllTextAsync(statePath, currentJson, cancellationToken);
 
                 _logger.LogInformation("Validated previous shutdown: LastReason={Reason}, RecoveryRequired={Req}",
                     state.LastShutdownReason, state.IsRecoveryRequired);
@@ -288,6 +311,7 @@ namespace SayraClient.Services.Recovery
             await _stateLock.WaitAsync(cancellationToken);
             try
             {
+                var statePath = StateFilePath;
                 _logger.LogInformation("Shutdown Detection: Recording graceful clean shutdown state.");
                 var state = new PreviousShutdownState
                 {
@@ -297,14 +321,14 @@ namespace SayraClient.Services.Recovery
                     IsRecoveryRequired = false
                 };
 
-                string dir = Path.GetDirectoryName(_stateFilePath);
+                string dir = Path.GetDirectoryName(statePath);
                 if (!string.IsNullOrEmpty(dir) && !Directory.Exists(dir))
                 {
                     Directory.CreateDirectory(dir);
                 }
 
                 string json = System.Text.Json.JsonSerializer.Serialize(state, new System.Text.Json.JsonSerializerOptions { WriteIndented = true });
-                await File.WriteAllTextAsync(_stateFilePath, json, cancellationToken);
+                await File.WriteAllTextAsync(statePath, json, cancellationToken);
             }
             catch (Exception ex)
             {
@@ -359,6 +383,7 @@ namespace SayraClient.Services.Recovery
         /// </summary>
         public async Task<RecoveryResult> RecoverSubsystemStateAsync(string subsystemName, CancellationToken cancellationToken = default)
         {
+            var config = _resilienceConfigProvider.CurrentConfiguration?.CrashRecovery ?? new CrashRecoveryOptions();
             var attemptId = Guid.NewGuid();
             var startTime = DateTime.UtcNow;
             string correlationId = Guid.NewGuid().ToString();
@@ -388,6 +413,13 @@ namespace SayraClient.Services.Recovery
                 switch (subsystemName)
                 {
                     case "OfflineQueue":
+                        if (!config.EnableQueueVerification)
+                        {
+                            _logger.LogInformation("Offline Queue verification is disabled in configuration. Skipping recovery.");
+                            message = "Skipped queue verification due to configuration setting.";
+                            isSuccess = true;
+                            break;
+                        }
                         var queueMgr = _serviceProvider.GetService<IOfflineQueueManager>();
                         if (queueMgr != null)
                         {
@@ -414,6 +446,13 @@ namespace SayraClient.Services.Recovery
                         break;
 
                     case "Downloads":
+                        if (!config.EnableDownloadResume)
+                        {
+                            _logger.LogInformation("Interrupted downloads recovery is disabled in configuration. Skipping.");
+                            message = "Skipped downloads recovery due to configuration setting.";
+                            isSuccess = true;
+                            break;
+                        }
                         var adRepo = _serviceProvider.GetService<IAdvertisementRepository>();
                         var downloadManager = _serviceProvider.GetService<IAdDownloadManager>();
                         if (adRepo != null && downloadManager != null)
@@ -449,6 +488,13 @@ namespace SayraClient.Services.Recovery
                         break;
 
                     case "Updates":
+                        if (!config.EnableUpdateRollback)
+                        {
+                            _logger.LogInformation("Interrupted updates rollback recovery is disabled in configuration. Skipping.");
+                            message = "Skipped updates rollback due to configuration setting.";
+                            isSuccess = true;
+                            break;
+                        }
                         var updateHistoryRepo = _serviceProvider.GetService<IUpdateHistoryRepository>();
                         var rollbackEngine = _serviceProvider.GetService<IRollbackEngine>();
                         if (updateHistoryRepo != null && rollbackEngine != null)
@@ -481,6 +527,13 @@ namespace SayraClient.Services.Recovery
                         break;
 
                     case "Cache":
+                        if (!config.EnableCacheCleanup)
+                        {
+                            _logger.LogInformation("Cache cleanup is disabled in configuration. Skipping.");
+                            message = "Skipped cache cleanup due to configuration setting.";
+                            isSuccess = true;
+                            break;
+                        }
                         var cache = _serviceProvider.GetService<IAdvertisementCache>();
                         if (cache != null)
                         {
@@ -496,6 +549,13 @@ namespace SayraClient.Services.Recovery
                         break;
 
                     case "Notifications":
+                        if (!config.EnableNotificationRecovery)
+                        {
+                            _logger.LogInformation("Notifications recovery is disabled in configuration. Skipping.");
+                            message = "Skipped notification recovery due to configuration setting.";
+                            isSuccess = true;
+                            break;
+                        }
                         // Use reflection to locate INotificationRepository to decouple SayraClient from Sayra.UI assemblies
                         Type notificationRepoType = Type.GetType("Sayra.UI.Notifications.Services.INotificationRepository, Sayra.UI")
                             ?? AppDomain.CurrentDomain.GetAssemblies()
@@ -549,6 +609,13 @@ namespace SayraClient.Services.Recovery
                         break;
 
                     case "Sync":
+                        if (!config.EnableSyncRecovery)
+                        {
+                            _logger.LogInformation("Synchronization recovery is disabled in configuration. Skipping.");
+                            message = "Skipped synchronization recovery due to configuration setting.";
+                            isSuccess = true;
+                            break;
+                        }
                         var syncService = _serviceProvider.GetService<IWorkstationSyncService>();
                         if (syncService != null)
                         {
@@ -564,6 +631,13 @@ namespace SayraClient.Services.Recovery
                         break;
 
                     case "Policy":
+                        if (!config.EnablePolicyRecovery)
+                        {
+                            _logger.LogInformation("Policy recovery is disabled in configuration. Skipping.");
+                            message = "Skipped policy recovery due to configuration setting.";
+                            isSuccess = true;
+                            break;
+                        }
                         var policyEngine = _serviceProvider.GetService<IPolicyEngine>();
                         var policyRepo = _serviceProvider.GetService<IPolicyRepository>();
                         if (policyEngine != null && policyRepo != null)

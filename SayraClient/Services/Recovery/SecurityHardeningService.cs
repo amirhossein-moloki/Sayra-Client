@@ -27,6 +27,7 @@ namespace SayraClient.Services.Recovery
         private readonly ILogger<SecurityHardeningService> _logger;
         private readonly IServiceProvider _serviceProvider;
         private readonly IEventDispatcher _eventDispatcher;
+        private readonly IResilienceConfigurationProvider _resilienceConfigProvider;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SecurityHardeningService"/> class.
@@ -34,11 +35,13 @@ namespace SayraClient.Services.Recovery
         public SecurityHardeningService(
             ILogger<SecurityHardeningService> logger,
             IServiceProvider serviceProvider,
-            IEventDispatcher eventDispatcher)
+            IEventDispatcher eventDispatcher,
+            IResilienceConfigurationProvider? resilienceConfigProvider = null)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
             _eventDispatcher = eventDispatcher ?? throw new ArgumentNullException(nameof(eventDispatcher));
+            _resilienceConfigProvider = resilienceConfigProvider ?? new FallbackResilienceConfigurationProvider();
         }
 
         #region Legacy Compatibility Methods
@@ -60,6 +63,13 @@ namespace SayraClient.Services.Recovery
         /// <inheritdoc />
         public async Task<bool> VerifyAuditIntegrityAsync(CancellationToken cancellationToken = default)
         {
+            var config = _resilienceConfigProvider.CurrentConfiguration?.SecurityHardening ?? new SecurityHardeningOptions();
+            if (!config.AuditChainIntegrityCheck)
+            {
+                _logger.LogInformation("Audit Chain integrity check is disabled in options. Skipping.");
+                return true;
+            }
+
             _logger.LogInformation("Verifying Audit Chain cryptographic integrity...");
             try
             {
@@ -99,6 +109,13 @@ namespace SayraClient.Services.Recovery
         /// <inheritdoc />
         public async Task<bool> VerifyCommandHistoryIntegrityAsync(CancellationToken cancellationToken = default)
         {
+            var config = _resilienceConfigProvider.CurrentConfiguration?.SecurityHardening ?? new SecurityHardeningOptions();
+            if (!config.CommandHistoryCheck)
+            {
+                _logger.LogInformation("Command History integrity check is disabled in options. Skipping.");
+                return true;
+            }
+
             _logger.LogInformation("Verifying remote command history records integrity...");
             try
             {
@@ -136,6 +153,20 @@ namespace SayraClient.Services.Recovery
         /// <inheritdoc />
         public async Task<SecurityValidationResult> ValidateConfigurationAsync(CancellationToken cancellationToken = default)
         {
+            var config = _resilienceConfigProvider.CurrentConfiguration?.SecurityHardening ?? new SecurityHardeningOptions();
+            if (!config.ValidateConfiguration)
+            {
+                _logger.LogInformation("Configuration validation is disabled in options. Skipping.");
+                return new SecurityValidationResult
+                {
+                    CheckId = Guid.NewGuid(),
+                    TargetName = "Configuration",
+                    ValidationState = SecurityValidationState.Passed,
+                    CheckedAt = DateTime.UtcNow,
+                    Message = "Skipped by configuration policy."
+                };
+            }
+
             var correlationId = Guid.NewGuid().ToString();
             var stopwatch = System.Diagnostics.Stopwatch.StartNew();
 
@@ -184,7 +215,9 @@ namespace SayraClient.Services.Recovery
                     {
                         expectedSig = await File.ReadAllTextAsync(sigPath, cancellationToken);
                         var sigVerifier = _serviceProvider.GetService<Sayra.Client.Shared.Interfaces.Security.ISignatureVerifier>();
-                        string publicKeyPath = Path.Combine(AppContext.BaseDirectory, "server_public.key");
+                        string publicKeyPath = Path.IsPathRooted(config.PublicKeyPath)
+                            ? config.PublicKeyPath
+                            : Path.Combine(AppContext.BaseDirectory, config.PublicKeyPath ?? "server_public.key");
 
                         if (sigVerifier != null && File.Exists(publicKeyPath))
                         {
@@ -253,6 +286,20 @@ namespace SayraClient.Services.Recovery
         /// <inheritdoc />
         public async Task<SecurityValidationResult> ValidatePolicyAsync(CancellationToken cancellationToken = default)
         {
+            var config = _resilienceConfigProvider.CurrentConfiguration?.SecurityHardening ?? new SecurityHardeningOptions();
+            if (!config.ValidatePolicy)
+            {
+                _logger.LogInformation("Policy validation is disabled in options. Skipping.");
+                return new SecurityValidationResult
+                {
+                    CheckId = Guid.NewGuid(),
+                    TargetName = "Policy",
+                    ValidationState = SecurityValidationState.Passed,
+                    CheckedAt = DateTime.UtcNow,
+                    Message = "Skipped by configuration policy."
+                };
+            }
+
             var correlationId = Guid.NewGuid().ToString();
             var stopwatch = System.Diagnostics.Stopwatch.StartNew();
 
@@ -286,7 +333,9 @@ namespace SayraClient.Services.Recovery
                     }
                     else
                     {
-                        string publicKeyPath = Path.Combine(AppContext.BaseDirectory, "server_public.key");
+                        string publicKeyPath = Path.IsPathRooted(config.PublicKeyPath)
+                            ? config.PublicKeyPath
+                            : Path.Combine(AppContext.BaseDirectory, config.PublicKeyPath ?? "server_public.key");
                         foreach (var policy in policies)
                         {
                             cancellationToken.ThrowIfCancellationRequested();
@@ -371,6 +420,20 @@ namespace SayraClient.Services.Recovery
         /// <inheritdoc />
         public async Task<SecurityValidationResult> ValidateDatabaseAsync(CancellationToken cancellationToken = default)
         {
+            var config = _resilienceConfigProvider.CurrentConfiguration?.SecurityHardening ?? new SecurityHardeningOptions();
+            if (!config.ValidateDatabase)
+            {
+                _logger.LogInformation("Database validation is disabled in options. Skipping.");
+                return new SecurityValidationResult
+                {
+                    CheckId = Guid.NewGuid(),
+                    TargetName = "Database",
+                    ValidationState = SecurityValidationState.Passed,
+                    CheckedAt = DateTime.UtcNow,
+                    Message = "Skipped by configuration policy."
+                };
+            }
+
             var correlationId = Guid.NewGuid().ToString();
             var stopwatch = System.Diagnostics.Stopwatch.StartNew();
 
@@ -463,6 +526,20 @@ namespace SayraClient.Services.Recovery
         /// <inheritdoc />
         public async Task<SecurityValidationResult> ValidateMediaAsync(CancellationToken cancellationToken = default)
         {
+            var config = _resilienceConfigProvider.CurrentConfiguration?.SecurityHardening ?? new SecurityHardeningOptions();
+            if (!config.ValidateMedia)
+            {
+                _logger.LogInformation("Media validation is disabled in options. Skipping.");
+                return new SecurityValidationResult
+                {
+                    CheckId = Guid.NewGuid(),
+                    TargetName = "Media",
+                    ValidationState = SecurityValidationState.Passed,
+                    CheckedAt = DateTime.UtcNow,
+                    Message = "Skipped by configuration policy."
+                };
+            }
+
             var correlationId = Guid.NewGuid().ToString();
             var stopwatch = System.Diagnostics.Stopwatch.StartNew();
 
@@ -567,6 +644,20 @@ namespace SayraClient.Services.Recovery
         /// <inheritdoc />
         public async Task<SecurityValidationResult> ValidatePluginsAsync(CancellationToken cancellationToken = default)
         {
+            var config = _resilienceConfigProvider.CurrentConfiguration?.SecurityHardening ?? new SecurityHardeningOptions();
+            if (!config.ValidatePlugins)
+            {
+                _logger.LogInformation("Plugins validation is disabled in options. Skipping.");
+                return new SecurityValidationResult
+                {
+                    CheckId = Guid.NewGuid(),
+                    TargetName = "Plugins",
+                    ValidationState = SecurityValidationState.Passed,
+                    CheckedAt = DateTime.UtcNow,
+                    Message = "Skipped by configuration policy."
+                };
+            }
+
             var correlationId = Guid.NewGuid().ToString();
             var stopwatch = System.Diagnostics.Stopwatch.StartNew();
 
@@ -673,6 +764,20 @@ namespace SayraClient.Services.Recovery
         /// <inheritdoc />
         public async Task<SecurityValidationResult> ValidatePackagesAsync(CancellationToken cancellationToken = default)
         {
+            var config = _resilienceConfigProvider.CurrentConfiguration?.SecurityHardening ?? new SecurityHardeningOptions();
+            if (!config.ValidatePackages)
+            {
+                _logger.LogInformation("Packages validation is disabled in options. Skipping.");
+                return new SecurityValidationResult
+                {
+                    CheckId = Guid.NewGuid(),
+                    TargetName = "Packages",
+                    ValidationState = SecurityValidationState.Passed,
+                    CheckedAt = DateTime.UtcNow,
+                    Message = "Skipped by configuration policy."
+                };
+            }
+
             var correlationId = Guid.NewGuid().ToString();
             var stopwatch = System.Diagnostics.Stopwatch.StartNew();
 
@@ -768,6 +873,20 @@ namespace SayraClient.Services.Recovery
         /// <inheritdoc />
         public async Task<SecurityValidationResult> ValidateExecutableAsync(CancellationToken cancellationToken = default)
         {
+            var config = _resilienceConfigProvider.CurrentConfiguration?.SecurityHardening ?? new SecurityHardeningOptions();
+            if (!config.ValidateExecutable)
+            {
+                _logger.LogInformation("Executable validation is disabled in options. Skipping.");
+                return new SecurityValidationResult
+                {
+                    CheckId = Guid.NewGuid(),
+                    TargetName = "Executable",
+                    ValidationState = SecurityValidationState.Passed,
+                    CheckedAt = DateTime.UtcNow,
+                    Message = "Skipped by configuration policy."
+                };
+            }
+
             var correlationId = Guid.NewGuid().ToString();
             var stopwatch = System.Diagnostics.Stopwatch.StartNew();
 
