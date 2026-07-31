@@ -80,6 +80,9 @@ builder.Services.AddLauncherServices();
 // Register Diagnostics Component
 builder.Services.AddDiagnosticsServices(builder.Configuration);
 
+// Register Observability Services
+builder.Services.AddObservabilityServices(builder.Configuration);
+
 // Register Application Services
 builder.Services.AddSingleton<SessionManager>();
 builder.Services.AddSingleton<IKioskSecurityService, KioskSecurityService>();
