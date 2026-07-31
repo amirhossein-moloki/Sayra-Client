@@ -1,23 +1,30 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Sayra.Client.Shared.Interfaces;
+using Sayra.Client.Shared.Interfaces.Telemetry;
 using Sayra.Client.Shared.Models.Telemetry.Constants;
 using Sayra.Client.Shared.Models.Telemetry.Options;
+using Sayra.Client.Shared.Telemetry;
+using Sayra.Client.Shared.Telemetry.Collectors.Hardware;
+using Sayra.Client.Shared.Telemetry.Collectors.Runtime;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
     /// <summary>
-    /// Service collection extension methods to configure and register the enterprise observability options.
+    /// Service collection extension methods to configure and register the enterprise observability platform.
     /// </summary>
     public static class ObservabilityServiceCollectionExtensions
     {
         /// <summary>
-        /// Registers and binds all strongly typed observability options from the provided configuration.
+        /// Registers and binds all strongly typed observability options and services.
         /// </summary>
         /// <param name="services">The service collection instance.</param>
         /// <param name="configuration">The configuration instance.</param>
         /// <returns>The modified service collection.</returns>
         public static IServiceCollection AddObservabilityServices(this IServiceCollection services, IConfiguration configuration)
         {
+            // --- Options Binding & Validation ---
+
             // Bind and register TelemetryOptions
             services.AddOptions<TelemetryOptions>()
                 .Bind(configuration.GetSection(ObservabilityConstants.ConfigurationKeys.Telemetry))
@@ -83,6 +90,39 @@ namespace Microsoft.Extensions.DependencyInjection
                 .Bind(configuration.GetSection(ObservabilityConstants.ConfigurationKeys.Collection))
                 .Validate(o => o.CriticalIntervalSeconds >= 1 && o.CriticalIntervalSeconds <= 60 && o.PerformanceIntervalSeconds >= 1 && o.PerformanceIntervalSeconds <= 300 && o.HardwareIntervalSeconds >= 1 && o.HardwareIntervalSeconds <= 600 && o.StorageIntervalSeconds >= 1 && o.StorageIntervalSeconds <= 3600 && o.HistoricalIntervalSeconds >= 1 && o.HistoricalIntervalSeconds <= 86400,
                     "CollectionOptions: Intervals must be within valid range bounds.");
+
+
+            // --- Service Registrations ---
+
+            // Register Hardware Sensor Provider
+            services.AddSingleton<IHardwareSensorProvider, HardwareSensorProvider>();
+
+            // Register Telemetry Pipeline
+            services.AddSingleton<TelemetryPipeline>();
+
+            // Register Telemetry Service & Metrics Collector
+            services.AddSingleton<TelemetryService>();
+            services.AddSingleton<ITelemetryService>(sp => sp.GetRequiredService<TelemetryService>());
+            services.AddSingleton<IMetricsCollector, MetricsCollector>();
+
+            // Register 16 Collectors as IExtendedTelemetryCollector
+            services.AddSingleton<IExtendedTelemetryCollector, CpuCollector>();
+            services.AddSingleton<IExtendedTelemetryCollector, MemoryCollector>();
+            services.AddSingleton<IExtendedTelemetryCollector, GpuCollector>();
+            services.AddSingleton<IExtendedTelemetryCollector, DiskCollector>();
+            services.AddSingleton<IExtendedTelemetryCollector, NetworkCollector>();
+
+            services.AddSingleton<IExtendedTelemetryCollector, ProcessesCollector>();
+            services.AddSingleton<IExtendedTelemetryCollector, WindowsSessionsCollector>();
+            services.AddSingleton<IExtendedTelemetryCollector, PluginsCollector>();
+            services.AddSingleton<IExtendedTelemetryCollector, WatchdogCollector>();
+            services.AddSingleton<IExtendedTelemetryCollector, PolicyCollector>();
+            services.AddSingleton<IExtendedTelemetryCollector, DownloadsCollector>();
+            services.AddSingleton<IExtendedTelemetryCollector, UpdatesCollector>();
+            services.AddSingleton<IExtendedTelemetryCollector, IpcCollector>();
+            services.AddSingleton<IExtendedTelemetryCollector, SyncCollector>();
+            services.AddSingleton<IExtendedTelemetryCollector, NotificationCollector>();
+            services.AddSingleton<IExtendedTelemetryCollector, OverlayCollector>();
 
             return services;
         }
