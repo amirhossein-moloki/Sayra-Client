@@ -7,6 +7,7 @@ using Sayra.Client.Shared.Models.Telemetry.Options;
 using Sayra.Client.Shared.Telemetry;
 using Sayra.Client.Shared.Telemetry.Collectors.Hardware;
 using Sayra.Client.Shared.Telemetry.Collectors.Runtime;
+using Sayra.Client.Shared.Telemetry.Metrics;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -104,6 +105,16 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddSingleton<TelemetryService>();
             services.AddSingleton<ITelemetryService>(sp => sp.GetRequiredService<TelemetryService>());
             services.AddSingleton<IMetricsCollector, MetricsCollector>();
+
+            // Register Metrics Aggregator Strategies
+            services.AddSingleton<IMetricAggregatorStrategy, CounterAggregatorStrategy>();
+            services.AddSingleton<IMetricAggregatorStrategy, GaugeAggregatorStrategy>();
+            services.AddSingleton<IMetricAggregatorStrategy, HistogramAggregatorStrategy>();
+            services.AddSingleton<IMetricAggregatorStrategy, TimerAggregatorStrategy>();
+            services.AddSingleton<IMetricAggregatorStrategy, RateAggregatorStrategy>();
+
+            // Register Metrics Aggregator Engine
+            services.AddSingleton<IMetricsAggregator, MetricsAggregator>();
 
             // Register 16 Collectors as IExtendedTelemetryCollector
             services.AddSingleton<IExtendedTelemetryCollector, CpuCollector>();
