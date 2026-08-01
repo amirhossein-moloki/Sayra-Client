@@ -10,8 +10,11 @@ using Microsoft.Extensions.Logging;
 using Sayra.Client.GameLibrary.Services;
 using Sayra.Client.Launcher.Services;
 using Sayra.Client.Shared.Interfaces.Security;
+using Sayra.Client.Shared.Interfaces.Telemetry;
 using Sayra.Client.Shared.Ipc;
 using Sayra.Client.Shared.Models;
+using Sayra.Client.Shared.Models.Telemetry;
+using Sayra.Client.Shared.Models.Telemetry.ValueObjects;
 
 namespace SayraClient.Services;
 
@@ -25,6 +28,7 @@ public class IpcServer : SupervisedBackgroundService
     private readonly IProcessMonitorService _processMonitor;
     private readonly IGameLibraryService _gameLibrary;
     private readonly ISecureIpcPolicyManager _ipcPolicyManager;
+    private readonly ITracingService _tracingService;
     private readonly List<NamedPipeServerStream> _activeConnections = new();
     private readonly object _connectionsLock = new();
 
@@ -37,7 +41,8 @@ public class IpcServer : SupervisedBackgroundService
         IProcessMonitorService processMonitor,
         IGameLibraryService gameLibrary,
         ISecureIpcPolicyManager ipcPolicyManager,
-        IServiceHealthMonitor healthMonitor)
+        IServiceHealthMonitor healthMonitor,
+        ITracingService tracingService)
         : base(logger, healthMonitor, "IpcServer")
     {
         _sessionManager = sessionManager;
@@ -47,6 +52,7 @@ public class IpcServer : SupervisedBackgroundService
         _processMonitor = processMonitor;
         _gameLibrary = gameLibrary;
         _ipcPolicyManager = ipcPolicyManager;
+        _tracingService = tracingService;
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -160,12 +166,26 @@ public class IpcServer : SupervisedBackgroundService
                 var message = JsonSerializer.Deserialize<IpcMessage>(line);
                 if (message != null)
                 {
+                    TraceContext? parentContext = null;
+                    if (!string.IsNullOrEmpty(message.TraceId) && !string.IsNullOrEmpty(message.CorrelationId))
+                    {
+                        parentContext = new TraceContext
+                        {
+                            TraceId = new TraceId(message.TraceId),
+                            CorrelationId = new CorrelationId(message.CorrelationId)
+                        };
+                    }
+
+                    using var scope = await _tracingService.CreateScopeAsync($"IpcServer:{message.MessageType}", parentContext, ct);
+
                     var responsePayload = await ProcessMessageAsync(message);
                     var response = new IpcMessage
                     {
                         RequestId = message.RequestId,
                         MessageType = IpcMessageType.COMMAND_RESPONSE,
-                        Payload = JsonSerializer.Serialize(responsePayload)
+                        Payload = JsonSerializer.Serialize(responsePayload),
+                        TraceId = scope.Context.TraceId.Value,
+                        CorrelationId = scope.Context.CorrelationId.Value
                     };
                     await writer.WriteLineAsync(JsonSerializer.Serialize(response));
                     await writer.FlushAsync();
