@@ -81,5 +81,42 @@ namespace Sayra.Client.Shared.Models.Telemetry
         /// Gets the count of concurrent pending asynchronous operations.
         /// </summary>
         public int AsyncOperationsCount { get; init; }
+
+        // --- Step 9 Added Properties for Tracing and Single-Operation Snapshots ---
+
+        /// <summary>
+        /// Gets the target machine ID where the snapshot or operation took place.
+        /// </summary>
+        public string MachineId { get; init; } = Environment.MachineName;
+
+        /// <summary>
+        /// Gets the subsystem being measured in this snapshot, if applicable.
+        /// </summary>
+        public string? Subsystem { get; init; }
+
+        /// <summary>
+        /// Gets the name of the operation measured in this snapshot, if applicable.
+        /// </summary>
+        public string? Operation { get; init; }
+
+        /// <summary>
+        /// Gets the status or outcome of the measured operation (e.g. "Success", "Failed").
+        /// </summary>
+        public string? Status { get; init; }
+
+        /// <summary>
+        /// Gets the associated Trace ID, if applicable.
+        /// </summary>
+        public string? TraceId { get; init; }
+
+        /// <summary>
+        /// Gets the associated Correlation ID, if applicable.
+        /// </summary>
+        public string? CorrelationId { get; init; }
+
+        /// <summary>
+        /// Gets the duration of this specific snapshot/operation, if applicable.
+        /// </summary>
+        public TimeSpan Duration { get; init; } = TimeSpan.Zero;
     }
 }

@@ -23,5 +23,18 @@ namespace Sayra.Client.Shared.Interfaces.Telemetry
         /// <param name="cancellationToken">Token to cancel the operation.</param>
         /// <returns>The performance snapshot details.</returns>
         Task<PerformanceSnapshot> GetLatestPerformanceSnapshotAsync(CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Starts a thread-safe reusable performance measurement scope.
+        /// </summary>
+        /// <param name="operationName">The name of the operation being measured.</param>
+        /// <returns>An active performance measurement scope.</returns>
+        IPerformanceMeasurement StartMeasurement(string operationName);
+
+        /// <summary>
+        /// Records a completed performance measurement in the monitor's metrics registry.
+        /// </summary>
+        /// <param name="measurement">The completed measurement.</param>
+        void RecordMeasurement(IPerformanceMeasurement measurement);
     }
 }
