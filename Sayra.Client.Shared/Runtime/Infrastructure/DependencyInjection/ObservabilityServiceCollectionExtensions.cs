@@ -9,6 +9,7 @@ using Sayra.Client.Shared.Telemetry.Collectors.Hardware;
 using Sayra.Client.Shared.Telemetry.Collectors.Runtime;
 using Sayra.Client.Shared.Telemetry.Metrics;
 using Sayra.Client.Shared.Telemetry.Tracing;
+using Sayra.Client.Shared.Telemetry.Performance;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -109,6 +110,19 @@ namespace Microsoft.Extensions.DependencyInjection
 
             // Register Tracing Service
             services.AddSingleton<ITracingService, TracingService>();
+
+            // --- Performance Monitoring Services (Phase 8 Stage 5) ---
+            // Lifetime Decision: IPerformanceMonitor and all specialized wrappers are registered
+            // as Singletons because they must maintain thread-safe, system-wide state, historical average buffers,
+            // active async counters, speed measurements, and cache stats across the entire application lifetime.
+            services.AddSingleton<PerformanceMonitor>();
+            services.AddSingleton<IPerformanceMonitor>(sp => sp.GetRequiredService<PerformanceMonitor>());
+            services.AddSingleton<DatabasePerformanceMonitor>();
+            services.AddSingleton<IpcPerformanceMonitor>();
+            services.AddSingleton<NetworkPerformanceMonitor>();
+            services.AddSingleton<CachePerformanceMonitor>();
+            services.AddSingleton<RuntimePerformanceMonitor>();
+            services.AddSingleton<StartupPerformanceMonitor>();
 
             // Register Metrics Aggregator Strategies
             services.AddSingleton<IMetricAggregatorStrategy, CounterAggregatorStrategy>();
