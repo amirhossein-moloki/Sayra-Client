@@ -10,6 +10,8 @@ using Sayra.Client.Shared.Telemetry.Collectors.Runtime;
 using Sayra.Client.Shared.Telemetry.Metrics;
 using Sayra.Client.Shared.Telemetry.Tracing;
 using Sayra.Client.Shared.Telemetry.Performance;
+using Sayra.Client.Shared.Telemetry.Diagnostics;
+using Sayra.Client.Shared.Telemetry.Diagnostics.Modules;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -133,6 +135,28 @@ namespace Microsoft.Extensions.DependencyInjection
 
             // Register Metrics Aggregator Engine
             services.AddSingleton<IMetricsAggregator, MetricsAggregator>();
+
+            // --- Diagnostics Platform Services (Phase 8 Stage 6) ---
+            services.AddSingleton<IDiagnosticsRecommendationEngine, DiagnosticsRecommendationEngine>();
+            services.AddSingleton<Sayra.Client.Shared.Interfaces.Telemetry.IDiagnosticsEngine, DiagnosticsEngine>();
+
+            // Register all 16 Diagnostic Modules as IDiagnosticModule
+            services.AddSingleton<IDiagnosticModule, HardwareDiagnosticModule>();
+            services.AddSingleton<IDiagnosticModule, OsDiagnosticModule>();
+            services.AddSingleton<IDiagnosticModule, RuntimeDiagnosticModule>();
+            services.AddSingleton<IDiagnosticModule, NetworkDiagnosticModule>();
+            services.AddSingleton<IDiagnosticModule, DatabaseDiagnosticModule>();
+            services.AddSingleton<IDiagnosticModule, StorageDiagnosticModule>();
+            services.AddSingleton<IDiagnosticModule, SecurityDiagnosticModule>();
+            services.AddSingleton<IDiagnosticModule, PluginsDiagnosticModule>();
+            services.AddSingleton<IDiagnosticModule, ConfigurationDiagnosticModule>();
+            services.AddSingleton<IDiagnosticModule, IpcDiagnosticModule>();
+            services.AddSingleton<IDiagnosticModule, SynchronizationDiagnosticModule>();
+            services.AddSingleton<IDiagnosticModule, NotificationsDiagnosticModule>();
+            services.AddSingleton<IDiagnosticModule, DownloadsDiagnosticModule>();
+            services.AddSingleton<IDiagnosticModule, UpdatesDiagnosticModule>();
+            services.AddSingleton<IDiagnosticModule, OverlayDiagnosticModule>();
+            services.AddSingleton<IDiagnosticModule, WatchdogDiagnosticModule>();
 
             // Register 16 Collectors as IExtendedTelemetryCollector
             services.AddSingleton<IExtendedTelemetryCollector, CpuCollector>();
