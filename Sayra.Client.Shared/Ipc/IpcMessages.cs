@@ -66,6 +66,8 @@ namespace Sayra.Client.Shared.Ipc
         public IpcMessageType MessageType { get; set; }
         public DateTime Timestamp { get; set; } = DateTime.UtcNow;
         public string? Payload { get; set; } // JSON serialized payload
+        public string? TraceId { get; set; }
+        public string? CorrelationId { get; set; }
     }
 
     public class IpcCommandResponse

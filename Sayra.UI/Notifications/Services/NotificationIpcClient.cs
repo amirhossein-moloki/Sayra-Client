@@ -91,7 +91,9 @@ namespace Sayra.UI.Notifications.Services
                     var msg = new IpcMessage
                     {
                         MessageType = IpcMessageType.NOTIFICATION_ACK,
-                        Payload = JsonSerializer.Serialize(ack)
+                        Payload = JsonSerializer.Serialize(ack),
+                        TraceId = Sayra.Client.Shared.Logging.TracingContext.TraceId,
+                        CorrelationId = Sayra.Client.Shared.Logging.TracingContext.CorrelationId
                     };
                     await _writer.WriteLineAsync(JsonSerializer.Serialize(msg));
                     await _writer.FlushAsync();

@@ -268,7 +268,9 @@ public class IpcClientBridge : IClientBridge, IDisposable
         var message = new IpcMessage
         {
             MessageType = type,
-            Payload = payload
+            Payload = payload,
+            TraceId = Sayra.Client.Shared.Logging.TracingContext.TraceId,
+            CorrelationId = Sayra.Client.Shared.Logging.TracingContext.CorrelationId
         };
 
         var tcs = new TaskCompletionSource<IpcMessage>();

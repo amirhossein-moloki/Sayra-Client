@@ -8,6 +8,7 @@ using Sayra.Client.Shared.Telemetry;
 using Sayra.Client.Shared.Telemetry.Collectors.Hardware;
 using Sayra.Client.Shared.Telemetry.Collectors.Runtime;
 using Sayra.Client.Shared.Telemetry.Metrics;
+using Sayra.Client.Shared.Telemetry.Tracing;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -105,6 +106,9 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddSingleton<TelemetryService>();
             services.AddSingleton<ITelemetryService>(sp => sp.GetRequiredService<TelemetryService>());
             services.AddSingleton<IMetricsCollector, MetricsCollector>();
+
+            // Register Tracing Service
+            services.AddSingleton<ITracingService, TracingService>();
 
             // Register Metrics Aggregator Strategies
             services.AddSingleton<IMetricAggregatorStrategy, CounterAggregatorStrategy>();
