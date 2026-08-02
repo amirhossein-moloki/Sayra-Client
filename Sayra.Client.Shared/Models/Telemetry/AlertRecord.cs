@@ -92,5 +92,35 @@ namespace Sayra.Client.Shared.Models.Telemetry
         /// Gets the timestamp when this alert was resolved.
         /// </summary>
         public DateTime? ResolvedAt { get; init; }
+
+        /// <summary>
+        /// Gets the comment provided when the alert was acknowledged.
+        /// </summary>
+        public string? AcknowledgementComment { get; init; }
+
+        /// <summary>
+        /// Gets the timestamp when this alert was created.
+        /// </summary>
+        public DateTime? CreatedAt { get; init; }
+
+        /// <summary>
+        /// Gets the timestamp when this alert was suppressed.
+        /// </summary>
+        public DateTime? SuppressedAt { get; init; }
+
+        /// <summary>
+        /// Gets the timestamp when this alert was recovered.
+        /// </summary>
+        public DateTime? RecoveredAt { get; init; }
+
+        /// <summary>
+        /// Gets the timestamp when this alert expired.
+        /// </summary>
+        public DateTime? ExpiredAt { get; init; }
+
+        /// <summary>
+        /// Gets the timestamp when this alert was closed.
+        /// </summary>
+        public DateTime? ClosedAt { get; init; }
     }
 }

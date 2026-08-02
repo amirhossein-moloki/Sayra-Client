@@ -12,6 +12,16 @@ namespace Sayra.Client.Shared.Models.Telemetry.Enums
         /// <summary>The underlying issue was successfully addressed and resolved.</summary>
         Resolved,
         /// <summary>The unresolved alert was escalated to higher-tier notifications.</summary>
-        Escalated
+        Escalated,
+        /// <summary>The alert is created.</summary>
+        Created,
+        /// <summary>The alert is suppressed.</summary>
+        Suppressed,
+        /// <summary>The alert has been recovered.</summary>
+        Recovered,
+        /// <summary>The alert has expired.</summary>
+        Expired,
+        /// <summary>The alert has been closed.</summary>
+        Closed
     }
 }

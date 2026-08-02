@@ -30,9 +30,10 @@ namespace Sayra.Client.Shared.Interfaces.Telemetry
         /// </summary>
         /// <param name="alertId">The unique ID of the alert.</param>
         /// <param name="operatorId">The ID of the operator acknowledging the alert.</param>
+        /// <param name="comment">The optional comment left by the operator.</param>
         /// <param name="cancellationToken">Token to cancel the operation.</param>
         /// <returns>A task representing the asynchronous operation.</returns>
-        Task AcknowledgeAlertAsync(string alertId, string operatorId, CancellationToken cancellationToken = default);
+        Task AcknowledgeAlertAsync(string alertId, string operatorId, string? comment = null, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Asynchronously resolves an active alert.
