@@ -12,6 +12,8 @@ using Sayra.Client.Shared.Telemetry.Tracing;
 using Sayra.Client.Shared.Telemetry.Performance;
 using Sayra.Client.Shared.Telemetry.Diagnostics;
 using Sayra.Client.Shared.Telemetry.Diagnostics.Modules;
+using Sayra.Client.Shared.Telemetry.Alerts;
+using Sayra.Client.Shared.Telemetry.Alerts.Evaluators;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -176,6 +178,31 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddSingleton<IExtendedTelemetryCollector, SyncCollector>();
             services.AddSingleton<IExtendedTelemetryCollector, NotificationCollector>();
             services.AddSingleton<IExtendedTelemetryCollector, OverlayCollector>();
+
+            // --- Alert Engine Platform Services (Phase 8 Stage 7) ---
+            services.AddSingleton<IAlertDiagnosticsCache, AlertDiagnosticsCache>();
+            services.AddSingleton<IAlertPolicyProvider, AlertPolicyProvider>();
+            services.AddSingleton<IAlertRuleProvider, AlertRuleProvider>();
+            services.AddSingleton<IAlertDeduplicationProvider, AlertDeduplicationProvider>();
+            services.AddSingleton<IAlertRecoveryProvider, AlertRecoveryProvider>();
+            services.AddSingleton<IAlertSuppressionProvider, AlertSuppressionProvider>();
+            services.AddSingleton<IAlertEscalationProvider, AlertEscalationProvider>();
+            services.AddSingleton<IAlertEngine, AlertEngine>();
+
+            // Register the 13 required alert rule evaluators
+            services.AddSingleton<IAlertRuleEvaluator, CpuThresholdRuleEvaluator>();
+            services.AddSingleton<IAlertRuleEvaluator, MemoryThresholdRuleEvaluator>();
+            services.AddSingleton<IAlertRuleEvaluator, DiskUsageRuleEvaluator>();
+            services.AddSingleton<IAlertRuleEvaluator, NetworkFailuresRuleEvaluator>();
+            services.AddSingleton<IAlertRuleEvaluator, DatabaseFailuresRuleEvaluator>();
+            services.AddSingleton<IAlertRuleEvaluator, IpcFailuresRuleEvaluator>();
+            services.AddSingleton<IAlertRuleEvaluator, DownloadFailuresRuleEvaluator>();
+            services.AddSingleton<IAlertRuleEvaluator, UpdateFailuresRuleEvaluator>();
+            services.AddSingleton<IAlertRuleEvaluator, PluginFailuresRuleEvaluator>();
+            services.AddSingleton<IAlertRuleEvaluator, SecurityFailuresRuleEvaluator>();
+            services.AddSingleton<IAlertRuleEvaluator, PolicyViolationsRuleEvaluator>();
+            services.AddSingleton<IAlertRuleEvaluator, RuntimeFailuresRuleEvaluator>();
+            services.AddSingleton<IAlertRuleEvaluator, ConfigurationFailuresRuleEvaluator>();
 
             return services;
         }
