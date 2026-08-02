@@ -15,6 +15,7 @@ using Sayra.Client.Shared.Telemetry.Diagnostics.Modules;
 using Sayra.Client.Shared.Telemetry.Alerts;
 using Sayra.Client.Shared.Telemetry.Alerts.Evaluators;
 using Sayra.Client.Shared.Telemetry.Historical;
+using Sayra.Client.Shared.Telemetry.Dashboard;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -219,6 +220,9 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddSingleton<IPerformanceSnapshotRepository, SqlitePerformanceSnapshotRepository>();
             services.AddSingleton<IAuditMetricRepository, SqliteAuditMetricRepository>();
             services.AddSingleton<IHistoricalMetricsService, HistoricalMetricsService>();
+
+            // --- Dashboard Subsystem (Phase 8 Stage 9) ---
+            services.AddSingleton<IDashboardProvider, DashboardProvider>();
 
             return services;
         }
