@@ -14,6 +14,7 @@ using Sayra.Client.Shared.Telemetry.Diagnostics;
 using Sayra.Client.Shared.Telemetry.Diagnostics.Modules;
 using Sayra.Client.Shared.Telemetry.Alerts;
 using Sayra.Client.Shared.Telemetry.Alerts.Evaluators;
+using Sayra.Client.Shared.Telemetry.Historical;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -77,8 +78,14 @@ namespace Microsoft.Extensions.DependencyInjection
             // Bind and register HistoricalStorageOptions
             services.AddOptions<HistoricalStorageOptions>()
                 .Bind(configuration.GetSection(ObservabilityConstants.ConfigurationKeys.HistoricalStorage))
-                .Validate(o => !string.IsNullOrWhiteSpace(o.DatabasePath) && o.PageSize >= 512 && o.PageSize <= 65536,
-                    "HistoricalStorageOptions: DatabasePath cannot be empty and PageSize must be [512, 65536].");
+                .Validate(o =>
+                    !string.IsNullOrWhiteSpace(o.DatabasePath) &&
+                    o.PageSize >= 512 && o.PageSize <= 65536 &&
+                    o.BatchSize >= 1 && o.BatchSize <= 10000 &&
+                    o.MaxStorageSizeBytes >= 1024 && o.MaxStorageSizeBytes <= 107374182400 &&
+                    !string.IsNullOrWhiteSpace(o.ArchiveDirectory) &&
+                    (!o.CustomRetentionHours.HasValue || (o.CustomRetentionHours.Value >= 1 && o.CustomRetentionHours.Value <= 87600)),
+                    "HistoricalStorageOptions validation failed. Verify ranges for PageSize, BatchSize, MaxStorageSizeBytes, ArchiveDirectory, and CustomRetentionHours.");
 
             // Bind and register MonitoringOptions
             services.AddOptions<MonitoringOptions>()
@@ -203,6 +210,15 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddSingleton<IAlertRuleEvaluator, PolicyViolationsRuleEvaluator>();
             services.AddSingleton<IAlertRuleEvaluator, RuntimeFailuresRuleEvaluator>();
             services.AddSingleton<IAlertRuleEvaluator, ConfigurationFailuresRuleEvaluator>();
+
+            // --- Historical Metrics Storage Subsystem (Phase 8 Stage 8) ---
+            services.AddSingleton<IHistoricalStorageProvider, SqliteHistoricalStorageProvider>();
+            services.AddSingleton<IHistoricalArchiveProvider, FileHistoricalArchiveProvider>();
+            services.AddSingleton<IHistoricalMetricRepository, SqliteHistoricalMetricRepository>();
+            services.AddSingleton<IMetricSeriesRepository, SqliteMetricSeriesRepository>();
+            services.AddSingleton<IPerformanceSnapshotRepository, SqlitePerformanceSnapshotRepository>();
+            services.AddSingleton<IAuditMetricRepository, SqliteAuditMetricRepository>();
+            services.AddSingleton<IHistoricalMetricsService, HistoricalMetricsService>();
 
             return services;
         }
