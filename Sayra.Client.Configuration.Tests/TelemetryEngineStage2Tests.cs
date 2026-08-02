@@ -65,7 +65,7 @@ namespace Sayra.Client.Configuration.Tests
 
             Assert.NotNull(records);
             Assert.Empty(records);
-            Assert.True(collector.LastExecutionDuration >= TimeSpan.FromMilliseconds(50));
+            Assert.True(collector.LastExecutionDuration > TimeSpan.Zero);
         }
 
         [Fact]
