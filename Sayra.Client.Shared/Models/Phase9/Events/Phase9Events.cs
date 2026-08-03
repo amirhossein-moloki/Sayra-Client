@@ -41,6 +41,41 @@ namespace Sayra.Client.Shared.Models.Phase9.Events
     public record MachineRegistered(string MachineId, string Hostname, string IpAddress) : Phase9BaseEvent;
 
     /// <summary>
+    /// Event triggered when a workstation is removed from the fleet database.
+    /// </summary>
+    public record MachineRemoved(string MachineId) : Phase9BaseEvent;
+
+    /// <summary>
+    /// Event triggered when a workstation goes online.
+    /// </summary>
+    public record MachineOnline(string MachineId) : Phase9BaseEvent;
+
+    /// <summary>
+    /// Event triggered when a workstation goes offline.
+    /// </summary>
+    public record MachineOffline(string MachineId) : Phase9BaseEvent;
+
+    /// <summary>
+    /// Event triggered when a tag is assigned to a workstation.
+    /// </summary>
+    public record TagAssigned(string MachineId, string Key, string Value) : Phase9BaseEvent;
+
+    /// <summary>
+    /// Event triggered when a tag is removed from a workstation.
+    /// </summary>
+    public record TagRemoved(string MachineId, string Key) : Phase9BaseEvent;
+
+    /// <summary>
+    /// Event triggered when a workstation's hardware/software inventory is updated.
+    /// </summary>
+    public record InventoryUpdated(string MachineId, MachineInventory Inventory) : Phase9BaseEvent;
+
+    /// <summary>
+    /// Event triggered when a workstation's system version changes.
+    /// </summary>
+    public record VersionChanged(string MachineId, MachineVersion Version) : Phase9BaseEvent;
+
+    /// <summary>
     /// Event triggered when a new fleet group (static or dynamic) is created.
     /// </summary>
     public record FleetGroupCreated(string GroupId, string Name, FleetGroupType GroupType) : Phase9BaseEvent;

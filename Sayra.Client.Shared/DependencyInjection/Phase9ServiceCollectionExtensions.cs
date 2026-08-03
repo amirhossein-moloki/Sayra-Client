@@ -33,6 +33,9 @@ namespace Sayra.Client.Shared.DependencyInjection
             // Part 7 & 10: FluentValidation Structural DTO Validators
             services.AddTransient<IValidator<MachineQueryRequest>, MachineQueryRequestValidator>();
             services.AddTransient<IValidator<FleetQueryRequest>, FleetQueryRequestValidator>();
+
+            // Phase 9 Stage 2: Fleet Management Engine
+            services.AddFleetManagement();
             services.AddTransient<IValidator<RemoteCommandRequest>, RemoteCommandRequestValidator>();
             services.AddTransient<IValidator<RemoteCommandResponse>, RemoteCommandResponseValidator>();
             services.AddTransient<IValidator<BulkOperationRequest>, BulkOperationRequestValidator>();
