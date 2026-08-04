@@ -5,6 +5,7 @@ using Sayra.Client.Shared.Models.Phase9.Enums;
 
 namespace Sayra.Client.Shared.Models.Phase9.Domain
 {
+    using CommandStatus = Sayra.Client.Shared.Models.Phase9.Enums.CommandStatus;
     #region Fleet Domain Models
 
     /// <summary>

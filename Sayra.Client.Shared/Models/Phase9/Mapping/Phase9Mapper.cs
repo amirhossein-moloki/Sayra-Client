@@ -14,6 +14,7 @@ using DomainCommandParameter = Sayra.Client.Shared.Models.Phase9.Domain.CommandP
 
 namespace Sayra.Client.Shared.Models.Phase9.Mapping
 {
+    using CommandStatus = Sayra.Client.Shared.Models.Phase9.Enums.CommandStatus;
     /// <summary>
     /// Bidirectional mapper utility for mapping between Phase 9 Core Domain Models and Request/Response DTOs.
     /// This establishes clean mappings without depending on external mapping frameworks, preserving high performance and full JSON/MessagePack transparency.

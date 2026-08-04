@@ -111,6 +111,36 @@ namespace Sayra.Client.Shared.Models.Phase9.Events
     public record CommandFailed(string CommandId, string TargetMachineId, string Action, string ErrorMessage) : Phase9BaseEvent;
 
     /// <summary>
+    /// Event triggered when a remote command is dispatched to target endpoints.
+    /// </summary>
+    public record CommandDispatched(string CommandId, string TargetMachineId, string Action) : Phase9BaseEvent;
+
+    /// <summary>
+    /// Event triggered when a remote command is accepted by target handlers.
+    /// </summary>
+    public record CommandAccepted(string CommandId, string TargetMachineId, string Action) : Phase9BaseEvent;
+
+    /// <summary>
+    /// Event triggered when a remote command is rejected during validation or authorization.
+    /// </summary>
+    public record CommandRejected(string CommandId, string TargetMachineId, string Action, string Reason) : Phase9BaseEvent;
+
+    /// <summary>
+    /// Event triggered when a transient error retry attempt starts.
+    /// </summary>
+    public record RetryStarted(string CommandId, string TargetMachineId, string Action, int AttemptNumber) : Phase9BaseEvent;
+
+    /// <summary>
+    /// Event triggered when a transient error retry succeeds.
+    /// </summary>
+    public record RetryCompleted(string CommandId, string TargetMachineId, string Action, int AttemptNumber) : Phase9BaseEvent;
+
+    /// <summary>
+    /// Event triggered when a remote command execution deadline is exceeded.
+    /// </summary>
+    public record TimeoutOccurred(string CommandId, string TargetMachineId, string Action) : Phase9BaseEvent;
+
+    /// <summary>
     /// Event triggered when a multi-machine bulk execution context begins.
     /// </summary>
     public record BulkOperationStarted(string BulkOperationId, string Action, int TargetCount) : Phase9BaseEvent;
