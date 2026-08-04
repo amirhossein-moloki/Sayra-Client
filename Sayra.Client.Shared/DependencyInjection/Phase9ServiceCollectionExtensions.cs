@@ -55,6 +55,9 @@ namespace Sayra.Client.Shared.DependencyInjection
             // Phase 9 Stage 6: Enterprise Remote File Management Engine
             services.AddRemoteFileManagement();
 
+            // Phase 9 Stage 7: Enterprise Policy Administration Engine
+            services.AddPolicyAdministration();
+
             services.AddTransient<IValidator<RemoteCommandRequest>, RemoteCommandRequestValidator>();
             services.AddTransient<IValidator<RemoteCommandResponse>, RemoteCommandResponseValidator>();
             services.AddTransient<IValidator<BulkOperationRequest>, BulkOperationRequestValidator>();
