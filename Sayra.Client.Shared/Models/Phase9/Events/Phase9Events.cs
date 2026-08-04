@@ -226,6 +226,152 @@ namespace Sayra.Client.Shared.Models.Phase9.Events
     public record TransferFailed(string JobId, string FilePath, string ErrorMessage) : Phase9BaseEvent;
 
     /// <summary>
+    /// Event triggered when a transfer job is paused.
+    /// </summary>
+    public record TransferPaused : Phase9BaseEvent
+    {
+        /// <summary>
+        /// Gets or sets Job ID.
+        /// </summary>
+        public string JobId { get; init; } = string.Empty;
+
+        /// <summary>
+        /// Gets or sets target file path.
+        /// </summary>
+        public string FilePath { get; init; } = string.Empty;
+
+        /// <summary>
+        /// Gets or sets status.
+        /// </summary>
+        public TransferStatus Status { get; init; }
+    }
+
+    /// <summary>
+    /// Event triggered when a transfer job is resumed.
+    /// </summary>
+    public record TransferResumed : Phase9BaseEvent
+    {
+        /// <summary>
+        /// Gets or sets Job ID.
+        /// </summary>
+        public string JobId { get; init; } = string.Empty;
+
+        /// <summary>
+        /// Gets or sets target file path.
+        /// </summary>
+        public string FilePath { get; init; } = string.Empty;
+
+        /// <summary>
+        /// Gets or sets status.
+        /// </summary>
+        public TransferStatus Status { get; init; }
+    }
+
+    /// <summary>
+    /// Event triggered when a transfer job is cancelled.
+    /// </summary>
+    public record TransferCancelled : Phase9BaseEvent
+    {
+        /// <summary>
+        /// Gets or sets Job ID.
+        /// </summary>
+        public string JobId { get; init; } = string.Empty;
+
+        /// <summary>
+        /// Gets or sets target file path.
+        /// </summary>
+        public string FilePath { get; init; } = string.Empty;
+
+        /// <summary>
+        /// Gets or sets status.
+        /// </summary>
+        public TransferStatus Status { get; init; }
+    }
+
+    /// <summary>
+    /// Event triggered when a transfer job's progress is updated.
+    /// </summary>
+    public record TransferProgressChanged : Phase9BaseEvent
+    {
+        /// <summary>
+        /// Gets or sets Job ID.
+        /// </summary>
+        public string JobId { get; init; } = string.Empty;
+
+        /// <summary>
+        /// Gets or sets bytes transferred.
+        /// </summary>
+        public long TransferredBytes { get; init; }
+
+        /// <summary>
+        /// Gets or sets transfer speed in bytes per second.
+        /// </summary>
+        public double BytesPerSecSpeed { get; init; }
+
+        /// <summary>
+        /// Gets or sets ETA.
+        /// </summary>
+        public TimeSpan EstimatedTimeRemaining { get; init; }
+    }
+
+    /// <summary>
+    /// Event triggered when a file checksum has been validated.
+    /// </summary>
+    public record ChecksumValidated : Phase9BaseEvent
+    {
+        /// <summary>
+        /// Gets or sets Job ID.
+        /// </summary>
+        public string JobId { get; init; } = string.Empty;
+
+        /// <summary>
+        /// Gets or sets target file path.
+        /// </summary>
+        public string FilePath { get; init; } = string.Empty;
+
+        /// <summary>
+        /// Gets or sets hash algorithm.
+        /// </summary>
+        public string HashAlgorithm { get; init; } = "SHA256";
+
+        /// <summary>
+        /// Gets or sets hash value.
+        /// </summary>
+        public string HashValue { get; init; } = string.Empty;
+
+        /// <summary>
+        /// Gets or sets whether validated.
+        /// </summary>
+        public bool IsValidated { get; init; }
+    }
+
+    /// <summary>
+    /// Event triggered when a file integrity verification fails.
+    /// </summary>
+    public record IntegrityFailureDetected : Phase9BaseEvent
+    {
+        /// <summary>
+        /// Gets or sets Job ID.
+        /// </summary>
+        public string JobId { get; init; } = string.Empty;
+
+        /// <summary>
+        /// Gets or sets target file path.
+        /// </summary>
+        public string FilePath { get; init; } = string.Empty;
+
+        /// <summary>
+        /// Gets or sets expected hash.
+        /// </summary>
+        public string ExpectedHash { get; init; } = string.Empty;
+
+        /// <summary>
+        /// Gets or sets calculated hash.
+        /// </summary>
+        public string CalculatedHash { get; init; } = string.Empty;
+    }
+
+    /// <summary>
     /// Event triggered when a hardware or software asset item is discovered during system scan.
     /// </summary>
     public record AssetDiscovered(string AssetId, string MachineId, string Name, AssetType Category) : Phase9BaseEvent;
