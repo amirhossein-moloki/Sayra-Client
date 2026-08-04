@@ -1241,4 +1241,281 @@ namespace Sayra.Client.Shared.Models.Phase9.Domain
     }
 
     #endregion
+
+    #region Remote File Management Stage 6 Models
+
+    /// <summary>
+    /// Represents a file entry in a directory listing.
+    /// </summary>
+    public record FileEntry
+    {
+        /// <summary>
+        /// Gets the name of the file.
+        /// </summary>
+        public string Name { get; init; } = string.Empty;
+
+        /// <summary>
+        /// Gets the absolute path to the file.
+        /// </summary>
+        public string FullPath { get; init; } = string.Empty;
+
+        /// <summary>
+        /// Gets the size of the file in bytes.
+        /// </summary>
+        public long SizeBytes { get; init; }
+
+        /// <summary>
+        /// Gets the last write time of the file in UTC.
+        /// </summary>
+        public DateTime LastWriteTimeUtc { get; init; } = DateTime.UtcNow;
+
+        /// <summary>
+        /// Gets whether the file is read-only.
+        /// </summary>
+        public bool IsReadOnly { get; init; }
+    }
+
+    /// <summary>
+    /// Represents detailed metadata for a file.
+    /// </summary>
+    public record FileMetadata
+    {
+        /// <summary>
+        /// Gets the name of the file.
+        /// </summary>
+        public string Name { get; init; } = string.Empty;
+
+        /// <summary>
+        /// Gets the absolute path to the file.
+        /// </summary>
+        public string FullPath { get; init; } = string.Empty;
+
+        /// <summary>
+        /// Gets the size of the file in bytes.
+        /// </summary>
+        public long SizeBytes { get; init; }
+
+        /// <summary>
+        /// Gets the creation time of the file in UTC.
+        /// </summary>
+        public DateTime CreatedAtUtc { get; init; } = DateTime.UtcNow;
+
+        /// <summary>
+        /// Gets the last write time of the file in UTC.
+        /// </summary>
+        public DateTime LastWriteTimeUtc { get; init; } = DateTime.UtcNow;
+
+        /// <summary>
+        /// Gets the last access time of the file in UTC.
+        /// </summary>
+        public DateTime LastAccessTimeUtc { get; init; } = DateTime.UtcNow;
+
+        /// <summary>
+        /// Gets the SHA-256 integrity hash value of the file content.
+        /// </summary>
+        public string ChecksumSha256 { get; init; } = string.Empty;
+
+        /// <summary>
+        /// Gets whether the file is read-only.
+        /// </summary>
+        public bool IsReadOnly { get; init; }
+
+        /// <summary>
+        /// Gets custom metadata properties or attributes associated with the file.
+        /// </summary>
+        public Dictionary<string, string> Attributes { get; init; } = new();
+    }
+
+    /// <summary>
+    /// Represents a directory entry in a directory listing.
+    /// </summary>
+    public record DirectoryEntry
+    {
+        /// <summary>
+        /// Gets the name of the directory.
+        /// </summary>
+        public string Name { get; init; } = string.Empty;
+
+        /// <summary>
+        /// Gets the absolute path of the directory.
+        /// </summary>
+        public string FullPath { get; init; } = string.Empty;
+
+        /// <summary>
+        /// Gets the last write time of the directory in UTC.
+        /// </summary>
+        public DateTime LastWriteTimeUtc { get; init; } = DateTime.UtcNow;
+
+        /// <summary>
+        /// Gets the list of subdirectories inside this directory.
+        /// </summary>
+        public List<DirectoryEntry> SubDirectories { get; init; } = new();
+
+        /// <summary>
+        /// Gets the list of files inside this directory.
+        /// </summary>
+        public List<FileEntry> Files { get; init; } = new();
+    }
+
+    /// <summary>
+    /// Represents the result of a completed or failed file transfer job.
+    /// </summary>
+    public record TransferResult
+    {
+        /// <summary>
+        /// Gets the unique job identifier.
+        /// </summary>
+        public string JobId { get; init; } = string.Empty;
+
+        /// <summary>
+        /// Gets whether the transfer completed successfully.
+        /// </summary>
+        public bool IsSuccess { get; init; }
+
+        /// <summary>
+        /// Gets the path of the transferred file.
+        /// </summary>
+        public string FilePath { get; init; } = string.Empty;
+
+        /// <summary>
+        /// Gets the final integrity hash of the transferred file.
+        /// </summary>
+        public string FullFileIntegrityHash { get; init; } = string.Empty;
+
+        /// <summary>
+        /// Gets the total number of bytes transferred.
+        /// </summary>
+        public long TransferredBytes { get; init; }
+
+        /// <summary>
+        /// Gets the total duration of the transfer.
+        /// </summary>
+        public TimeSpan Duration { get; init; } = TimeSpan.Zero;
+
+        /// <summary>
+        /// Gets the error message if the transfer failed.
+        /// </summary>
+        public string? ErrorMessage { get; init; }
+    }
+
+    /// <summary>
+    /// Represents cumulative transfer statistics for monitoring.
+    /// </summary>
+    public record TransferStatistics
+    {
+        /// <summary>
+        /// Gets the total number of transfer jobs executed.
+        /// </summary>
+        public int TotalJobs { get; init; }
+
+        /// <summary>
+        /// Gets the number of successful transfer jobs.
+        /// </summary>
+        public int SucceededJobs { get; init; }
+
+        /// <summary>
+        /// Gets the number of failed transfer jobs.
+        /// </summary>
+        public int FailedJobs { get; init; }
+
+        /// <summary>
+        /// Gets the total bytes transferred across all jobs.
+        /// </summary>
+        public long TotalBytesTransferred { get; init; }
+
+        /// <summary>
+        /// Gets the average transfer speed in bytes per second.
+        /// </summary>
+        public double AverageSpeedBytesPerSec { get; init; }
+
+        /// <summary>
+        /// Gets the total cumulative duration of all transfers.
+        /// </summary>
+        public TimeSpan TotalDuration { get; init; } = TimeSpan.Zero;
+    }
+
+    /// <summary>
+    /// Represents cryptographic checksum validation information.
+    /// </summary>
+    public record ChecksumInfo
+    {
+        /// <summary>
+        /// Gets the cryptographic hashing algorithm used (e.g., SHA256, SHA512).
+        /// </summary>
+        public string HashAlgorithm { get; init; } = string.Empty;
+
+        /// <summary>
+        /// Gets the calculated hash hex string.
+        /// </summary>
+        public string HashValue { get; init; } = string.Empty;
+
+        /// <summary>
+        /// Gets whether the checksum was successfully validated.
+        /// </summary>
+        public bool IsValidated { get; init; }
+
+        /// <summary>
+        /// Gets the timestamp of when the validation occurred in UTC.
+        /// </summary>
+        public DateTime ValidatedAtUtc { get; init; } = DateTime.UtcNow;
+    }
+
+    /// <summary>
+    /// Represents error details for a failed transfer job.
+    /// </summary>
+    public record TransferError
+    {
+        /// <summary>
+        /// Gets the categorized error code.
+        /// </summary>
+        public string ErrorCode { get; init; } = string.Empty;
+
+        /// <summary>
+        /// Gets the error message description.
+        /// </summary>
+        public string Message { get; init; } = string.Empty;
+
+        /// <summary>
+        /// Gets the UTC timestamp when the error occurred.
+        /// </summary>
+        public DateTime TimestampUtc { get; init; } = DateTime.UtcNow;
+
+        /// <summary>
+        /// Gets the stack trace details if available.
+        /// </summary>
+        public string? StackTrace { get; init; }
+    }
+
+    /// <summary>
+    /// Represents a live session coordinating active transfer streams.
+    /// </summary>
+    public record TransferSession
+    {
+        /// <summary>
+        /// Gets the unique session identifier.
+        /// </summary>
+        public string SessionId { get; init; } = string.Empty;
+
+        /// <summary>
+        /// Gets the active job identifier.
+        /// </summary>
+        public string JobId { get; init; } = string.Empty;
+
+        /// <summary>
+        /// Gets the UTC timestamp of when the session was initialized.
+        /// </summary>
+        public DateTime CreatedAtUtc { get; init; } = DateTime.UtcNow;
+
+        /// <summary>
+        /// Gets the UTC timestamp of when the session was last active.
+        /// </summary>
+        public DateTime LastActiveAtUtc { get; init; } = DateTime.UtcNow;
+
+        /// <summary>
+        /// Gets the current active status of the transfer.
+        /// </summary>
+        public TransferStatus Status { get; init; } = TransferStatus.Pending;
+    }
+
+    #endregion
 }

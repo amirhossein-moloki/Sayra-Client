@@ -1,8 +1,14 @@
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using FluentValidation;
 using Sayra.Client.Shared.Models.Phase9.Options;
 using Sayra.Client.Shared.Models.Phase9.Dtos;
 using Sayra.Client.Shared.Models.Phase9.Validation;
+using Sayra.Client.Shared.Fleet.Security;
+using Sayra.Client.Shared.Fleet.Services;
+using Sayra.Client.Shared.Fleet.Queues;
+using Sayra.Client.Shared.Fleet.Interfaces;
+using Sayra.Client.Shared.Interfaces.Phase9;
 
 namespace Sayra.Client.Shared.DependencyInjection
 {
@@ -46,6 +52,9 @@ namespace Sayra.Client.Shared.DependencyInjection
             // Phase 9 Stage 5: Enterprise Remote Diagnostics Engine
             services.AddRemoteDiagnostics();
 
+            // Phase 9 Stage 6: Enterprise Remote File Management Engine
+            services.AddRemoteFileManagement();
+
             services.AddTransient<IValidator<RemoteCommandRequest>, RemoteCommandRequestValidator>();
             services.AddTransient<IValidator<RemoteCommandResponse>, RemoteCommandResponseValidator>();
             services.AddTransient<IValidator<BulkOperationRequest>, BulkOperationRequestValidator>();
@@ -58,6 +67,31 @@ namespace Sayra.Client.Shared.DependencyInjection
             services.AddTransient<IValidator<RemoteSupportRequest>, RemoteSupportRequestValidator>();
             services.AddTransient<IValidator<AuditQueryRequest>, AuditQueryRequestValidator>();
             services.AddTransient<IValidator<AdministrationReportRequest>, AdministrationReportRequestValidator>();
+
+            return services;
+        }
+
+        /// <summary>
+        /// Registers all Enterprise Remote File Management Engine dependencies.
+        /// </summary>
+        /// <param name="services">The service collection to add to.</param>
+        /// <returns>The modified service collection.</returns>
+        public static IServiceCollection AddRemoteFileManagement(this IServiceCollection services)
+        {
+            services.AddSingleton<ISecurePathValidator, SecurePathValidator>();
+            services.AddSingleton<IFileAuthorizationService, FileAuthorizationService>();
+            services.AddSingleton<IChecksumService, ChecksumService>();
+            services.AddSingleton<IBandwidthLimiter>(sp =>
+            {
+                var options = sp.GetRequiredService<IOptions<TransferOptions>>();
+                return new BandwidthLimiter(options.Value.ThrottleRateBytesPerSec);
+            });
+            services.AddSingleton<ITransferRepository, InMemoryTransferRepository>();
+            services.AddSingleton<ITransferQueue, TransferQueue>();
+            services.AddSingleton<ITransferManager, TransferManager>();
+            services.AddSingleton<ITransferScheduler, TransferScheduler>();
+            services.AddSingleton<IFileOperationCoordinator, FileOperationCoordinator>();
+            services.AddSingleton<IRemoteFileService, RemoteFileManagementEngine>();
 
             return services;
         }
