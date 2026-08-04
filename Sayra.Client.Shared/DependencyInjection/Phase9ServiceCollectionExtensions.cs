@@ -43,6 +43,9 @@ namespace Sayra.Client.Shared.DependencyInjection
             // Phase 9 Stage 4: Enterprise Live Monitoring Engine
             services.AddLiveMonitoring();
 
+            // Phase 9 Stage 5: Enterprise Remote Diagnostics Engine
+            services.AddRemoteDiagnostics();
+
             services.AddTransient<IValidator<RemoteCommandRequest>, RemoteCommandRequestValidator>();
             services.AddTransient<IValidator<RemoteCommandResponse>, RemoteCommandResponseValidator>();
             services.AddTransient<IValidator<BulkOperationRequest>, BulkOperationRequestValidator>();
