@@ -9,6 +9,13 @@ using Sayra.Client.Shared.Fleet.Services;
 using Sayra.Client.Shared.Fleet.Queues;
 using Sayra.Client.Shared.Fleet.Interfaces;
 using Sayra.Client.Shared.Interfaces.Phase9;
+using Sayra.Client.Shared.Fleet.Assets;
+using Sayra.Client.Shared.Fleet.Assets.Interfaces;
+using Sayra.Client.Shared.Fleet.Assets.Collectors;
+using Sayra.Client.Shared.Fleet.Assets.Services;
+using Sayra.Client.Shared.Fleet.Maintenance;
+using Sayra.Client.Shared.Fleet.Maintenance.Interfaces;
+using Sayra.Client.Shared.Fleet.Maintenance.Services;
 
 namespace Sayra.Client.Shared.DependencyInjection
 {
@@ -58,6 +65,10 @@ namespace Sayra.Client.Shared.DependencyInjection
             // Phase 9 Stage 7: Enterprise Policy Administration Engine
             services.AddPolicyAdministration();
 
+            // Phase 9 Stage 8: Enterprise Asset Management & Maintenance Engine
+            services.AddAssetManagement();
+            services.AddMaintenanceEngine();
+
             services.AddTransient<IValidator<RemoteCommandRequest>, RemoteCommandRequestValidator>();
             services.AddTransient<IValidator<RemoteCommandResponse>, RemoteCommandResponseValidator>();
             services.AddTransient<IValidator<BulkOperationRequest>, BulkOperationRequestValidator>();
@@ -95,6 +106,55 @@ namespace Sayra.Client.Shared.DependencyInjection
             services.AddSingleton<ITransferScheduler, TransferScheduler>();
             services.AddSingleton<IFileOperationCoordinator, FileOperationCoordinator>();
             services.AddSingleton<IRemoteFileService, RemoteFileManagementEngine>();
+
+            return services;
+        }
+
+        /// <summary>
+        /// Registers all Enterprise Asset Management dependencies.
+        /// </summary>
+        public static IServiceCollection AddAssetManagement(this IServiceCollection services)
+        {
+            // Repositories
+            services.AddTransient<IAssetRepository, AssetRepository>();
+
+            // Caches
+            services.AddSingleton<IAssetCache, AssetCache>();
+            services.AddSingleton<IInventoryCache, InventoryCache>();
+
+            // Collectors
+            services.AddTransient<IAssetCollector, HardwareInventoryCollector>();
+            services.AddTransient<IAssetCollector, SoftwareInventoryCollector>();
+            services.AddTransient<IAssetCollector, DriverInventoryCollector>();
+            services.AddTransient<IAssetCollector, BIOSInventoryCollector>();
+            services.AddTransient<IAssetCollector, FirmwareInventoryCollector>();
+            services.AddTransient<IAssetCollector, StorageInventoryCollector>();
+            services.AddTransient<IAssetCollector, NetworkInventoryCollector>();
+
+            // Discovery Engine
+            services.AddTransient<AssetDiscoveryEngine>();
+            services.AddTransient<IInventoryCollector, AssetDiscoveryEngine>();
+
+            // Management Service
+            services.AddTransient<IAssetManagementService, AssetManagementService>();
+
+            return services;
+        }
+
+        /// <summary>
+        /// Registers all Enterprise Maintenance Engine dependencies.
+        /// </summary>
+        public static IServiceCollection AddMaintenanceEngine(this IServiceCollection services)
+        {
+            // Repositories
+            services.AddTransient<IMaintenanceRepository, MaintenanceRepository>();
+
+            // Cache
+            services.AddSingleton<IMaintenanceCache, MaintenanceCache>();
+
+            // Schedulers & State Managers
+            services.AddTransient<IMaintenanceScheduler, MaintenanceScheduler>();
+            services.AddTransient<IMaintenanceService, MaintenanceService>();
 
             return services;
         }
