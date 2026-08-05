@@ -348,6 +348,133 @@ namespace Sayra.Client.Shared.Fleet.Infrastructure
                     throw;
                 }
             }
+
+            if (currentVersion < 2)
+            {
+                using var transaction = await connection.BeginTransactionAsync(cancellationToken);
+                try
+                {
+                    _logger.LogInformation("Applying migration version 2: Asset Management & Maintenance Core Schema.");
+
+                    string[] tables = new string[]
+                    {
+                        @"CREATE TABLE IF NOT EXISTS Assets (
+                            AssetId TEXT PRIMARY KEY NOT NULL,
+                            MachineId TEXT NOT NULL,
+                            Name TEXT NOT NULL,
+                            SerialOrSignature TEXT NOT NULL,
+                            Category TEXT NOT NULL,
+                            Status TEXT NOT NULL,
+                            SpecificationsJson TEXT NOT NULL,
+                            Manufacturer TEXT NOT NULL,
+                            Version TEXT NOT NULL,
+                            DriverVersion TEXT NOT NULL,
+                            SoftwareName TEXT NOT NULL
+                        );",
+
+                        @"CREATE TABLE IF NOT EXISTS AssetHistory (
+                            HistoryId TEXT PRIMARY KEY NOT NULL,
+                            AssetId TEXT NOT NULL,
+                            MachineId TEXT NOT NULL,
+                            TimestampUtc TEXT NOT NULL,
+                            EventType TEXT NOT NULL,
+                            Description TEXT NOT NULL,
+                            OperatorId TEXT NOT NULL
+                        );",
+
+                        @"CREATE TABLE IF NOT EXISTS AssetChanges (
+                            ChangeId TEXT PRIMARY KEY NOT NULL,
+                            AssetId TEXT NOT NULL,
+                            MachineId TEXT NOT NULL,
+                            TimestampUtc TEXT NOT NULL,
+                            ChangeType TEXT NOT NULL,
+                            PropertyName TEXT NOT NULL,
+                            OldValue TEXT NOT NULL,
+                            NewValue TEXT NOT NULL
+                        );",
+
+                        @"CREATE TABLE IF NOT EXISTS MaintenanceSchedules (
+                            ScheduleId TEXT PRIMARY KEY NOT NULL,
+                            WindowId TEXT NOT NULL,
+                            Category TEXT NOT NULL,
+                            StartTimeUtc TEXT NOT NULL,
+                            DurationMs INTEGER NOT NULL,
+                            ForceSessionTermination INTEGER NOT NULL,
+                            ScopeFilter TEXT NOT NULL,
+                            State TEXT NOT NULL,
+                            ExecutionSummary TEXT NOT NULL
+                        );",
+
+                        @"CREATE TABLE IF NOT EXISTS MaintenanceExecutions (
+                            ExecutionId TEXT PRIMARY KEY NOT NULL,
+                            ScheduleId TEXT NOT NULL,
+                            MachineId TEXT NOT NULL,
+                            Status TEXT NOT NULL,
+                            StartTimeUtc TEXT,
+                            EndTimeUtc TEXT,
+                            OutputLogs TEXT NOT NULL,
+                            ErrorMessage TEXT NOT NULL
+                        );",
+
+                        @"CREATE TABLE IF NOT EXISTS MaintenanceHistory (
+                            HistoryId TEXT PRIMARY KEY NOT NULL,
+                            ScheduleId TEXT NOT NULL,
+                            OutcomeStatus TEXT NOT NULL,
+                            AffectedMachinesJson TEXT NOT NULL,
+                            StartTimeUtc TEXT NOT NULL,
+                            EndTimeUtc TEXT NOT NULL,
+                            Summary TEXT NOT NULL
+                        );"
+                    };
+
+                    foreach (var tableSql in tables)
+                    {
+                        using var cmd = connection.CreateCommand();
+                        cmd.Transaction = transaction;
+                        cmd.CommandText = tableSql;
+                        await cmd.ExecuteNonQueryAsync(cancellationToken);
+                    }
+
+                    string[] indices = new string[]
+                    {
+                        "CREATE INDEX IF NOT EXISTS IDX_Assets_MachineId ON Assets (MachineId);",
+                        "CREATE INDEX IF NOT EXISTS IDX_Assets_Category ON Assets (Category);",
+                        "CREATE INDEX IF NOT EXISTS IDX_AssetHistory_AssetId ON AssetHistory (AssetId);",
+                        "CREATE INDEX IF NOT EXISTS IDX_AssetChanges_AssetId ON AssetChanges (AssetId);",
+                        "CREATE INDEX IF NOT EXISTS IDX_MaintenanceExecutions_ScheduleId ON MaintenanceExecutions (ScheduleId);",
+                        "CREATE INDEX IF NOT EXISTS IDX_MaintenanceExecutions_MachineId ON MaintenanceExecutions (MachineId);",
+                        "CREATE INDEX IF NOT EXISTS IDX_MaintenanceHistory_ScheduleId ON MaintenanceHistory (ScheduleId);"
+                    };
+
+                    foreach (var indexSql in indices)
+                    {
+                        using var cmd = connection.CreateCommand();
+                        cmd.Transaction = transaction;
+                        cmd.CommandText = indexSql;
+                        await cmd.ExecuteNonQueryAsync(cancellationToken);
+                    }
+
+                    using (var cmd = connection.CreateCommand())
+                    {
+                        cmd.Transaction = transaction;
+                        cmd.CommandText = "INSERT INTO SchemaVersion (Version, AppliedAt) VALUES (2, $appliedAt);";
+                        var parameter = cmd.CreateParameter();
+                        parameter.ParameterName = "$appliedAt";
+                        parameter.Value = DateTime.UtcNow.ToString("O");
+                        cmd.Parameters.Add(parameter);
+                        await cmd.ExecuteNonQueryAsync(cancellationToken);
+                    }
+
+                    await transaction.CommitAsync(cancellationToken);
+                    _logger.LogInformation("Migration version 2 applied successfully.");
+                }
+                catch (Exception ex)
+                {
+                    await transaction.RollbackAsync(cancellationToken);
+                    _logger.LogError(ex, "Failed to apply migration version 2. Transaction rolled back.");
+                    throw;
+                }
+            }
         }
 
         private async Task HandleDatabaseCorruptionAsync(CancellationToken cancellationToken)
