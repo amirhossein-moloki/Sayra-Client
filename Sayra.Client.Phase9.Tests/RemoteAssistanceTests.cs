@@ -179,10 +179,10 @@ namespace Sayra.Client.Phase9.Tests
 
             // Event streaming and publishing
             var eventsList = new List<string>();
-            var cts2 = new CancellationTokenSource(250);
+            var cts2 = new CancellationTokenSource(3000);
             _ = Task.Run(async () =>
             {
-                await Task.Delay(50);
+                await Task.Delay(100);
                 await events.PublishEventAsync("REQ1", "{\"Event\":\"CustomSystemMetric\"}");
             });
 

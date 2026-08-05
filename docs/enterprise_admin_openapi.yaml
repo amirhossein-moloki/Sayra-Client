@@ -1,0 +1,424 @@
+openapi: 3.0.3
+info:
+  title: SAYRA Enterprise Windows Client Administration API
+  description: Centralized distributed enterprise API for monitoring, managing, and securing thousands of SAYRA workstations.
+  version: 1.0.0
+servers:
+  - url: https://localhost:5001/api
+    description: Local Development Administration Server
+paths:
+  /fleet/machines:
+    get:
+      summary: Retrieve fleet workstations
+      description: Returns a paginated, filtered, and sorted list of registered workstations in the enterprise fleet.
+      security:
+        - BearerAuth: []
+        - TraceHeaders: []
+      parameters:
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 1
+        - name: pageSize
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 10
+        - name: status
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [Offline, Online, InSession, Locked, Maintenance, Transitioning]
+        - name: hostname
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: sort
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [hostname, status, lastSeenUtc]
+      responses:
+        '200':
+          description: Successful retrieval
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  total:
+                    type: integer
+                  page:
+                    type: integer
+                  pageSize:
+                    type: integer
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/MachineInfo'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+
+  /commands/execute:
+    post:
+      summary: Execute single remote command
+      description: Dispatches an authorized, signed remote command to a single target workstation.
+      security:
+        - BearerAuth: []
+        - TraceHeaders: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RemoteCommandRequest'
+      responses:
+        '200':
+          description: Command dispatched successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RemoteCommandResponse'
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+
+  /monitoring/metrics:
+    get:
+      summary: Get live workstation metrics
+      description: Returns real-time CPU, Memory, Storage, and Network utilization snapshots.
+      security:
+        - BearerAuth: []
+        - TraceHeaders: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthSnapshot'
+
+  /diagnostics/start:
+    post:
+      summary: Start remote diagnostics report
+      description: Command a specific workstation to perform diagnostic checks and compile results.
+      security:
+        - BearerAuth: []
+        - TraceHeaders: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DiagnosticRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DiagnosticReport'
+
+  /files/upload:
+    post:
+      summary: Initiate safe file upload
+      description: Initiates a parallel chunked upload stream transaction to a workstation.
+      security:
+        - BearerAuth: []
+        - TraceHeaders: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TransferRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransferResponse'
+
+  /policies/assign:
+    post:
+      summary: Assign security policy
+      description: Associates a versioned policy template with a machine or fleet group.
+      security:
+        - BearerAuth: []
+        - TraceHeaders: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PolicyAssignmentRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+
+  /bulk:
+    post:
+      summary: Start bulk parallel operation
+      description: Dispatches commands parallelly across multiple workstations with failure limits.
+      security:
+        - BearerAuth: []
+        - TraceHeaders: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BulkOperationRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BulkOperationResponse'
+
+  /support/sessions:
+    post:
+      summary: Create remote support session
+      description: Requests desktop sharing or interactive command shell access.
+      security:
+        - BearerAuth: []
+        - TraceHeaders: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RemoteSupportRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RemoteSession'
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    TraceHeaders:
+      type: apiKey
+      in: header
+      name: X-Correlation-Id
+  schemas:
+    MachineInfo:
+      type: object
+      properties:
+        MachineId:
+          type: string
+        Hostname:
+          type: string
+        Status:
+          type: string
+        HealthStatus:
+          type: string
+    RemoteCommandRequest:
+      type: object
+      required:
+        - MachineId
+        - Action
+        - Signature
+        - OperatorId
+      properties:
+        MachineId:
+          type: string
+        Action:
+          type: string
+        Priority:
+          type: string
+          default: Normal
+        Parameters:
+          type: object
+          additionalProperties:
+            type: string
+        Signature:
+          type: string
+        OperatorId:
+          type: string
+    RemoteCommandResponse:
+      type: object
+      properties:
+        CommandId:
+          type: string
+        Status:
+          type: string
+        Outcome:
+          type: string
+        OutputMessage:
+          type: string
+    HealthSnapshot:
+      type: object
+      properties:
+        CpuUtilization:
+          type: number
+        MemoryUtilization:
+          type: number
+        StorageUtilization:
+          type: number
+        NetworkThroughputBytesPerSec:
+          type: number
+    DiagnosticRequest:
+      type: object
+      required:
+        - MachineId
+        - ReportType
+      properties:
+        MachineId:
+          type: string
+        ReportType:
+          type: string
+    DiagnosticReport:
+      type: object
+      properties:
+        ReportId:
+          type: string
+        MachineId:
+          type: string
+        Category:
+          type: string
+        ContentJson:
+          type: string
+    TransferRequest:
+      type: object
+      required:
+        - FilePath
+        - Direction
+        - Category
+      properties:
+        FilePath:
+          type: string
+        Direction:
+          type: string
+        Category:
+          type: string
+        TotalFileSizeBytes:
+          type: integer
+    TransferResponse:
+      type: object
+      properties:
+        JobId:
+          type: string
+        Status:
+          type: string
+        TotalChunks:
+          type: integer
+    PolicyAssignmentRequest:
+      type: object
+      required:
+        - PolicyId
+        - VersionTag
+        - TargetId
+      properties:
+        PolicyId:
+          type: string
+        VersionTag:
+          type: string
+        TargetId:
+          type: string
+    BulkOperationRequest:
+      type: object
+      required:
+        - Action
+        - MachineIds
+        - OperatorId
+      properties:
+        Action:
+          type: string
+        MachineIds:
+          type: array
+          items:
+            type: string
+        GroupIds:
+          type: array
+          items:
+            type: string
+        OperatorId:
+          type: string
+    BulkOperationResponse:
+      type: object
+      properties:
+        BulkOperationId:
+          type: string
+        Status:
+          type: string
+        TotalTargets:
+          type: integer
+    RemoteSupportRequest:
+      type: object
+      required:
+        - MachineId
+        - SessionType
+        - RequestedPermission
+      properties:
+        MachineId:
+          type: string
+        SessionType:
+          type: string
+        RequestedPermission:
+          type: string
+    RemoteSession:
+      type: object
+      properties:
+        SessionId:
+          type: string
+        TargetMachineId:
+          type: string
+        Status:
+          type: string
+  responses:
+    UnauthorizedError:
+      description: Authentication failed due to missing or invalid token.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+    ForbiddenError:
+      description: Authorization failed due to lack of standard RBAC permissions.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+    ValidationError:
+      description: Payload fails FluentValidation constraints.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              details:
+                type: array
+                items:
+                  type: string
