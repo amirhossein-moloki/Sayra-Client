@@ -69,6 +69,10 @@ namespace Sayra.Client.Shared.DependencyInjection
             services.AddAssetManagement();
             services.AddMaintenanceEngine();
 
+            // Phase 9 Stage 9: Enterprise Bulk Operations Engine & Remote Assistance Framework
+            services.AddBulkOperations();
+            services.AddRemoteAssistance();
+
             services.AddTransient<IValidator<RemoteCommandRequest>, RemoteCommandRequestValidator>();
             services.AddTransient<IValidator<RemoteCommandResponse>, RemoteCommandResponseValidator>();
             services.AddTransient<IValidator<BulkOperationRequest>, BulkOperationRequestValidator>();

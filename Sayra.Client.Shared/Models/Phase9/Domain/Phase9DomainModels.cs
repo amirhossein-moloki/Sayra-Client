@@ -527,6 +527,26 @@ namespace Sayra.Client.Shared.Models.Phase9.Domain
         public int FailedCount { get; init; }
 
         /// <summary>
+        /// Gets the number of currently running tasks.
+        /// </summary>
+        public int RunningCount { get; init; }
+
+        /// <summary>
+        /// Gets the number of cancelled tasks.
+        /// </summary>
+        public int CancelledCount { get; init; }
+
+        /// <summary>
+        /// Gets the number of skipped tasks.
+        /// </summary>
+        public int SkippedCount { get; init; }
+
+        /// <summary>
+        /// Gets the estimated time remaining for execution.
+        /// </summary>
+        public TimeSpan EstimatedRemainingTime { get; init; } = TimeSpan.Zero;
+
+        /// <summary>
         /// Gets the completion percentage (0.0 to 100.0).
         /// </summary>
         public double PercentageComplete => TotalTargets > 0 ? (double)CompletedCount / TotalTargets * 100.0 : 0.0;

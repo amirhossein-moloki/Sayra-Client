@@ -33,6 +33,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sayra.Client.Configuration"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sayra.Client.Configuration.Tests", "Sayra.Client.Configuration.Tests\Sayra.Client.Configuration.Tests.csproj", "{FC371CB2-F736-49FC-A605-6C6C65B68F39}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sayra.Client.Phase9.Tests", "Sayra.Client.Phase9.Tests\Sayra.Client.Phase9.Tests.csproj", "{0241B727-457D-4EC8-B8F9-AA9F5240DE37}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -219,6 +221,18 @@ Global
 		{FC371CB2-F736-49FC-A605-6C6C65B68F39}.Release|x64.Build.0 = Release|Any CPU
 		{FC371CB2-F736-49FC-A605-6C6C65B68F39}.Release|x86.ActiveCfg = Release|Any CPU
 		{FC371CB2-F736-49FC-A605-6C6C65B68F39}.Release|x86.Build.0 = Release|Any CPU
+		{0241B727-457D-4EC8-B8F9-AA9F5240DE37}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0241B727-457D-4EC8-B8F9-AA9F5240DE37}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0241B727-457D-4EC8-B8F9-AA9F5240DE37}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{0241B727-457D-4EC8-B8F9-AA9F5240DE37}.Debug|x64.Build.0 = Debug|Any CPU
+		{0241B727-457D-4EC8-B8F9-AA9F5240DE37}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{0241B727-457D-4EC8-B8F9-AA9F5240DE37}.Debug|x86.Build.0 = Debug|Any CPU
+		{0241B727-457D-4EC8-B8F9-AA9F5240DE37}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0241B727-457D-4EC8-B8F9-AA9F5240DE37}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0241B727-457D-4EC8-B8F9-AA9F5240DE37}.Release|x64.ActiveCfg = Release|Any CPU
+		{0241B727-457D-4EC8-B8F9-AA9F5240DE37}.Release|x64.Build.0 = Release|Any CPU
+		{0241B727-457D-4EC8-B8F9-AA9F5240DE37}.Release|x86.ActiveCfg = Release|Any CPU
+		{0241B727-457D-4EC8-B8F9-AA9F5240DE37}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
