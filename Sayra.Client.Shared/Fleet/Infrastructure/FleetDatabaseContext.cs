@@ -475,6 +475,104 @@ namespace Sayra.Client.Shared.Fleet.Infrastructure
                     throw;
                 }
             }
+
+            if (currentVersion < 3)
+            {
+                using var transaction = await connection.BeginTransactionAsync(cancellationToken);
+                try
+                {
+                    _logger.LogInformation("Applying migration version 3: Distributed Game Delivery & LAN Cache.");
+
+                    string[] tables = new string[]
+                    {
+                        @"CREATE TABLE IF NOT EXISTS GameCacheEntries (
+                            GameId TEXT PRIMARY KEY NOT NULL,
+                            Version TEXT NOT NULL,
+                            PackageId TEXT NOT NULL,
+                            TotalBlocks INTEGER NOT NULL,
+                            CompletedBlocks INTEGER NOT NULL,
+                            TotalSize INTEGER NOT NULL,
+                            IsHealthy INTEGER NOT NULL,
+                            LastUsedUtc TEXT NOT NULL
+                        );",
+
+                        @"CREATE TABLE IF NOT EXISTS CacheBlocks (
+                            BlockId TEXT PRIMARY KEY NOT NULL,
+                            Size INTEGER NOT NULL,
+                            Sha256Hash TEXT NOT NULL,
+                            IsStored INTEGER NOT NULL,
+                            LocalPath TEXT NOT NULL
+                        );",
+
+                        @"CREATE TABLE IF NOT EXISTS CacheNodes (
+                            NodeId TEXT PRIMARY KEY NOT NULL,
+                            MachineId TEXT NOT NULL,
+                            Hostname TEXT NOT NULL,
+                            IpAddress TEXT NOT NULL,
+                            Port INTEGER NOT NULL,
+                            IsOnline INTEGER NOT NULL,
+                            LastSeenUtc TEXT NOT NULL,
+                            FreeStorageBytes INTEGER NOT NULL,
+                            IsSsd INTEGER NOT NULL,
+                            NetworkSpeedMbps REAL NOT NULL,
+                            CpuLoadPercent REAL NOT NULL,
+                            CacheCompletenessPercent REAL NOT NULL,
+                            HealthScore REAL NOT NULL
+                        );",
+
+                        @"CREATE TABLE IF NOT EXISTS BlockAvailabilities (
+                            NodeId TEXT NOT NULL,
+                            BlockId TEXT NOT NULL,
+                            GameId TEXT NOT NULL,
+                            IsAvailable INTEGER NOT NULL,
+                            PRIMARY KEY (NodeId, BlockId)
+                        );"
+                    };
+
+                    foreach (var tableSql in tables)
+                    {
+                        using var cmd = connection.CreateCommand();
+                        cmd.Transaction = transaction;
+                        cmd.CommandText = tableSql;
+                        await cmd.ExecuteNonQueryAsync(cancellationToken);
+                    }
+
+                    string[] indices = new string[]
+                    {
+                        "CREATE INDEX IF NOT EXISTS IDX_CacheBlocks_IsStored ON CacheBlocks (IsStored);",
+                        "CREATE INDEX IF NOT EXISTS IDX_BlockAvailabilities_BlockId ON BlockAvailabilities (BlockId);",
+                        "CREATE INDEX IF NOT EXISTS IDX_BlockAvailabilities_NodeId ON BlockAvailabilities (NodeId);"
+                    };
+
+                    foreach (var indexSql in indices)
+                    {
+                        using var cmd = connection.CreateCommand();
+                        cmd.Transaction = transaction;
+                        cmd.CommandText = indexSql;
+                        await cmd.ExecuteNonQueryAsync(cancellationToken);
+                    }
+
+                    using (var cmd = connection.CreateCommand())
+                    {
+                        cmd.Transaction = transaction;
+                        cmd.CommandText = "INSERT INTO SchemaVersion (Version, AppliedAt) VALUES (3, $appliedAt);";
+                        var parameter = cmd.CreateParameter();
+                        parameter.ParameterName = "$appliedAt";
+                        parameter.Value = DateTime.UtcNow.ToString("O");
+                        cmd.Parameters.Add(parameter);
+                        await cmd.ExecuteNonQueryAsync(cancellationToken);
+                    }
+
+                    await transaction.CommitAsync(cancellationToken);
+                    _logger.LogInformation("Migration version 3 applied successfully.");
+                }
+                catch (Exception ex)
+                {
+                    await transaction.RollbackAsync(cancellationToken);
+                    _logger.LogError(ex, "Failed to apply migration version 3. Transaction rolled back.");
+                    throw;
+                }
+            }
         }
 
         private async Task HandleDatabaseCorruptionAsync(CancellationToken cancellationToken)
